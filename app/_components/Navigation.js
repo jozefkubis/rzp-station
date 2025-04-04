@@ -16,11 +16,6 @@ export default function Navigation() {
             icon: <IoCalendarOutline className="h-5 w-5 text-primary-700" />,
         },
         {
-            name: "Debata",
-            href: "/chat",
-            icon: <IoChatboxOutline className="h-5 w-5 text-primary-700" />,
-        },
-        {
             name: "Fotky",
             href: "/photos",
             icon: <TbPhotoSquareRounded className="h-5 w-5 text-primary-700" />,
@@ -29,6 +24,11 @@ export default function Navigation() {
             name: "Dokumenty",
             href: "/documents",
             icon: <IoDocumentsOutline className="h-5 w-5 text-primary-700" />,
+        },
+        {
+            name: "Debata",
+            href: "/chat",
+            icon: <IoChatboxOutline className="h-5 w-5 text-primary-700" />,
         },
     ]
 

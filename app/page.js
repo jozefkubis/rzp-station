@@ -11,11 +11,6 @@ export default function Page() {
       icon: <IoCalendarOutline className="h-20 w-20 text-primary-700" />,
     },
     {
-      name: "Debata",
-      href: "/chat",
-      icon: <IoChatboxOutline className="h-20 w-20 text-primary-700" />,
-    },
-    {
       name: "Fotky",
       href: "/photos",
       icon: <TbPhotoSquareRounded className="h-20 w-20 text-primary-700" />,
@@ -24,6 +19,11 @@ export default function Page() {
       name: "Dokumenty",
       href: "/documents",
       icon: <IoDocumentsOutline className="h-20 w-20 text-primary-700" />,
+    },
+    {
+      name: "Debata",
+      href: "/chat",
+      icon: <IoChatboxOutline className="h-20 w-20 text-primary-700" />,
     },
   ]
 
