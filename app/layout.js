@@ -9,8 +9,8 @@ import "@/app/_styles/globals.css"
 
 export const metadata = {
   title: {
-    template: "%s RZP",
-    default: "Vitajte / RZP",
+    template: "%s RZP Rajec",
+    default: "RZP Rajec 😎",
   },
   description:
     "",

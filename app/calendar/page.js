@@ -1,5 +1,9 @@
 import Header from "../_components/Header"
 
+export const metadata = {
+    title: "Kalendár",
+}
+
 function page() {
     return (
         <div>
