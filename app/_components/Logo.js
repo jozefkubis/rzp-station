@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import logo from "@/public/logo.png"
+import UserWelcome from "./UserWelcome"
 
 function Logo() {
   return (
@@ -12,6 +13,7 @@ function Logo() {
         alt="RZP Logo"
         className="rounded-md"
       />
+      <UserWelcome />
     </Link>
   )
 }

@@ -1,9 +1,9 @@
-import { logIn } from "../actions"
+import { login } from "../actions"
 
 export default async function handleSubmitLogin(e, { setError, router }) {
     e.preventDefault()
     const formData = new FormData(e.target)
-    const response = await logIn(formData)
+    const response = await login(formData)
 
     if (response?.error) {
         setError(response.error)

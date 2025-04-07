@@ -23,7 +23,7 @@ export default function LoginForm() {
         className="w-full max-w-md rounded-lg shadow-2xl p-8 space-y-6"
       >
         <div className="flex items-center justify-center">
-          <Image src={logo} height={200} width={200} alt="RZP Logo" />
+          <Image src={logo} height={150} width={150} alt="RZP Logo" />
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}

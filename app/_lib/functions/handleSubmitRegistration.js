@@ -1,10 +1,10 @@
-import { register } from "../actions"
+import { signup } from "../actions"
 
 export default async function handleSubmitRegistration(e, { setError, router }) {
     e.preventDefault()
     const formData = new FormData(e.target)
 
-    const response = await register(formData)
+    const response = await signup(formData)
 
     if (response?.error) {
         setError(response.error)

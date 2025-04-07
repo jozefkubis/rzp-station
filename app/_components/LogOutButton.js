@@ -1,14 +1,15 @@
 "use client"
 
 import { HiArrowRightOnRectangle } from "react-icons/hi2";
-import { logOut } from "../_lib/actions"
+
 import { useRouter } from "next/navigation"
+import { logout } from "../_lib/actions";
 
 function LogOutButton() {
     const router = useRouter()
 
     async function handleLogout() {
-        await logOut()
+        await logout()
         router.push("/login")
     }
 

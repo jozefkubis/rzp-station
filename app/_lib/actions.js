@@ -1,50 +1,50 @@
-"use server"
+'use server'
 
-import { supabase } from "./supabase"
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
-export async function logIn(formData) {
-    const email = formData.get("email")
-    const password = formData.get("password")
+import { createClient } from '@/utils/supabase/server'
 
-    console.log(email, password)
+export async function login(formData) {
+    const supabase = await createClient()
 
-    if (!email || !password) {
-        return { error: "Všetky polia sú povinné." }
+    const data = {
+        email: formData.get('email'),
+        password: formData.get('password'),
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    })
+    const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
-        return { error: error.message }
+        redirect('/error')
     }
 
-    return { data }
+    revalidatePath('/', 'layout')
+    redirect('/')
 }
 
-export async function logOut() {
+export async function logout() {
+    const supabase = await createClient()
+
     await supabase.auth.signOut()
+    revalidatePath('/', 'layout')
+    redirect('/login')
 }
 
-export async function register(formData) {
-    const email = formData.get("email")
-    const password = formData.get("password")
+export async function signup(formData) {
+    const supabase = await createClient()
 
-    if (!email || !password) {
-        return { error: "Všetky polia sú povinné." }
+    const data = {
+        email: formData.get('email'),
+        password: formData.get('password'),
     }
 
-    const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-    })
+    const { error } = await supabase.auth.signUp(data)
 
     if (error) {
-        return { error: error.message }
+        redirect('/error')
     }
 
-    return { data }
+    revalidatePath('/', 'layout')
+    redirect('/')
 }
-
