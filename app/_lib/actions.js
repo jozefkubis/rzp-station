@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
+import toast from 'react-hot-toast'
 
 export async function login(formData) {
     const supabase = await createClient()
@@ -36,6 +37,7 @@ export async function signup(formData) {
 
     const data = {
         email: formData.get('email'),
+        // name: formData.get('name'),
         password: formData.get('password'),
     }
 

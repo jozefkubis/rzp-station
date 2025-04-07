@@ -87,6 +87,9 @@ const config = {
           950: "#130C07",
         },
       },
+      backgroundImage: {
+        'login-bg': "url('/bg-login.png')",
+      },
     },
   },
   plugins: [],

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { IoChatboxOutline, IoDocumentsOutline, IoCalendarOutline } from "react-icons/io5";
 import { TbPhotoSquareRounded, TbMedicalCross } from "react-icons/tb";
 import LogOutButton from "./LogOutButton";
+import SettingsButton from "./SettingsButton";
 
 export default function Navigation() {
 
@@ -45,6 +46,7 @@ export default function Navigation() {
                             </Link>
                         </li>
                     ))}
+                    <SettingsButton />
                     <LogOutButton />
                 </ul>
             </nav>

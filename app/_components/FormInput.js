@@ -17,7 +17,7 @@ export default function FormInput({
 }) {
   return (
     <div className="flex flex-col">
-      <label htmlFor={id} className="font-medium text-primary-700">
+      <label htmlFor={id} className=" text-white font-bold">
         {label}
       </label>
       <input

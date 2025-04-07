@@ -11,7 +11,6 @@ function Logo() {
         height="100"
         width="100"
         alt="RZP Logo"
-        className="rounded-md"
       />
       <UserWelcome />
     </Link>

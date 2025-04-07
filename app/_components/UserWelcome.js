@@ -20,6 +20,7 @@ export default function UserWelcome() {
         getUser();
     }, []);
 
+
     return <p className="flex items-center gap-2 text-primary-700 font-semibold">{user?.email}</p>
 
 }

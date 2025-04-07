@@ -6,7 +6,7 @@ export default function Error({ error }) {
     const router = useRouter();
 
     return (
-        <main className="flex justify-center items-center flex-col gap-6 mt-20">
+        <main className="flex justify-center items-center flex-col gap-6 mt-20 px-20">
             <h1 className="text-3xl font-semibold">Niekde sa stala chyba!</h1>
             <p className="text-lg">{error.message}</p>
 

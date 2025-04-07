@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Image from "next/image"
 import FormInput from "./FormInput"
 import LoginButton from "./LoginButton"
@@ -9,22 +8,24 @@ import handleSubmitLogin from "../_lib/functions/handleSubmitLogin"
 
 export default function LoginForm() {
   const [error, setError] = useState("")
-  const router = useRouter()
-  const logo = "/logo.png"
+  const logo = "/bg-logo-lightblue.png"
+  const bg = "/bg-login.png"
+
 
   function handleSubmit(e) {
-    handleSubmitLogin(e, { setError, router })
+    handleSubmitLogin(e, { setError })
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen gap-10">
+    <div className="flex flex-col gap-8 bg-login-bg bg-cover bg-center min-h-screen items-center justify-center">
+      <div className="flex items-center justify-center rounded-full">
+        <Image src={logo} height={250} width={250} alt="RZP Logo" />
+      </div>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-lg shadow-2xl p-8 space-y-6"
+        // action={login}
+        className="w-full max-w-md rounded-lg p-8 space-y-6 bg-primary-100 bg-opacity-20"
       >
-        <div className="flex items-center justify-center">
-          <Image src={logo} height={150} width={150} alt="RZP Logo" />
-        </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
