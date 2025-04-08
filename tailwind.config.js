@@ -90,6 +90,15 @@ const config = {
       backgroundImage: {
         'login-bg': "url('/bg-login.png')",
       },
+      animation: {
+        'pulse-gradient': 'pulse-gradient 3s ease-in-out infinite',
+      },
+      keyframes: {
+        'pulse-gradient': {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
+        },
+      },
     },
   },
   plugins: [],

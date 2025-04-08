@@ -1,16 +1,23 @@
 import LoginForm from "@/app/_components/LoginForm"
-// import { redirect } from "next/navigation"
 
 export const metadata = {
   title: "Prihlásenie",
 }
 
 export default async function Page() {
-
-
   return (
-    <div>
-      <LoginForm />
+    <div className="relative h-screen pt-20 overflow-hidden">
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 bg-login-bg bg-cover bg-center filter sepia z-0"></div>
+
+      {/* Pulse Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/50 animate-pulse-gradient z-10"></div>
+
+      {/* Content */}
+      <div className="relative z-20">
+        <LoginForm />
+      </div>
     </div>
   )
 }
+
