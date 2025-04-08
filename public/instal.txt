@@ -1,13 +1,11 @@
-npm i @heroicons/react
 npm install react-icons --save
 npm i date-fns
-npm i next-auth@beta
 npm i react-feather
 npm install bcryptjs
 npm install react-toastify
 npm install date-fns
 npm install --save react-dropzone
-npm install @react-google-maps/api
+npm install @react-google-maps/api 
 npm install -D prettier prettier-plugin-tailwindcss
 npm install @supabase/supabase-js @supabase/ssr
 npm install react-hot-toast

@@ -5,7 +5,7 @@ import {
   IoCalendarOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
-import { TbPhotoSquareRounded } from "react-icons/tb";
+import { HiOutlinePhoto } from "react-icons/hi2";
 import { GiSkullWithSyringe } from "react-icons/gi";
 
 export default function Page() {
@@ -14,42 +14,42 @@ export default function Page() {
       name: "Kalendár",
       href: "/calendar",
       icon: (
-        <IoCalendarOutline className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <IoCalendarOutline className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
     {
       name: "Fotky",
       href: "/photos",
       icon: (
-        <TbPhotoSquareRounded className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <HiOutlinePhoto className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
     {
       name: "Dokumenty",
       href: "/documents",
       icon: (
-        <IoDocumentsOutline className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <IoDocumentsOutline className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
     {
       name: "Debata",
       href: "/chat",
       icon: (
-        <IoChatboxOutline className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <IoChatboxOutline className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
     {
       name: "Nastavenia",
       href: "/settings",
       icon: (
-        <IoSettingsOutline className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <IoSettingsOutline className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
     {
       name: "Registrácia",
       href: "/register",
       icon: (
-        <GiSkullWithSyringe className="h-20 w-20 text-primary-700 hover:text-primary-600 active:scale-95 hover:scale-110" />
+        <GiSkullWithSyringe className="h-20 w-20 text-primary-700 hover:scale-110 hover:text-primary-600 active:scale-95" />
       ),
     },
   ];
@@ -61,7 +61,7 @@ export default function Page() {
           <li key={link.name}>
             <Link
               href={link.href}
-              className="flex flex-col items-center text-xl font-bold text-primary-700 hover:text-primary-600  active:scale-95"
+              className="flex flex-col items-center text-xl font-bold text-primary-700 hover:text-primary-600 active:scale-95"
             >
               {link.icon}
               {link.name}
