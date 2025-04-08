@@ -35,12 +35,12 @@ export default function Navigation() {
   return (
     <>
       <nav className="">
-        <ul className="flex gap-10 px-10 py-2">
+        <ul className="flex gap-5 px-10 py-2">
           {navLinks.map((link) => (
-            <li key={link.name}>
+            <li key={link.name} className="hover:bg-primary-50 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">
               <Link
                 href={link.href}
-                className="flex items-center gap-2 font-semibold text-primary-700"
+                className="flex items-center gap-2 font-semibold text-primary-700  "
               >
                 {link.icon}
                 {link.name}

@@ -14,7 +14,7 @@ function LogOutButton() {
     }
 
     return (
-        <button onClick={handleLogout} className="text-primary-700"  >
+        <button onClick={handleLogout} className="text-primary-700 hover:bg-primary-50 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out"  >
             <HiArrowRightOnRectangle size={22} />
         </button>
     )
