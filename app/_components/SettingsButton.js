@@ -11,7 +11,7 @@ function SettingsButton() {
     }
 
     return (
-        <button onClick={handleClick} className="text-primary-700 flex gap-2 font-semibold hover:bg-primary-50 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out" >
+        <button onClick={handleClick} className="text-primary-700 flex font-semibold hover:bg-primary-50 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out" >
             <IoSettingsOutline size={22} /> <span>Nastavenia</span>
         </button>
     )

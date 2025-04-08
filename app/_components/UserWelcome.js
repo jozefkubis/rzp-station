@@ -21,6 +21,6 @@ export default function UserWelcome() {
     }, []);
 
 
-    return <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">{user?.email}</p>
+    return <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">{user?.email}</p>
 
 }
