@@ -7,8 +7,14 @@ import {
 import { HiOutlinePhoto } from "react-icons/hi2";
 import LogOutButton from "./LogOutButton";
 import SettingsButton from "./SettingsButton";
+import clsx from "clsx";
+import { headers } from "next/headers";
 
-export default function Navigation() {
+
+export default async function Navigation() {
+  const headerData = headers(); // Zachytenie headers asynchrónne
+  const pathname = (await headerData)?.get('x-pathname') || ''; // Použitie await a náhradnej hodnoty
+
   const navLinks = [
     {
       name: "Kalendár",
@@ -35,18 +41,27 @@ export default function Navigation() {
   return (
     <>
       <nav className="">
-        <ul className="flex px-10 py-2">
-          {navLinks.map((link) => (
-            <li key={link.name} className="hover:bg-primary-50 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">
-              <Link
-                href={link.href}
-                className="flex items-center gap-2 font-semibold text-primary-700  "
+        <ul className="flex px-10 py-2 gap-1">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+
+            return (
+              <li
+                key={link.name}
+                className={clsx(`rounded-md p-4 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95`,
+                  { 'bg-primary-50': isActive }
+                )}
               >
-                {link.icon}
-                {link.name}
-              </Link>
-            </li>
-          ))}
+                <Link
+                  href={link.href}
+                  className="flex items-center gap-2 font-semibold text-primary-700"
+                >
+                  {link.icon}
+                  {link.name}
+                </Link>
+              </li>
+            )
+          })}
           <SettingsButton />
           <LogOutButton />
         </ul>

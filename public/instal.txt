@@ -9,12 +9,11 @@ npm install @react-google-maps/api
 npm install -D prettier prettier-plugin-tailwindcss
 npm install @supabase/supabase-js @supabase/ssr
 npm install react-hot-toast
+npm i clsx
 
 
 
 
 
-(npm install @heroicons/react react-icons date-fns @supabase/supabase-js next-auth@beta react-feather bcryptjs react-toastify date-fns install styled-components react-dropzone @react-google-maps/api
-)
 
 

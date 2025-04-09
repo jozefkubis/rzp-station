@@ -91,7 +91,7 @@ const config = {
         'login-bg': "url('/bg-login.png')",
       },
       animation: {
-        'pulse-gradient': 'pulse-gradient 3s ease-in-out infinite',
+        'pulse-gradient': 'pulse-gradient 6s ease-in-out infinite',
       },
       keyframes: {
         'pulse-gradient': {

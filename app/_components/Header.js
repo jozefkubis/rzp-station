@@ -1,5 +1,4 @@
 import Logo from "./Logo"
-import LogOutButton from "./LogOutButton"
 import Navigation from "./Navigation"
 
 function Header() {
