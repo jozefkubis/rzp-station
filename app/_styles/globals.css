@@ -27,6 +27,7 @@
     border-right-color: transparent;
     animation: rotate 1s infinite linear;
     margin: 0 auto;
+    padding: 12px;
   }
 
   @keyframes rotate {
