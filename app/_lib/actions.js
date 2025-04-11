@@ -2,9 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-
 import { createClient } from '@/utils/supabase/server'
-import toast from 'react-hot-toast'
 
 export async function login(formData) {
     const supabase = await createClient()
@@ -33,20 +31,55 @@ export async function logout() {
 }
 
 export async function signup(formData) {
-    const supabase = await createClient()
+    const supabase = createClient();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
-    const data = {
-        email: formData.get('email'),
-        // name: formData.get('name'),
-        password: formData.get('password'),
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const name = formData.get("name");
+    const image = formData.get("image");
+
+    // Ak nie je obrázok, musíme sa uistiť, že používateľ môže pokračovať
+    if (!email || !password || !name || !image) {
+        return { error: "Všetky polia musia byť vyplnené." };
     }
 
-    const { error } = await supabase.auth.signUp(data)
+    // Nahrávanie obrázka do Supabase storage
+    const imageName = `${Date.now()}-${image.name}`.replace(/\s/g, "-");
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(imageName, image, {
+            cacheControl: "3600",
+            upsert: false,
+        });
+
+    if (uploadError) {
+        console.error("Chyba pri nahrávaní obrázka:", uploadError);
+        return { error: "Nepodarilo sa nahrať obrázok." };
+    }
+
+    // Získanie URL obrázka po nahraní
+    const imagePath = `${supabaseUrl}/storage/v1/object/public/avatars/${imageName}`;
+
+    // Vytvorenie používateľa v autentifikácii
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                name,
+                avatar_url: imagePath, // Uložíme URL obrázka do profilu
+            },
+        },
+    });
 
     if (error) {
-        redirect('/error')
+        console.error("Chyba pri registrácii:", error);
+        return { error: error.message };
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/')
+    // Presmerovanie po úspešnej registrácii
+    revalidatePath("/", "layout");
+    redirect("/");
 }
+
