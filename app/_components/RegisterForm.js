@@ -1,23 +1,18 @@
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration"
 import FormInput from "./FormInput"
 import RegisterButton from "./RegisterButton"
-import Image from "next/image"
-import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration"
 
 export default function RegisterForm() {
     const [error, setError] = useState("")
-    const router = useRouter()
-    const [image, setImage] = useState(null)
     const logo = "/logo.png"
 
     async function handleSubmit(e) {
-        handleSubmitRegistration(e, { setError, router })
+        handleSubmitRegistration(e, { setError })
     }
-
-    console.log("Form data image:", image);
 
     return (
         <div className="flex items-center justify-center min-h-screen gap-10">
@@ -44,17 +39,6 @@ export default function RegisterForm() {
 
                 <div className="flex flex-col">
                     <FormInput
-                        label="Meno"
-                        id="meno"
-                        type="name"
-                        placeholder="Meno alebo prezívka"
-                        name="name"
-                        required
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <FormInput
                         label="Heslo"
                         id="password"
                         type="password"
@@ -64,28 +48,6 @@ export default function RegisterForm() {
                     />
                 </div>
 
-                <div className="flex flex-col">
-                    <FormInput
-                        label="image"
-                        id="image"
-                        type="file"
-                        placeholder="Pridaj obrázok"
-                        name="image"
-                        accept="image/*"
-                        onChange={(e) => setImage(e.target.files[0])}
-                    />
-                </div>
-
-                {image && (
-                    <div className="mt-4 text-center">
-                        <p className="text-sm text-gray-700">Vybraný obrázok:</p>
-                        <img
-                            src={URL.createObjectURL(image)}
-                            alt="image preview"
-                            className="w-24 h-24 object-cover mx-auto rounded-full"
-                        />
-                    </div>
-                )}
                 <RegisterButton />
             </form>
         </div>
