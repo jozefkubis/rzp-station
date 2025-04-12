@@ -38,14 +38,12 @@ export async function signup(formData) {
         password: formData.get("password"),
     };
 
-    // Vytvorenie používateľa v autentifikácii
     const { error } = await supabase.auth.signUp(data);
 
     if (error) {
         redirect("/error");
     }
 
-    // Presmerovanie po úspešnej registrácii
     revalidatePath("/", "layout");
     redirect("/");
 }
