@@ -5,13 +5,16 @@ import { useState } from "react"
 import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration"
 import FormInput from "./FormInput"
 import RegisterButton from "./RegisterButton"
+import { useRouter } from "next/navigation"
 
 export default function RegisterForm() {
     const [error, setError] = useState("")
     const logo = "/logo.png"
 
+    const router = useRouter()
+
     async function handleSubmit(e) {
-        handleSubmitRegistration(e, { setError })
+        handleSubmitRegistration(e, { setError, router })
     }
 
     return (

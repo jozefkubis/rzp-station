@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import logo from "@/public/logo.png"
-import UserWelcome from "./UserWelcome"
+import UserHeaderInfo from "./UserHeaderInfo"
 
 function Logo() {
   return (
@@ -13,7 +13,7 @@ function Logo() {
         alt="RZP Logo"
         className="hover:bg-primary-100 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out"
       />
-      <UserWelcome />
+      <UserHeaderInfo />
     </Link>
   )
 }

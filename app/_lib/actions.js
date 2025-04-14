@@ -36,6 +36,11 @@ export async function signup(formData) {
     const data = {
         email: formData.get("email"),
         password: formData.get("password"),
+        options: {
+            data: {
+                username: formData.get("username"),
+            },
+        },
     };
 
     const { error } = await supabase.auth.signUp(data);
@@ -44,7 +49,15 @@ export async function signup(formData) {
         redirect("/error");
     }
 
+    if (!data.session) {
+        revalidatePath("/", "layout")
+        redirect("/verify-email")
+    }
+
+
     revalidatePath("/", "layout");
     redirect("/");
 }
+
+
 
