@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
 import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
+import InsertUpdateProfilesDataForm from "../_components/InsertUpdateProfilesDataForm";
+import UpdateUserDataForm from "../_components/UpdateUserDataForm";
 
 export const metadata = {
   title: "Kalendár",
@@ -33,8 +35,13 @@ export default async function page() {
             })}
           </ul>
         </div>
-        <div className="flex h-full items-center justify-center pl-[15rem]">
-          <h1 className="text-8xl font-bold text-primary-700">Nastavenia</h1>
+        <div className="ml-[15rem] grid grid-cols-2">
+          <div className="flex justify-center items-center pt-20">
+            <InsertUpdateProfilesDataForm />
+          </div>
+          <div className="flex justify-center items-center pt-20">
+            <UpdateUserDataForm />
+          </div>
         </div>
       </div>
     </div>

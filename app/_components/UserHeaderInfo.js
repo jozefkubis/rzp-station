@@ -9,7 +9,10 @@ export default async function UserHeaderInfo() {
     // Získať aktuálneho používateľa
     const { data: user } = await supabase.auth.getUser();
 
-    const userEmail = user.user.user_metadata.email
+    console.log(user);
+
+
+    const userEmail = user.user.email
     const username = user.user.user_metadata.username
 
     // Získať profil používateľa na základe e-mailu
@@ -19,7 +22,7 @@ export default async function UserHeaderInfo() {
     return (
         <>
             <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">
-                {user ? username : userEmail}
+                {username ? username : userEmail}
             </p>
         </>
     );

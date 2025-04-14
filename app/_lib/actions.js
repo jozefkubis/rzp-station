@@ -43,21 +43,21 @@ export async function signup(formData) {
         },
     };
 
-    const { error } = await supabase.auth.signUp(data);
+    const { data: result, error } = await supabase.auth.signUp(data);
 
     if (error) {
-        redirect("/error");
+        console.error("Signup error:", error)
+        redirect("/error")
     }
 
-    if (!data.session) {
+
+    if (!result.session) {
         revalidatePath("/", "layout")
         redirect("/verify-email")
     }
 
-
-    revalidatePath("/", "layout");
-    redirect("/");
+    revalidatePath("/", "layout")
+    redirect("/")
 }
-
 
 
