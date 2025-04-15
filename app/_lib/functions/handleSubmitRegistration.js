@@ -1,6 +1,6 @@
 import { signup } from "../actions"
 
-export default async function handleSubmitRegistration(e, { setError, router }) {
+export default async function handleSubmitRegistration(e, { setError }) {
     e.preventDefault()
 
     const formData = new FormData(e.currentTarget)

@@ -1,29 +1,28 @@
-// import getUserProfileData from "../_lib/data-service";
-import { createClient } from '@/utils/supabase/server'
+"use client";
+
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+
+export default function UserHeaderInfo() {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        async function getUser() {
+            const supabase = await createClient();
+            const { data, error } = await supabase.auth.getUser();
+
+            if (error || !data?.user) {
+                console.log("no user");
+            } else {
+                setUser(data.user);
+            }
+        }
+        getUser();
+    }, []);
 
 
-export default async function UserHeaderInfo() {
+    return <>
+        <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">{user?.user_metadata.username || user?.email}</p>
 
-    const supabase = await createClient();
-
-    // Získať aktuálneho používateľa
-    const { data: user } = await supabase.auth.getUser();
-
-    console.log(user);
-
-
-    const userEmail = user.user.email
-    const username = user.user.user_metadata.username
-
-    // Získať profil používateľa na základe e-mailu
-    // const profile = await getUserProfileData(userEmail);
-    // console.log(profile);
-
-    return (
-        <>
-            <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">
-                {username ? username : userEmail}
-            </p>
-        </>
-    );
+    </>
 }
