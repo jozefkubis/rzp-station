@@ -1,28 +1,35 @@
-"use client";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
-import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
+export default async function UserHeaderInfo() {
+    const cookieStore = await cookies();
 
-export default function UserHeaderInfo() {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        async function getUser() {
-            const supabase = await createClient();
-            const { data, error } = await supabase.auth.getUser();
-
-            if (error || !data?.user) {
-                console.log("no user");
-            } else {
-                setUser(data.user);
-            }
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        {
+            cookies: {
+                getAll: () => cookieStore.getAll(),
+                setAll: () => { },
+            },
         }
-        getUser();
-    }, []);
+    );
 
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
 
-    return <>
-        <p className="flex items-center gap-2 text-primary-700 font-semibold hover:bg-primary-100 p-4 rounded-md active:scale-95 transition-transform duration-300 ease-in-out">{user?.user_metadata.username || user?.email}</p>
+    if (error || !user) {
+        return <p className="text-gray-400">Neprihlásený</p>;
+    }
 
-    </>
+    const username = user.user_metadata?.username;
+    const email = user.email;
+
+    return (
+        <p className="text-sm font-semibold text-primary-700">
+            {username || email}
+        </p>
+    );
 }

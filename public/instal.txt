@@ -10,6 +10,8 @@ npm install -D prettier prettier-plugin-tailwindcss
 npm install @supabase/supabase-js @supabase/ssr
 npm install react-hot-toast
 npm i clsx
+npm install @supabase/auth-helpers-nextjs
+
 
 
 
