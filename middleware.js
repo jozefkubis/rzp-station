@@ -1,22 +1,18 @@
-import { updateSession } from '@/utils/supabase/middleware'
+import { updateSession } from '@/utils/supabase/middleware';
 
 export async function middleware(request) {
-    const response = await updateSession(request)
-
-    response.headers.set('x-pathname', request.nextUrl.pathname)
-
-    return response
+    return await updateSession(request);
 }
 
 export const config = {
     matcher: [
         /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * Feel free to modify this pattern to include more paths.
+         * Priraď všetky cesty požiadaviek okrem tých, ktoré začínajú na:
+         * - _next/static (statické súbory)
+         * - _next/image (súbory optimalizácie obrázkov)
+         * - favicon.ico (súbor favicon)
+         * Môžeš upraviť tento vzor tak, aby zahŕňal ďalšie cesty.
          */
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
-}
+};

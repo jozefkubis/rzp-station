@@ -41,16 +41,6 @@ export default function RegisterForm() {
 
                 <div className="flex flex-col">
                     <FormInput
-                        id="username"
-                        type="text"
-                        placeholder="Uživatelské meno"
-                        name="username"
-                        required
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <FormInput
                         id="password"
                         type="password"
                         placeholder="Vaše heslo"
