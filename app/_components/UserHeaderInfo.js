@@ -25,30 +25,29 @@ export default async function UserHeaderInfo() {
 
   const email = user?.email;
   const avatarUrl = profile?.avatar_url;
-  console.log(avatarUrl);
 
   return (
-    <Link href="/" className="flex items-center">
-      {avatarUrl ? (
-        <Image
-          src={avatarUrl}
-          height={100}
-          width={100}
-          alt="Avatar"
-          className="rounded-full p-2 transition-transform duration-300 ease-in-out hover:bg-primary-100 active:scale-95"
-        />
-      ) : (
-        <Image
-          src={blankAvatar}
-          height={100}
-          width={100}
-          alt="AvatarImage"
-          className="rounded-full p-2 transition-transform duration-300 ease-in-out hover:bg-primary-100 active:scale-95"
-        />
-      )}
-      <span className="rounded-md p-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
-        {email}
-      </span>
-    </Link>
+    <div className="flex items-center gap-3">
+      {/* Avatar Link */}
+      <Link href="/">
+        <div className="relative h-[60px] w-[60px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
+          <Image
+            src={avatarUrl || blankAvatar}
+            fill
+            alt="Avatar"
+            className="object-cover"
+          />
+        </div>
+      </Link>
+
+      {/* Email Link */}
+      <div>
+        <Link href="/settings">
+          <div className="rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
+            {email}
+          </div>
+        </Link>
+      </div>
+    </div>
   );
 }
