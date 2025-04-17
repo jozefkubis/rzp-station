@@ -87,11 +87,11 @@ const config = {
           950: "#130C07",
         },
       },
-      // backgroundImage: {
-      //   'login-bg': "url('/bg-login.png')",
-      // },
+      backgroundImage: {
+        "login-bg": "url('/bg-login.png')",
+      },
       // animation: {
-      //   'pulse-gradient': 'pulse-gradient 6s ease-in-out infinite',
+      //   "pulse-gradient": "pulse-gradient 6s ease-in-out infinite",
       // },
       // keyframes: {
       //   'pulse-gradient': {
