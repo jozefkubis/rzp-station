@@ -39,7 +39,7 @@ export default async function page() {
           <div className="flex justify-center items-center pt-20">
             <InsertUpdateProfilesDataForm />
           </div>
-          <div className="flex justify-center items-center pt-20">
+          <div className="flex justify-center pt-20">
             <UpdateUserDataForm />
           </div>
         </div>

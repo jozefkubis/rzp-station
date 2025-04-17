@@ -98,7 +98,7 @@ export default async function InsertUpdateProfilesDataForm(formData) {
         }
 
         // 🌐 Vytvorenie URL k nahratému obrázku (signovaná URL sa odporúča v prípade potreby autentifikácie)
-        const avatarPath = `https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/sign/avatars/${avatarName}`;
+        const avatarPath = `https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars/${avatarName}`;
 
         // 🔗 Pridáme URL obrázka do dát pre databázu
         data.avatar_url = avatarPath;
@@ -119,7 +119,4 @@ export default async function InsertUpdateProfilesDataForm(formData) {
     revalidatePath("/", "layout");
 }
 
-
-
-// https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/sign/avatars/myPic.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzM4YzRjZWEyLTJhNmUtNDY5ZC05ZWY2LTczYWI1M2I5MGUyNiJ9.eyJ1cmwiOiJhdmF0YXJzL215UGljLmpwZyIsImlhdCI6MTc0NDc1MjAwOSwiZXhwIjoxNzc2Mjg4MDA5fQ.hqBNH6eHl9hYyBrd5m62Rp6bVyB8esiOsZcF3zFWzSg
-
+//https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//myPic.jpg

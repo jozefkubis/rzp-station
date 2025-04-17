@@ -13,7 +13,6 @@ function Logo() {
         alt="RZP Logo"
         className="hover:bg-primary-100 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out"
       />
-      <UserHeaderInfo />
     </Link>
   )
 }
