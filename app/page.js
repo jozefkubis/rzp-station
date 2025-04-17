@@ -8,7 +8,7 @@ import {
 import { HiOutlinePhoto } from "react-icons/hi2";
 import { GiSkullWithSyringe } from "react-icons/gi";
 
-export const revalidate = 86400;
+export const revalidate = 0;
 
 export default function Page() {
   const navLinks = [

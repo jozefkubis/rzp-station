@@ -87,21 +87,21 @@ const config = {
           950: "#130C07",
         },
       },
-      backgroundImage: {
-        'login-bg': "url('/bg-login.png')",
-      },
-      animation: {
-        'pulse-gradient': 'pulse-gradient 6s ease-in-out infinite',
-      },
-      keyframes: {
-        'pulse-gradient': {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
-        },
-      },
+      // backgroundImage: {
+      //   'login-bg': "url('/bg-login.png')",
+      // },
+      // animation: {
+      //   'pulse-gradient': 'pulse-gradient 6s ease-in-out infinite',
+      // },
+      // keyframes: {
+      //   'pulse-gradient': {
+      //     '0%, 100%': { opacity: '0.6' },
+      //     '50%': { opacity: '1' },
+      //   },
+      // },
     },
   },
   plugins: [],
-}
+};
 
-export default config
+export default config;
