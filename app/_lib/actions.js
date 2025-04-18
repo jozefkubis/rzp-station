@@ -67,24 +67,44 @@ export default async function InsertUpdateProfilesDataForm(formData) {
 
     if (userError || !user) {
         console.error("Nie je prihlásený používateľ", userError);
-        redirect("/login"); // ⛔ Ak nie je používateľ, presmerujeme na login
+        redirect("/login");
         return;
     }
 
-    // 🧾 Pripravíme si dáta z formulára
-    const data = {
-        id: user.id, // 🔑 Toto ID je zároveň primárny kľúč v profiles tabuľke
+    // 🧾 Získanie aktuálneho profilu z databázy
+    const { data: existingProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+    if (profileError && profileError.code !== "PGRST116") {
+        console.error("Chyba pri načítaní profilu:", profileError);
+        return { error: "Nepodarilo sa načítať profil." };
+    }
+
+    const newData = {
         full_name: formData.get("full_name"),
         username: formData.get("username"),
         address: formData.get("address"),
         dateOfBirth: formData.get("dateOfBirth"),
     };
 
+    // 🎯 Zistíme, ktoré polia sa skutočne zmenili
+    const updatedFields = {};
+    for (const key in newData) {
+        if (
+            newData[key] &&
+            newData[key] !== existingProfile?.[key]
+        ) {
+            updatedFields[key] = newData[key];
+        }
+    }
+
     // 🖼 Práca s obrázkom (avatar)
     let avatar = formData.get("avatar");
 
     if (avatar && avatar instanceof File) {
-        // 🧼 Upravíme názov súboru, aby bol bezpečný (odstránime medzery a pridáme timestamp)
         const avatarName = `${Date.now()}-${avatar.name}`.replace(/\s/g, "-");
 
         // ☁️ Upload obrázka do Supabase storage (bucket: "avatars")
@@ -104,18 +124,30 @@ export default async function InsertUpdateProfilesDataForm(formData) {
         data.avatar_url = avatarPath;
     }
 
-    // 💾 Vloženie alebo aktualizácia profilu v databáze (ak záznam s daným ID existuje, updatne sa)
+    // ⛔ Ak nie sú žiadne zmeny, netreba robiť nič
+    if (Object.keys(updatedFields).length === 0) {
+        console.log("Žiadne zmeny sa nenašli, nič neupdatujem.");
+        return;
+    }
+
+    // 💾 Uložime len zmenené polia
     const { error } = await supabase
         .from("profiles")
-        .upsert(data, { onConflict: "id" }) // 🚀 "onConflict" zabezpečuje update pri existujúcom ID
+        .upsert(
+            {
+                id: user.id,
+                ...updatedFields,
+            },
+            { onConflict: "id" }
+        )
         .single();
 
     if (error) {
-        console.error("Signup error:", error);
-        redirect("/error"); // ❌ V prípade chyby presmerujeme na error stránku
+        console.error("Chyba pri upserte profilu:", error);
+        redirect("/error");
     }
 
-    // 🔄 Revalidácia layoutu — ak používaš serverové komponenty s cachingom
+
     revalidatePath("/", "layout");
 }
 

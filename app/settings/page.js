@@ -3,6 +3,7 @@ import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
 import InsertUpdateProfilesDataForm from "../_components/InsertUpdateProfilesDataForm";
 import UpdateUserDataForm from "../_components/UpdateUserDataForm";
+import { getAvatarUrl, getProfilesData, getUser } from "../_lib/data-service";
 
 export const metadata = {
   title: "Kalendár",
@@ -19,6 +20,10 @@ export default async function page() {
     { name: "Test-4", href: "/documents" },
     { name: "Test-5", href: "/photos" },
   ];
+
+  const user = await getUser();
+  const profiles = await getProfilesData(user?.email);
+  const avatarUrl = await getAvatarUrl(user?.email);
 
   return (
     <div>
@@ -37,10 +42,10 @@ export default async function page() {
         </div>
         <div className="ml-[15rem] grid grid-cols-2">
           <div className="flex justify-center items-center pt-20">
-            <InsertUpdateProfilesDataForm />
+            <InsertUpdateProfilesDataForm profiles={profiles} avatarUrl={avatarUrl} />
           </div>
           <div className="flex justify-center pt-20">
-            <UpdateUserDataForm />
+            <UpdateUserDataForm user={user} />
           </div>
         </div>
       </div>

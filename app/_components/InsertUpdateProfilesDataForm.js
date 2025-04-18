@@ -6,7 +6,7 @@ import UpdateProfileButton from "./UpdateProfileButton"
 import handleSubmitUploadProfileData from "../_lib/functions/handleSubmitUploadProfileData"
 import ImageUploader from "./ImageUploader"
 
-function InsertUpdateProfilesDataForm() {
+function InsertUpdateProfilesDataForm({ profiles, avatarUrl }) {
     const [error, setError] = useState("")
     const [full_name, setFull_name] = useState("")
     const [username, setUsername] = useState("")
@@ -29,8 +29,8 @@ function InsertUpdateProfilesDataForm() {
                     placeholder="Meno a priezvisko"
                     name="full_name"
                     onChange={(e) => setFull_name(e.target.value)}
-                    value={full_name}
-                    required
+                    value={full_name || profiles?.full_name}
+                    {...(!profiles && { required: true })}
                 />
             </div>
 
@@ -41,8 +41,8 @@ function InsertUpdateProfilesDataForm() {
                     placeholder="Uživatelské meno"
                     name="username"
                     onChange={(e) => setUsername(e.target.value)}
-                    value={username}
-                    required
+                    value={username || profiles?.username}
+                    {...(!profiles && { required: true })}
                 />
             </div>
 
@@ -53,8 +53,8 @@ function InsertUpdateProfilesDataForm() {
                     placeholder="Adresa"
                     name="address"
                     onChange={(e) => setAddress(e.target.value)}
-                    value={address}
-                    required
+                    value={address || profiles?.address}
+                    {...(!profiles && { required: true })}
                 />
             </div>
 
@@ -65,12 +65,12 @@ function InsertUpdateProfilesDataForm() {
                     placeholder="Dátum narodenia"
                     name="dateOfBirth"
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    value={dateOfBirth}
-                    required
+                    value={dateOfBirth || profiles?.dateOfBirth}
+                    {...(!profiles && { required: true })}
                 />
             </div>
 
-            <ImageUploader onAvatarSelect={setAvatar} />
+            <ImageUploader onAvatarSelect={setAvatar} avatarUrl={avatarUrl} />
 
             <UpdateProfileButton />
         </form>

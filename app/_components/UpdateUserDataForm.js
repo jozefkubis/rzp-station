@@ -18,15 +18,6 @@ function UpdateUserDataForm() {
 
             <div className="flex flex-col">
                 <FormInput
-                    id="username"
-                    type="text"
-                    placeholder="Uživatelské meno"
-                    name="username"
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <FormInput
                     id="password"
                     type="password"
                     placeholder="Vaše heslo"

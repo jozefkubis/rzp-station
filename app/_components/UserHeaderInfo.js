@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
+import { getAvatarUrl, getUser, getUsername } from "../_lib/data-service";
 
 export default async function UserHeaderInfo() {
   const supabase = await createClient();
@@ -8,23 +9,10 @@ export default async function UserHeaderInfo() {
   const blankAvatar =
     "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("avatar_url")
-    .eq("email", user?.email)
-    .single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Profily nie je možné načítať");
-  }
-
+  const user = await getUser();
   const email = user?.email;
-  const avatarUrl = profile?.avatar_url;
+  const avatarUrl = await getAvatarUrl(email);
+  const username = await getUsername(email);
 
   return (
     <div className="flex items-center gap-3">
@@ -44,7 +32,7 @@ export default async function UserHeaderInfo() {
       <div>
         <Link href="/settings">
           <div className="rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
-            {email}
+            {username || email}
           </div>
         </Link>
       </div>

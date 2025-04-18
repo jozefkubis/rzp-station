@@ -1,21 +1,70 @@
 import { createClient } from '@/utils/supabase/server'
 
-// export default async function getUserProfileData(email) {
-//     const supabase = await createClient()
+export async function getUser() {
+    const supabase = await createClient()
 
-//     const { data: profiles, error } = await supabase
-//         .from('profiles')
-//         .select('*')
-//         .eq("email", email)
-//         .single()
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
 
-//     console.log(profiles);
+    return user
+}
+
+export async function getProfilesData(email) {
+    const supabase = await createClient()
+
+    const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq("email", email)
+        .single()
+
+    if (error) {
+        console.error(error)
+        throw new Error("Profily nie je možné načítať")
+    }
+
+    return profiles
+}
 
 
-//     if (error) {
-//         console.error(error)
-//         // throw new Error("Profily nie je možné načítať")
-//     }
 
-//     return profiles
-// }
+export async function getAvatarUrl(email) {
+    const supabase = await createClient()
+
+    const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("email", email)
+        .single();
+
+    if (error) {
+        console.error(error);
+        throw new Error("Profily nie je možné načítať");
+    }
+
+    const avatarUrl = profile?.avatar_url;
+
+    return avatarUrl
+}
+
+export async function getUsername(email) {
+    const supabase = await createClient()
+
+    const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("email", email)
+        .single();
+
+    if (error) {
+        console.error(error);
+        throw new Error("Profily nie je možné načítať");
+    }
+
+    const username = profile?.username;
+
+    return username
+}
+
+

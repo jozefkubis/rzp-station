@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 
-export default function ImageUploader({ onAvatarSelect, avatar }) {
+export default function ImageUploader({ onAvatarSelect, avatar, avatarUrl }) {
   const [preview, setPreview] = useState(
     avatar instanceof File ? URL.createObjectURL(avatar) : avatar || null
   )
@@ -60,7 +60,17 @@ export default function ImageUploader({ onAvatarSelect, avatar }) {
           <img
             src={preview}
             alt="Náhľad"
-            className="w-24 h-24 object-cover mx-auto rounded-full"
+            className="w-40 h-40 object-cover mx-auto rounded-full"
+          />
+        </div>
+      )}
+      {!preview && (
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-700">Vybraný obrázok:</p>
+          <img
+            src={avatarUrl}
+            alt="Náhľad"
+            className="w-40 h-40 object-cover mx-auto rounded-full"
           />
         </div>
       )}
