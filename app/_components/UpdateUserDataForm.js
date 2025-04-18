@@ -1,11 +1,21 @@
 "use client"
 
+import { useState } from "react"
 import FormInput from "./FormInput"
 import UpdateUserButton from "./UpdateUserButton"
+import handleSubmitUpdateUserData from "../_lib/functions/handleSubmitUpdateUserData"
 
-function UpdateUserDataForm() {
+function UpdateUserDataForm({ user }) {
+    const [error, setError] = useState("")
+
+    function handleSubmit(e) {
+        handleSubmitUpdateUserData(e, { setError })
+    }
+
     return (
-        <form className="w-full max-w-md rounded-lg p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg p-8 space-y-6">
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+
             <div className="flex flex-col">
                 <FormInput
                     id="email"
@@ -13,17 +23,19 @@ function UpdateUserDataForm() {
                     placeholder="example@email.com"
                     name="email"
                     disabled={true}
+                    defaultValue={user?.email}
                 />
             </div>
 
             <div className="flex flex-col">
                 <FormInput
-                    id="password"
+                    id="newPassword"
                     type="password"
-                    placeholder="Vaše heslo"
-                    name="password"
+                    placeholder="Vaše nové heslo"
+                    name="newPassword"
                 />
             </div>
+
             <UpdateUserButton />
         </form>
     )

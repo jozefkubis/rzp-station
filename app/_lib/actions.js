@@ -56,7 +56,7 @@ export async function signup(formData) {
     redirect("/")
 }
 
-export default async function InsertUpdateProfilesDataForm(formData) {
+export async function InsertUpdateProfilesDataForm(formData) {
     const supabase = await createClient();
 
     // 🔐 Získame aktuálne prihláseného používateľa
@@ -149,6 +149,33 @@ export default async function InsertUpdateProfilesDataForm(formData) {
 
 
     revalidatePath("/", "layout");
+}
+
+export async function updateUser(formData) {
+    const supabase = await createClient()
+
+    const newPassword = formData.get("newPassword")
+
+    if (!newPassword) {
+        return { error: "Heslo nemôže byť prázdne." }
+    }
+
+    const { data: result, error } = await supabase.auth.updateUser({
+        password: newPassword,
+    })
+
+    if (error) {
+        console.error("Chyba pri zmene hesla:", error)
+        return { error: error.message }
+    }
+
+    if (!result.session) {
+        await supabase.auth.signOut()
+        revalidatePath("/", "layout")
+        redirect("/login")
+    }
+
+    revalidatePath("/", "layout")
 }
 
 //https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//myPic.jpg

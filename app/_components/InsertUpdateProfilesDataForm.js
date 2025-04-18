@@ -23,6 +23,9 @@ function InsertUpdateProfilesDataForm({ profiles, avatarUrl }) {
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg p-8 space-y-6">
             <div className="flex flex-col">
+
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+
                 <FormInput
                     id="full_name"
                     type="text"
