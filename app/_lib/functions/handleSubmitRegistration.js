@@ -8,5 +8,7 @@ export default async function handleSubmitRegistration(e, { setError }) {
 
     if (response?.error) {
         setError(response.error)
+    } else {
+        e.target.reset()
     }
 }

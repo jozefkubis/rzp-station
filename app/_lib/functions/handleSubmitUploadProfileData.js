@@ -1,4 +1,4 @@
-import InsertUpdateProfilesDataForm from "../actions"
+import { InsertUpdateProfilesDataForm } from "../actions"
 
 export default async function handleSubmitUploadProfileData(e, { setError, avatar }) {
     e.preventDefault()

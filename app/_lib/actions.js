@@ -36,25 +36,52 @@ export async function signup(formData) {
     const data = {
         email: formData.get("email"),
         password: formData.get("password"),
+        re_password: formData.get("re_password"),
     };
 
+    // Kontrola, či sa heslá zhodujú
+    if (data.password !== data.re_password) {
+        return {
+            error: "Hesla sa nezhodujú.",
+        };
+    }
 
-    const { data: result, error } = await supabase.auth.signUp(data);
+    // Kontrola, či je heslo dostatočne dlhé
+    if (data.password.length < 6) {
+        return {
+            error: "Heslo musí byť dlhšie ako 6 znakov.",
+        };
+    }
 
+    // Zaregistruj používateľa
+    const { data: result, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+    });
+
+    // Spracovanie chyby pri registrácii
     if (error) {
-        console.error("Signup error:", error)
-        redirect("/error")
+        console.error("Chyba pri registrácii:", error);
+        return { error: error.message };
     }
 
+    // Špeciálne ošetrenie pre neautorizovaného používateľa
+    if (error?.status === 401) {
+        await supabase.auth.signOut();
+        redirect("/login");
+    }
 
+    // Ak nemá používateľ aktívnu session, presmerujeme na stránku pre overenie e-mailu
     if (!result.session) {
-        revalidatePath("/", "layout")
-        redirect("/verify-email")
+        revalidatePath("/", "layout");
+        redirect("/verify-email");
     }
 
-    revalidatePath("/", "layout")
-    redirect("/")
+    // Po úspešnej registrácii presmerujeme na hlavnú stránku
+    revalidatePath("/", "layout");
+    redirect("/");
 }
+
 
 export async function InsertUpdateProfilesDataForm(formData) {
     const supabase = await createClient();
@@ -117,12 +144,13 @@ export async function InsertUpdateProfilesDataForm(formData) {
             return { error: "Nepodarilo sa nahrať obrázok." };
         }
 
-        // 🌐 Vytvorenie URL k nahratému obrázku (signovaná URL sa odporúča v prípade potreby autentifikácie)
+        // 🌐 Vytvorenie URL k nahratému obrázku
         const avatarPath = `https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars/${avatarName}`;
 
         // 🔗 Pridáme URL obrázka do dát pre databázu
-        data.avatar_url = avatarPath;
+        updatedFields.avatar_url = avatarPath;
     }
+
 
     // ⛔ Ak nie sú žiadne zmeny, netreba robiť nič
     if (Object.keys(updatedFields).length === 0) {
@@ -152,30 +180,47 @@ export async function InsertUpdateProfilesDataForm(formData) {
 }
 
 export async function updateUser(formData) {
-    const supabase = await createClient()
+    const supabase = await createClient();
 
-    const newPassword = formData.get("newPassword")
+    const newPassword = formData.get("newPassword");
+    const re_newPassword = formData.get("re_newPassword");
 
     if (!newPassword) {
-        return { error: "Heslo nemôže byť prázdne." }
+        return { error: "Heslo nemôže byť prázdne." };
+    }
+
+    if (newPassword.length < 6) {
+        return { error: "Heslo musí mať aspoň 6 znakov." };
+    }
+
+    if (newPassword !== re_newPassword) {
+        return { error: "Heslá sa nezhodujú." };
     }
 
     const { data: result, error } = await supabase.auth.updateUser({
         password: newPassword,
-    })
+    });
 
     if (error) {
-        console.error("Chyba pri zmene hesla:", error)
-        return { error: error.message }
+        console.error("Chyba pri zmene hesla:", error);
+
+        // špeciálne ošetrenie pre neautorizovaného používateľa
+        if (error.status === 401) {
+            await supabase.auth.signOut();
+            redirect("/login");
+        }
+
+        return { error: error.message };
     }
 
     if (!result.session) {
-        await supabase.auth.signOut()
-        revalidatePath("/", "layout")
-        redirect("/login")
+        await supabase.auth.signOut();
+        revalidatePath("/", "layout");
+        redirect("/login");
     }
 
-    revalidatePath("/", "layout")
+    revalidatePath("/", "layout");
 }
+
 
 //https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//myPic.jpg

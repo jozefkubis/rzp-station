@@ -23,7 +23,6 @@ export default async function page() {
 
   const user = await getUser();
   const profiles = await getProfilesData(user?.email);
-  const avatarUrl = await getAvatarUrl(user?.email);
 
   return (
     <div>
@@ -42,7 +41,7 @@ export default async function page() {
         </div>
         <div className="ml-[15rem] grid grid-cols-2">
           <div className="flex justify-center items-center pt-20">
-            <InsertUpdateProfilesDataForm profiles={profiles} avatarUrl={avatarUrl} />
+            <InsertUpdateProfilesDataForm profiles={profiles} />
           </div>
           <div className="flex justify-center pt-20">
             <UpdateUserDataForm user={user} />

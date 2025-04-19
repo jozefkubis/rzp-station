@@ -24,9 +24,8 @@ export default function FormInput({
         type={type}
         id={id}
         placeholder={placeholder}
-        className={`text-md mt-1 w-full rounded-md border px-4 py-2 text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${
-          disabled ? "bg-primary-50" : "bg-gray-50 font-semibold"
-        }`}
+        className={`text-md mt-1 w-full rounded-md border px-4 py-2 text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${disabled ? "bg-primary-50" : "bg-gray-50 font-semibold"
+          }`}
         required={required}
         name={name}
         onChange={onChange}

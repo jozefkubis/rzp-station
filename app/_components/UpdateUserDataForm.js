@@ -33,6 +33,17 @@ function UpdateUserDataForm({ user }) {
                     type="password"
                     placeholder="Vaše nové heslo"
                     name="newPassword"
+                    required
+                />
+            </div>
+
+            <div className="flex flex-col">
+                <FormInput
+                    id="re-newPassword"
+                    type="password"
+                    placeholder="Potvrdenie hesla"
+                    name="re_newPassword"
+                    required
                 />
             </div>
 
