@@ -1,12 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import FormInput from "./FormInput"
 import UpdateUserButton from "./UpdateUserButton"
 import handleSubmitUpdateUserData from "../_lib/functions/handleSubmitUpdateUserData"
+import toast from "react-hot-toast"
 
 function UpdateUserDataForm({ user }) {
     const [error, setError] = useState("")
+
+    useEffect(() => {
+        if (error) toast.error(error)
+    }, [error])
 
     function handleSubmit(e) {
         handleSubmitUpdateUserData(e, { setError })
@@ -14,7 +19,6 @@ function UpdateUserDataForm({ user }) {
 
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg p-8 space-y-6">
-            {error && <p className="text-red-500 text-sm">{error}</p>}
 
             <div className="flex flex-col">
                 <FormInput

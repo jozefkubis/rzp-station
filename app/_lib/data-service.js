@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
+import toast from 'react-hot-toast';
 
 export async function getUser() {
     const supabase = await createClient()
@@ -21,7 +22,7 @@ export async function getProfilesData(email) {
 
     if (error) {
         console.error(error)
-        throw new Error("Profily nie je možné načítať")
+        toast.error("Profily nie je možné načítať")
     }
 
     return profiles
@@ -40,7 +41,7 @@ export async function getAvatarUrl(email) {
 
     if (error) {
         console.error(error);
-        throw new Error("Profily nie je možné načítať");
+        toast.error("Profily nie je možné načítať");
     }
 
     const avatarUrl = profile?.avatar_url;
@@ -59,7 +60,7 @@ export async function getUsername(email) {
 
     if (error) {
         console.error(error);
-        throw new Error("Profily nie je možné načítať");
+        toast.error("Profily nie je možné načítať");
     }
 
     const username = profile?.username;

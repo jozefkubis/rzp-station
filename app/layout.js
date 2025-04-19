@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         {/* <Header /> */}
         {/* <div className=""> */}
         <main className="mx-auto w-full">
-          <Toaster position="top-right" />
+          <Toaster position="top-center" />
           {children}
         </main>
         {/* </div> */}

@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import FormInput from "./FormInput"
 import UpdateProfileButton from "./UpdateProfileButton"
 import handleSubmitUploadProfileData from "../_lib/functions/handleSubmitUploadProfileData"
 import ImageUploader from "./ImageUploader"
+import toast from "react-hot-toast"
 
 function InsertUpdateProfilesDataForm({ profiles }) {
     const [error, setError] = useState("")
@@ -13,6 +14,10 @@ function InsertUpdateProfilesDataForm({ profiles }) {
     const [address, setAddress] = useState("")
     const [dateOfBirth, setDateOfBirth] = useState("")
     const [avatar, setAvatar] = useState(null)
+
+    useEffect(() => {
+        if (error) toast.error(error)
+    }, [error])
 
 
     function handleSubmit(e) {
@@ -23,8 +28,6 @@ function InsertUpdateProfilesDataForm({ profiles }) {
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg p-8 space-y-6">
             <div className="flex flex-col">
-
-                {error && <p className="text-red-500 text-sm">{error}</p>}
 
                 <FormInput
                     id="full_name"

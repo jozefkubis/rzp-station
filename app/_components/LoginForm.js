@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import FormInput from "./FormInput"
 import LoginButton from "./LoginButton"
@@ -9,6 +9,10 @@ import handleSubmitLogin from "../_lib/functions/handleSubmitLogin"
 export default function LoginForm() {
   const [error, setError] = useState("")
   const logo = "/bg-logo-lightblue.png"
+
+  useEffect(() => {
+    if (error) toast.error(error)
+  }, [error])
 
 
   function handleSubmit(e) {
@@ -24,7 +28,6 @@ export default function LoginForm() {
         <Image src={logo} height={250} width={250} alt="RZP Logo" />
       </div>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <div className="flex flex-col">
         <FormInput

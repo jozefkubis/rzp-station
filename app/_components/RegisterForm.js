@@ -1,14 +1,19 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration"
 import FormInput from "./FormInput"
 import RegisterButton from "./RegisterButton"
+import toast from "react-hot-toast"
 
 export default function RegisterForm() {
     const [error, setError] = useState("")
     const logo = "/logo.png"
+
+    useEffect(() => {
+        if (error) toast.error(error)
+    }, [error])
 
     async function handleSubmit(e) {
         handleSubmitRegistration(e, { setError })
@@ -23,8 +28,6 @@ export default function RegisterForm() {
                 <div className="flex items-center justify-center">
                     <Image src={logo} height={150} width={150} alt="RZP Logo" />
                 </div>
-
-                {error && <p className="text-red-500 text-sm">{error}</p>}
 
                 <div className="flex flex-col">
                     <FormInput
