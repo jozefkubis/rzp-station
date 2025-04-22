@@ -68,4 +68,19 @@ export async function getUsername(email) {
     return username
 }
 
+export async function getAllProfiles() {
+    const supabase = await createClient()
+
+    const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+
+    if (error) {
+        console.error(error)
+        toast.error("Profily nie je možné načítať")
+    }
+
+    return profiles
+}
+
 

@@ -3,7 +3,7 @@ import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
 
 export const metadata = {
-  title: "Kalendár",
+  title: "Dokumenty",
 };
 
 export default async function page() {

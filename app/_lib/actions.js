@@ -33,54 +33,71 @@ export async function logout() {
 export async function signup(formData) {
     const supabase = await createClient();
 
-    const data = {
-        email: formData.get("email"),
-        password: formData.get("password"),
-        re_password: formData.get("re_password"),
-    };
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const re_password = formData.get("re_password");
+
+    // Overenie, či sú všetky polia vyplnené
+    if (!email || !password || !re_password) {
+        return { error: "Všetky polia sú povinné." };
+    }
+
+    // Skontroluj, či už existuje profil s daným e-mailom
+    const { data: existingProfile, error: profilesError } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("email", email)
+        .single();
+
+    // Ak nastane iná chyba ako "záznam sa nenašiel", ohlás chybu
+    if (profilesError && profilesError.code !== "PGRST116") {
+        console.error(profilesError);
+        return { error: "Email nie je možné načítať" };
+    }
+
+    // Ak používateľ s týmto emailom už existuje
+    if (existingProfile) {
+        return { error: "Užívateľ s týmto emailom už existuje" };
+    }
 
     // Kontrola, či sa heslá zhodujú
-    if (data.password !== data.re_password) {
-        return {
-            error: "Hesla sa nezhodujú.",
-        };
+    if (password !== re_password) {
+        return { error: "Heslá sa nezhodujú." };
     }
 
-    // Kontrola, či je heslo dostatočne dlhé
-    if (data.password.length < 6) {
-        return {
-            error: "Heslo musí byť dlhšie ako 6 znakov.",
-        };
+    // Kontrola minimálnej dĺžky hesla
+    if (password.length < 6) {
+        return { error: "Heslo musí byť dlhšie ako 6 znakov." };
     }
 
-    // Zaregistruj používateľa
+    // Registrácia používateľa
     const { data: result, error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
+        email,
+        password,
     });
 
-    // Spracovanie chyby pri registrácii
     if (error) {
         console.error("Chyba pri registrácii:", error);
         return { error: error.message };
     }
 
-    // Špeciálne ošetrenie pre neautorizovaného používateľa
+    // Ošetrenie neautorizovaného používateľa (napr. pri probléme s tokenom)
     if (error?.status === 401) {
         await supabase.auth.signOut();
         redirect("/login");
     }
 
-    // Ak nemá používateľ aktívnu session, presmerujeme na stránku pre overenie e-mailu
+    // Ak používateľ ešte nemá session – pošli ho overiť e-mail
     if (!result.session) {
         revalidatePath("/", "layout");
         redirect("/verify-email");
     }
 
-    // Po úspešnej registrácii presmerujeme na hlavnú stránku
+    // V opačnom prípade – úspešná registrácia, presmeruj domov
     revalidatePath("/", "layout");
     redirect("/");
 }
+
 
 
 export async function InsertUpdateProfilesDataForm(formData) {

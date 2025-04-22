@@ -1,9 +1,10 @@
 import { headers } from "next/headers";
 import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
+import UserProfiles from "../_components/UserProfiles";
 
 export const metadata = {
-  title: "Kalendár",
+  title: "Debata",
 };
 
 export default async function page() {
@@ -13,7 +14,7 @@ export default async function page() {
   const navLinks = [
     { name: "Test-1", href: "/calendar" },
     { name: "Test-2", href: "/settings" },
-    { name: "Test-3", href: "/chat" },
+    { name: "Test-3", href: "/profiles" },
     { name: "Test-4", href: "/documents" },
     { name: "Test-5", href: "/photos" },
   ];
@@ -34,7 +35,7 @@ export default async function page() {
           </ul>
         </div>
         <div className="flex h-full items-center justify-center pl-[15rem]">
-          <h1 className="text-8xl font-bold text-primary-700">Debata</h1>
+          <UserProfiles />
         </div>
       </div>
     </div>

@@ -6,7 +6,9 @@ import {
   IoSettingsOutline,
 } from "react-icons/io5";
 import { HiOutlinePhoto } from "react-icons/hi2";
-import { GiSkullWithSyringe } from "react-icons/gi";
+import { SlPeople } from "react-icons/sl";
+import { BsCardList } from "react-icons/bs";
+
 
 export const revalidate = 0;
 
@@ -16,6 +18,11 @@ export default function Page() {
       name: "Kalendár",
       href: "/calendar",
       icon: <IoCalendarOutline className="h-20 w-20 text-primary-700" />,
+    },
+    {
+      name: "RZP-Rajec",
+      href: "/profiles",
+      icon: <BsCardList className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Fotky",
@@ -28,11 +35,6 @@ export default function Page() {
       icon: <IoDocumentsOutline className="h-20 w-20 text-primary-700" />,
     },
     {
-      name: "Debata",
-      href: "/chat",
-      icon: <IoChatboxOutline className="h-20 w-20 text-primary-700" />,
-    },
-    {
       name: "Nastavenia",
       href: "/settings",
       icon: <IoSettingsOutline className="h-20 w-20 text-primary-700" />,
@@ -40,7 +42,7 @@ export default function Page() {
     {
       name: "Registrácia",
       href: "/register",
-      icon: <GiSkullWithSyringe className="h-20 w-20 text-primary-700" />,
+      icon: <SlPeople className="h-20 w-20 text-primary-700" />,
     },
   ];
 

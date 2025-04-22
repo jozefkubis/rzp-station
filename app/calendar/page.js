@@ -13,7 +13,7 @@ export default async function page() {
   const navLinks = [
     { name: "Test-1", href: "/calendar" },
     { name: "Test-2", href: "/settings" },
-    { name: "Test-3", href: "/chat" },
+    { name: "Test-3", href: "/profiles" },
     { name: "Test-4", href: "/documents" },
     { name: "Test-5", href: "/photos" },
   ];
