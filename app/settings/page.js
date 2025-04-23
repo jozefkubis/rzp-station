@@ -27,8 +27,8 @@ export default async function page() {
   return (
     <div>
       <Header />
-      <div className="h-screen">
-        <div className="fixed left-0 top-0 h-screen w-[15rem] border-r border-primary-200 pt-[10rem]">
+      <div className="h-screen grid grid-cols-[15rem_1fr]">
+        <div className="border-r border-primary-200 pt-[5rem]">
           <ul className="space-y-1 px-4 text-center text-lg font-semibold text-primary-700">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -39,8 +39,8 @@ export default async function page() {
             })}
           </ul>
         </div>
-        <div className="ml-[15rem] grid grid-cols-2">
-          <div className="flex justify-center items-center pt-20">
+        <div className="grid grid-cols-2">
+          <div className="flex justify-center pt-20">
             <InsertUpdateProfilesDataForm profiles={profiles} />
           </div>
           <div className="flex justify-center pt-20">

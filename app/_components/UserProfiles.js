@@ -1,14 +1,15 @@
 import Image from "next/image";
-import { getAllProfiles } from "../_lib/data-service";
+import DeleteProfileButton from "./DeleteProfileButton";
 
-export default async function UserProfiles() {
-
-    const profiles = await getAllProfiles();
+export default async function UserProfiles({ profiles }) {
 
     return (
-        <main className="p-4 w-full px-10">
-            <h1 className="text-2xl font-bold mb-8 text-center text-primary-700">Zoznam stanice RZP</h1>
-            <ul className="space-y-2">
+        <main className="w-full px-20 pb-20">
+            <h1 className="text-2xl p-10 font-bold text-center text-primary-700">
+                Zoznam stanice RZP
+            </h1>
+
+            <ul className="space-y-4">
                 {profiles.map((profile) => {
                     const blankAvatar =
                         "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
@@ -25,10 +26,13 @@ export default async function UserProfiles() {
                             key={profile.id}
                             style={{
                                 display: "grid",
-                                gridTemplateColumns: `60px repeat(${Object.keys(filteredProfile).length}, 1fr)`
+                                gridTemplateColumns: `60px repeat(${Object.keys(
+                                    filteredProfile
+                                ).length + 1}, 1fr)`,
                             }}
                             className="border rounded-xl p-4 shadow-sm bg-white gap-6 items-center"
                         >
+                            {/* Avatar */}
                             <div className="relative h-[60px] w-[60px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
                                 <Image
                                     src={profile.avatar_url || blankAvatar}
@@ -37,17 +41,24 @@ export default async function UserProfiles() {
                                     className="object-cover"
                                 />
                             </div>
+
+                            {/* Dynamické zobrazenie profilových údajov */}
                             {Object.entries(filteredProfile).map(([key, value]) => (
-                                <p key={key} className={`text-sm text-gray-600 ${key === "full_name" ? "font-bold" : ""}`}>
-                                    {value}
+                                <p
+                                    key={key}
+                                    className={`text-sm text-gray-600 ${key === "full_name" ? "font-bold" : ""
+                                        }`}
+                                >
+                                    {value || "❔"}
                                 </p>
                             ))}
+                            <div className="flex justify-end">
+                                <DeleteProfileButton profileId={profile.id} />
+                            </div>
                         </li>
                     );
                 })}
-
             </ul>
         </main>
     );
 }
-

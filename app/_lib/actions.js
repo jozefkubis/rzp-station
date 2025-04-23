@@ -239,5 +239,3 @@ export async function updateUser(formData) {
     revalidatePath("/", "layout");
 }
 
-
-//https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//myPic.jpg
