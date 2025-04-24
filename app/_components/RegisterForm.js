@@ -20,7 +20,7 @@ export default function RegisterForm() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen gap-10">
+        <div className="flex h-screen items-center justify-center pb-20">
             <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-md rounded-lg shadow-2xl p-8 space-y-6"
