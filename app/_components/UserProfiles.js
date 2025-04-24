@@ -29,7 +29,7 @@ export default async function UserProfiles({ profiles }) {
                   Object.keys(filteredProfile).length + 1
                 }, 1fr)`,
               }}
-              className="items-center gap-6 rounded-xl border bg-white p-4 shadow-sm transition-transform duration-300 ease-in-out hover:scale-105 hover:bg-primary-50"
+              className="items-center gap-6 rounded-xl border bg-white p-4 shadow-sm transition-transform duration-300 ease-in-out hover:bg-primary-50"
             >
               {/* Avatar */}
               <div className="relative h-[60px] w-[60px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
