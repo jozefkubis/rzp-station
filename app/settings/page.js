@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import Header from "../_components/Header";
+// import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
 import InsertUpdateProfilesDataForm from "../_components/InsertUpdateProfilesDataForm";
 import UpdateUserDataForm from "../_components/UpdateUserDataForm";
@@ -26,9 +26,9 @@ export default async function page() {
 
   return (
     <div>
-      <Header />
-      <div className="h-screen grid grid-cols-[15rem_1fr]">
-        <div className="border-r border-primary-200 pt-[5rem]">
+      {/* <Header /> */}
+      <div className="h-screen">
+        <div className="fixed left-0 top-0 h-screen w-[15rem] border-r border-primary-200 pt-[10rem]">
           <ul className="space-y-1 px-4 text-center text-lg font-semibold text-primary-700">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -39,11 +39,11 @@ export default async function page() {
             })}
           </ul>
         </div>
-        <div className="grid grid-cols-2">
-          <div className="flex justify-center pt-20">
+        <div className="grid grid-cols-2 justify-center pl-[15rem] pt-16">
+          <div className="flex justify-center">
             <InsertUpdateProfilesDataForm profiles={profiles} />
           </div>
-          <div className="flex justify-center pt-20">
+          <div className="flex justify-center">
             <UpdateUserDataForm user={user} />
           </div>
         </div>
