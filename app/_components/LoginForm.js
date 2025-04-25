@@ -1,33 +1,32 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
-import FormInput from "./FormInput"
-import LoginButton from "./LoginButton"
-import handleSubmitLogin from "../_lib/functions/handleSubmitLogin"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import FormInput from "./FormInput";
+import LoginButton from "./LoginButton";
+import handleSubmitLogin from "../_lib/functions/handleSubmitLogin";
+import toast from "react-hot-toast";
 
 export default function LoginForm() {
-  const [error, setError] = useState("")
-  const logo = "/bg-logo-lightblue.png"
+  const [error, setError] = useState("");
+  const logo = "/bg-logo-lightblue.png";
 
   useEffect(() => {
-    if (error) toast.error(error)
-  }, [error])
-
+    if (error) toast.error(error);
+  }, [error]);
 
   function handleSubmit(e) {
-    handleSubmitLogin(e, { setError })
+    handleSubmitLogin(e, { setError });
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-md rounded-lg p-8 space-y-6 bg-primary-100 bg-opacity-10 mx-auto"
+      className="mx-auto w-full max-w-md space-y-6 rounded-lg bg-primary-100 bg-opacity-10 p-8"
     >
       <div className="flex items-center justify-center rounded-full">
         <Image src={logo} height={250} width={250} alt="RZP Logo" />
       </div>
-
 
       <div className="flex flex-col">
         <FormInput
@@ -53,5 +52,5 @@ export default function LoginForm() {
 
       <LoginButton />
     </form>
-  )
+  );
 }
