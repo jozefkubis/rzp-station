@@ -141,6 +141,7 @@ export async function InsertUpdateProfilesDataForm(formData) {
     address: formData.get("address"),
     dateOfBirth: formData.get("dateOfBirth"),
     medCheckDate: formData.get("medCheckDate"),
+    phone: formData.get("phone"),
   };
 
   // 🎯 Zistíme, ktoré polia sa skutočne zmenili

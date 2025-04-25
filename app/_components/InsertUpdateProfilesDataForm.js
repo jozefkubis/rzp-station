@@ -14,6 +14,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
+  const [phone, setPhone] = useState("");
   const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
@@ -86,6 +87,19 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           name="medCheckDate"
           onChange={(e) => setMedCheckDate(e.target.value)}
           value={medCheckDate || profiles?.medCheckDate || ""}
+          {...(!profiles && { required: true })}
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <FormInput
+          id="phone"
+          type="tel"
+          placeholder="+421 123 456 789"
+          pattern="[+][0-9]{1,3}[0-9]{9,14}"
+          name="phone"
+          onChange={(e) => setPhone(e.target.value)}
+          value={phone || profiles?.phone || ""}
           {...(!profiles && { required: true })}
         />
       </div>
