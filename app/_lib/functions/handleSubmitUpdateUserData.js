@@ -11,7 +11,9 @@ export default async function handleSubmitUpdateUserData(e, { setError }) {
     setError(response.error);
     toast.error(response.error);
   } else {
+    setTimeout(() => {
+      toast.success("Profil bol aktualizovaný.");
+    }, 1000);
     e.target.reset();
-    toast.success("Profil bol aktualizovaný.");
   }
 }
