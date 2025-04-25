@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "../_actions/login";
+import { login } from "../actions";
 
 export default async function handleSubmitLogin(e, { setError }) {
   e.preventDefault();
