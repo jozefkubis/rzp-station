@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-// import Header from "../_components/Header";
+import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
 import InsertUpdateProfilesDataForm from "../_components/InsertUpdateProfilesDataForm";
 import UpdateUserDataForm from "../_components/UpdateUserDataForm";
@@ -26,7 +26,7 @@ export default async function page() {
 
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       <div className="h-screen">
         <div className="fixed left-0 top-0 h-screen w-[15rem] border-r border-primary-200 pt-[10rem]">
           <ul className="space-y-1 px-4 text-center text-lg font-semibold text-primary-700">

@@ -1,6 +1,6 @@
-import "@/app/_styles/globals.css"
-import { Toaster } from "react-hot-toast"
-import Header from "./_components/Header"
+import "@/app/_styles/globals.css";
+import { Toaster } from "react-hot-toast";
+// import Header from "./_components/Header"
 // import { Josefin_Sans } from "next/font/google"
 
 // const josefin = Josefin_Sans({
@@ -13,15 +13,14 @@ export const metadata = {
     template: "%s RZP Rajec",
     default: "RZP Rajec 😎",
   },
-  description:
-    "",
-}
+  description: "",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body /*className={`${josefin.className}`}*/>
-        <Header />
+        {/* <Header /> */}
         {/* <div className=""> */}
         <main className="mx-auto w-full">
           <Toaster position="top-center" />
@@ -30,5 +29,5 @@ export default function RootLayout({ children }) {
         {/* </div> */}
       </body>
     </html>
-  )
+  );
 }
