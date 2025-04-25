@@ -25,9 +25,8 @@ export default async function UserProfiles({ profiles }) {
               key={profile.id}
               style={{
                 display: "grid",
-                gridTemplateColumns: `60px repeat(${
-                  Object.keys(filteredProfile).length + 1
-                }, 1fr)`,
+                gridTemplateColumns: `60px repeat(${Object.keys(filteredProfile).length + 1
+                  }, 1fr)`,
               }}
               className="items-center gap-6 rounded-xl border bg-white p-4 shadow-sm transition-transform duration-300 ease-in-out hover:bg-primary-50"
             >
@@ -45,9 +44,8 @@ export default async function UserProfiles({ profiles }) {
               {Object.entries(filteredProfile).map(([key, value]) => (
                 <p
                   key={key}
-                  className={`text-sm text-gray-600 ${
-                    key === "full_name" ? "font-bold" : ""
-                  }`}
+                  className={`text-sm text-gray-600 ${key === "full_name" ? "font-bold" : ""
+                    }`}
                 >
                   {value || "❔"}
                 </p>

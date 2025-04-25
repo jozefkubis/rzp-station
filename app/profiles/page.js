@@ -1,4 +1,4 @@
-import Header from "../_components/Header";
+// import Header from "../_components/Header";
 import UserProfiles from "../_components/UserProfiles";
 import { getAllProfiles } from "../_lib/data-service";
 
@@ -12,7 +12,7 @@ export default async function page() {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <UserProfiles profiles={profiles} />
     </div>
   );
