@@ -23,6 +23,19 @@ export async function login(formData) {
   redirect("/");
 }
 
+export async function logout() {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.error("Chyba pri odhlásení:", error);
+    return { error: error.message };
+  }
+
+  redirect("/login");
+}
+
 export async function signup(formData) {
   const supabase = await createClient();
 
