@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { updateUser } from "../actions";
 
 export default async function handleSubmitUpdateUserData(e, { setError }) {
@@ -12,6 +11,5 @@ export default async function handleSubmitUpdateUserData(e, { setError }) {
     return;
   }
 
-  toast.success("Profil bol aktualizovaný.");
   e.target.reset();
 }
