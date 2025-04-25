@@ -9,7 +9,6 @@ export default async function handleSubmitUpdateUserData(e, { setError }) {
 
   if (response?.error) {
     setError(response.error);
-    toast.error(response.error);
     return;
   }
 

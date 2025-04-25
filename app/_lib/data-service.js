@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 
 // ✅ Tento súbor je čisto serverový → žiadne toastovanie!
 
+// MARK: GET USER
 export async function getUser() {
   const supabase = await createClient();
 
@@ -18,6 +19,7 @@ export async function getUser() {
   return user;
 }
 
+// MARK: GET PROFILES
 export async function getProfilesData(email) {
   const supabase = await createClient();
 
@@ -35,6 +37,7 @@ export async function getProfilesData(email) {
   return profiles;
 }
 
+// MARK: GET AVATAR
 export async function getAvatarUrl(email) {
   const supabase = await createClient();
 
@@ -52,6 +55,7 @@ export async function getAvatarUrl(email) {
   return profile?.avatar_url || null;
 }
 
+// MARK: GET USERNAME
 export async function getUsername(email) {
   const supabase = await createClient();
 
@@ -69,6 +73,7 @@ export async function getUsername(email) {
   return profile?.username || null;
 }
 
+// MARK: GET ALL PROFILES
 export async function getAllProfiles() {
   const supabase = await createClient();
 
@@ -82,6 +87,7 @@ export async function getAllProfiles() {
   return profiles;
 }
 
+// MARK: DELETE PROFILE
 export async function deleteProfile({ id }) {
   const supabase = await createClient();
 

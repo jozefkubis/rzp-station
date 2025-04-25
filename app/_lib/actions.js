@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
+// MARK: LOGIN
 export async function login(formData) {
   const supabase = await createClient();
 
@@ -23,6 +24,7 @@ export async function login(formData) {
   redirect("/");
 }
 
+// MARK: LOGOUT
 export async function logout() {
   const supabase = await createClient();
 
@@ -36,6 +38,7 @@ export async function logout() {
   redirect("/login");
 }
 
+// MARK: SIGNUP
 export async function signup(formData) {
   const supabase = await createClient();
 
@@ -104,6 +107,7 @@ export async function signup(formData) {
   redirect("/");
 }
 
+// MARK: INSERT/UPDATE PROFILES
 export async function InsertUpdateProfilesDataForm(formData) {
   const supabase = await createClient();
 
@@ -196,6 +200,7 @@ export async function InsertUpdateProfilesDataForm(formData) {
   revalidatePath("/", "layout");
 }
 
+// MARK: UPDATE USER
 export async function updateUser(formData) {
   const supabase = await createClient();
 
