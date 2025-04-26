@@ -9,9 +9,9 @@ export default function UserProfiles({ profiles }) {
         Zoznam stanice RZP
       </h1>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+      <ul className="grid grid-cols-1 items-center gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {profiles.map((profile) => (
-          <UserCard key={profile.id} profile={profile} onClick={() => console.log(profile.id)} />
+          <UserCard key={profile.id} profile={profile} />
         ))}
       </ul>
     </main>

@@ -37,6 +37,24 @@ export async function getProfilesData(email) {
   return profiles;
 }
 
+// MARK: GET PROFILE BY ID
+export async function getProfile(id) {
+  const supabase = await createClient();
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Chyba pri načítaní profilu:", error);
+    return null;
+  }
+
+  return profile;
+}
+
 // MARK: GET AVATAR
 export async function getAvatarUrl(email) {
   const supabase = await createClient();
@@ -85,21 +103,4 @@ export async function getAllProfiles() {
   }
 
   return profiles;
-}
-
-// MARK: DELETE PROFILE
-export async function deleteProfile({ id }) {
-  const supabase = await createClient();
-
-  const { error: deleteError } = await supabase
-    .from("profiles")
-    .delete()
-    .eq("id", id);
-
-  if (deleteError) {
-    console.error("Chyba pri mazaní profilu:", deleteError);
-    return { error: "Profil sa nepodarilo vymazať." };
-  }
-
-  return { success: true };
 }
