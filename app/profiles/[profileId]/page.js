@@ -5,7 +5,8 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export default async function Page({ params }) {
-  const profile = await getProfile(params.profileId);
+  const { profileId } = await params;
+  const profile = await getProfile(profileId);
 
   if (!profile) {
     return (
@@ -27,12 +28,12 @@ export default async function Page({ params }) {
         ← Späť na zoznam
       </Link>
 
-      {/* <Link
-        href={`/profiles/${params.profileId}/edit`}
+      <Link
+        href={`/profiles/${profileId}/edit`}
         className="font-semibold text-blue-700 hover:underline"
       >
         ✏️ Upraviť profil
-      </Link> */}
+      </Link>
 
       <div className="w-full max-w-2xl space-y-8 rounded-2xl bg-gray-50 p-10 shadow-lg">
         <div className="flex flex-col items-center space-y-4">

@@ -244,3 +244,63 @@ export async function updateUser(formData) {
 
   revalidatePath("/", "layout");
 }
+
+// MARK: ADMIN UPDATE PROFILES
+export async function AdminUpdateProfilesData(formData) {
+  const supabase = await createClient();
+
+  const profileId = formData.get("id");
+
+  // 🧾 Získanie aktuálneho profilu z databázy
+  const { data: existingProfile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", profileId)
+    .single();
+
+  if (profileError && profileError.code !== "PGRST116") {
+    console.error("Chyba pri načítaní profilu:", profileError);
+    return { error: "Nepodarilo sa načítať profil." };
+  }
+
+  const newData = {
+    full_name: formData.get("full_name"),
+    address: formData.get("address"),
+    dateOfBirth: formData.get("dateOfBirth"),
+    medCheckDate: formData.get("medCheckDate"),
+    phone: formData.get("phone"),
+  };
+
+  // 🎯 Zistíme, ktoré polia sa skutočne zmenili
+  const updatedFields = {};
+  for (const key in newData) {
+    if (newData[key] && newData[key] !== existingProfile?.[key]) {
+      updatedFields[key] = newData[key];
+    }
+  }
+
+  // ⛔ Ak nie sú žiadne zmeny, netreba robiť nič
+  if (Object.keys(updatedFields).length === 0) {
+    console.log("Žiadne zmeny sa nenašli, nič neupdatujem.");
+    return;
+  }
+
+  // 💾 Uložime len zmenené polia
+  const { error } = await supabase
+    .from("profiles")
+    .upsert(
+      {
+        id: profileId,
+        ...updatedFields,
+      },
+      { onConflict: "id" },
+    )
+    .single();
+
+  if (error) {
+    console.error("Chyba pri aktualizácii profilu:", error);
+    redirect("/error");
+  }
+
+  revalidatePath("/", "layout");
+}
