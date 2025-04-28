@@ -30,7 +30,6 @@ export default function LoginForm() {
 
       <div className="flex flex-col">
         <FormInput
-          label="Email"
           id="email"
           type="email"
           placeholder="example@email.com"
@@ -41,7 +40,6 @@ export default function LoginForm() {
 
       <div className="flex flex-col">
         <FormInput
-          label="Heslo"
           id="password"
           type="password"
           placeholder="Vaše heslo"
