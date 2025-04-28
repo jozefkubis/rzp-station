@@ -27,12 +27,6 @@ export default async function Page({ params }) {
 
     return (
         <div>
-            <Link
-                href={`/profiles/${profileId}`}
-                className="mb-6 ml-10 self-start font-semibold text-primary-700 hover:underline"
-            >
-                ← Späť na profil
-            </Link>
             <AdminUpdateProfilesDataForm profile={profile} />
         </div>
     );
