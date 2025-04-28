@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getProfile } from "@/app/_lib/data-service";
 import Link from "next/link";
+import Button from "@/app/_components/Button";
+import { formatDate } from "@/app/_lib/helpers/functions";
 
 export const dynamic = "force-dynamic";
 
@@ -20,59 +22,60 @@ export default async function Page({ params }) {
     "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-white px-4">
-      <Link
-        href="/profiles"
-        className="mb-6 ml-10 self-start font-semibold text-primary-700 hover:underline"
-      >
-        ← Späť na zoznam
-      </Link>
-
-      <Link
-        href={`/profiles/${profileId}/edit`}
-        className="font-semibold text-blue-700 hover:underline"
-      >
-        ✏️ Upraviť profil
-      </Link>
-
-      <div className="w-full max-w-2xl space-y-8 rounded-2xl bg-gray-50 p-10 shadow-lg">
-        <div className="flex flex-col items-center space-y-4">
+    <main className="flex min-h-screen items-center justify-center bg-white">
+      <div className="mx-auto grid min-h-screen max-w-5xl grid-cols-1 items-center justify-center text-xl sm:grid-cols-2">
+        <div className="flex flex-col items-center gap-10 px-10">
           <div className="relative h-40 w-40 overflow-hidden rounded-full border-4 border-primary-300">
             <Image
               src={profile.avatar_url || blankAvatar}
               fill
               alt="Avatar"
-              className="object-cover"
+              className="object-cover hover:scale-105 transition-transform duration-300"
             />
           </div>
 
-          <h1 className="text-3xl font-bold text-primary-700">
-            {profile.full_name}
-          </h1>
-          <p className="text-md text-gray-500">{profile.email}</p>
-          <p className="text-md text-gray-500">
-            {profile.phone ? `Tel.: ${profile.phone}` : "Telefón: ❔"}
-          </p>
+          <div className="flex flex-col items-center justify-center gap-2 text-primary-700">
+            <h1 className="text-2xl font-semibold">{profile.full_name}</h1>
+            <p className="">{profile.email}</p>
+            <p className="">
+              {profile.phone ? `Tel.: ${profile.phone}` : "Telefón: ❔"}
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 text-sm text-gray-700 sm:grid-cols-2">
-          <div>
-            <h2 className="mb-1 font-semibold text-primary-600">Adresa</h2>
+        <div className="flex sm:w-[500px] w-full flex-col text-primary-700">
+          <div className="flex justify-between gap-10 border-b border-gray-200 p-3 px-6">
+            <h2 className="font-semibold">Adresa:</h2>
             <p>{profile.address || "❔"}</p>
           </div>
 
-          <div>
-            <h2 className="mb-1 font-semibold text-primary-600">
-              Dátum narodenia
-            </h2>
-            <p>{profile.dateOfBirth || "❔"}</p>
+          <div className="flex justify-between gap-10 border-b border-gray-200 p-3 px-6">
+            <h2 className="font-semibold">Dátum narodenia:</h2>
+            <p>{formatDate(profile.dateOfBirth) || "❔"}</p>
           </div>
 
-          <div>
-            <h2 className="mb-1 font-semibold text-primary-600">
-              Lekárska prehliadka
-            </h2>
-            <p>{profile.medCheckDate || "❔"}</p>
+          <div className="flex justify-between gap-10 border-b border-gray-200 p-3 px-6">
+            <h2 className="font-semibold">Lekárska prehliadka:</h2>
+            <p>{formatDate(profile.medCheckDate) || "❔"}</p>
+          </div>
+
+          <div className="space-x-8 py-8 text-end sm:py-16">
+            <Link
+              href="/profiles"
+              className="mb-6 ml-10 self-start font-semibold text-primary-700 hover:underline"
+            >
+              <Button variant="secondary" size="medium">
+                ← Späť na zoznam
+              </Button>
+            </Link>
+            <Link
+              href={`/profiles/${profileId}/edit`}
+              className="font-semibold text-blue-700 hover:underline"
+            >
+              <Button variant="primary" size="medium">
+                ✏️ Upraviť profil
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
