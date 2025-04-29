@@ -14,6 +14,12 @@ const nextConfig = {
         pathname: "/storage/v1/object/public/avatars/**",
       },
     ],
+    domains: [
+      "upload.wikimedia.org",
+      // prípadne tu necháš aj ďalšie, napr. randomuser.me
+      "randomuser.me",
+    ],
+
     minimumCacheTTL: 60, // ✅ Ukladanie do cache na 60 sekúnd
     formats: ["image/avif", "image/webp"], // ✅ Automaticky používa WebP a AVIF
     deviceSizes: [320, 420, 768, 1024, 1200], // ✅ Optimalizované veľkosti pre zariadenia
