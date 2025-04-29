@@ -6,27 +6,31 @@ const nextConfig = {
     },
   },
   images: {
-    // whitelista pre tvoje Supabase avatary
+    // whitelist pre tvoje externé obrázky
     remotePatterns: [
+      // Supabase úložisko
       {
         protocol: "https",
         hostname: "kjfjavkvgocatxssthrv.supabase.co",
         port: "",
         pathname: "/storage/v1/object/public/avatars/**",
       },
-      // NOVÉ: randomuser.me portréty
+      // randomuser.me portréty
       {
         protocol: "https",
         hostname: "randomuser.me",
         port: "",
-        // presne táto cesta: /api/portraits/men/XX.jpg alebo /api/portraits/women/YY.jpg
         pathname: "/api/portraits/**",
       },
+      // wikimedia (ak ešte potrebuješ nejaké staré URL)
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        port: "",
+        pathname: "/**",
+      },
     ],
-
-    // zvyšok môže zostať, domains môžeš pokojne nechať alebo vymazať
-    domains: ["upload.wikimedia.org"],
-
+    // nepoužívaj už `domains` – je to deprecated
     minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],
     deviceSizes: [320, 420, 768, 1024, 1200],
@@ -34,4 +38,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
