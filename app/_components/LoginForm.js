@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import FormInput from "./FormInput";
+import LoginFormInput from "./LoginFormInput";
 import LoginButton from "./LoginButton";
 import handleSubmitLogin from "../_lib/functions/handleSubmitLogin";
 import toast from "react-hot-toast";
@@ -22,14 +22,14 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-md space-y-6 rounded-lg bg-primary-100 bg-opacity-10 p-8"
+      className="mx-auto max-w-[400px] w-full space-y-6 rounded-lg bg-primary-100 bg-opacity-10 p-8"
     >
       <div className="flex items-center justify-center rounded-full">
         <Image src={logo} height={250} width={250} alt="RZP Logo" />
       </div>
 
       <div className="flex flex-col">
-        <FormInput
+        <LoginFormInput
           id="email"
           type="email"
           placeholder="example@email.com"
@@ -39,7 +39,7 @@ export default function LoginForm() {
       </div>
 
       <div className="flex flex-col">
-        <FormInput
+        <LoginFormInput
           id="password"
           type="password"
           placeholder="Vaše heslo"
