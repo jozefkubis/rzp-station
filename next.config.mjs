@@ -1,3 +1,4 @@
+// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -6,23 +7,19 @@ const nextConfig = {
     },
   },
   images: {
-    // whitelist pre tvoje externé obrázky
     remotePatterns: [
-      // Supabase úložisko
       {
         protocol: "https",
         hostname: "kjfjavkvgocatxssthrv.supabase.co",
         port: "",
         pathname: "/storage/v1/object/public/avatars/**",
       },
-      // randomuser.me portréty
       {
         protocol: "https",
         hostname: "randomuser.me",
         port: "",
         pathname: "/api/portraits/**",
       },
-      // wikimedia (ak ešte potrebuješ nejaké staré URL)
       {
         protocol: "https",
         hostname: "upload.wikimedia.org",
@@ -30,7 +27,6 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    // nepoužívaj už `domains` – je to deprecated
     minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],
     deviceSizes: [320, 420, 768, 1024, 1200],
@@ -38,4 +34,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
