@@ -10,7 +10,7 @@ function SettingsButton() {
     const isActive = pathname === "/settings";
 
     function handleClick() {
-        router.push("/settings")
+        router.push("/settings/profile")
     }
 
     return (

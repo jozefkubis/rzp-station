@@ -36,7 +36,7 @@ export default function Page() {
     },
     {
       name: "Nastavenia",
-      href: "/settings",
+      href: "/settings/profile",
       icon: <IoSettingsOutline className="h-20 w-20 text-primary-700" />,
     },
     {

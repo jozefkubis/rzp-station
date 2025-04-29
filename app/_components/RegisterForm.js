@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration"
-import FormInput from "./FormInput"
+import LoginFormInput from "./LoginFormInput"
 import RegisterButton from "./RegisterButton"
 import toast from "react-hot-toast"
 
@@ -30,7 +30,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="flex flex-col">
-                    <FormInput
+                    <LoginFormInput
                         id="email"
                         type="email"
                         placeholder="example@email.com"
@@ -40,7 +40,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="flex flex-col">
-                    <FormInput
+                    <LoginFormInput
                         id="password"
                         type="password"
                         placeholder="Vaše heslo"
@@ -50,7 +50,7 @@ export default function RegisterForm() {
                 </div>
 
                 <div className="flex flex-col">
-                    <FormInput
+                    <LoginFormInput
                         id="re-password"
                         type="password"
                         placeholder="Potvrdenie hesla"

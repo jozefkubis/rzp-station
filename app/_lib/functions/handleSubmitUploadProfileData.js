@@ -1,5 +1,5 @@
 import toast from "react-hot-toast"
-import { InsertUpdateProfilesDataForm } from "../actions"
+import { InsertUpdateProfilesData } from "../actions"
 
 export default async function handleSubmitUploadProfileData(e, { setError, avatar }) {
     e.preventDefault()
@@ -11,7 +11,7 @@ export default async function handleSubmitUploadProfileData(e, { setError, avata
     }
 
     // Voláme serverovú funkciu na ukladanie dát
-    const response = await InsertUpdateProfilesDataForm(formData)
+    const response = await InsertUpdateProfilesData(formData)
 
     // Ak sa vráti chyba, nastavíme ju
     if (response?.error) {

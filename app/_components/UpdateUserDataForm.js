@@ -18,10 +18,11 @@ function UpdateUserDataForm({ user }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto">
 
             <div className="flex flex-col">
                 <FormInput
+                    label="Email"
                     id="email"
                     type="email"
                     placeholder="example@email.com"
@@ -33,6 +34,7 @@ function UpdateUserDataForm({ user }) {
 
             <div className="flex flex-col">
                 <FormInput
+                    label="Nové heslo"
                     id="newPassword"
                     type="password"
                     placeholder="Vaše nové heslo"
@@ -43,6 +45,7 @@ function UpdateUserDataForm({ user }) {
 
             <div className="flex flex-col">
                 <FormInput
+                    label="Potvrdenie hesla"
                     id="re-newPassword"
                     type="password"
                     placeholder="Potvrdenie hesla"
@@ -51,7 +54,11 @@ function UpdateUserDataForm({ user }) {
                 />
             </div>
 
-            <UpdateUserButton />
+            <div className="w-full">
+                <div className="flex flex-col items-end pt-10">
+                    <UpdateUserButton />
+                </div>
+            </div>
         </form>
     )
 }

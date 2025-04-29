@@ -108,7 +108,7 @@ export async function signup(formData) {
 }
 
 // MARK: INSERT/UPDATE PROFILES
-export async function InsertUpdateProfilesDataForm(formData) {
+export async function InsertUpdateProfilesData(formData) {
   const supabase = await createClient();
 
   // 🔐 Získame aktuálne prihláseného používateľa

@@ -29,10 +29,11 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-md space-y-6 rounded-lg p-8"
+      className="space-y-6 rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto"
     >
       <div className="flex flex-col">
         <FormInput
+          label="Meno a priezvisko"
           id="full_name"
           type="text"
           placeholder="Meno a priezvisko"
@@ -45,6 +46,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex flex-col">
         <FormInput
+          label="Uživatelské meno"
           id="username"
           type="text"
           placeholder="Uživatelské meno"
@@ -57,6 +59,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex flex-col">
         <FormInput
+          label="Adresa"
           id="address"
           type="text"
           placeholder="Adresa"
@@ -69,6 +72,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex flex-col">
         <FormInput
+          label="Dátum narodenia"
           id="dateOfBirth"
           type="date"
           placeholder="Dátum narodenia"
@@ -81,6 +85,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex flex-col">
         <FormInput
+          label="Dátum prehliadky"
           id="medCheckDate"
           type="date"
           placeholder="Dátum prehliadky"
@@ -93,6 +98,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex flex-col">
         <FormInput
+          label="Telefónne číslo"
           id="phone"
           type="tel"
           placeholder="+421 123 456 789"
@@ -106,7 +112,13 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <ImageUploader onAvatarSelect={setAvatar} />
 
-      <UpdateProfileButton />
+
+      <div className="w-full">
+        <div className="flex flex-col items-end">
+          <UpdateProfileButton />
+        </div>
+      </div>
+
     </form>
   );
 }
