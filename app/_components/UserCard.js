@@ -19,10 +19,10 @@ export default function UserCard({ profile }) {
       className="flex cursor-pointer flex-col items-center gap-10 rounded-xl border bg-gray-50 px-8 py-12 shadow-md transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95"
     >
       <div className="relative h-[160px] w-[160px] overflow-hidden rounded-full border-4 border-primary-300">
-        <img
+        <Image
           src={profile.avatar_url || blankAvatar}
           fill
-          alt={profile.full_name}
+          alt="Avatar"
           className="object-cover hover:scale-110"
         />
       </div>
