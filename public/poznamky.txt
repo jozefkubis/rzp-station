@@ -1,1 +1,7 @@
-- po dokonceni vymazat unoptimized: true z next.config.mjs
+- po dokonceni vymazat unoptimized: true z next.config.mjs!!
+
+30.4.2025
+- zlcit button a ostatne buttony do jedneho komponentu a upravit pozicie
+- optimalizovat velkos UserCard
+- upravit UX na formulare, placeholder, border bottom...
+- odobrat required z vybranych formularov
