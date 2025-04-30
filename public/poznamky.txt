@@ -1,0 +1,1 @@
+- po dokonceni vymazat unoptimized: true z next.config.mjs
