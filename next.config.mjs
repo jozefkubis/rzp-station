@@ -5,7 +5,6 @@ const nextConfig = {
     serverActions: { bodySizeLimit: "10mb" },
   },
   images: {
-    // tu zadefinuješ iba remotePatterns, DOMAINS zrušíme
     remotePatterns: [
       {
         protocol: "https",
@@ -16,8 +15,8 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "randomuser.me",
-        port: "",
-        pathname: "/api/portraits/**",
+        // port: "",
+        // pathname: "/api/portraits/**",
       },
       {
         protocol: "https",
@@ -34,4 +33,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig
