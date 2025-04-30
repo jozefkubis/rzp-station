@@ -1,14 +1,17 @@
 "use client";
 
-import { RiDeleteBinLine } from "react-icons/ri";
+// import { RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import Modal from "./Modal";
 import ConfirmDelete from "./ConfirmDelete";
+import Button from "./Button";
+import { useRouter } from "next/navigation";
 
 export default function DeleteProfileButton({ profileId }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   const handleOpenModal = () => {
     setIsOpenDeleteModal(true);
@@ -23,7 +26,8 @@ export default function DeleteProfileButton({ profileId }) {
 
     if (res.ok) {
       toast.success("Používateľ vymazaný");
-      location.reload();
+      // location.reload();
+      router.push("/profiles");
     } else {
       toast.error("Chyba pri mazaní");
     }
@@ -34,17 +38,15 @@ export default function DeleteProfileButton({ profileId }) {
 
   return (
     <>
-      <button
-        onClick={handleOpenModal}
-        className="text-red-600 hover:text-red-800"
-      >
-        <RiDeleteBinLine size={15} />
-      </button>
+      <Button variant="danger" onClick={handleOpenModal}>
+        {/* <RiDeleteBinLine size={15} /> */}
+        Vymazať užívateľa
+      </Button>
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
           <ConfirmDelete
-            resourceName="používateľa"
+            resourceName="užívateľa"
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
             disabled={isDeleting}

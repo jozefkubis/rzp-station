@@ -1,3 +1,8 @@
+"use client"
+
+import { useFormStatus } from "react-dom"
+import SpinnerMini from "./SpinnerMini"
+
 const buttonSizes = {
   small: "text-xs px-3 py-1 uppercase font-semibold",
   medium: "text-sm px-4 py-2 font-medium",
@@ -11,20 +16,23 @@ const buttonVariants = {
   danger: "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl",
 };
 
-const Button = ({
+export default function Button({
   size = "medium",
   variant = "primary",
   children,
   ...props
-}) => {
+}) {
+
+  const { pending } = useFormStatus()
+
   return (
     <button
+      disabled={pending}
       className={`rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
       {...props}
     >
-      {children}
+      {pending ? <SpinnerMini /> : children}
     </button>
   );
 };
 
-export default Button;

@@ -20,14 +20,13 @@
   }
 
   .spinner-mini {
-    width: 20px;
-    aspect-ratio: 1;
-    border-radius: 50%;
+    display: inline-block; /* aby sa správal ako inline prvok */
+    width: 1em; /* veľkosť rovnajúca sa veľkosti textu */
+    height: 1em; /* zachová pomer 1:1 */
     border: 2px solid theme("colors.primary.200");
     border-right-color: transparent;
+    border-radius: 50%;
     animation: rotate 1s infinite linear;
-    margin: 0 auto;
-    padding: 12px;
   }
 
   @keyframes rotate {

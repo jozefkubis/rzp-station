@@ -48,9 +48,9 @@ export default function ImageUploader({ onAvatarSelect, avatar }) {
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p className="text-blue-500">Pustite súbor sem...</p>
+          <p className="text-primary-400 font-semibold">Pustite súbor sem...</p>
         ) : (
-          <p className="text-primary-50">
+          <p className="text-primary-400 font-semibold">
             Pretiahnite obrázok sem alebo kliknite na výber
           </p>
         )}

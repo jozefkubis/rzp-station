@@ -1,13 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import UpdateProfileButton from "./UpdateProfileButton";
-import FormInput from "./FormInput";
 import toast from "react-hot-toast";
 import handleSubmitAdminUpdateProfileData from "../_lib/functions/handleSubmitAdminUpdateProfileData ";
-import Image from "next/image";
-import Link from "next/link";
 import Button from "./Button";
+import FormInput from "./FormInput";
 
 function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");
@@ -29,7 +27,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg p-8 flex flex-col justify-center h-screen w-1/2 mx-auto"
+      className="rounded-lg flex flex-col justify-center h-screen w-1/2 mx-auto"
     >
       <div className="">
         <FormInput
@@ -44,7 +42,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="">
         <FormInput
           label="Adresa"
           id="address"
@@ -97,29 +95,26 @@ function AdminUpdateProfilesDataForm({ profile }) {
         />
       </div>
 
-      <div className="">
-        <FormInput
-          id="id"
-          type="hidden"
-          name="id"
-          value={profile?.id || ""}
-        />
-      </div>
+      <FormInput
+        id="id"
+        type="hidden"
+        name="id"
+        value={profile?.id || ""}
+      />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col justify-center items-end gap-8">
+
+        <Button size="medium">Aktualizovať profil</Button>
+
         <div>
           <Link
             href={`/profiles/${profile.id}`}
-            className="mb-6 ml-10 font-semibold text-primary-700"
+            className="font-semibold text-primary-700 hover:underline shadow-lg"
           >
-            <Button variant="secondary" size="medium">
-              ← Späť na profil
-            </Button>
+            {/* <Button variant="secondary" size="medium"> */}
+            ← Späť na profil
+            {/* </Button> */}
           </Link>
-        </div>
-
-        <div className="w-1/2">
-          <UpdateProfileButton />
         </div>
       </div>
     </form>

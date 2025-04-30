@@ -5,6 +5,7 @@ import FormInput from "./FormInput"
 import UpdateUserButton from "./UpdateUserButton"
 import handleSubmitUpdateUserData from "../_lib/functions/handleSubmitUpdateUserData"
 import toast from "react-hot-toast"
+import Button from "./Button"
 
 function UpdateUserDataForm({ user }) {
     const [error, setError] = useState("")
@@ -18,7 +19,7 @@ function UpdateUserDataForm({ user }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto">
+        <form onSubmit={handleSubmit} className="rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto">
 
             <div className="flex flex-col">
                 <FormInput
@@ -54,10 +55,8 @@ function UpdateUserDataForm({ user }) {
                 />
             </div>
 
-            <div className="w-full">
-                <div className="flex flex-col items-end pt-10">
-                    <UpdateUserButton />
-                </div>
+            <div className="w-full flex justify-end py-10">
+                <Button variant="primary" size="large">Aktualizovať heslo</Button>
             </div>
         </form>
     )

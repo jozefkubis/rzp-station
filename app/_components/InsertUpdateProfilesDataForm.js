@@ -6,6 +6,7 @@ import UpdateProfileButton from "./UpdateProfileButton";
 import handleSubmitUploadProfileData from "../_lib/functions/handleSubmitUploadProfileData";
 import ImageUploader from "./ImageUploader";
 import toast from "react-hot-toast";
+import Button from "./Button";
 
 function InsertUpdateProfilesDataForm({ profiles }) {
   const [error, setError] = useState("");
@@ -29,9 +30,9 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto"
+      className="rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto"
     >
-      <div className="flex flex-col">
+      <div className="">
         <FormInput
           label="Meno a priezvisko"
           id="full_name"
@@ -44,7 +45,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="">
         <FormInput
           label="Uživatelské meno"
           id="username"
@@ -57,7 +58,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="">
         <FormInput
           label="Adresa"
           id="address"
@@ -70,7 +71,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         />
       </div>
 
-      <div className="flex flex-col">
+      <div className="">
         <FormInput
           label="Dátum narodenia"
           id="dateOfBirth"
@@ -110,13 +111,12 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         />
       </div>
 
-      <ImageUploader onAvatarSelect={setAvatar} />
+      <div className="flex p-5 justify-center">
+        <ImageUploader onAvatarSelect={setAvatar} />
+      </div>
 
-
-      <div className="w-full">
-        <div className="flex flex-col items-end">
-          <UpdateProfileButton />
-        </div>
+      <div className="flex justify-end p-5">
+        <Button variant="primary" size="large">Aktualizovať profil</Button>
       </div>
 
     </form>
