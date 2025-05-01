@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import FormInput from "./FormInput";
-import UpdateProfileButton from "./UpdateProfileButton";
 import handleSubmitUploadProfileData from "../_lib/functions/handleSubmitUploadProfileData";
 import ImageUploader from "./ImageUploader";
 import toast from "react-hot-toast";

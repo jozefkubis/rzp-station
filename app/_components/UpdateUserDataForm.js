@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import FormInput from "./FormInput"
-import UpdateUserButton from "./UpdateUserButton"
 import handleSubmitUpdateUserData from "../_lib/functions/handleSubmitUpdateUserData"
 import toast from "react-hot-toast"
 import Button from "./Button"

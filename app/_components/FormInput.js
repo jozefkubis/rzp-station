@@ -5,10 +5,10 @@ export default function FormInput({
   ...rest
 }) {
   return (
-    <div className="grid grid-cols-2 items-center border-t border-gray-200 p-4">
+    <div className="grid grid-cols-2 items-center border-t border-gray-200 px-4 py-3">
       <div>
         {label && (
-          <label htmlFor={id} className="text-lg font-bold text-primary-700 flex">
+          <label htmlFor={id} className="text-md font-bold text-primary-700 flex">
             {label}
           </label>
         )}

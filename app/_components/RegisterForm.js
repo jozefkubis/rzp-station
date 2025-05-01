@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration";
 import FormInput from "./FormInput";
-import RegisterButton from "./RegisterButton";
 import toast from "react-hot-toast";
 import Button from "./Button";
 

@@ -5,11 +5,11 @@ Zaverecne zmeny:
 - zlucit button a ostatne buttony do jedneho komponentu a upravit pozicie ✅
 - pridat mazanie uzivatelov ✅
 - optimalizovat velkos UserCard ❌
-- upravit UX na formulare, placeholder ❌, border bottom... ✅ 
+- upravit UX na formulare, placeholder, border bottom... ✅ 
 - odobrat required z vybranych formularov ✅
 
 1.5.2025
 - doladit minispinner
-- odstranit nadbitocne komponenty
+- odstranit nadbitocne komponenty ✅
 - upravit velkos UserCard
-- pridat zvyraznenie do stranky, ktora je otvorena
+- pridat zvyraznenie do stranky, ktora je otvorena ✅

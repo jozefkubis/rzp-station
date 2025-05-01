@@ -1,18 +1,37 @@
+'use client';
+
 import clsx from "clsx";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-export default function SideBar({ link, isActive }) {
+export default function SideBar({ navLinks }) {
+  const pathname = usePathname();
+
   return (
-    <li
-      key={link.name}
-      className={clsx(
-        "rounded-md p-3 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95 text-left pl-6",
-        { "bg-primary-50": isActive },
-      )}
-    >
-      <Link href={link.href} className="block h-full w-full">
-        {link.name}
-      </Link>
-    </li>
+    <div className="fixed left-0 top-0 h-screen w-[15rem] border-r border-primary-200 pt-[10rem] flex justify-center">
+      <div className="w-full px-3">
+        <ul className="text-md font-semibold text-primary-700 space-y-2">
+          {navLinks.map((link) => {
+            const { href, name, icon } = link;
+            const isActive = pathname === href;
+
+            return (
+              <li
+                key={href}
+                className={clsx(
+                  "rounded-md p-3 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95",
+                  { "bg-primary-50": isActive }
+                )}
+              >
+                <Link href={href} className="flex items-center justify-center gap-3">
+                  <span>{icon}</span>
+                  <span>{name}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
   );
 }

@@ -10,7 +10,7 @@ export default async function Page() {
   const profiles = await getAllProfiles();
 
   if (!profiles || profiles.length === 0) {
-    // Ak nie sú profily (error alebo prázdne)
+
     return (
       <div className="flex h-screen items-center justify-center text-xl text-gray-500">
         Žiadne profily nenájdené alebo chyba načítania.
