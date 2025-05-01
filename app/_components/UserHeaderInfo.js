@@ -30,7 +30,7 @@ export default async function UserHeaderInfo() {
 
       {/* Email Link */}
       <div>
-        <Link href="/settings">
+        <Link href="/settings/profile">
           <div className="rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
             {username || email}
           </div>

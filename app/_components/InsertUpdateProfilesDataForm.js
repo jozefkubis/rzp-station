@@ -30,7 +30,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto"
+      className="mx-auto flex h-screen w-2/3 flex-col justify-center rounded-lg p-8"
     >
       <div className="">
         <FormInput
@@ -111,14 +111,15 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         />
       </div>
 
-      <div className="flex p-5 justify-center">
+      <div className="flex justify-center p-5">
         <ImageUploader onAvatarSelect={setAvatar} />
       </div>
 
       <div className="flex justify-end p-5">
-        <Button variant="primary" size="large">Aktualizovať profil</Button>
+        <Button variant="primary" size="large">
+          Aktualizovať profil
+        </Button>
       </div>
-
     </form>
   );
 }
