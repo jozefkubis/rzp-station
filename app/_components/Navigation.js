@@ -1,28 +1,21 @@
 'use client';
 
+import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  IoChatboxOutline,
-  IoDocumentsOutline,
-  IoCalendarOutline,
-} from 'react-icons/io5';
-import { HiOutlinePhoto } from 'react-icons/hi2';
-import { SlPeople } from 'react-icons/sl';
-import { BsCardList } from 'react-icons/bs';
-import clsx from 'clsx';
+import { HiOutlineCalendarDays, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
 import LogOutButton from './LogOutButton';
-import SettingsButton from './SettingsButton';
+
 
 export default function Navigation() {
   const pathname = usePathname();
 
   const navLinks = [
-    { name: 'Kalendár', href: '/calendar', icon: <IoCalendarOutline /> },
-    { name: 'RZP-Rajec', href: '/profiles', icon: <BsCardList /> },
-    { name: 'Dokumenty', href: '/documents', icon: <IoDocumentsOutline /> },
-    { name: 'Fotky', href: '/photos', icon: <HiOutlinePhoto /> },
-    { name: 'Registrácia', href: '/register', icon: <SlPeople /> },
+    { name: 'Kalendár', href: '/calendar', icon: <HiOutlineCalendarDays size={20} /> },
+    { name: 'Posádka', href: '/profiles', icon: <HiOutlineUsers size={20} /> },
+    { name: 'Dokumenty', href: '/documents', icon: <HiOutlineFolder size={20} /> },
+    { name: 'Fotky', href: '/photos', icon: <HiOutlinePhoto size={20} /> },
+    { name: 'Registrácia', href: '/register', icon: <HiOutlineUserPlus size={20} /> },
   ];
 
   return (
@@ -53,7 +46,7 @@ export default function Navigation() {
           );
         })}
 
-        <SettingsButton />
+        {/* <SettingsButton /> */}
         <LogOutButton />
       </ul>
     </nav>

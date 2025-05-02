@@ -1,13 +1,6 @@
 import Link from "next/link";
-import {
-  IoChatboxOutline,
-  IoDocumentsOutline,
-  IoCalendarOutline,
-  IoSettingsOutline,
-} from "react-icons/io5";
-import { HiOutlinePhoto } from "react-icons/hi2";
-import { SlPeople } from "react-icons/sl";
-import { BsCardList } from "react-icons/bs";
+
+import { HiOutlineCalendarDays, HiOutlineCog, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
 
 
 export const revalidate = 0;
@@ -17,12 +10,12 @@ export default function Page() {
     {
       name: "Kalendár",
       href: "/calendar",
-      icon: <IoCalendarOutline className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineCalendarDays className="h-20 w-20 text-primary-700" />,
     },
     {
-      name: "RZP-Rajec",
+      name: "Posádka",
       href: "/profiles",
-      icon: <BsCardList className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineUsers className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Fotky",
@@ -32,17 +25,17 @@ export default function Page() {
     {
       name: "Dokumenty",
       href: "/documents",
-      icon: <IoDocumentsOutline className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineFolder className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Nastavenia",
       href: "/settings/profile",
-      icon: <IoSettingsOutline className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineCog className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Registrácia",
       href: "/register",
-      icon: <SlPeople className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineUserPlus className="h-20 w-20 text-primary-700" />,
     },
   ];
 

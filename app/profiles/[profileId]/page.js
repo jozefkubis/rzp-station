@@ -4,6 +4,8 @@ import Link from "next/link";
 import Button from "@/app/_components/Button";
 import { formatDate } from "@/app/_lib/helpers/functions";
 import DeleteProfileButton from "@/app/_components/DeleteProfileButton";
+import { HiOutlineAtSymbol, HiOutlinePhone } from "react-icons/hi";
+
 
 export const dynamic = "force-dynamic";
 
@@ -37,9 +39,15 @@ export default async function Page({ params }) {
 
           <div className="flex flex-col items-center justify-center gap-2 text-primary-700">
             <h1 className="text-2xl font-semibold">{profile.full_name}</h1>
-            <p className="">{profile.email}</p>
-            <p className="">
-              {profile.phone ? `Tel.: ${profile.phone}` : "Telefón: ❔"}
+            <p className="text-md flex items-center gap-2"><HiOutlineAtSymbol className="text-primary-900" />{profile.email}</p>
+            <p className="text-md flex items-center gap-2">
+              {profile.phone ? (
+                <>
+                  <HiOutlinePhone className="text-primary-900" /> {profile.phone}
+                </>
+              ) : (
+                "Telefón: ❔"
+              )}
             </p>
           </div>
         </div>
