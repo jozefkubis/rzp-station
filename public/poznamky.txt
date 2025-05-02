@@ -13,3 +13,6 @@ Zaverecne zmeny:
 - odstranit nadbitocne komponenty ✅
 - upravit velkost UserCard ✅
 - pridat zvyraznenie do stranky, ktora je otvorena ✅
+
+2.5.2025
+- Optimalizovat Page:[profileId], je to neprehladne..
