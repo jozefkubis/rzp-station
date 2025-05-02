@@ -16,7 +16,7 @@ export default function UserCard({ profile }) {
   return (
     <li
       onClick={handleClick}
-      className="flex cursor-pointer flex-col items-center gap-10 rounded-xl border bg-gray-50 px-8 py-12 shadow-md transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95"
+      className="flex cursor-pointer flex-col items-center gap-10 rounded-xl border bg-gray-50 px-8 py-12 shadow-md transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95 h-full"
     >
       <div className="relative h-[160px] w-[160px] overflow-hidden rounded-full border-4 border-primary-300">
         <Image
@@ -27,7 +27,7 @@ export default function UserCard({ profile }) {
         />
       </div>
 
-      <div className="space-y-2 text-center">
+      <div className="flex flex-col items-center text-center gap-2">
         <h1 className="text-xl font-semibold text-primary-700">
           {profile.full_name}
         </h1>

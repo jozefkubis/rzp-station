@@ -18,7 +18,7 @@ export default async function UserHeaderInfo() {
     <div className="flex items-center gap-3">
       {/* Avatar Link */}
       <Link href="/">
-        <div className="relative h-[60px] w-[60px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
+        <div className="relative h-[55px] w-[55px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
           <Image
             src={avatarUrl || blankAvatar}
             fill

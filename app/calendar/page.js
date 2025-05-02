@@ -20,7 +20,7 @@ export default async function page() {
       <Header />
       <div className="h-screen">
         <SideBar navLinks={navLinks} />
-        <div className="flex h-full items-center justify-center pl-[15rem]">
+        <div className="flex h-full items-center justify-center pl-[13rem]">
           <h1 className="text-8xl font-bold text-primary-700">Kalendár</h1>
         </div>
       </div>

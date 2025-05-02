@@ -24,7 +24,7 @@ export default async function page() {
             <Header />
             <div className="h-screen">
                 <SideBar navLinks={navLinks} />
-                <div className="pl-[15rem] flex justify-center">
+                <div className="pl-[13rem] flex justify-center">
                     <UpdateUserDataForm user={user} />
                 </div>
             </div>

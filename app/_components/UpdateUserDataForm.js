@@ -18,7 +18,7 @@ function UpdateUserDataForm({ user }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="rounded-lg p-8 flex flex-col justify-center h-screen w-2/3 mx-auto">
+        <form onSubmit={handleSubmit} className="rounded-lg p-8 flex flex-col justify-center h-screen w-1/2 mx-auto">
 
             <div className="flex flex-col">
                 <FormInput

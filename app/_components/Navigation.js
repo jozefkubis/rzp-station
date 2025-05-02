@@ -27,7 +27,7 @@ export default function Navigation() {
 
   return (
     <nav>
-      <ul className="flex px-10 py-2 gap-1">
+      <ul className="flex px-10 py-1 gap-1">
         {navLinks.map(({ name, href, icon }) => {
           const isActive = pathname === href;
 
@@ -43,7 +43,7 @@ export default function Navigation() {
                 href={href}
                 className={clsx(
                   'flex items-center gap-2 font-semibold text-primary-700',
-                  isActive && 'text-primary-900'
+                  isActive && 'text-primary-700'
                 )}
               >
                 {icon}

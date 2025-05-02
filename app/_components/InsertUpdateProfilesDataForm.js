@@ -29,7 +29,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto flex h-screen w-2/3 flex-col justify-center rounded-lg p-8"
+      className="mx-auto flex h-screen w-1/2 flex-col justify-center rounded-lg p-8"
     >
       <div className="">
         <FormInput
