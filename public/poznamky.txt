@@ -15,4 +15,7 @@ Zaverecne zmeny:
 - pridat zvyraznenie do stranky, ktora je otvorena ✅
 
 2.5.2025
-- Optimalizovat Page:[profileId], je to neprehladne..
+- Optimalizovat Page:[profileId], je to neprehladne.. ✅
+
+5.5.2025
+- pridat suspance a optimalizovat loading

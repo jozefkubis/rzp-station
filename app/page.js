@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { HiOutlineCalendarDays, HiOutlineCog, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineCalendarDays, HiOutlineUser, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
 
 
 export const revalidate = 0;
@@ -17,20 +17,20 @@ export default function Page() {
       href: "/profiles",
       icon: <HiOutlineUsers className="h-20 w-20 text-primary-700" />,
     },
+    // {
+    //   name: "Fotky",
+    //   href: "/photos",
+    //   icon: <HiOutlinePhoto className="h-20 w-20 text-primary-700" />,
+    // },
+    // {
+    //   name: "Dokumenty",
+    //   href: "/documents",
+    //   icon: <HiOutlineFolder className="h-20 w-20 text-primary-700" />,
+    // },
     {
-      name: "Fotky",
-      href: "/photos",
-      icon: <HiOutlinePhoto className="h-20 w-20 text-primary-700" />,
-    },
-    {
-      name: "Dokumenty",
-      href: "/documents",
-      icon: <HiOutlineFolder className="h-20 w-20 text-primary-700" />,
-    },
-    {
-      name: "Nastavenia",
+      name: "Profil",
       href: "/settings/profile",
-      icon: <HiOutlineCog className="h-20 w-20 text-primary-700" />,
+      icon: <HiOutlineUser className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Registrácia",

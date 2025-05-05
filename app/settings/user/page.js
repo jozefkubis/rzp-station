@@ -2,8 +2,7 @@ import Header from "@/app/_components/Header";
 import SideBar from "@/app/_components/SideBar";
 import UpdateUserDataForm from "@/app/_components/UpdateUserDataForm";
 import { getUser } from "@/app/_lib/data-service";
-import { IoPersonOutline } from "react-icons/io5";
-import { RiLockPasswordLine } from "react-icons/ri";
+import { HiOutlineInformationCircle, HiOutlineLockClosed } from "react-icons/hi";
 
 export const metadata = {
     title: "Nastavenia",
@@ -13,8 +12,8 @@ export default async function page() {
 
 
     const navLinks = [
-        { name: "Profil", href: "/settings/profile", icon: <IoPersonOutline /> },
-        { name: "Heslo", href: "/settings/user", icon: <RiLockPasswordLine /> },
+        { name: "Informácie", href: "/settings/profile", icon: <HiOutlineInformationCircle /> },
+        { name: "Heslo", href: "/settings/user", icon: <HiOutlineLockClosed /> },
     ];
 
     const user = await getUser();

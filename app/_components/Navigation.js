@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HiOutlineCalendarDays, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineCalendarDays, HiOutlineHome, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
 import LogOutButton from './LogOutButton';
 
 
@@ -11,10 +11,11 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const navLinks = [
+    { name: 'Domov', href: '/', icon: <HiOutlineHome size={20} /> },
     { name: 'Kalendár', href: '/calendar', icon: <HiOutlineCalendarDays size={20} /> },
     { name: 'Posádka', href: '/profiles', icon: <HiOutlineUsers size={20} /> },
-    { name: 'Dokumenty', href: '/documents', icon: <HiOutlineFolder size={20} /> },
-    { name: 'Fotky', href: '/photos', icon: <HiOutlinePhoto size={20} /> },
+    // { name: 'Dokumenty', href: '/documents', icon: <HiOutlineFolder size={20} /> },
+    // { name: 'Fotky', href: '/photos', icon: <HiOutlinePhoto size={20} /> },
     { name: 'Registrácia', href: '/register', icon: <HiOutlineUserPlus size={20} /> },
   ];
 

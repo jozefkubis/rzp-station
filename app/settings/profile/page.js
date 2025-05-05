@@ -2,7 +2,7 @@ import Header from "@/app/_components/Header";
 import InsertUpdateProfilesDataForm from "@/app/_components/InsertUpdateProfilesDataForm";
 import SideBar from "@/app/_components/SideBar";
 import { getProfilesData, getUser } from "@/app/_lib/data-service";
-import { HiOutlineLockClosed, HiOutlineUser } from "react-icons/hi";
+import { HiOutlineInformationCircle, HiOutlineLockClosed } from "react-icons/hi";
 
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 export default async function page() {
 
     const navLinks = [
-        { name: "Profil", href: "/settings/profile", icon: <HiOutlineUser /> },
+        { name: "Informácie", href: "/settings/profile", icon: <HiOutlineInformationCircle /> },
         { name: "Heslo", href: "/settings/user", icon: <HiOutlineLockClosed /> },
     ];
 

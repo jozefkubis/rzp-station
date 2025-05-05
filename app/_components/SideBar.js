@@ -23,7 +23,7 @@ export default function SideBar({ navLinks }) {
                   { "bg-primary-50": isActive }
                 )}
               >
-                <Link href={href} className="flex items-center justify-center gap-3">
+                <Link href={href} className="flex items-center justify-start gap-3">
                   <span>{icon}</span>
                   <span>{name}</span>
                 </Link>
