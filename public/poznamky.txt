@@ -18,4 +18,4 @@ Zaverecne zmeny:
 - Optimalizovat Page:[profileId], je to neprehladne.. ✅
 
 5.5.2025
-- pridat suspance a optimalizovat loading
+- pridat suspance a optimalizovat loading ❌
