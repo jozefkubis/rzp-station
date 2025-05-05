@@ -109,11 +109,9 @@ function AdminUpdateProfilesDataForm({ profile }) {
         <div>
           <Link
             href={`/profiles/${profile.id}`}
-            className="font-semibold text-primary-700 hover:underline shadow-lg"
+            className="font-semibold text-primary-700 hover:underline"
           >
-            {/* <Button variant="secondary" size="medium"> */}
             ← Späť na profil
-            {/* </Button> */}
           </Link>
         </div>
       </div>
