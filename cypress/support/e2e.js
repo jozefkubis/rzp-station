@@ -15,3 +15,11 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+
+Cypress.on('uncaught:exception', (err) => {
+    // keď sa objaví NEXT_REDIRECT, nech to Cypress ignoruje
+    if (err.message.includes('NEXT_REDIRECT')) {
+        return false
+    }
+    // ostatné chyby nech pokračujú
+})
