@@ -23,3 +23,21 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+
+// prihlasovanie „cez UI“
+// Cypress.Commands.add("loginByUI", () => {
+//     cy.visit("/login");
+//     cy.get('input[name="email"]').type("kubis.jozef@outlook.com");
+//     cy.get('input[name="password"]').type("111111");
+//     cy.get('button[type="submit"]').click();
+//     cy.location("pathname").should("eq", "/profiles");
+// });
+
+Cypress.Commands.add("loginByUI", () => {
+    cy.visit("/login");
+    cy.get('input[name="email"]').type("kubis.jozef@outlook.com");
+    cy.get('input[name="password"]').type("111111");
+    cy.get('button[type="submit"]').click();
+    cy.location("pathname").should("eq", "/");
+});

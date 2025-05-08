@@ -15,6 +15,7 @@ export default function UserCard({ profile }) {
 
   return (
     <li
+      data-cy="user-card"
       onClick={handleClick}
       className="flex cursor-pointer flex-col items-center gap-10 rounded-xl border bg-gray-50 px-8 py-12 shadow-md transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95 h-full"
     >
@@ -24,15 +25,16 @@ export default function UserCard({ profile }) {
           fill
           alt="Avatar"
           className="object-cover hover:scale-110"
+          data-cy="user-card-avatar"
         />
       </div>
 
       <div className="flex flex-col items-center text-center gap-2">
-        <h1 className="text-xl font-semibold text-primary-700">
+        <h1 data-cy="user-card-name" className="text-xl font-semibold text-primary-700">
           {profile.full_name}
         </h1>
-        <p className="text-sm text-gray-500">{profile.email}</p>
-        <p className="text-sm text-gray-500">
+        <p data-cy="user-card-email" className="text-sm text-gray-500">{profile.email}</p>
+        <p data-cy="user-card-phone" className="text-sm text-gray-500">
           {profile.phone ? `Tel.: ${profile.phone}` : "❔"}
         </p>
       </div>
