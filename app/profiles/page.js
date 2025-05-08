@@ -19,7 +19,7 @@ export default async function Page() {
   }
 
   return (
-    <div>
+    <div data-cy="profiles-page">
       <Header />
       <UserProfiles profiles={profiles} />
     </div>

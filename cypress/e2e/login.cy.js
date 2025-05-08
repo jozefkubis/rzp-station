@@ -9,6 +9,5 @@ describe('login test', () => {
     cy.get(`button[type="submit"]`).click()
     cy.get(`button[type="submit"]`).should('be.disabled')
     cy.location("pathname").should("eq", "/");
-
   })
 })

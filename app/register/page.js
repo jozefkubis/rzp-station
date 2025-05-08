@@ -7,7 +7,7 @@ export const metadata = {
 
 export default async function Page() {
   return (
-    <div>
+    <div data-cy="register-page">
       <Header />
       <RegisterForm />
     </div>

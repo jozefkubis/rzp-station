@@ -4,7 +4,7 @@ import UserCard from "./UserCard";
 
 export default function UserProfiles({ profiles }) {
   return (
-    <main className="w-full px-20 pb-20">
+    <main data-cy="profiles" className="w-full px-20 pb-20">
       <h1 className="p-10 text-center text-2xl font-bold text-primary-700">
         Zoznam stanice RZP
       </h1>

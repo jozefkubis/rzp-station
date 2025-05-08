@@ -22,6 +22,7 @@ export default function RegisterForm() {
   return (
     // <div className="flex h-screen items-center justify-center pb-20">
     <form
+      data-cy="register-form"
       onSubmit={handleSubmit}
       className="mx-auto flex h-screen w-1/2 flex-col justify-center rounded-lg p-8"
     >

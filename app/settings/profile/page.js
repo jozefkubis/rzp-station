@@ -20,7 +20,7 @@ export default async function page() {
     const profiles = await getProfilesData(user?.email);
 
     return (
-        <div>
+        <div data-cy="settings-profile-page">
             <Header />
             <div className="max-h-screen">
                 <SideBar navLinks={navLinks} />

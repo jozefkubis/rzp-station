@@ -40,7 +40,7 @@ export default function Page() {
   ];
 
   return (
-    <nav className="flex h-screen bg-gray-50 px-40 py-20">
+    <nav data-cy="home-nav" className="flex h-screen bg-gray-50 px-40 py-20">
       <ul className="grid h-full w-full grid-cols-3 items-center gap-4 text-center">
         {navLinks.map((link) => (
           <li key={link.name}>
