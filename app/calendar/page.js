@@ -1,3 +1,4 @@
+import Calendar from "../_components/Calendar";
 import Header from "../_components/Header";
 import SideBar from "../_components/SideBar";
 
@@ -18,12 +19,12 @@ export default async function page() {
   return (
     <div>
       <Header />
-      <div className="h-screen">
+      <main className="h-screen">
         <SideBar navLinks={navLinks} />
-        <div className="flex h-full items-center justify-center pl-[13rem]">
-          <h1 className="text-8xl font-bold text-primary-700">Kalendár</h1>
+        <div className="w-full py-10 px-10 pl-[15rem]">
+          <Calendar />
         </div>
-      </div>
+      </main>
     </div>
   );
 }
