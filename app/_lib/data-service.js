@@ -104,3 +104,32 @@ export async function getAllProfiles() {
 
   return profiles;
 }
+
+// MARK: GET ALL TASKS
+export async function getTasks() {
+  const supabase = await createClient();
+
+  const { data: tasks, error } = await supabase.from("tasks").select("*");
+
+  if (error) {
+    console.error("Chyba pri načítaní všetkých zadaní:", error);
+    return [];
+  }
+
+  return tasks;
+}
+
+// MARK: CREATE TASK
+export async function createTask(task) {
+  const supabase = await createClient();
+
+  const { data: newTask, error } = await supabase.from("tasks").insert(task);
+
+  if (error) {
+    console.error("Chyba pri vytvorení novej úlohy:", error);
+    return null;
+  }
+
+  return newTask;
+}
+

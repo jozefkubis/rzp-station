@@ -1,5 +1,6 @@
 import "@/app/_styles/globals.css";
 import { Toaster } from "react-hot-toast";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 // import Header from "./_components/Header"
 // import { Josefin_Sans } from "next/font/google"
 

@@ -1,45 +1,54 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Calendar as BigCalendar, Views } from "react-big-calendar";
 import { localizer } from "../_lib/calendarLocalizer";
+import Spinner from "./Spinner";
+import MyEvent from "./MyEvent";
 
 export default function Calendar() {
-    // const [events, setEvents] = useState([]);
-    // const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     async function fetchEvents() {
-    //         setLoading(true);
-    //         const res = await fetch("/api/tasks");    // prispôsob URL tvojmu endpointu
-    //         const data = await res.json();            // očakávaj pole { id, title, date, startTime?, endTime? }
-    //         const evts = data.map((t) => ({
-    //             id: t.id,
-    //             title: t.title,
-    //             start: new Date(t.startTime || t.date),
-    //             end: new Date(t.endTime || t.date),
-    //             allDay: !t.startTime,
-    //         }));
-    //         setEvents(evts);
-    //         setLoading(false);
-    //     }
-    //     fetchEvents();
-    // }, []);
+    useEffect(() => {
+        fetch("/api/tasks")
+            .then(r => r.json())
+            .then(data => {
+                setEvents(data.map(t => ({
+                    id: t.id,
+                    title: t.title,
+                    start: t.startTime
+                        ? new Date(`${t.date}T${t.startTime}`)
+                        : new Date(t.date),
+                    end: t.endTime
+                        ? new Date(`${t.date}T${t.endTime}`)
+                        : new Date(t.date),
 
-    // if (loading) {
-    //     return <p className="text-center py-10">Nahrávam kalendár…</p>;
-    // }
+                    allDay: !t.startTime && !t.endTime,
+                    note: t.note
+                })));
+            })
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
-        <div className="h-[80vh]">
+        <div className="relative h-[80vh]">
+            {loading && (
+                <div className="absolute inset-0 z-10 grid place-items-center bg-white/70">
+                    <Spinner />
+                </div>
+            )}
             <BigCalendar
                 localizer={localizer}
-                // events={events}
+                events={events}
                 defaultView={Views.MONTH}
                 views={[Views.MONTH, Views.WEEK, Views.DAY]}
                 startAccessor="start"
                 endAccessor="end"
+                tooltipAccessor="note"
                 style={{ height: "100%" }}
+                components={{
+                    event: MyEvent,
+                }}
             />
         </div>
     );
