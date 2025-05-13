@@ -304,3 +304,29 @@ export async function AdminUpdateProfilesData(formData) {
 
   revalidatePath("/", "layout");
 }
+
+// MARK: CREATE NEW TASK
+export async function createNewTask(formData) {
+  const supabase = await createClient();
+
+  const newTask = {
+    title: formData.get("title"),
+    date: formData.get("date"),
+    startTime: formData.get("startTime"),
+    endTime: formData.get("endTime"),
+    note: formData.get("note"),
+  };
+
+  console.log("New task:", newTask);
+
+  const { error } = await supabase.from("tasks").insert(newTask);
+
+  if (error) {
+    console.error("Chyba pri vytvorení novej úlohy:", error);
+    return null;
+  }
+
+  revalidatePath("/", "calendar");
+
+  return { success: true };
+}

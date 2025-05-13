@@ -21,7 +21,7 @@ export async function POST(request) {
             date: new Date(date),
             startTime: startTime ? new Date(startTime) : null,
             endTime: endTime ? new Date(endTime) : null,
-            description,
+            note,
         });
         return NextResponse.json(newTask, { status: 201 });
     } catch (error) {
