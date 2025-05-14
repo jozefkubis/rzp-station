@@ -5,10 +5,12 @@ import FormInput from "./FormInput";
 import Button from "./Button";
 import toast from "react-hot-toast";
 import handleSubmitNewTask from "../_lib/functions/handleSubmitNewTask";
+import { setDate } from "date-fns";
 
 
 export default function NewTaskForm({ onClose, refresh }) {
-    const [date, setDate] = useState("");
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     const [note, setNote] = useState("");
@@ -41,12 +43,29 @@ export default function NewTaskForm({ onClose, refresh }) {
 
             <div className="flex flex-col">
                 <FormInput
-                    label="Dátum"
-                    id="date"
+                    label="Dátum od"
+                    id="date_from"
                     type="date"
-                    name="date"
-                    onChange={(e) => setDate(e.target.value)}
-                    value={date}
+                    name="dateFrom"
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    value={dateFrom}
+                    min={
+                        new Date(new Date().setDate(new Date().getDate()))
+                            .toISOString()
+                            .split("T")[0]
+                    }
+                    required
+                />
+            </div>
+
+            <div className="flex flex-col">
+                <FormInput
+                    label="Dátum do"
+                    id="date_to"
+                    type="date"
+                    name="dateTo"
+                    onChange={(e) => setDateTo(e.target.value)}
+                    value={dateTo}
                     min={
                         new Date(new Date().setDate(new Date().getDate()))
                             .toISOString()

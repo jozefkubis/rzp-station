@@ -24,11 +24,11 @@ export default function Calendar() {
             id: task.id,
             title: task.title,
             start: task.startTime
-                ? new Date(`${task.date}T${task.startTime}`)
-                : new Date(task.date),
+                ? new Date(`${task.dateFrom}T${task.startTime}`)
+                : new Date(task.dateFrom),
             end: task.endTime
-                ? new Date(`${task.date}T${task.endTime}`)
-                : new Date(task.date),
+                ? new Date(`${task.dateTo}T${task.endTime}`)
+                : new Date(task.dateTo),
 
             allDay: !task.startTime && !task.endTime,
             note: task.note
@@ -47,7 +47,8 @@ export default function Calendar() {
         day: 'Deň',
         agenda: 'Prehľad',
         allDay: 'Celý deň',
-        date: 'Dátum',
+        dateFrom: 'Dátum od',
+        dateTo: 'Dátum do',
         time: 'Čas',
         event: 'Udalosť',
 

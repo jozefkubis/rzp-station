@@ -44,10 +44,57 @@
   margin: 0 !important;
 }
 
+.rbc-btn-group {
+  background-color: theme("colors.gray.50") !important;
+  border: 1px-gray-100 !important;
+}
+
+button.rbc-active {
+  background-color: theme("colors.primary.50") !important;
+  box-shadow: none !important;
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}
+
+.rbc-btn-group button:hover {
+  background-color: theme("colors.primary.50") !important;
+  box-shadow: none !important;
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}
+
+.rbc-btn-group button:active {
+  scale: 0.95 !important;
+}
+
+.rbc-header {
+  background-color: theme("colors.gray.50") !important;
+}
+
+div.rbc-day-bg.rbc-off-range-bg {
+  background-color: theme("colors.primary.50") !important;
+}
+
 /* .rbc-event {
   background-color: red !important;
 } */
 
-/* .rbc-header {
-  background-color: theme("colors.primary.300") !important;
-} */
+th.rbc-header {
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}
+
+.rbc-agenda-time-cell {
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}
+
+.rbc-agenda-table {
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}
+
+.rbc-agenda-event-cell {
+  border-width: 1px !important;
+  border-color: theme("colors.primary.200") !important;
+}

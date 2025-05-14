@@ -311,7 +311,8 @@ export async function createNewTask(formData) {
 
   const newTask = {
     title: formData.get("title"),
-    date: formData.get("date"),
+    dateFrom: formData.get("dateFrom"),
+    dateTo: formData.get("dateTo"),
     startTime: formData.get("startTime"),
     endTime: formData.get("endTime"),
     note: formData.get("note"),
