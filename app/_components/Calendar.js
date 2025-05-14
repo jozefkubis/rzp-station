@@ -8,6 +8,7 @@ import MyEvent from "./MyEvent";
 import Button from "./Button";
 import NewTaskForm from "./NewTaskForm";
 import Modal from "./Modal";
+import moment from 'moment';
 
 export default function Calendar() {
     const [events, setEvents] = useState([]);
@@ -46,6 +47,10 @@ export default function Calendar() {
         day: 'Deň',
         agenda: 'Prehľad',
         allDay: 'Celý deň',
+        date: 'Dátum',
+        time: 'Čas',
+        event: 'Udalosť',
+
         showMore: (total) => `+ ďalších ${total}`,
     };
 
@@ -91,6 +96,11 @@ export default function Calendar() {
                     components={{
                         event: MyEvent,
                     }}
+                    min={moment().startOf('day').hour(6).toDate()}
+                    max={moment().startOf('day').hour(23).toDate()}
+                    scrollToTime={moment().startOf('day').hour(6).toDate()}
+                    step={30}
+                    timeslots={2}
                 />
             </div>
 

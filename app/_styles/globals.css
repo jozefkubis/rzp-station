@@ -43,3 +43,11 @@
   --rdp-background-color: theme("colors.accent.600") !important;
   margin: 0 !important;
 }
+
+/* .rbc-event {
+  background-color: red !important;
+} */
+
+/* .rbc-header {
+  background-color: theme("colors.primary.300") !important;
+} */
