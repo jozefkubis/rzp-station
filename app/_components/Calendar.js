@@ -18,19 +18,19 @@ export default function Calendar() {
 
     const fetchEvents = useCallback(async () => {
         setLoading(true);
-        const data = await fetch("/api/tasks").then(r => r.json());
-        setEvents(data.map(t => ({
-            id: t.id,
-            title: t.title,
-            start: t.startTime
-                ? new Date(`${t.date}T${t.startTime}`)
-                : new Date(t.date),
-            end: t.endTime
-                ? new Date(`${t.date}T${t.endTime}`)
-                : new Date(t.date),
+        const data = await fetch("/api/tasks").then(res => res.json());
+        setEvents(data.map(task => ({
+            id: task.id,
+            title: task.title,
+            start: task.startTime
+                ? new Date(`${task.date}T${task.startTime}`)
+                : new Date(task.date),
+            end: task.endTime
+                ? new Date(`${task.date}T${task.endTime}`)
+                : new Date(task.date),
 
-            allDay: !t.startTime && !t.endTime,
-            note: t.note
+            allDay: !task.startTime && !task.endTime,
+            note: task.note
         })));
         setLoading(false);
     }, []);
@@ -83,7 +83,7 @@ export default function Calendar() {
                     }}
                     events={events}
                     defaultView={Views.MONTH}
-                    views={[Views.MONTH, Views.WEEK, Views.DAY]}
+                    views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     startAccessor="start"
                     endAccessor="end"
                     tooltipAccessor="note"

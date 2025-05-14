@@ -15,7 +15,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const body = await request.json();
-        const { title, date, startTime, endTime, description } = body;
+        const { title, date, startTime, endTime, note } = body;
         const newTask = await createTask({
             title,
             date: new Date(date),
