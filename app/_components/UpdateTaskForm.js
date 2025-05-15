@@ -4,29 +4,38 @@ import { useEffect, useState } from "react";
 import FormInput from "./FormInput";
 import Button from "./Button";
 import toast from "react-hot-toast";
-import handleSubmitNewTask from "../_lib/functions/handleSubmitNewTask";
+import handleSubmitUpdateTaskForm from "../_lib/functions/handleSubmitUpdateTaskForm";
 
 
-export default function NewTaskForm({ onClose, refresh }) {
-    const [dateFrom, setDateFrom] = useState("");
-    const [dateTo, setDateTo] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [note, setNote] = useState("");
-    const [title, setTitle] = useState("");
+export default function NewTaskForm({ onClose, refresh, task }) {
+    const toDateStr = d => d.toISOString().slice(0, 10);   // '2025-05-20'
+    const toTimeStr = d => d.toISOString().slice(11, 16);  // '09:15'
+
+    const [dateFrom, setDateFrom] = useState(toDateStr(task.start));
+    const [dateTo, setDateTo] = useState(toDateStr(task.end));
+    const [startTime, setStartTime] = useState(toTimeStr(task.start));
+    const [endTime, setEndTime] = useState(toTimeStr(task.end));
+    const [note, setNote] = useState(task.note);
+    const [title, setTitle] = useState(task.title);
     const [error, setError] = useState("");
-
 
     useEffect(() => {
         if (error) toast.error(error);
     }, [error]);
 
     async function handleSubmit(e) {
-        handleSubmitNewTask(e, { setError, onClose, refresh });
+        handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
     }
 
     return (
         <form data-cy="new-task-form" onSubmit={handleSubmit} className="">
+
+            <FormInput
+                id="id"
+                type="hidden"
+                name="id"
+                value={task.id}
+            />
 
             <div className="flex flex-col">
                 <FormInput
@@ -115,7 +124,7 @@ export default function NewTaskForm({ onClose, refresh }) {
 
             <div className="flex justify-end p-5">
                 <Button variant="primary" size="large">
-                    Pridať
+                    Aktualizovať
                 </Button>
             </div>
 

@@ -331,3 +331,32 @@ export async function createNewTask(formData) {
 
   return { success: true };
 }
+
+// MARK: UPDATE TASK
+export async function updateTask(formData) {
+  const supabase = await createClient();
+
+  const taskId = formData.get("id");
+  const updatedTask = {
+    title: formData.get("title"),
+    dateFrom: formData.get("dateFrom"),
+    dateTo: formData.get("dateTo"),
+    startTime: formData.get("startTime"),
+    endTime: formData.get("endTime"),
+    note: formData.get("note"),
+  };
+
+  const { error } = await supabase
+    .from("tasks")
+    .update(updatedTask)
+    .eq("id", taskId);
+
+  if (error) {
+    console.error("Chyba pri aktualizácii úlohy:", error);
+    return null;
+  }
+
+  revalidatePath("/", "calendar");
+
+  return { success: true };
+}

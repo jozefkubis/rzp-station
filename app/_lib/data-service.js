@@ -119,6 +119,24 @@ export async function getTasks() {
   return tasks;
 }
 
+// MARK: GET TASK BY ID
+export async function getTask(id) {
+  const supabase = await createClient();
+
+  const { data: task, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Chyba pri načítaní úlohy:", error);
+    return null;
+  }
+
+  return task;
+}
+
 // MARK: CREATE TASK
 export async function createTask(task) {
   const supabase = await createClient();
@@ -131,5 +149,24 @@ export async function createTask(task) {
   }
 
   return newTask;
+}
+
+// MARK: UPDATE TASK
+export async function updateTask(task) {
+  const supabase = await createClient();
+
+  const { data: updatedTask, error } = await supabase
+    .from("tasks")
+    .update(task)
+    .eq("id", task.id)
+    .select("*")
+    .single();
+
+  if (error) {
+    console.error("Chyba pri aktualizácii úlohy:", error);
+    return null;
+  }
+
+  return updatedTask;
 }
 

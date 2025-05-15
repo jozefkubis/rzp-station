@@ -7,6 +7,7 @@ import Spinner from "./Spinner";
 import MyEvent from "./MyEvent";
 import Button from "./Button";
 import NewTaskForm from "./NewTaskForm";
+import UpdateTaskForm from "./UpdateTaskForm";
 import Modal from "./Modal";
 import moment from 'moment';
 
@@ -16,6 +17,7 @@ export default function Calendar() {
     const [view, setView] = useState(Views.MONTH);
     const [date, setDate] = useState(new Date());
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null)
 
     const fetchEvents = useCallback(async () => {
         setLoading(true);
@@ -36,6 +38,11 @@ export default function Calendar() {
         setLoading(false);
     }, []);
     useEffect(() => { fetchEvents() }, [fetchEvents]);
+
+    const handleSelectEvent = (event) => {
+        setSelectedEvent(event);
+        setIsOpenModal(true);
+    };
 
 
     const messages = {
@@ -74,6 +81,7 @@ export default function Calendar() {
                     date={date}
                     onView={setView}
                     onNavigate={setDate}
+                    onSelectEvent={handleSelectEvent}
                     localizer={localizer}
                     messages={messages}
                     formats={{
@@ -110,6 +118,17 @@ export default function Calendar() {
                     <NewTaskForm onClose={() => setIsOpenModal(false)} refresh={fetchEvents} />
                 </Modal>
             )}
+
+            {isOpenModal && (
+                <Modal onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}>
+                    <UpdateTaskForm
+                        task={selectedEvent}        // ⇐ DAJ PROPS
+                        onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
+                        refresh={fetchEvents}
+                    />
+                </Modal>
+            )}
+
 
 
         </div>
