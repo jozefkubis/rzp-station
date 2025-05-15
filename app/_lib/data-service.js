@@ -170,3 +170,17 @@ export async function updateTask(task) {
   return updatedTask;
 }
 
+// MARK: DELETE TASK
+// export async function deleteTask(id) {
+//   const supabase = await createClient();
+
+//   const { error } = await supabase.from("tasks").delete().eq("id", id);
+
+//   if (error) {
+//     console.error("Chyba pri mazaní úlohy:", error);
+//     return null;
+//   }
+
+//   return true;
+// }
+

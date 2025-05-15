@@ -66,7 +66,15 @@ export default function Calendar() {
     return (
         <div className="relative h-[80vh] grid grid-cols-[auto_1fr] gap-6">
             <div>
-                <Button onClick={() => setIsOpenModal(true)} size="medium">+</Button>
+                <Button
+                    onClick={() => {
+                        setSelectedEvent(null);   // ⇐ vynuluj
+                        setIsOpenModal(true);     // otvor modal v režime PRIDAŤ
+                    }}
+                    size="medium"
+                >
+                    +
+                </Button>
             </div>
 
             <div>
@@ -114,18 +122,19 @@ export default function Calendar() {
             </div>
 
             {isOpenModal && (
-                <Modal onClose={() => setIsOpenModal(false)}>
-                    <NewTaskForm onClose={() => setIsOpenModal(false)} refresh={fetchEvents} />
-                </Modal>
-            )}
-
-            {isOpenModal && (
                 <Modal onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}>
-                    <UpdateTaskForm
-                        task={selectedEvent}        // ⇐ DAJ PROPS
-                        onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
-                        refresh={fetchEvents}
-                    />
+                    {selectedEvent ? (
+                        <UpdateTaskForm
+                            task={selectedEvent}
+                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
+                            refresh={fetchEvents}
+                        />
+                    ) : (
+                        <NewTaskForm
+                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
+                            refresh={fetchEvents}
+                        />
+                    )}
                 </Modal>
             )}
 
