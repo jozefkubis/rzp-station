@@ -6,8 +6,7 @@ import Button from "./Button";
 import toast from "react-hot-toast";
 import handleSubmitNewTask from "../_lib/functions/handleSubmitNewTask";
 
-
-export default function NewTaskForm({ onClose, refresh }) {
+export default function NewTaskForm({ onClose, refresh, slot }) {
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -16,18 +15,32 @@ export default function NewTaskForm({ onClose, refresh }) {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
 
-
     useEffect(() => {
         if (error) toast.error(error);
     }, [error]);
 
+    useEffect(() => {
+        if (!slot) return; // kliknutie na „+“ nemá slot
+
+        function toDateInputStr(date) {
+            const tzDiff = date.getTimezoneOffset() * 60000; // min → ms
+            const local = new Date(date.getTime() - tzDiff); // posun späť na lokál
+            return local.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+        }
+        setDateFrom(toDateInputStr(slot.start));
+    }, [slot]);
+
     async function handleSubmit(e) {
-        handleSubmitNewTask(e, { setError, onClose, refresh });
+        e.preventDefault();
+        handleSubmitNewTask(e, {
+            setError,
+            onClose,
+            refresh,
+        });
     }
 
     return (
         <form data-cy="new-task-form" onSubmit={handleSubmit} className="">
-
             <div className="flex flex-col">
                 <FormInput
                     label="Názov udalosti"
@@ -48,11 +61,7 @@ export default function NewTaskForm({ onClose, refresh }) {
                     name="dateFrom"
                     onChange={(e) => setDateFrom(e.target.value)}
                     value={dateFrom}
-                    min={
-                        new Date(new Date().setDate(new Date().getDate()))
-                            .toISOString()
-                            .split("T")[0]
-                    }
+                    min={new Date().toISOString().slice(0, 10)}
                     required
                 />
             </div>
@@ -65,11 +74,7 @@ export default function NewTaskForm({ onClose, refresh }) {
                     name="dateTo"
                     onChange={(e) => setDateTo(e.target.value)}
                     value={dateTo}
-                    min={
-                        new Date(new Date().setDate(new Date().getDate()))
-                            .toISOString()
-                            .split("T")[0]
-                    }
+                    min={new Date().toISOString().slice(0, 10)}
                     required
                 />
             </div>
@@ -99,7 +104,10 @@ export default function NewTaskForm({ onClose, refresh }) {
             </div>
 
             <div className="grid grid-cols-2 items-center border-t border-gray-200 px-4 py-3">
-                <label htmlFor="note" className="text-md font-bold text-primary-700 flex">
+                <label
+                    htmlFor="note"
+                    className="text-md flex font-bold text-primary-700"
+                >
                     Poznámka
                 </label>
                 <textarea
@@ -108,7 +116,7 @@ export default function NewTaskForm({ onClose, refresh }) {
                     name="note"
                     onChange={(e) => setNote(e.target.value)}
                     value={note}
-                    className="text-md w-full rounded-md border px-4 py-2 text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 bg-gray-50 font-semibold"
+                    className="text-md w-full rounded-md border bg-gray-50 px-4 py-2 font-semibold text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300"
                     required
                 ></textarea>
             </div>
@@ -118,7 +126,6 @@ export default function NewTaskForm({ onClose, refresh }) {
                     Pridať
                 </Button>
             </div>
-
         </form>
-    )
+    );
 }

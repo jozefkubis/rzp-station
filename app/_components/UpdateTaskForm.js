@@ -9,13 +9,20 @@ import DeleteTaskButton from "./DeleteTaskButton";
 
 
 export default function UpdateTaskForm({ onClose, refresh, task }) {
-    const toDateStr = d => d.toISOString().slice(0, 10);   // '2025-05-20'
-    const toTimeStr = d => d.toISOString().slice(11, 16);  // '09:15'
+    function toDateInputStr(date) {
+        const tzDiff = date.getTimezoneOffset() * 60000;      // min → ms
+        const local = new Date(date.getTime() - tzDiff);     // posun späť na lokál
+        return local.toISOString().slice(0, 10);              // 'YYYY-MM-DD'
+    }
 
-    const [dateFrom, setDateFrom] = useState(toDateStr(task.start));
-    const [dateTo, setDateTo] = useState(toDateStr(task.end));
-    const [startTime, setStartTime] = useState(toTimeStr(task.start));
-    const [endTime, setEndTime] = useState(toTimeStr(task.end));
+    function toTimeInputStr(date) {
+        return date.toTimeString().slice(0, 5);               // 'HH:mm'
+    }
+
+    const [dateFrom, setDateFrom] = useState(toDateInputStr(task.start));
+    const [dateTo, setDateTo] = useState(toDateInputStr(task.end));
+    const [startTime, setStartTime] = useState(toTimeInputStr(task.start));
+    const [endTime, setEndTime] = useState(toTimeInputStr(task.end));
     const [note, setNote] = useState(task.note);
     const [title, setTitle] = useState(task.title);
     const [error, setError] = useState("");
@@ -27,7 +34,6 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
     async function handleSubmit(e) {
         handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
     }
-
 
     return (
         <>
@@ -60,11 +66,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                         name="dateFrom"
                         onChange={(e) => setDateFrom(e.target.value)}
                         value={dateFrom}
-                        min={
-                            new Date(new Date().setDate(new Date().getDate()))
-                                .toISOString()
-                                .split("T")[0]
-                        }
+                        min={new Date().toISOString().slice(0, 10)}
                         required
                     />
                 </div>
@@ -77,11 +79,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                         name="dateTo"
                         onChange={(e) => setDateTo(e.target.value)}
                         value={dateTo}
-                        min={
-                            new Date(new Date().setDate(new Date().getDate()))
-                                .toISOString()
-                                .split("T")[0]
-                        }
+                        min={new Date().toISOString().slice(0, 10)}
                         required
                     />
                 </div>
@@ -126,12 +124,23 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 </div>
 
                 <div className="flex justify-end p-5 gap-2">
-                    <Button variant="primary" size="large">
+                    {/* vymazanie – vľavo (alebo zmeň poradie podľa chuti) */}
+                    <DeleteTaskButton
+                        task={task}
+                        onClose={onClose}
+                        refresh={refresh}
+                    />
+
+                    {/* update – vpravo */}
+                    <Button variant="primary" size="large" type="submit">
                         Aktualizovať
                     </Button>
                 </div>
+
             </form>
-            <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
+            {/* <div className="flex justify-center">
+                <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
+            </div> */}
         </>
     )
 }

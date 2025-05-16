@@ -9,6 +9,6 @@ export default async function handleSubmitUpdateTaskForm(e, { setError, onClose,
         return;
     }
     toast.success("Úloha aktualizovaná");
-    refresh();           // ← tu voláš opátovné načítanie kalendára
+    refresh();
     onClose();
 }

@@ -10,6 +10,6 @@ export default async function handleSubmitNewTask(e, { setError, onClose, refres
         return;
     }
     toast.success("Úloha pridaná");
-    refresh();           // ← tu voláš opätovné načítanie kalendára
+    refresh();
     onClose();
 }

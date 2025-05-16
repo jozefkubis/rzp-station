@@ -30,6 +30,7 @@ export default function DeleteTaskButton({ task, onClose, refresh }) {
             size="large"
             onClick={handleDelete}
             disabled={isPending}
+            type="button"
         >
             {isPending ? <SpinnerMini /> : "Vymazať"}
         </Button>

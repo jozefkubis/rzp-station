@@ -18,6 +18,7 @@ export default function Calendar() {
     const [date, setDate] = useState(new Date());
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null)
+    const [draftSlot, setDraftSlot] = useState(null);
 
     const fetchEvents = useCallback(async () => {
         setLoading(true);
@@ -39,8 +40,14 @@ export default function Calendar() {
     }, []);
     useEffect(() => { fetchEvents() }, [fetchEvents]);
 
-    const handleSelectEvent = (event) => {
-        setSelectedEvent(event);
+    function handleSelectEvent(e) {
+        setSelectedEvent(e);
+        setIsOpenModal(true);
+    };
+
+    function handleSelectSlot({ start, end }) {
+        setSelectedEvent(null);
+        setDraftSlot({ start, end });
         setIsOpenModal(true);
     };
 
@@ -68,7 +75,8 @@ export default function Calendar() {
             <div>
                 <Button
                     onClick={() => {
-                        setSelectedEvent(null);   // ⇐ vynuluj
+                        setSelectedEvent(null);
+                        setDraftSlot(null);  // ⇐ vynuluj
                         setIsOpenModal(true);     // otvor modal v režime PRIDAŤ
                     }}
                     size="medium"
@@ -90,6 +98,8 @@ export default function Calendar() {
                     onView={setView}
                     onNavigate={setDate}
                     onSelectEvent={handleSelectEvent}
+                    onSelectSlot={handleSelectSlot}
+                    selectable
                     localizer={localizer}
                     messages={messages}
                     formats={{
@@ -126,20 +136,18 @@ export default function Calendar() {
                     {selectedEvent ? (
                         <UpdateTaskForm
                             task={selectedEvent}
-                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
+                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); setDraftSlot(null); }}
                             refresh={fetchEvents}
                         />
                     ) : (
                         <NewTaskForm
-                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}
+                            slot={draftSlot}
+                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); setDraftSlot(null); }}
                             refresh={fetchEvents}
                         />
                     )}
                 </Modal>
             )}
-
-
-
         </div>
     );
 }
