@@ -73,6 +73,18 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
 
                 <div className="flex flex-col">
                     <FormInput
+                        label="Čas od"
+                        id="startTime"
+                        type="time"
+                        name="startTime"
+                        onChange={(e) => setStartTime(e.target.value)}
+                        value={startTime}
+                    // required
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <FormInput
                         label="Dátum do"
                         id="date_to"
                         type="date"
@@ -81,18 +93,6 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                         value={dateTo}
                         min={new Date().toISOString().slice(0, 10)}
                         required
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <FormInput
-                        label="Čas od"
-                        id="startTime"
-                        type="time"
-                        name="startTime"
-                        onChange={(e) => setStartTime(e.target.value)}
-                        value={startTime}
-                    // required
                     />
                 </div>
 
