@@ -1,8 +1,8 @@
-"use client";      // ak ho voláš z client komponenty
+"use client";
 
 import { useTransition } from "react";
 import toast from "react-hot-toast";
-import { deleteTask } from "../_lib/actions";   // tvoja server-action alebo fetch helper
+import { deleteTask } from "../_lib/actions";
 import Button from "./Button";
 import SpinnerMini from "./SpinnerMini";
 

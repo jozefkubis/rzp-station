@@ -18,7 +18,7 @@ export default function Modal({ children, onClose }) {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 z-50 bg-primary-50 bg-opacity-50 backdrop-blur-sm transition-all duration-500"
+        className="fixed inset-0 z-50 bg-primary-400 bg-opacity-50 backdrop-blur-sm transition-all duration-500"
         onClick={onClose}
       ></div>
 
