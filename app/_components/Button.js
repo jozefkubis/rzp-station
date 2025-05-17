@@ -20,19 +20,25 @@ export default function Button({
   size = "medium",
   variant = "primary",
   children,
+  type,         // default = button
   ...props
 }) {
+  const { pending } = useFormStatus();
 
-  const { pending } = useFormStatus()
+  // Spinner len ak ide o SUBMIT v pending stave
+  const showPending = pending && type === "submit";
 
   return (
     <button
-      disabled={pending}
-      className={`rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
+      disabled={showPending}
+      type={type}
+      className={`rounded-md transition-colors duration-200
+        ${buttonSizes[size]} ${buttonVariants[variant]}`}
       {...props}
     >
-      {pending ? <SpinnerMini /> : children}
+      {showPending ? <SpinnerMini /> : children}
     </button>
   );
-};
+}
+
 

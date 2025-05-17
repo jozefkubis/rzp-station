@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FormInput from "./FormInput";
+import FormTaskInput from "./FormTaskInput";
 import Button from "./Button";
 import toast from "react-hot-toast";
 import handleSubmitNewTask from "../_lib/functions/handleSubmitNewTask";
@@ -30,6 +30,8 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
         setDateFrom(toDateInputStr(slot.start));
     }, [slot]);
 
+    const todayStr = new Date().toISOString().slice(0, 10);
+
     async function handleSubmit(e) {
         e.preventDefault();
         handleSubmitNewTask(e, {
@@ -40,92 +42,85 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
     }
 
     return (
-        <form data-cy="new-task-form" onSubmit={handleSubmit} className="">
-            <div className="flex flex-col">
-                <FormInput
-                    label="Názov udalosti"
-                    id="title"
-                    type="text"
-                    name="title"
-                    onChange={(e) => setTitle(e.target.value)}
-                    value={title}
-                    required
-                />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Názov udalosti */}
+            <FormTaskInput
+                label="Názov udalosti"
+                id="title"
+                type="text"
+                name="title"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                required
+            />
 
-            <div className="flex flex-col">
-                <FormInput
+            {/* Riadok “Od” */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormTaskInput
                     label="Dátum od"
                     id="date_from"
                     type="date"
                     name="dateFrom"
-                    onChange={(e) => setDateFrom(e.target.value)}
                     value={dateFrom}
-                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={e => setDateFrom(e.target.value)}
+                    min={todayStr}
                     required
                 />
-            </div>
-
-            <div className="flex flex-col">
-                <FormInput
+                <FormTaskInput
                     label="Čas od"
                     id="startTime"
                     type="time"
                     name="startTime"
-                    onChange={(e) => setStartTime(e.target.value)}
                     value={startTime}
-                // required
+                    onChange={e => setStartTime(e.target.value)}
                 />
             </div>
 
-            <div className="flex flex-col">
-                <FormInput
+            {/* Riadok “Do” */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormTaskInput
                     label="Dátum do"
                     id="date_to"
                     type="date"
                     name="dateTo"
-                    onChange={(e) => setDateTo(e.target.value)}
                     value={dateTo}
-                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={e => setDateTo(e.target.value)}
+                    min={todayStr}
                     required
                 />
-            </div>
-
-            <div className="flex flex-col">
-                <FormInput
+                <FormTaskInput
                     label="Čas do"
                     id="endTime"
                     type="time"
                     name="endTime"
-                    onChange={(e) => setEndTime(e.target.value)}
                     value={endTime}
-                // required
+                    onChange={e => setEndTime(e.target.value)}
                 />
             </div>
 
-            <div className="grid grid-cols-2 items-center border-t border-gray-200 px-4 py-3">
-                <label
-                    htmlFor="note"
-                    className="text-md flex font-bold text-primary-700"
-                >
+            {/* Poznámka */}
+            <div className="grid gap-2">
+                <label htmlFor="note" className="font-semibold text-primary-700">
                     Poznámka
                 </label>
                 <textarea
                     id="note"
-                    rows="3"
                     name="note"
-                    onChange={(e) => setNote(e.target.value)}
+                    rows="3"
+                    className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 focus:ring-2 focus:ring-primary-300 outline-none"
                     value={note}
-                    className="text-md w-full rounded-md border bg-gray-50 px-4 py-2 font-semibold text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300"
+                    onChange={e => setNote(e.target.value)}
                     required
-                ></textarea>
+                />
             </div>
 
-            <div className="flex justify-end p-5">
-                <Button variant="primary" size="large">
+            {/* Tlačidlo */}
+            <div className="flex justify-end">
+                <Button variant="primary" size="large" type="submit">
                     Pridať
                 </Button>
             </div>
         </form>
+
     );
 }
