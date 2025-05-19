@@ -13,13 +13,14 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
             d.getDate()
         ).padStart(2, "0")}`;
+
     const toTimeStr = d => d.toTimeString().slice(0, 5);
 
     const [dateFrom, setDateFrom] = useState(toDateStr(task.start));
     const [dateTo, setDateTo] = useState(toDateStr(task.end));
     const [startTime, setStartTime] = useState(toTimeStr(task.start));
     const [endTime, setEndTime] = useState(toTimeStr(task.end));
-    const [note, setNote] = useState(task.note);
+    const [note, setNote] = useState(task.note ?? "");
     const [title, setTitle] = useState(task.title);
     const [error, setError] = useState("");
 
@@ -29,7 +30,6 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
         await handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
     }
 
-    const todayStr = new Date().toISOString().slice(0, 10);
 
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -55,7 +55,6 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="dateFrom"
                     value={dateFrom}
                     onChange={e => setDateFrom(e.target.value)}
-                    min={todayStr}
                     required
                 />
                 <FormTaskInput
@@ -77,8 +76,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="dateTo"
                     value={dateTo}
                     onChange={e => setDateTo(e.target.value)}
-                    min={todayStr}
-                    required
+                // required
                 />
                 <FormTaskInput
                     label="Čas do"
@@ -100,9 +98,9 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="note"
                     rows="3"
                     className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 focus:ring-2 focus:ring-primary-300 outline-none"
-                    value={note}
+                    value={note ?? ""}
                     onChange={e => setNote(e.target.value)}
-                    required
+                // required
                 />
             </div>
 

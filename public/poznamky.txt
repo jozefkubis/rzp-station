@@ -19,3 +19,6 @@ Zaverecne zmeny:
 
 5.5.2025
 - pridat suspance a optimalizovat loading ❌
+
+19.5.2025
+- pridat toast ak neboli urobene ziadne zmeny v update

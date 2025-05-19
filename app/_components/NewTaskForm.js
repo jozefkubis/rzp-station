@@ -21,7 +21,6 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
 
     useEffect(() => {
         if (!slot) return; // kliknutie na „+“ nemá slot
-
         function toDateInputStr(date) {
             const tzDiff = date.getTimezoneOffset() * 60000; // min → ms
             const local = new Date(date.getTime() - tzDiff); // posun späť na lokál
@@ -86,7 +85,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     value={dateTo}
                     onChange={e => setDateTo(e.target.value)}
                     min={todayStr}
-                    required
+                // required
                 />
                 <FormTaskInput
                     label="Čas do"
@@ -110,7 +109,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 focus:ring-2 focus:ring-primary-300 outline-none"
                     value={note}
                     onChange={e => setNote(e.target.value)}
-                    required
+                // required
                 />
             </div>
 

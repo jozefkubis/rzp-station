@@ -20,8 +20,8 @@ export async function POST(request) {
             title,
             dateFrom: new Date(dateFrom),
             dateTo: new Date(dateTo),
-            startTime: startTime ? new Date(startTime) : null,
-            endTime: endTime ? new Date(endTime) : null,
+            startTime: startTime || null,
+            endTime: endTime || null,
             note,
         });
         return NextResponse.json(newTask, { status: 201 });

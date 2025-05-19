@@ -307,43 +307,47 @@ export async function AdminUpdateProfilesData(formData) {
 
 // MARK: CREATE NEW TASK
 export async function createNewTask(formData) {
+  "use server";
+
   const supabase = await createClient();
 
   const newTask = {
     title: formData.get("title"),
     dateFrom: formData.get("dateFrom"),
-    dateTo: formData.get("dateTo"),
-    startTime: formData.get("startTime"),
-    endTime: formData.get("endTime"),
-    note: formData.get("note"),
+    dateTo: formData.get("dateTo") || formData.get("dateFrom"),
+    startTime: formData.get("startTime") || null,
+    endTime: formData.get("endTime") || null,
+    note: formData.get("note")?.trim() || null,
   };
-
-  console.log("New task:", newTask);
 
   const { error } = await supabase.from("tasks").insert(newTask);
 
   if (error) {
-    console.error("Chyba pri vytvorení novej úlohy:", error);
+    console.error("Chyba pri vytvorení novej úlohy:", error);
     return null;
   }
 
   revalidatePath("/", "calendar");
-
   return { success: true };
 }
 
+
 // MARK: UPDATE TASK
 export async function updateTask(formData) {
+  "use server";
+
   const supabase = await createClient();
 
   const taskId = formData.get("id");
+
+
   const updatedTask = {
-    title: formData.get("title"),
+    title: formData.get("title")?.trim() || null,
     dateFrom: formData.get("dateFrom"),
-    dateTo: formData.get("dateTo"),
-    startTime: formData.get("startTime"),
-    endTime: formData.get("endTime"),
-    note: formData.get("note"),
+    dateTo: formData.get("dateTo") || formData.get("dateFrom"),
+    startTime: formData.get("startTime") || null,
+    endTime: formData.get("endTime") || null,
+    note: formData.get("note")?.trim() || null
   };
 
   const { error } = await supabase
@@ -352,14 +356,14 @@ export async function updateTask(formData) {
     .eq("id", taskId);
 
   if (error) {
-    console.error("Chyba pri aktualizácii úlohy:", error);
+    console.error("Chyba pri aktualizácii úlohy:", error);
     return null;
   }
 
   revalidatePath("/", "calendar");
-
   return { success: true };
 }
+
 
 // MARK: DELETE TASK
 export async function deleteTask(id) {

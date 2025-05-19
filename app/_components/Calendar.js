@@ -28,11 +28,10 @@ export default function Calendar() {
             title: task.title,
             start: task.startTime
                 ? new Date(`${task.dateFrom}T${task.startTime}`)
-                : new Date(task.dateFrom),
+                : new Date(`${task.dateFrom}T00:00:00`),
             end: task.endTime
                 ? new Date(`${task.dateTo}T${task.endTime}`)
-                : new Date(task.dateTo),
-
+                : new Date(`${task.dateFrom}T00:00:00`),
             allDay: !task.startTime && !task.endTime,
             note: task.note
         })));
