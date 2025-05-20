@@ -5,6 +5,7 @@ import FormTaskInput from "./FormTaskInput";
 import Button from "./Button";
 import toast from "react-hot-toast";
 import handleSubmitNewTask from "../_lib/functions/handleSubmitNewTask";
+import ToggleSwitch from "./ToggleSwitch";
 
 export default function NewTaskForm({ onClose, refresh, slot }) {
     const [dateFrom, setDateFrom] = useState("");
@@ -14,10 +15,21 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
     const [note, setNote] = useState("");
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
+    const [isAllDay, setIsAllDay] = useState(false);
 
     useEffect(() => {
         if (error) toast.error(error);
     }, [error]);
+
+    useEffect(() => {
+        if (isAllDay) {
+            setDateTo("");
+            setStartTime("");
+            setEndTime("");
+        } else if (!dateTo) {
+            setDateTo(dateFrom);
+        }
+    }, [isAllDay, dateFrom, dateTo]);
 
     useEffect(() => {
         if (!slot) return; // kliknutie na „+“ nemá slot
@@ -53,6 +65,11 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                 required
             />
 
+            <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-3">
+                <span className="font-semibold text-primary-700">Celý deň</span>
+                <ToggleSwitch checked={isAllDay} onChange={e => setIsAllDay(e.target.checked)} />
+            </div>
+
             {/* Riadok “Od” */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormTaskInput
@@ -72,6 +89,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     name="startTime"
                     value={startTime}
                     onChange={e => setStartTime(e.target.value)}
+                    disabled={isAllDay}
                 />
             </div>
 
@@ -85,6 +103,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     value={dateTo}
                     onChange={e => setDateTo(e.target.value)}
                     min={todayStr}
+                    disabled={isAllDay}
                 // required
                 />
                 <FormTaskInput
@@ -94,6 +113,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     name="endTime"
                     value={endTime}
                     onChange={e => setEndTime(e.target.value)}
+                    disabled={isAllDay}
                 />
             </div>
 
