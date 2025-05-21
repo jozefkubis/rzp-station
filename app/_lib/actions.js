@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getTask } from "./data-service";
 
 // MARK: LOGIN
 export async function login(formData) {
@@ -337,6 +338,8 @@ export async function updateTask(formData) {
 
   const taskId = formData.get("id");
 
+  const existingTask = await getTask(taskId);
+  console.log("Existing task:", existingTask);
 
   const updatedTask = {
     title: formData.get("title")?.trim() || null,
