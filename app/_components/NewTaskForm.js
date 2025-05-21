@@ -43,6 +43,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
 
     const todayStr = new Date().toISOString().slice(0, 10);
 
+
     async function handleSubmit(e) {
         e.preventDefault();
         handleSubmitNewTask(e, {
@@ -61,24 +62,28 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                 type="text"
                 name="title"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 required
             />
 
             <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-3">
                 <span className="font-semibold text-primary-700">Celý deň</span>
-                <ToggleSwitch checked={isAllDay} onChange={e => setIsAllDay(e.target.checked)} />
+                <ToggleSwitch
+                    checked={isAllDay}
+                    onChange={(e) => setIsAllDay(e.target.checked)}
+                    name="isAllDay"
+                />
             </div>
 
             {/* Riadok “Od” */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormTaskInput
                     label="Dátum od"
                     id="date_from"
                     type="date"
                     name="dateFrom"
                     value={dateFrom}
-                    onChange={e => setDateFrom(e.target.value)}
+                    onChange={(e) => setDateFrom(e.target.value)}
                     min={todayStr}
                     required
                 />
@@ -88,20 +93,20 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     type="time"
                     name="startTime"
                     value={startTime}
-                    onChange={e => setStartTime(e.target.value)}
+                    onChange={(e) => setStartTime(e.target.value)}
                     disabled={isAllDay}
                 />
             </div>
 
             {/* Riadok “Do” */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormTaskInput
                     label="Dátum do"
                     id="date_to"
                     type="date"
                     name="dateTo"
                     value={dateTo}
-                    onChange={e => setDateTo(e.target.value)}
+                    onChange={(e) => setDateTo(e.target.value)}
                     min={todayStr}
                     disabled={isAllDay}
                 // required
@@ -112,7 +117,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     type="time"
                     name="endTime"
                     value={endTime}
-                    onChange={e => setEndTime(e.target.value)}
+                    onChange={(e) => setEndTime(e.target.value)}
                     disabled={isAllDay}
                 />
             </div>
@@ -126,9 +131,9 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                     id="note"
                     name="note"
                     rows="3"
-                    className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 focus:ring-2 focus:ring-primary-300 outline-none"
+                    className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 outline-none focus:ring-2 focus:ring-primary-300"
                     value={note}
-                    onChange={e => setNote(e.target.value)}
+                    onChange={(e) => setNote(e.target.value)}
                 // required
                 />
             </div>
@@ -140,6 +145,5 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                 </Button>
             </div>
         </form>
-
     );
 }

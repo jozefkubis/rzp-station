@@ -9,13 +9,12 @@ import DeleteTaskButton from "./DeleteTaskButton";
 import ToggleSwitch from "./ToggleSwitch";
 
 export default function UpdateTaskForm({ onClose, refresh, task }) {
-
-    const toDateStr = d =>
+    const toDateStr = (d) =>
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-            d.getDate()
+            d.getDate(),
         ).padStart(2, "0")}`;
 
-    const toTimeStr = d => d.toTimeString().slice(0, 5);
+    const toTimeStr = (d) => d.toTimeString().slice(0, 5);
 
     const [dateFrom, setDateFrom] = useState(toDateStr(task.start));
     const [dateTo, setDateTo] = useState(toDateStr(task.end));
@@ -24,9 +23,11 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
     const [note, setNote] = useState(task.note ?? "");
     const [title, setTitle] = useState(task.title);
     const [error, setError] = useState("");
-    const [isAllDay, setIsAllDay] = useState(false);
+    const [isAllDay, setIsAllDay] = useState(task.isAllDay ?? task.allDay ?? false);
 
-    useEffect(() => { if (error) toast.error(error); }, [error]);
+    useEffect(() => {
+        if (error) toast.error(error);
+    }, [error]);
     useEffect(() => {
         if (isAllDay) {
             setDateTo("");
@@ -54,13 +55,17 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 type="text"
                 name="title"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 required
             />
 
             <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-3">
                 <span className="font-semibold text-primary-700">Celý deň</span>
-                <ToggleSwitch checked={isAllDay} onChange={e => setIsAllDay(e.target.checked)} />
+                <ToggleSwitch
+                    checked={isAllDay}
+                    onChange={(e) => setIsAllDay(e.target.checked)}
+                    name="isAllDay"
+                />
             </div>
 
             {/* Riadok Od */}
@@ -71,7 +76,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     type="date"
                     name="dateFrom"
                     value={dateFrom}
-                    onChange={e => setDateFrom(e.target.value)}
+                    onChange={(e) => setDateFrom(e.target.value)}
                     required
                 />
                 <FormTaskInput
@@ -80,7 +85,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     type="time"
                     name="startTime"
                     value={startTime}
-                    onChange={e => setStartTime(e.target.value)}
+                    onChange={(e) => setStartTime(e.target.value)}
                     disabled={isAllDay}
                 />
             </div>
@@ -93,7 +98,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     type="date"
                     name="dateTo"
                     value={dateTo}
-                    onChange={e => setDateTo(e.target.value)}
+                    onChange={(e) => setDateTo(e.target.value)}
                     disabled={isAllDay}
                 // required
                 />
@@ -103,7 +108,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     type="time"
                     name="endTime"
                     value={endTime}
-                    onChange={e => setEndTime(e.target.value)}
+                    onChange={(e) => setEndTime(e.target.value)}
                     disabled={isAllDay}
                 />
             </div>
@@ -117,9 +122,9 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     id="note"
                     name="note"
                     rows="3"
-                    className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 focus:ring-2 focus:ring-primary-300 outline-none"
+                    className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 outline-none focus:ring-2 focus:ring-primary-300"
                     value={note ?? ""}
-                    onChange={e => setNote(e.target.value)}
+                    onChange={(e) => setNote(e.target.value)}
                 // required
                 />
             </div>

@@ -1,4 +1,4 @@
-function ToggleSwitch({ checked, onChange, name }) {
+function ToggleSwitch({ checked, onChange, name, value }) {
     return (
         <label className="relative inline-block h-[28px] w-[54px]">
             {/* checkbox je „peer“, aby sme cezňho menili štýly span-u */}

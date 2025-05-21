@@ -33,6 +33,7 @@ export default function Calendar() {
                 ? new Date(`${task.dateTo}T${task.endTime}`)
                 : new Date(`${task.dateFrom}T00:00:00`),
             allDay: !task.startTime && !task.endTime,
+            isAllDay: !task.startTime && !task.endTime,
             note: task.note
         })));
         setLoading(false);
@@ -60,6 +61,7 @@ export default function Calendar() {
         day: 'Deň',
         agenda: 'Prehľad',
         allDay: 'Celý deň',
+        isAllDay: 'Celý deň',
         dateFrom: 'Dátum od',
         dateTo: 'Dátum do',
         time: 'Čas',

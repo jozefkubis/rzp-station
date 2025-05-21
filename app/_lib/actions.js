@@ -307,8 +307,6 @@ export async function AdminUpdateProfilesData(formData) {
 
 // MARK: CREATE NEW TASK
 export async function createNewTask(formData) {
-  "use server";
-
   const supabase = await createClient();
 
   const newTask = {
@@ -318,6 +316,7 @@ export async function createNewTask(formData) {
     startTime: formData.get("startTime") || null,
     endTime: formData.get("endTime") || null,
     note: formData.get("note")?.trim() || null,
+    isAllDay: !!formData.get("isAllDay")
   };
 
   const { error } = await supabase.from("tasks").insert(newTask);
@@ -334,8 +333,6 @@ export async function createNewTask(formData) {
 
 // MARK: UPDATE TASK
 export async function updateTask(formData) {
-  "use server";
-
   const supabase = await createClient();
 
   const taskId = formData.get("id");
@@ -347,7 +344,8 @@ export async function updateTask(formData) {
     dateTo: formData.get("dateTo") || formData.get("dateFrom"),
     startTime: formData.get("startTime") || null,
     endTime: formData.get("endTime") || null,
-    note: formData.get("note")?.trim() || null
+    note: formData.get("note")?.trim() || null,
+    isAllDay: !!formData.get("isAllDay")
   };
 
   const { error } = await supabase
