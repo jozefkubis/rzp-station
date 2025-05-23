@@ -3,8 +3,11 @@ import { updateTask } from "../actions";
 
 export default async function handleSubmitUpdateTaskForm(e, { setError, onClose, refresh }) {
     e.preventDefault();
-    const resp = await updateTask(new FormData(e.currentTarget));
-    if (resp?.error) {
+
+    const formData = new FormData(e.currentTarget);
+    const response = await updateTask(formData);
+
+    if (response?.error) {
         setError(resp.error);
         return;
     }

@@ -115,6 +115,18 @@ export default function Calendar() {
                             localizer.format(date, 'EEEE, dd.MM.yyyy', culture),
                     }}
                     events={events}
+                    eventPropGetter={(event) => {
+                        if (event.title.includes("!")) {
+                            return {
+                                style: {
+                                    backgroundColor: "#F21905", // tailwind red-400
+                                    border: "none",
+                                    color: "white",
+                                },
+                            };
+                        }
+                        return {};
+                    }}
                     defaultView={Views.MONTH}
                     views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     startAccessor="start"

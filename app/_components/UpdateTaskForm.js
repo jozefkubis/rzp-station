@@ -44,6 +44,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
         await handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
     }
 
+
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
             <input type="hidden" name="id" value={task.id} />
