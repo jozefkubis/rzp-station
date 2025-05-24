@@ -10,6 +10,7 @@ import NewTaskForm from "./NewTaskForm";
 import UpdateTaskForm from "./UpdateTaskForm";
 import Modal from "./Modal";
 import moment from 'moment';
+import skHolidays2025 from "../data/sk-holidays-2025.json";
 
 
 export default function Calendar() {
@@ -24,7 +25,7 @@ export default function Calendar() {
     const fetchEvents = useCallback(async () => {
         setLoading(true);
         const data = await fetch("/api/tasks").then(res => res.json());
-        setEvents(data.map(task => ({
+        const userEvents = data.map(task => ({
             id: task.id,
             title: task.title,
             start: task.startTime
@@ -36,7 +37,18 @@ export default function Calendar() {
             allDay: !task.startTime && !task.endTime,
             isAllDay: !task.startTime && !task.endTime,
             note: task.note
-        })));
+        }))
+
+        const holidayEvents = skHolidays2025.map(h => ({
+            id: "hol-" + h.date,
+            title: h.localName,
+            start: new Date(h.date + "T00:00:00"),
+            end: new Date(h.date + "T00:00:00"),
+            allDay: true,
+            isHoliday: true,
+        }));
+
+        setEvents([...holidayEvents, ...userEvents]);
         setLoading(false);
     }, []);
     useEffect(() => { fetchEvents() }, [fetchEvents]);
@@ -78,6 +90,18 @@ export default function Calendar() {
                     backgroundColor: "#F21905", // tailwind red-400
                     border: "none",
                     color: "white",
+                },
+            };
+        } else if (event.isHoliday) {
+            return {
+                style: {
+                    backgroundColor: "#FFF144",
+                    border: "none",
+                    color: "gray",
+                    fontSize: "0.75rem",
+                    margin: "1px",
+                    borderLeft: "12px solid #FFD01C",
+                    // pointerEvents: "none",
                 },
             };
         }

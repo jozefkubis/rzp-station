@@ -80,9 +80,12 @@ div.rbc-day-bg.rbc-today {
   border: 2px solid theme("colors.primary.500") !important;
 }
 
-/* .rbc-event {
-  background-color: red !important;
-} */
+.rbc-event {
+  font-size: 0.8rem !important;
+  margin: 2px !important;
+  padding-left: 8px !important;
+  width: 95% !important;
+}
 
 th.rbc-header {
   border-width: 1px !important;
