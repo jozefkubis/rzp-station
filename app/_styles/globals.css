@@ -72,7 +72,12 @@ button.rbc-active {
 }
 
 div.rbc-day-bg.rbc-off-range-bg {
-  background-color: theme("colors.primary.50") !important;
+  background-color: theme("colors.gray.100") !important;
+}
+
+div.rbc-day-bg.rbc-today {
+  background-color: theme("colors.primary.100") !important;
+  border: 2px solid theme("colors.primary.500") !important;
 }
 
 /* .rbc-event {

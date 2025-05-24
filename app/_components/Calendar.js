@@ -11,6 +11,7 @@ import UpdateTaskForm from "./UpdateTaskForm";
 import Modal from "./Modal";
 import moment from 'moment';
 
+
 export default function Calendar() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -70,6 +71,26 @@ export default function Calendar() {
         showMore: (total) => `+ ďalších ${total}`,
     };
 
+    function eventPropGetter(event) {
+        if (event.title.includes("!")) {
+            return {
+                style: {
+                    backgroundColor: "#F21905", // tailwind red-400
+                    border: "none",
+                    color: "white",
+                },
+            };
+        }
+        return {};
+    }
+
+    function dayPropGetter(date) {
+        const isWeekend = [0, 6].includes(date.getDay()); // nedeľa=0, sobota=6
+        return {
+            className: isWeekend ? "bg-yellow-50" : "",
+        };
+    }
+
 
     return (
         <div className="relative h-[80vh] grid grid-cols-[auto_1fr] gap-6">
@@ -115,18 +136,8 @@ export default function Calendar() {
                             localizer.format(date, 'EEEE, dd.MM.yyyy', culture),
                     }}
                     events={events}
-                    eventPropGetter={(event) => {
-                        if (event.title.includes("!")) {
-                            return {
-                                style: {
-                                    backgroundColor: "#F21905", // tailwind red-400
-                                    border: "none",
-                                    color: "white",
-                                },
-                            };
-                        }
-                        return {};
-                    }}
+                    eventPropGetter={eventPropGetter}
+                    dayPropGetter={dayPropGetter}
                     defaultView={Views.MONTH}
                     views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     startAccessor="start"
