@@ -29,10 +29,10 @@ export default async function Page({ params }) {
     return (
       <div className="flex flex-col items-end gap-8 pt-12">
         <div className="flex gap-2">
+          <DeleteProfileButton profile={profile} />
           <Link href={`/profiles/${profile.id}/edit`}>
             <Button>Upravit profil</Button>
           </Link>
-          <DeleteProfileButton profile={profile} />
         </div>
         <Link
           href="/profiles"

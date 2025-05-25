@@ -44,6 +44,12 @@
   margin: 0 !important;
 }
 
+.rbc-toolbar-label {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  color: theme("colors.primary.700") !important;
+}
+
 .rbc-btn-group {
   background-color: theme("colors.gray.50") !important;
   border: 1px-gray-100 !important;
@@ -69,6 +75,7 @@ button.rbc-active {
 
 .rbc-header {
   background-color: theme("colors.gray.50") !important;
+  color: theme("colors.primary.700") !important;
 }
 
 div.rbc-day-bg.rbc-off-range-bg {

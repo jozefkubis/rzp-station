@@ -27,7 +27,7 @@ export default function DeleteTaskButton({ task, onClose, refresh }) {
     return (
         <Button
             variant="danger"
-            size="large"
+            size="medium"
             onClick={handleDelete}
             disabled={isPending}
             type="button"

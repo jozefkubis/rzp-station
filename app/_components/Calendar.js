@@ -9,8 +9,9 @@ import Button from "./Button";
 import NewTaskForm from "./NewTaskForm";
 import UpdateTaskForm from "./UpdateTaskForm";
 import Modal from "./Modal";
-import moment from 'moment';
+import moment from "moment";
 import skHolidays2025 from "../data/sk-holidays-2025.json";
+import MyButtons from "./MyButtons";
 
 
 export default function Calendar() {
@@ -19,13 +20,14 @@ export default function Calendar() {
     const [view, setView] = useState(Views.MONTH);
     const [date, setDate] = useState(new Date());
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null)
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [draftSlot, setDraftSlot] = useState(null);
+    const [showHoliday, setShowHoliday] = useState(false);
 
     const fetchEvents = useCallback(async () => {
         setLoading(true);
-        const data = await fetch("/api/tasks").then(res => res.json());
-        const userEvents = data.map(task => ({
+        const data = await fetch("/api/tasks").then((res) => res.json());
+        const userEvents = data.map((task) => ({
             id: task.id,
             title: task.title,
             start: task.startTime
@@ -36,10 +38,10 @@ export default function Calendar() {
                 : new Date(`${task.dateFrom}T00:00:00`),
             allDay: !task.startTime && !task.endTime,
             isAllDay: !task.startTime && !task.endTime,
-            note: task.note
-        }))
+            note: task.note,
+        }));
 
-        const holidayEvents = skHolidays2025.map(h => ({
+        const holidayEvents = skHolidays2025.map((h) => ({
             id: "hol-" + h.date,
             title: h.localName,
             start: new Date(h.date + "T00:00:00"),
@@ -51,34 +53,35 @@ export default function Calendar() {
         setEvents([...holidayEvents, ...userEvents]);
         setLoading(false);
     }, []);
-    useEffect(() => { fetchEvents() }, [fetchEvents]);
+    useEffect(() => {
+        fetchEvents();
+    }, [fetchEvents]);
 
     function handleSelectEvent(e) {
         setSelectedEvent(e);
         setIsOpenModal(true);
-    };
+    }
 
     function handleSelectSlot({ start, end }) {
         setSelectedEvent(null);
         setDraftSlot({ start, end });
         setIsOpenModal(true);
-    };
-
+    }
 
     const messages = {
-        previous: 'Späť',
-        next: 'Ďalej',
-        today: 'Dnes',
-        month: 'Mesiac',
-        week: 'Týždeň',
-        day: 'Deň',
-        agenda: 'Prehľad',
-        allDay: 'Celý deň',
-        isAllDay: 'Celý deň',
-        dateFrom: 'Dátum od',
-        dateTo: 'Dátum do',
-        time: 'Čas',
-        event: 'Udalosť',
+        previous: "Späť",
+        next: "Ďalej",
+        today: "Dnes",
+        month: "Mesiac",
+        week: "Týždeň",
+        day: "Deň",
+        agenda: "Prehľad",
+        allDay: "Celý deň",
+        isAllDay: "Celý deň",
+        dateFrom: "Dátum od",
+        dateTo: "Dátum do",
+        time: "Čas",
+        event: "Udalosť",
 
         showMore: (total) => `+ ďalších ${total}`,
     };
@@ -97,10 +100,12 @@ export default function Calendar() {
                 style: {
                     backgroundColor: "#FFF144",
                     border: "none",
-                    color: "gray",
+                    color: "#525759",
                     fontSize: "0.75rem",
+                    fontWeight: "350",
                     margin: "1px",
                     borderLeft: "12px solid #FFD01C",
+                    display: showHoliday ? "none" : "",
                     // pointerEvents: "none",
                 },
             };
@@ -115,21 +120,9 @@ export default function Calendar() {
         };
     }
 
-
     return (
-        <div className="relative h-[80vh] grid grid-cols-[auto_1fr] gap-6">
-            <div>
-                <Button
-                    onClick={() => {
-                        setSelectedEvent(null);
-                        setDraftSlot(null);  // ⇐ vynuluj
-                        setIsOpenModal(true);     // otvor modal v režime PRIDAŤ
-                    }}
-                    size="medium"
-                >
-                    +
-                </Button>
-            </div>
+        <div className="relative grid h-[80vh] grid-cols-[auto_1fr] gap-2">
+            <MyButtons setSelectedEvent={setSelectedEvent} setDraftSlot={setDraftSlot} setIsOpenModal={setIsOpenModal} setShowHoliday={setShowHoliday} showHoliday={showHoliday} />
 
             <div>
                 {loading && (
@@ -151,13 +144,13 @@ export default function Calendar() {
                     formats={{
                         // úplné názvy dní v týždni v hlavičke
                         weekdayFormat: (date, culture, localizer) =>
-                            localizer.format(date, 'EEEE', culture),
+                            localizer.format(date, "EEEE", culture),
                         // názov mesiaca s rokom
                         monthHeaderFormat: (date, culture, localizer) =>
-                            localizer.format(date, 'LLLL yyyy', culture),
+                            localizer.format(date, "LLLL yyyy", culture),
                         // formát hlavičky pri prepnutí na day view
                         dayHeaderFormat: (date, culture, localizer) =>
-                            localizer.format(date, 'EEEE, dd.MM.yyyy', culture),
+                            localizer.format(date, "EEEE, dd.MM.yyyy", culture),
                     }}
                     events={events}
                     eventPropGetter={eventPropGetter}
@@ -171,26 +164,39 @@ export default function Calendar() {
                     components={{
                         event: MyEvent,
                     }}
-                    min={moment().startOf('day').hour(6).toDate()}
-                    max={moment().startOf('day').hour(23).toDate()}
-                    scrollToTime={moment().startOf('day').hour(6).toDate()}
+                    min={moment().startOf("day").hour(6).toDate()}
+                    max={moment().startOf("day").hour(23).toDate()}
+                    scrollToTime={moment().startOf("day").hour(6).toDate()}
                     step={30}
                     timeslots={2}
                 />
             </div>
 
             {isOpenModal && (
-                <Modal onClose={() => { setIsOpenModal(false); setSelectedEvent(null); }}>
+                <Modal
+                    onClose={() => {
+                        setIsOpenModal(false);
+                        setSelectedEvent(null);
+                    }}
+                >
                     {selectedEvent ? (
                         <UpdateTaskForm
                             task={selectedEvent}
-                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); setDraftSlot(null); }}
+                            onClose={() => {
+                                setIsOpenModal(false);
+                                setSelectedEvent(null);
+                                setDraftSlot(null);
+                            }}
                             refresh={fetchEvents}
                         />
                     ) : (
                         <NewTaskForm
                             slot={draftSlot}
-                            onClose={() => { setIsOpenModal(false); setSelectedEvent(null); setDraftSlot(null); }}
+                            onClose={() => {
+                                setIsOpenModal(false);
+                                setSelectedEvent(null);
+                                setDraftSlot(null);
+                            }}
                             refresh={fetchEvents}
                         />
                     )}

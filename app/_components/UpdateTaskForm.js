@@ -60,7 +60,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 required
             />
 
-            <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-2">
                 <span className="font-semibold text-primary-700">Celý deň</span>
                 <ToggleSwitch
                     checked={isAllDay}
@@ -133,7 +133,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
             {/* Tlačidlá */}
             <div className="flex justify-end gap-2">
                 <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
-                <Button variant="primary" size="large" type="submit">
+                <Button variant="primary" size="medium" type="submit">
                     Aktualizovať
                 </Button>
             </div>

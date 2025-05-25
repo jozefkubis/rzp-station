@@ -13,6 +13,8 @@ const buttonVariants = {
   primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95",
   secondary:
     "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95",
+  tertiary:
+    "text-gray-600 bg-[#FFF144] border border-gray-300 hover:bg-[#FFD01C] active:scale-95",
   danger: "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl",
 };
 

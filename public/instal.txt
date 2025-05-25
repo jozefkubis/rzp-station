@@ -12,6 +12,7 @@ npm i clsx
 npm install @supabase/auth-helpers-nextjs
 npm install date-holidays
 npm install react-big-calendar date-fns
+npm install @radix-ui/react-tooltip 
 
 
 

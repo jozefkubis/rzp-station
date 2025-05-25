@@ -10,7 +10,7 @@ export default function FormTaskInput({ label, id, className = "", ...rest }) {
                 id={id}
                 {...rest}
                 className={`
-          w-full rounded-md border bg-gray-50 px-4 py-2 text-primary-700
+          w-full rounded-md border bg-gray-50 px-4 py-1 text-primary-700
           focus:outline-none focus:ring-2 focus:ring-primary-300
           ${rest.disabled ? "opacity-50" : ""}
           ${className}
