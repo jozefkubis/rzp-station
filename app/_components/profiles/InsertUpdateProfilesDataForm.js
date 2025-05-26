@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FormInput from "@.app/_components/FormInput";
 import handleSubmitUploadProfileData from "@/app/_lib/functions/handleSubmitUploadProfileData";
 import ImageUploader from "@/app/_components/profiles/ImageUploader";
 import toast from "react-hot-toast";
 import Button from "@/app/_components/Button";
+import FormInput from "@/app/_components/FormInput";
 
 function InsertUpdateProfilesDataForm({ profiles }) {
   const [error, setError] = useState("");
