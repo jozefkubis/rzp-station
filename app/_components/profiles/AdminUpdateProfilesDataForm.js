@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import handleSubmitAdminUpdateProfileData from "@/app/_lib/functions/handleSubmitAdminUpdateProfileData";
 import Button from "@/app/_components/Button";
 import FormInput from "@/app/_components/FormInput";
+import handleSubmitAdminUpdateProfileData from "@/app/_lib/functions/handleSubmitAdminUpdateProfileData ";
 
 function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");

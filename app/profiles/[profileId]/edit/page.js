@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getProfile } from "@/app/_lib/data-service";
-import AdminUpdateProfilesDataForm from "@/app/_components/AdminUpdateProfilesDataForm";
+import AdminUpdateProfilesDataForm from "@/app/_components/profiles/AdminUpdateProfilesDataForm";
 
 export const dynamic = "force-dynamic"; // Ak treba
 

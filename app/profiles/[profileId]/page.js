@@ -1,5 +1,5 @@
 import Button from "@/app/_components/Button";
-import DeleteProfileButton from "@/app/_components/DeleteProfileButton";
+import DeleteProfileButton from "@/app/_components/profiles/DeleteProfileButton";
 import ProfileIdContactInfo from "@/app/_components/profiles/ProfileIdContactInfo";
 import ProfileIdInfo from "@/app/_components/profiles/ProfileIdInfo";
 import ProfileImage from "@/app/_components/profiles/ProfileImage";
@@ -29,7 +29,7 @@ export default async function Page({ params }) {
     return (
       <div className="flex flex-col items-end gap-8 pt-12">
         <div className="flex gap-2">
-          <DeleteProfileButton profile={profile} />
+          <DeleteProfileButton profileId={profileId} />
           <Link href={`/profiles/${profile.id}/edit`}>
             <Button>Upravit profil</Button>
           </Link>

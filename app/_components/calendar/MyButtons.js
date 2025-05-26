@@ -4,6 +4,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@radix-ui/react-tooltip";
+import { FaRegCalendarPlus } from "react-icons/fa";
+import { LuCalendarHeart } from "react-icons/lu";
 
 export default function MyButtons({
     setSelectedEvent,
@@ -27,14 +29,14 @@ export default function MyButtons({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <button
-                            className="rounded bg-blue-600 text-white px-2 py-1"
+                            className="rounded bg-primary-700 text-gray-50 px-2 py-1"
                             onClick={handleAdd}
                             aria-label="Pridať udalosť"
                         >
-                            +
+                            <FaRegCalendarPlus />
                         </button>
                     </TooltipTrigger>
-                    <TooltipContent side="right" align="center" className="text-white bg-blue-600 px-4 py-1 rounded-r-full ml-[-2px] cursor-pointer font-semibold" onClick={handleAdd}>
+                    <TooltipContent side="right" align="center" className="text-gray-50 bg-primary-700 px-4 py-0 rounded-r-full ml-[-2px] cursor-pointer font-semibold" onClick={handleAdd}>
                         Pridať udalosť
                     </TooltipContent>
                 </Tooltip>
@@ -42,14 +44,14 @@ export default function MyButtons({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <button
-                            className="rounded bg-[#FFF144] text-gray-900 px-2 py-1"
+                            className="rounded bg-primary-700 text-gray-50 px-2 py-1"
                             onClick={() => setShowHoliday(!showHoliday)}
                             aria-label={!showHoliday ? "Skryť sviatky" : "Zobraziť sviatky"}
                         >
-                            +
+                            <LuCalendarHeart />
                         </button>
                     </TooltipTrigger>
-                    <TooltipContent side="right" align="center" className="text-primary-700 bg-[#FFF144] px-4 py-1 rounded-r-full ml-[-2px] cursor-pointer font-semibold" onClick={() => setShowHoliday(!showHoliday)}>
+                    <TooltipContent side="right" align="center" className="text-gray-50 bg-primary-700 px-4 py-0 rounded-r-full ml-[-2px] cursor-pointer font-semibold" onClick={() => setShowHoliday(!showHoliday)}>
                         {!showHoliday ? "Skryť sviatky" : "Zobraziť sviatky"}
                     </TooltipContent>
                 </Tooltip>
