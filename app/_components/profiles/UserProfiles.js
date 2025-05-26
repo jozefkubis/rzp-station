@@ -1,6 +1,6 @@
 "use client";
 
-import UserCard from "./UserCard";
+import UserCard from "@/app/_components/profiles/UserCard";
 
 export default function UserProfiles({ profiles }) {
   return (

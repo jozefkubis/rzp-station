@@ -1,4 +1,4 @@
-import LoginForm from "@/app/_components/LoginForm"
+import LoginForm from "@/app/_components/login/LoginForm"
 
 export const metadata = {
   title: "Prihlásenie",

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import LoginFormInput from "./LoginFormInput";
-import LoginButton from "./LoginButton";
-import handleSubmitLogin from "../_lib/functions/handleSubmitLogin";
+import LoginFormInput from "@/app/_components/login/LoginFormInput";
+import LoginButton from "@/app/_components/login/LoginButton";
+import handleSubmitLogin from "@/app/_lib/functions/handleSubmitLogin";
 import toast from "react-hot-toast";
 
 export default function LoginForm() {

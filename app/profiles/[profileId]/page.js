@@ -1,8 +1,8 @@
 import Button from "@/app/_components/Button";
 import DeleteProfileButton from "@/app/_components/DeleteProfileButton";
-import ProfileIdContactInfo from "@/app/_components/ProfileIdContactInfo";
-import ProfileIdInfo from "@/app/_components/ProfileIdInfo";
-import ProfileImage from "@/app/_components/ProfileImage";
+import ProfileIdContactInfo from "@/app/_components/profiles/ProfileIdContactInfo";
+import ProfileIdInfo from "@/app/_components/profiles/ProfileIdInfo";
+import ProfileImage from "@/app/_components/profiles/ProfileImage";
 import { getProfile } from "@/app/_lib/data-service";
 import { formatDate } from "@/app/_lib/helpers/functions";
 import Link from "next/link";

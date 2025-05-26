@@ -1,19 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import FormInput from "@.app/_components/FormInput";
+import handleSubmitUploadProfileData from "@/app/_lib/functions/handleSubmitUploadProfileData";
+import ImageUploader from "@/app/_components/profiles/ImageUploader";
 import toast from "react-hot-toast";
-import handleSubmitAdminUpdateProfileData from "../_lib/functions/handleSubmitAdminUpdateProfileData ";
-import Button from "./Button";
-import FormInput from "./FormInput";
+import Button from "@/app/_components/Button";
 
-function AdminUpdateProfilesDataForm({ profile }) {
+function InsertUpdateProfilesDataForm({ profiles }) {
   const [error, setError] = useState("");
   const [full_name, setFull_name] = useState("");
+  const [username, setUsername] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -21,13 +23,13 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleSubmitAdminUpdateProfileData(e, { setError });
+    handleSubmitUploadProfileData(e, { setError, avatar });
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg flex flex-col justify-center h-screen w-1/2 mx-auto"
+      className="mx-auto flex h-screen w-1/2 flex-col justify-center rounded-lg p-8"
     >
       <div className="">
         <FormInput
@@ -37,8 +39,21 @@ function AdminUpdateProfilesDataForm({ profile }) {
           placeholder="Meno a priezvisko"
           name="full_name"
           onChange={(e) => setFull_name(e.target.value)}
-          value={full_name || profile?.full_name || ""}
-          {...(!profile && { required: true })}
+          value={full_name || profiles?.full_name || ""}
+          {...(!profiles && { required: true })}
+        />
+      </div>
+
+      <div className="">
+        <FormInput
+          label="Uživatelské meno"
+          id="username"
+          type="text"
+          placeholder="Uživatelské meno"
+          name="username"
+          onChange={(e) => setUsername(e.target.value)}
+          value={username || profiles?.username || ""}
+          {...(!profiles && { required: true })}
         />
       </div>
 
@@ -50,8 +65,8 @@ function AdminUpdateProfilesDataForm({ profile }) {
           placeholder="Adresa"
           name="address"
           onChange={(e) => setAddress(e.target.value)}
-          value={address || profile?.address || ""}
-          {...(!profile && { required: true })}
+          value={address || profiles?.address || ""}
+          {...(!profiles && { required: true })}
         />
       </div>
 
@@ -63,12 +78,12 @@ function AdminUpdateProfilesDataForm({ profile }) {
           placeholder="Dátum narodenia"
           name="dateOfBirth"
           onChange={(e) => setDateOfBirth(e.target.value)}
-          value={dateOfBirth || profile?.dateOfBirth || ""}
-          {...(!profile && { required: true })}
+          value={dateOfBirth || profiles?.dateOfBirth || ""}
+          {...(!profiles && { required: true })}
         />
       </div>
 
-      <div className="">
+      <div className="flex flex-col">
         <FormInput
           label="Dátum prehliadky"
           id="medCheckDate"
@@ -76,47 +91,36 @@ function AdminUpdateProfilesDataForm({ profile }) {
           placeholder="Dátum prehliadky"
           name="medCheckDate"
           onChange={(e) => setMedCheckDate(e.target.value)}
-          value={medCheckDate || profile?.medCheckDate || ""}
-          {...(!profile && { required: true })}
+          value={medCheckDate || profiles?.medCheckDate || ""}
+          {...(!profiles && { required: true })}
         />
       </div>
 
-      <div className="">
+      <div className="flex flex-col">
         <FormInput
-          label="Telefón"
+          label="Telefónne číslo"
           id="phone"
           type="tel"
           placeholder="+421 123 456 789"
           pattern="[+][0-9]{1,3}[0-9]{9,14}"
           name="phone"
           onChange={(e) => setPhone(e.target.value)}
-          value={phone || profile?.phone || ""}
-          {...(!profile && { required: true })}
+          value={phone || profiles?.phone || ""}
+          {...(!profiles && { required: true })}
         />
       </div>
 
-      <FormInput
-        id="id"
-        type="hidden"
-        name="id"
-        value={profile?.id || ""}
-      />
+      <div className="flex justify-center p-5">
+        <ImageUploader onAvatarSelect={setAvatar} />
+      </div>
 
-      <div className="flex flex-col justify-center items-end gap-8">
-
-        <Button size="medium">Aktualizovať profil</Button>
-
-        <div>
-          <Link
-            href={`/profiles/${profile.id}`}
-            className="font-semibold text-primary-700 hover:underline"
-          >
-            ← Späť na profil
-          </Link>
-        </div>
+      <div className="flex justify-end p-5">
+        <Button variant="primary" size="large">
+          Aktualizovať profil
+        </Button>
       </div>
     </form>
-  )
+  );
 }
 
-export default AdminUpdateProfilesDataForm
+export default InsertUpdateProfilesDataForm;

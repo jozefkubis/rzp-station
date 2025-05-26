@@ -1,5 +1,5 @@
 import { useFormStatus } from "react-dom"
-import SpinnerMini from "./SpinnerMini"
+import SpinnerMini from "@/app/_components/SpinnerMini"
 
 export default function LoginButton() {
   const { pending } = useFormStatus()

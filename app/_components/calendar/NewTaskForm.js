@@ -1,55 +1,61 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FormTaskInput from "./FormTaskInput";
-import Button from "./Button";
+import FormTaskInput from "@/app/_components/calendar/FormTaskInput";
+import Button from "@/app/_components/Button";
 import toast from "react-hot-toast";
-import handleSubmitUpdateTaskForm from "../_lib/functions/handleSubmitUpdateTaskForm";
-import DeleteTaskButton from "./DeleteTaskButton";
-import ToggleSwitch from "./ToggleSwitch";
+import handleSubmitNewTask from "@/app/_lib/functions/handleSubmitNewTask";
+import ToggleSwitch from "@/app/_components/calendar/ToggleSwitch";
 
-export default function UpdateTaskForm({ onClose, refresh, task }) {
-    const toDateStr = (d) =>
-        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-            d.getDate(),
-        ).padStart(2, "0")}`;
-
-    const toTimeStr = (d) => d.toTimeString().slice(0, 5);
-
-    const [dateFrom, setDateFrom] = useState(toDateStr(task.start));
-    const [dateTo, setDateTo] = useState(toDateStr(task.end));
-    const [startTime, setStartTime] = useState(toTimeStr(task.start));
-    const [endTime, setEndTime] = useState(toTimeStr(task.end));
-    const [note, setNote] = useState(task.note ?? "");
-    const [title, setTitle] = useState(task.title);
+export default function NewTaskForm({ onClose, refresh, slot }) {
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [note, setNote] = useState("");
+    const [title, setTitle] = useState("");
     const [error, setError] = useState("");
-    const [isAllDay, setIsAllDay] = useState(task.isAllDay ?? task.allDay ?? false);
+    const [isAllDay, setIsAllDay] = useState(false);
 
     useEffect(() => {
         if (error) toast.error(error);
     }, [error]);
+
     useEffect(() => {
         if (isAllDay) {
             setDateTo("");
             setStartTime("");
             setEndTime("");
-        } else {
-            setDateTo(toDateStr(task.end));
-            setStartTime(toTimeStr(task.start));
-            setEndTime(toTimeStr(task.end));
+        } else if (!dateTo) {
+            setDateTo(dateFrom);
         }
-    }, [isAllDay, task.end, task.start]);
+    }, [isAllDay, dateFrom, dateTo]);
+
+    useEffect(() => {
+        if (!slot) return; // kliknutie na „+“ nemá slot
+        function toDateInputStr(date) {
+            const tzDiff = date.getTimezoneOffset() * 60000; // min → ms
+            const local = new Date(date.getTime() - tzDiff); // posun späť na lokál
+            return local.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+        }
+        setDateFrom(toDateInputStr(slot.start));
+    }, [slot]);
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+
 
     async function handleSubmit(e) {
-        await handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
+        e.preventDefault();
+        handleSubmitNewTask(e, {
+            setError,
+            onClose,
+            refresh,
+        });
     }
-
 
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
-            <input type="hidden" name="id" value={task.id} />
-
-            {/* Názov */}
+            {/* Názov udalosti */}
             <FormTaskInput
                 label="Názov udalosti"
                 id="title"
@@ -69,7 +75,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 />
             </div>
 
-            {/* Riadok Od */}
+            {/* Riadok “Od” */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormTaskInput
                     label="Dátum od"
@@ -78,6 +84,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="dateFrom"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
+                    min={todayStr}
                     required
                 />
                 <FormTaskInput
@@ -91,7 +98,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 />
             </div>
 
-            {/* Riadok Do */}
+            {/* Riadok “Do” */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormTaskInput
                     label="Dátum do"
@@ -100,6 +107,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="dateTo"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
+                    min={todayStr}
                     disabled={isAllDay}
                 // required
                 />
@@ -124,17 +132,16 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                     name="note"
                     rows="3"
                     className="rounded-md border bg-gray-50 px-4 py-2 text-primary-700 outline-none focus:ring-2 focus:ring-primary-300"
-                    value={note ?? ""}
+                    value={note}
                     onChange={(e) => setNote(e.target.value)}
                 // required
                 />
             </div>
 
-            {/* Tlačidlá */}
-            <div className="flex justify-end gap-2">
-                <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
+            {/* Tlačidlo */}
+            <div className="flex justify-end">
                 <Button variant="primary" size="medium" type="submit">
-                    Aktualizovať
+                    Pridať
                 </Button>
             </div>
         </form>

@@ -3,9 +3,9 @@
 // import { RiDeleteBinLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import Modal from "./Modal";
-import ConfirmDelete from "./ConfirmDelete";
-import Button from "./Button";
+import Modal from "@/app/_components/Modal";
+import ConfirmDelete from "@/app/_components/ConfirmDelete";
+import Button from "@/app/_components/Button";
 import { useRouter } from "next/navigation";
 
 export default function DeleteProfileButton({ profileId }) {

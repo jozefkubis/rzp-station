@@ -1,4 +1,4 @@
-import Calendar from "../_components/Calendar";
+import Calendar from "../_components/calendar/Calendar";
 import Header from "../_components/Header";
 
 export const metadata = {

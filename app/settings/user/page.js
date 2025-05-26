@@ -1,6 +1,6 @@
 import Header from "@/app/_components/Header";
 import SideBar from "@/app/_components/SideBar";
-import UpdateUserDataForm from "@/app/_components/UpdateUserDataForm";
+import UpdateUserDataForm from "@/app/_components/profiles/UpdateUserDataForm";
 import { getUser } from "@/app/_lib/data-service";
 import { HiOutlineInformationCircle, HiOutlineLockClosed } from "react-icons/hi";
 

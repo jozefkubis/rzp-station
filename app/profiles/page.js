@@ -1,5 +1,5 @@
 import Header from "../_components/Header";
-import UserProfiles from "../_components/UserProfiles";
+import UserProfiles from "../_components/profiles/UserProfiles";
 import { getAllProfiles } from "../_lib/data-service";
 
 export const metadata = {

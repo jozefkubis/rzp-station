@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import FormInput from "./FormInput"
-import handleSubmitUpdateUserData from "../_lib/functions/handleSubmitUpdateUserData"
+import FormInput from "@/app/_components/FormInput"
+import handleSubmitUpdateUserData from "@/app/_lib/functions/handleSubmitUpdateUserData"
 import toast from "react-hot-toast"
-import Button from "./Button"
+import Button from "@/app/_components/Button"
 
 function UpdateUserDataForm({ user }) {
     const [error, setError] = useState("")

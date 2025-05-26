@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
-import { getAvatarUrl, getUser, getUsername } from "../_lib/data-service";
+import { getAvatarUrl, getUser, getUsername } from "@/app/_lib/data-service";
 import { HiOutlineUser } from "react-icons/hi";
 
 

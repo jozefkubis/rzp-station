@@ -1,17 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Calendar as BigCalendar, Views } from "react-big-calendar";
-import { localizer } from "../_lib/calendarLocalizer";
-import Spinner from "./Spinner";
-import MyEvent from "./MyEvent";
-import Button from "./Button";
-import NewTaskForm from "./NewTaskForm";
-import UpdateTaskForm from "./UpdateTaskForm";
-import Modal from "./Modal";
+import Spinner from "@/app/_components/Spinner";
+import { localizer } from "@/app/_lib/calendarLocalizer";
 import moment from "moment";
-import skHolidays2025 from "../data/sk-holidays-2025.json";
-import MyButtons from "./MyButtons";
+import { useCallback, useEffect, useState } from "react";
+import { Calendar as BigCalendar, Views } from "react-big-calendar";
+import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
+import Modal from "/app/_components/Modal";
+import MyButtons from "@/app/_components/calendar/MyButtons";
+import MyEvent from "@/app/_components/calendar/MyEvent";
+import NewTaskForm from "@/app/_components/calendar/NewTaskForm";
+import UpdateTaskForm from "@/app/_components/calendar/UpdateTaskForm";
 
 
 export default function Calendar() {
@@ -53,6 +52,7 @@ export default function Calendar() {
         setEvents([...holidayEvents, ...userEvents]);
         setLoading(false);
     }, []);
+
     useEffect(() => {
         fetchEvents();
     }, [fetchEvents]);

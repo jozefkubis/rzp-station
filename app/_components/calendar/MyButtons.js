@@ -1,9 +1,8 @@
-import React, { useState } from "react";
 import {
-    TooltipProvider,
     Tooltip,
-    TooltipTrigger,
     TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
 } from "@radix-ui/react-tooltip";
 
 export default function MyButtons({

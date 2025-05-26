@@ -2,9 +2,9 @@
 
 import { useTransition } from "react";
 import toast from "react-hot-toast";
-import { deleteTask } from "../_lib/actions";
-import Button from "./Button";
-import SpinnerMini from "./SpinnerMini";
+import { deleteTask } from "@/app/_lib/actions";
+import Button from "@/app/_components/Button";
+import SpinnerMini from "@/app/_components/SpinnerMini";
 
 export default function DeleteTaskButton({ task, onClose, refresh }) {
 
