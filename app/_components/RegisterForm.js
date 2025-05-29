@@ -64,7 +64,7 @@ export default function RegisterForm() {
       </div>
 
       <div className="flex justify-end p-5">
-        <Button variant="primary" size="large">
+        <Button data-cy="register-button" variant="primary" size="large">
           Registrovať
         </Button>
       </div>

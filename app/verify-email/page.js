@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function page() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div data-cy="verify-email-page" className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
             <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md text-center space-y-6">
                 <h1 className="text-2xl font-semibold text-gray-800">📨 Potvrď svoj e-mail</h1>
                 <h2 className="text-lg font-semibold">
@@ -18,6 +18,7 @@ export default function page() {
                 </p>
                 <div className="pt-4">
                     <Link
+                        data-cy="verify-email-button"
                         href="/"
                         className="bg-gray-300 text-primary-800 px-6 py-3 text-lg rounded-md hover:bg-gray-500 hover:text-primary-50 active:scale-95"
                     >

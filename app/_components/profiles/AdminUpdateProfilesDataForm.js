@@ -26,6 +26,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
   return (
     <form
+      data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
       className="rounded-lg flex flex-col justify-center h-screen w-1/2 mx-auto"
     >
@@ -104,10 +105,11 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
       <div className="flex flex-col justify-center items-end gap-8">
 
-        <Button size="medium">Aktualizovať profil</Button>
+        <Button data-cy="admin-update-profile-button" size="medium">Aktualizovať profil</Button>
 
         <div>
           <Link
+            data-cy="admin-back-to-profile-button"
             href={`/profiles/${profile.id}`}
             className="font-semibold text-primary-700 hover:underline"
           >
