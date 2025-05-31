@@ -28,6 +28,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
   return (
     <form
+      data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
       className="mx-auto flex h-screen w-1/2 flex-col justify-center rounded-lg p-8"
     >
@@ -115,7 +116,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
       </div>
 
       <div className="flex justify-end p-5">
-        <Button variant="primary" size="large">
+        <Button data-cy="admin-update-profile-button" variant="primary" size="large">
           Aktualizovať profil
         </Button>
       </div>

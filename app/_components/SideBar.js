@@ -8,7 +8,7 @@ export default function SideBar({ navLinks }) {
   const pathname = usePathname();
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-[13rem] border-r border-primary-200 pt-[10rem] flex justify-center">
+    <div data-cy="sidebar" className="fixed left-0 top-0 h-screen w-[13rem] border-r border-primary-200 pt-[10rem] flex justify-center">
       <div className="w-full px-3">
         <ul className="text-md font-semibold text-primary-700 space-y-2">
           {navLinks.map((link) => {
@@ -23,7 +23,7 @@ export default function SideBar({ navLinks }) {
                   { "bg-primary-50": isActive }
                 )}
               >
-                <Link href={href} className="flex items-center justify-start gap-3">
+                <Link data-cy="sidebar-link" href={href} className="flex items-center justify-start gap-3">
                   <span>{icon}</span>
                   <span>{name}</span>
                 </Link>
