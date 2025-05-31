@@ -1,6 +1,6 @@
-function MyEvent({ event }) {
+export default function MyEvent({ event }) {
     return (
-        <div>
+        <div data-cy="calendar-event">
             <strong>{event.title}</strong>
             {event.note && (
                 <div className="text-xs truncate">{event.note}</div>
@@ -8,6 +8,3 @@ function MyEvent({ event }) {
         </div>
     );
 }
-
-export default MyEvent
-

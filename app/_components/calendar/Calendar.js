@@ -12,7 +12,6 @@ import MyEvent from "@/app/_components/calendar/MyEvent";
 import NewTaskForm from "@/app/_components/calendar/NewTaskForm";
 import UpdateTaskForm from "@/app/_components/calendar/UpdateTaskForm";
 
-
 export default function Calendar() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -121,12 +120,24 @@ export default function Calendar() {
     }
 
     return (
-        <div className="relative grid h-[80vh] grid-cols-[auto_1fr] gap-2">
-            <MyButtons setSelectedEvent={setSelectedEvent} setDraftSlot={setDraftSlot} setIsOpenModal={setIsOpenModal} setShowHoliday={setShowHoliday} showHoliday={showHoliday} />
+        <div
+            data-cy="calendar-page"
+            className="relative grid h-[80vh] grid-cols-[auto_1fr] gap-2"
+        >
+            <MyButtons
+                setSelectedEvent={setSelectedEvent}
+                setDraftSlot={setDraftSlot}
+                setIsOpenModal={setIsOpenModal}
+                setShowHoliday={setShowHoliday}
+                showHoliday={showHoliday}
+            />
 
-            <div>
+            <div data-cy="calendar-wrapper">
                 {loading && (
-                    <div className="absolute inset-0 z-10 grid place-items-center bg-white/70">
+                    <div
+                        data-cy="calendar-spinner"
+                        className="absolute inset-0 z-10 grid place-items-center bg-white/70"
+                    >
                         <Spinner />
                     </div>
                 )}
@@ -173,34 +184,36 @@ export default function Calendar() {
             </div>
 
             {isOpenModal && (
-                <Modal
-                    onClose={() => {
-                        setIsOpenModal(false);
-                        setSelectedEvent(null);
-                    }}
-                >
-                    {selectedEvent ? (
-                        <UpdateTaskForm
-                            task={selectedEvent}
-                            onClose={() => {
-                                setIsOpenModal(false);
-                                setSelectedEvent(null);
-                                setDraftSlot(null);
-                            }}
-                            refresh={fetchEvents}
-                        />
-                    ) : (
-                        <NewTaskForm
-                            slot={draftSlot}
-                            onClose={() => {
-                                setIsOpenModal(false);
-                                setSelectedEvent(null);
-                                setDraftSlot(null);
-                            }}
-                            refresh={fetchEvents}
-                        />
-                    )}
-                </Modal>
+                <div data-cy="calendar-modal">
+                    <Modal
+                        onClose={() => {
+                            setIsOpenModal(false);
+                            setSelectedEvent(null);
+                        }}
+                    >
+                        {selectedEvent ? (
+                            <UpdateTaskForm
+                                task={selectedEvent}
+                                onClose={() => {
+                                    setIsOpenModal(false);
+                                    setSelectedEvent(null);
+                                    setDraftSlot(null);
+                                }}
+                                refresh={fetchEvents}
+                            />
+                        ) : (
+                            <NewTaskForm
+                                slot={draftSlot}
+                                onClose={() => {
+                                    setIsOpenModal(false);
+                                    setSelectedEvent(null);
+                                    setDraftSlot(null);
+                                }}
+                                refresh={fetchEvents}
+                            />
+                        )}
+                    </Modal>
+                </div>
             )}
         </div>
     );
