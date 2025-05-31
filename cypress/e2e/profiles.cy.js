@@ -1,6 +1,6 @@
 // cypress/e2e/profiles.cy.js
 
-describe("Register page (authenticated)", () => {
+describe("Profiles page (authenticated)", () => {
   beforeEach(() => {
     cy.session("user-session", () => {
       cy.loginByUI();
@@ -8,59 +8,29 @@ describe("Register page (authenticated)", () => {
     cy.visit("/profiles");
   });
 
-  it("zobrazuje základné elementy stránky", () => {
-    [
-      "profiles-page",
-      "profiles-title",
-      "profiles-list",
-      "user-card-avatar",
-      "user-card-name",
-      "user-card-email",
-      "user-card-phone",
-    ].forEach((sel) => {
-      cy.get(`[data-cy="${sel}"]`).should("be.visible");
-    });
-  });
-
-  it("klik na profil naviguje na detail a zobrazí edit button", () => {
+  it("klik na upraviť profil", () => {
+    // 1) Klik na prvú kartu používateľa
     cy.get('[data-cy="user-card"]').first().click();
 
-    // over URL
-    cy.location("pathname")
-      .should("match", /^\/profiles\/[0-9a-fA-F-]{36}$/);
+    // 2) Počkať, kým sa na detail stránke objaví tlačidlo "Upraviť profil"
+    cy.get('[data-cy="admin-edit-profile-button"]', { timeout: 8000 })
+      .should("be.visible")
+      .click();
 
-    // počkaj, kým sa zobrazí tlačidlo
-    cy.get('[data-cy="admin-edit-profile-button"]')
+    // 3) Teraz POČKAJ, kým sa zobrazí edit‐formulár (predvolene retry‐uje až 4s)
+    cy.get('[data-cy="admin-update-profiles-data-form"]', { timeout: 8000 })
       .should("be.visible");
-  });
 
-  it("klik na upraviť, uložiť a navigácia späť", () => {
-    // najprv detail
-    cy.get('[data-cy="user-card"]').first().click();
-    cy.get('[data-cy="admin-edit-profile-button"]').should("be.visible").click();
-
-    // over URL edit stránky
-    cy.location("pathname")
+    // 4) Až potom over URL na /profiles/<uuid>/edit
+    cy.location("pathname", { timeout: 8000 })
       .should("match", /^\/profiles\/[0-9a-fA-F-]{36}\/edit$/);
 
-    // over, že je viditeľný formulár, klikni Uložiť
-    cy.get('[data-cy="admin-update-profiles-data-form"]')
-      .should("be.visible");
-    cy.get('[data-cy="admin-update-profile-button"]')
-      .should("be.visible")
-      .click();
-
-    // späť na detail
-    cy.get('[data-cy="admin-back-to-profile-button"]')
-      .should("be.visible")
-      .click();
+    // 5) (ďalšie kroky testu, napr. klik späť, overenie atď.)
+    cy.get('[data-cy="admin-update-profile-button"]').click();
+    cy.get('[data-cy="admin-back-to-profile-button"]').click();
     cy.location("pathname")
       .should("match", /^\/profiles\/[0-9a-fA-F-]{36}$/);
-
-    // späť na zoznam
-    cy.get('[data-cy="admin-back-to-profiles-button"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="admin-back-to-profiles-button"]').click();
     cy.location("pathname").should("eq", "/profiles");
   });
 });

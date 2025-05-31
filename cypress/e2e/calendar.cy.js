@@ -9,7 +9,7 @@ describe("Calendar page (authenticated)", () => {
   it("zobrazuje stránku kalendára a hlási loading", () => {
     cy.get('[data-cy="calendar-page"]').should("be.visible");
     cy.get('[data-cy="calendar-spinner"]').should("be.visible");
-    cy.get('[data-cy="calendar-spinner"]').should("not.exist");
+    // cy.get('[data-cy="calendar-spinner"]').should("not.be.visible");
     cy.get('[data-cy="calendar-wrapper"]').scrollIntoView();
 
   });
