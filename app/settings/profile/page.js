@@ -20,9 +20,9 @@ export default async function page() {
     const profiles = await getProfilesData(user?.email);
 
     return (
-        <div data-cy="settings-profile-page">
+        <div>
             <Header />
-            <div className="max-h-screen">
+            <div data-cy="settings-profile-page" className="max-h-screen">
                 <SideBar navLinks={navLinks} />
                 <div className="pl-[13rem] flex justify-center">
                     <InsertUpdateProfilesDataForm profiles={profiles} />

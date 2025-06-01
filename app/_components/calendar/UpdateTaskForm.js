@@ -46,7 +46,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
 
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form data-cy="update-task-form" onSubmit={handleSubmit} className="space-y-5">
             <input type="hidden" name="id" value={task.id} />
 
             {/* Názov */}
@@ -133,7 +133,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
             {/* Tlačidlá */}
             <div className="flex justify-end gap-2">
                 <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
-                <Button variant="primary" size="medium" type="submit">
+                <Button data-cy="update-task-submit" variant="primary" size="medium" type="submit">
                     Aktualizovať
                 </Button>
             </div>
