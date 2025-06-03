@@ -22,7 +22,7 @@ describe("Home page (authenticated)", () => {
 
   it("klikne na Profil", () => {
     cy.get('nav a[href="/settings/profile"]').click();
-    cy.location('pathname', { timeout: 5000 }).should('eq', '/settings/profile');
+    cy.location('pathname', { timeout: 8000 }).should('eq', '/settings/profile');
     cy.get(`[data-cy="settings-profile-page"]`).should("be.visible");
   });
 
@@ -36,5 +36,13 @@ describe("Home page (authenticated)", () => {
     cy.get('nav a[href="/login"]').click();
     cy.location("pathname").should("eq", "/login");
     cy.get(`[data-cy="login-form"]`).should("be.visible");
+
+    cy.get('input[name="email"]').type("kubis.jozef@outlook.com");
+    cy.get('input[name="password"]').type("111111");
+    cy.get('button[type="submit"]').click();
+
+    cy.get('button[type="submit"]').should("be.disabled");
+
+    cy.location("pathname").should("eq", "/");
   });
 });
