@@ -8,7 +8,7 @@ export default async function handleSubmitUpdateTaskForm(e, { setError, onClose,
     const response = await updateTask(formData);
 
     if (response?.error) {
-        setError(resp.error);
+        setError(response.error);
         return;
     }
     toast.success("Úloha aktualizovaná");

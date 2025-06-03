@@ -6,7 +6,7 @@ describe("Settings/profile page (authenticated)", () => {
     cy.visit("/settings/profile");
   });
 
-  it("zobrazuje nastavenia profilovehoho formulara", () => {
+  it("zobrazuje nastavenia profiloveho formulara", () => {
     cy.get('[data-cy="settings-profile-page"]').should("be.visible");
   })
 
@@ -27,7 +27,7 @@ describe("Settings/profile page (authenticated)", () => {
     cy.contains('[data-cy="sidebar-link"]', "Heslo")
       .should("be.visible")
       .click();
-    cy.location("pathname").should("eq", "/settings/user");
+    cy.location("pathname").should("eq", "/settings/user", { timeout: 4000 });
 
   })
 });
