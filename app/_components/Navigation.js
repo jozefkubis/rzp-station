@@ -20,7 +20,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav>
+    <nav data-cy="navigation">
       <ul className="flex px-10 py-1 gap-1">
         {navLinks.map(({ name, href, icon }) => {
           const isActive = pathname === href;

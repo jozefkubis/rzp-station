@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { HiOutlineCalendarDays, HiOutlineUser, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers } from 'react-icons/hi2';
+import { HiOutlineCalendarDays, HiOutlineUser, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers, HiArrowRightOnRectangle } from 'react-icons/hi2';
 
 
 export const revalidate = 0;
@@ -36,6 +36,11 @@ export default function Page() {
       name: "Registrácia",
       href: "/register",
       icon: <HiOutlineUserPlus className="h-20 w-20 text-primary-700" />,
+    },
+    {
+      name: "Odhlásiť",
+      href: "/login",
+      icon: <HiArrowRightOnRectangle className="h-20 w-20 text-primary-700" />,
     },
   ];
 

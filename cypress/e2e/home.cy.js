@@ -31,4 +31,10 @@ describe("Home page (authenticated)", () => {
     cy.location("pathname").should("eq", "/register");
     cy.get(`[data-cy="register-page"]`).should("be.visible");
   });
+
+  it("klikne na logout", () => {
+    cy.get('nav a[href="/login"]').click();
+    cy.location("pathname").should("eq", "/login");
+    cy.get(`[data-cy="login-form"]`).should("be.visible");
+  });
 });

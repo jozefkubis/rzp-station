@@ -1,5 +1,3 @@
-// cypress/e2e/profiles.cy.js
-
 describe("Profiles page (authenticated)", () => {
   beforeEach(() => {
     cy.session("user-session", () => {
