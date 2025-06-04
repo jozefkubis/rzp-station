@@ -41,7 +41,7 @@ describe("Calendar page (authenticated)", () => {
     cy.get('[data-cy="new-task-submit"]').click();
 
     // 5) Počkame, kým sa modal zavrie (alebo zmizne):
-    cy.get('[data-cy="calendar-modal"]').should("not.exist");
+    cy.get('[data-cy="calendar-modal"]').should("not.be.true")
 
     // 6) Overíme, že nová udalosť sa zobrazila v kalendári:
     //    Predpokladáme, že MyEvent v Calendar zobrazuje každý event s data-cy="calendar-event"

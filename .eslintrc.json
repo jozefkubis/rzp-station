@@ -1,3 +1,28 @@
+// .eslintrc.json
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "env": { "browser": true, "es2021": true, "node": true },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@next/next/recommended",
+    "next/core-web-vitals"
+  ],
+  "parserOptions": { "ecmaVersion": 13, "sourceType": "module" },
+  "rules": {
+    "semi": ["warn", "never"], // bodkočiarka už len varovanie
+    "quotes": ["error", "double"] // vyžaduj jednoduché úvodzovky
+  },
+  "overrides": [
+    {
+      "files": ["cypress/**/*.js"],
+      "env": { "cypress/globals": true },
+      "plugins": ["cypress"],
+      "extends": ["plugin:cypress/recommended"],
+      "rules": {
+        "no-unused-expressions": "off",
+        "quotes": "off", // ak nechceš riešiť úvodzovky v testoch
+        "semi": "off" // a ani bodkočiarky v testoch
+      }
+    }
+  ]
 }

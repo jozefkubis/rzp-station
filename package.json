@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .js",
     "cy:run": "cypress run --browser edge"
   },
   "dependencies": {
@@ -28,8 +28,12 @@
   },
   "devDependencies": {
     "cypress": "^14.3.3",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.20",
+    "eslint-plugin-cypress": "^2.15.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "postcss": "^8",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",

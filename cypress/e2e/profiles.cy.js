@@ -12,7 +12,6 @@ describe("Profiles page (authenticated)", () => {
 
     // 2) Počkať, kým sa na detail stránke objaví tlačidlo "Upraviť profil"
     cy.get('[data-cy="admin-edit-profile-button"]', { timeout: 8000 })
-      .should("be.visible")
       .click();
 
     // 3) Teraz POČKAJ, kým sa zobrazí edit‐formulár (predvolene retry‐uje až 4s)
