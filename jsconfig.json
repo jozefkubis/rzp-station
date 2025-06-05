@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".", // ← koreň projektu
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // ← alias "@/…" → koreň
     }
-  }
+  },
+  "include": ["**/*"] // (nepovinné, ale užitočné pre IntelliSense)
 }
