@@ -10,7 +10,7 @@
   "parserOptions": { "ecmaVersion": 13, "sourceType": "module" },
   "rules": {
     "semi": ["warn", "never"], // bodkočiarka už len varovanie
-    "quotes": ["error", "double"] // vyžaduj jednoduché úvodzovky
+    "quotes": ["error", "never"] // vyžaduj jednoduché úvodzovky
   },
   "overrides": [
     {
