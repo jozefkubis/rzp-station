@@ -5,12 +5,10 @@
   "extends": [
     "eslint:recommended",
     "plugin:@next/next/recommended",
-    "next/core-web-vitals"
+    "plugin:prettier/recommended"
   ],
   "parserOptions": { "ecmaVersion": 13, "sourceType": "module" },
   "rules": {
-    "semi": ["warn", "never"],
-    "quotes": ["warn", "double"],
     "no-unused-vars": "warn"
   },
   "overrides": [
