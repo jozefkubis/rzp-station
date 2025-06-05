@@ -10,7 +10,8 @@
   "parserOptions": { "ecmaVersion": 13, "sourceType": "module" },
   "rules": {
     "semi": ["warn", "never"],
-    "quotes": ["warn", "double"]
+    "quotes": ["warn", "double"],
+    "no-unused-vars": "warn"
   },
   "overrides": [
     {
