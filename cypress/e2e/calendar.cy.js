@@ -74,7 +74,7 @@ describe("Calendar page (authenticated)", () => {
     cy.contains('[data-cy="calendar-event"]', 'cypress test 2').click();
     cy.get('[data-cy="calendar-modal"]').should("be.visible");
     cy.get('[data-cy="delete-task-button"]').click();
-    cy.get('[data-cy="calendar-modal"]').should("not.exist", { timeout: 4000 });
+    cy.get('[data-cy="calendar-modal"]').should("not.exist");
     cy.contains('[data-cy="calendar-event"]', 'cypress test 2').should("not.exist");
   });
 

@@ -27,7 +27,7 @@ describe("Settings/profile page (authenticated)", () => {
     cy.contains('[data-cy="sidebar-link"]', "Heslo")
       .should("be.visible")
       .click();
-    cy.location("pathname").should("eq", "/settings/user", { timeout: 8000 });
+    cy.location("pathname").should("eq", "/settings/user");
 
   })
 });

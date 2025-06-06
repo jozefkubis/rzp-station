@@ -22,7 +22,7 @@ describe("Home page (authenticated)", () => {
 
   it("klikne na Profil", () => {
     cy.get('nav a[href="/settings/profile"]').click();
-    cy.location('pathname', { timeout: 8000 }).should('eq', '/settings/profile');
+    cy.location('pathname').should('eq', '/settings/profile');
     cy.get(`[data-cy="settings-profile-page"]`).should("be.visible");
   });
 

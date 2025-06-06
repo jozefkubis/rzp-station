@@ -35,9 +35,10 @@
 // });
 
 Cypress.Commands.add("loginByUI", () => {
-    cy.visit("/login");
-    cy.get('input[name="email"]').type("kubis.jozef@outlook.com");
-    cy.get('input[name="password"]').type("111111");
+    cy.visit('/login');
+    cy.get('input[name="email"]').type(Cypress.env('EMAIL'));
+    cy.get('input[name="password"]').type(Cypress.env('PASSWORD'), { log: false });
     cy.get('button[type="submit"]').click();
-    cy.location("pathname").should("eq", "/");
+    cy.location('pathname').should('eq', '/');
+
 });

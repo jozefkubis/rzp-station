@@ -11,15 +11,15 @@ describe("Profiles page (authenticated)", () => {
     cy.get('[data-cy="user-card"]').first().click();
 
     // 2) Počkať, kým sa na detail stránke objaví tlačidlo "Upraviť profil"
-    cy.get('[data-cy="admin-edit-profile-button"]', { timeout: 8000 })
+    cy.get('[data-cy="admin-edit-profile-button"]')
       .click();
 
     // 3) Teraz POČKAJ, kým sa zobrazí edit‐formulár (predvolene retry‐uje až 4s)
-    cy.get('[data-cy="admin-update-profiles-data-form"]', { timeout: 8000 })
+    cy.get('[data-cy="admin-update-profiles-data-form"]')
       .should("be.visible");
 
     // 4) Až potom over URL na /profiles/<uuid>/edit
-    cy.location("pathname", { timeout: 8000 })
+    cy.location("pathname")
       .should("match", /^\/profiles\/[0-9a-fA-F-]{36}\/edit$/);
 
     // 5) (ďalšie kroky testu, napr. klik späť, overenie atď.)
