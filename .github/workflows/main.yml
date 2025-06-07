@@ -34,7 +34,10 @@ jobs:
 
       - name: Cypress run (${{ matrix.browser }})
         uses: cypress-io/github-action@v6
-        with:
+       with:
           browser: ${{ matrix.browser }}
-          record: false # pridaj --record a project token, ak používaš Cypress Dashboard
-          # nič nestaviame, nič nespúšťame, trafíme rovno baseUrl
+          record: true              # ⬅️ zapína Dashboard
+          group: ${{ matrix.browser }}
+          parallel: true            # behy sa spoja do jedného záznamu
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
