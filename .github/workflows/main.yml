@@ -37,7 +37,7 @@ jobs:
           record: true
           parallel: true
           group: ${{ matrix.browser }}
-          ci-build-id: ${{ github.sha }}
+          ci-build-id: ${{ github.run_id }}
           browser: ${{ matrix.browser }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
