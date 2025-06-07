@@ -1,0 +1,40 @@
+# .github/workflows/cypress.yml
+name: Cypress E2E (prod URL)
+
+on:
+  push:
+    branches: [main] # uprav podľa potreby
+  pull_request:
+
+jobs:
+  cypress-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            browser: chrome
+          - os: windows-latest
+            browser: edge # Edge je predinštalovaný len na Windows runneri
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Node kvôli npm ci (Cypress aj ostatné dev závislosti)
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Cypress run (${{ matrix.browser }})
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+          record: false # pridaj --record a project token, ak používaš Cypress Dashboard
+          # nič nestaviame, nič nespúšťame, trafíme rovno baseUrl
