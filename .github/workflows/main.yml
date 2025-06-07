@@ -34,9 +34,10 @@ jobs:
       - name: Cypress run (${{ matrix.browser }})
         uses: cypress-io/github-action@v6
         with:
-          browser: ${{ matrix.browser }}
           record: true
-          group: ${{ matrix.browser }}
           parallel: true
-        env: # ← rovnaká úroveň ako with
+          group: ${{ matrix.browser }}
+          ci-build-id: ${{ github.sha }}
+          browser: ${{ matrix.browser }}
+        env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
