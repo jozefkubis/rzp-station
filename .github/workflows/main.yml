@@ -3,7 +3,7 @@ name: Cypress E2E (prod URL)
 
 on:
   push:
-    branches: [main] # uprav podľa potreby
+    branches: [main]
   pull_request:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
           - os: ubuntu-latest
             browser: chrome
           - os: windows-latest
-            browser: edge # Edge je predinštalovaný len na Windows runneri
+            browser: edge
 
     runs-on: ${{ matrix.os }}
 
@@ -23,21 +23,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # Node kvôli npm ci (Cypress aj ostatné dev závislosti)
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
+          cache: npm
 
       - run: npm ci
 
       - name: Cypress run (${{ matrix.browser }})
         uses: cypress-io/github-action@v6
-       with:
+        with:
           browser: ${{ matrix.browser }}
-          record: true              # ⬅️ zapína Dashboard
+          record: true
           group: ${{ matrix.browser }}
-          parallel: true            # behy sa spoja do jedného záznamu
-          env:
+          parallel: true
+        env: # ← rovnaká úroveň ako with
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
