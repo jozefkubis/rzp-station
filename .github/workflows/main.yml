@@ -39,5 +39,5 @@ jobs:
           record: true              # ⬅️ zapína Dashboard
           group: ${{ matrix.browser }}
           parallel: true            # behy sa spoja do jedného záznamu
-        env:
+          env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
