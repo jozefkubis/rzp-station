@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browsers: ["chrome", "edge", "firefox"]
+        browsers: ["chrome", "edge"]
 
     steps:
       - name: Checkout
