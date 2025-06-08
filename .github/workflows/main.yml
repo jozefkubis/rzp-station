@@ -1,43 +1,72 @@
-# .github/workflows/cypress.yml
+# name: Cypress E2E (prod URL)
+
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+
+# jobs:
+#   cypress-matrix:
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - os: ubuntu-latest
+#             browser: chrome
+#           - os: windows-latest
+#             browser: edge
+
+#     runs-on: ${{ matrix.os }}
+
+#     steps:
+#       - name: Checkout repo
+#         uses: actions/checkout@v4
+
+#       - name: Use Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#           cache: npm
+
+#       - run: npm ci
+
+#       - name: Cypress run (${{ matrix.browser }})
+#         uses: cypress-io/github-action@v6
+#         with:
+#           record: true
+#           parallel: true
+#           group: ${{ matrix.browser }}
+#           ci-build-id: ${{ github.run_id }}
+#           browser: ${{ matrix.browser }}
+#         env:
+#           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+
 name: Cypress E2E (prod URL)
 
 on:
   push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
-  cypress-matrix:
+  cypress-run:
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            browser: chrome
-          - os: windows-latest
-            browser: edge
-
-    runs-on: ${{ matrix.os }}
+        browsers: ["chrome", "edge", "firefox"]
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Cypress run (${{ matrix.browser }})
+      # Install npm dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run in ${{ matrix.browsers }}
         uses: cypress-io/github-action@v6
         with:
+          browser: ${{ matrix.browsers }}
           record: true
           parallel: true
-          group: ${{ matrix.browser }}
+          group: ${{ matrix.browsers }}
           ci-build-id: ${{ github.run_id }}
-          browser: ${{ matrix.browser }}
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
