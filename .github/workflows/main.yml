@@ -49,7 +49,8 @@ on:
 
 jobs:
   cypress-run:
-    runs-on: ubuntu-24.04
+    name: Cypress on ${{ matrix.browsers }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
