@@ -1,4 +1,4 @@
-name: Cypress E2E (prod URL)
+name: Cypress E2E test (prod URL)
 
 on:
   push:
