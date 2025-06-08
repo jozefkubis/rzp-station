@@ -59,8 +59,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
+
+      - name: Setup Node.js with npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm" # 🔁 cache pre rýchlejšiu inštaláciu balíkov
+
+      - name: Install dependencies (clean)
+        run: npm ci # ⚙️ použije package-lock.json na spoľahlivú inštaláciu
+
       - name: Cypress run in ${{ matrix.browsers }}
         uses: cypress-io/github-action@v6
         with:
