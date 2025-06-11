@@ -60,7 +60,7 @@ const config = {
           900: "#1B5E20",
           950: "#004D40",
         },
-        quatertary: {
+        quaternary: {
           50: "#E1F5FE",
           100: "#B3E5FC",
           200: "#81D4FA",

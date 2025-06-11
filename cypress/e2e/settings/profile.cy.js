@@ -6,15 +6,15 @@ describe("Settings/profile page (authenticated)", () => {
     cy.visit("/settings/profile");
   });
 
-  it("zobrazuje nastavenia profiloveho formulara", () => {
+  it("zobrazuje nastavenia profilového formulára", () => {
     cy.get('[data-cy="settings-profile-page"]').should("be.visible");
-  })
+  });
 
   it("zobrazuje sa formular s funkcnym tlacidlom", () => {
     cy.get('[data-cy="admin-update-profiles-data-form"]').should("be.visible");
 
     cy.get('[data-cy="admin-update-profile-button"]').click();
-  })
+  });
 
   it("zobrazuje sa sidebar s funkcnymi linkami", () => {
     cy.get('[data-cy="sidebar"]').should("be.visible");
@@ -28,6 +28,5 @@ describe("Settings/profile page (authenticated)", () => {
       .should("be.visible")
       .click();
     cy.location("pathname").should("eq", "/settings/user", { timeout: 4000 });
-
-  })
+  });
 });

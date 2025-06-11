@@ -1,23 +1,27 @@
-"use client"
+"use client";
 
 import { HiArrowRightOnRectangle } from "react-icons/hi2";
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import { logout } from "../_lib/actions";
 
 function LogOutButton() {
-    const router = useRouter()
+  const router = useRouter();
 
-    async function handleLogout() {
-        await logout()
-        router.push("/login")
-    }
+  async function handleLogout() {
+    await logout();
+    router.push("/login");
+  }
 
-    return (
-        <button onClick={handleLogout} className="text-primary-700 hover:bg-primary-50 p-2 rounded-md active:scale-95 transition-transform duration-300 ease-in-out"  >
-            <HiArrowRightOnRectangle size={22} />
-        </button>
-    )
+  return (
+    <button
+      onClick={handleLogout}
+      data-cy="logout-button"
+      className="rounded-md p-2 text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95"
+    >
+      <HiArrowRightOnRectangle size={22} />
+    </button>
+  );
 }
 
-export default LogOutButton
+export default LogOutButton;

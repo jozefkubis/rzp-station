@@ -1,4 +1,4 @@
-describe("Profiles page (authenticated)", () => {
+describe("Register page (authenticated)", () => {
   beforeEach(() => {
     cy.session("user-session", () => {
       cy.loginByUI();
@@ -10,18 +10,18 @@ describe("Profiles page (authenticated)", () => {
     cy.get('[data-cy="register-form"]').should("be.visible");
   });
 
-  // it("umožní registrovať a presmeruje na overenie e-mailu", () => {
-  //   cy.get('input[name="email"]').type("kubiss.jozeff@gmail.com");
-  //   cy.get('input[name="password"]').type("111111");
-  //   cy.get('input[name="re_password"]').type("111111");
-  //   cy.get('[data-cy="register-button"]')
-  //     .should("be.visible")
-  //     .click();
+  it("umožní registrovať a presmeruje na overenie e-mailu", () => {
+    const uniqueEmail = `testuser+${Date.now()}@example.com`;
 
-  //   // Po odoslaní formu presmeruje na /verify-email
-  //   cy.location("pathname").should("eq", "/verify-email");
-  //   cy.get('[data-cy="verify-email-page"]').should("be.visible");
-  // });
+    cy.get('input[name="email"]').type(uniqueEmail);
+    cy.get('input[name="password"]').type("111111");
+    cy.get('input[name="re_password"]').type("111111");
+    cy.get('[data-cy="register-button"]').should("be.visible").click();
+
+    // Po odoslaní formu presmeruje na /verify-email
+    cy.location("pathname").should("eq", "/verify-email");
+    cy.get('[data-cy="verify-email-page"]').should("be.visible");
+  });
 
   // it("umožní overiť e-mail a presmeruje na domovskú stránku", () => {
   //   // Predpokladáme, že sme už na /verify-email
