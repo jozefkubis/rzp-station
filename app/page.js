@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { HiOutlineCalendarDays, HiOutlineUser, HiOutlineFolder, HiOutlinePhoto, HiOutlineUserPlus, HiOutlineUsers, HiArrowRightOnRectangle } from 'react-icons/hi2';
+import { PiAmbulance } from "react-icons/pi";
 
 
 export const revalidate = 0;
@@ -11,6 +12,11 @@ export default function Page() {
       name: "Kalendár",
       href: "/calendar",
       icon: <HiOutlineCalendarDays className="h-20 w-20 text-primary-700" />,
+    },
+    {
+      name: "Služby",
+      href: "/shifts",
+      icon: <PiAmbulance className="h-20 w-20 text-primary-700" />,
     },
     {
       name: "Posádka",

@@ -14,6 +14,11 @@ describe("Home page (authenticated)", () => {
     cy.location("pathname").should("eq", "/calendar");
   });
 
+  it("klikne na Služby", () => {
+    cy.get('nav a[href="/shifts"]').click();
+    cy.location("pathname").should("eq", "/shifts");
+  });
+
   it("klikne na Profily", () => {
     cy.get('nav a[href="/profiles"]').click();
     cy.location("pathname").should("eq", "/profiles");
