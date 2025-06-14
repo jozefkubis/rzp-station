@@ -381,3 +381,21 @@ export async function deleteTask(id) {
 
   return { success: true };
 }
+
+// MARK: GET SHIFT FOR MONTH
+export async function getShiftsForMonth({ year, month }) {
+  const supabase = await createClient()
+
+  const from = `${year}-${String(month).padStart(2, '0')}-01`
+  const lastDayDate = new Date(year, month, 0);
+  const to = lastDayDate.toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from('shifts')
+    .select('*')
+    .gte('date', from)
+    .lte('date', to)
+
+  if (error) throw error
+  return data
+}
