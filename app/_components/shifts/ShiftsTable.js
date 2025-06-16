@@ -1,48 +1,69 @@
 "use client";
 
-import clsx from "clsx";
+import { getDaysArray } from "./helpers_shifts";
 
-const days = Array.from({ length: 31 }, (_, i) => i + 1);
+export default function ShiftsTable({ shifts }) {
+    /* ---------- helpery zostávajú nezmenené ---------- */
 
-export default function ShiftsTable({ profiles }) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // 1–12
+    const days = getDaysArray(year, month);
+
+    const colTemplate = `10rem repeat(${days.length}, 3rem)`; // ► dynamický grid
+
     return (
-        <div className="overflow-x-auto mx-auto border border-slate-300 mt-8">
-            {/* hlavička */}
-            <div className="grid grid-cols-[10rem_repeat(31,3rem)] sticky top-0 z-30">
-                <div className="px-2 py-1 font-bold flex items-center justify-center text-xs bg-white border-b border-slate-300">Meno</div>
-                {days.map(d => (
-                    <div key={d} className="h-9 flex items-center justify-center text-xs bg-white border-l border-b border-slate-300">
-                        {d}
+        <div className="mx-auto mt-8 overflow-x-auto border border-slate-300">
+            {/** ================= HLAVIČKA ================ */}
+            <div
+                /** ► odstránime pevný Tailwind reťazec, necháme len “grid” */
+                className="sticky top-0 z-30 grid"
+                style={{ gridTemplateColumns: colTemplate }}
+            >
+                <div className="flex items-center justify-center border-b border-slate-300 bg-white px-2 py-1 text-xs font-bold">
+                    Meno
+                </div>
+
+                {days.map(({ day, isWeekend }) => (
+                    <div
+                        key={`head-${day}`} /** unikátny reťazec */
+                        className={`flex h-9 items-center justify-center border-b border-l text-xs ${isWeekend ? "bg-amber-100" : "bg-white"}`}
+                    >
+                        {day}
                     </div>
                 ))}
             </div>
 
-            {/* riadky */}
-            {profiles.map((p, idx) => (
-                <div key={p.id} className="grid grid-cols-[10rem_repeat(31,3rem)] text-sm">
-                    {/* bunka s menom */}
-                    <div
-                        className={clsx(
-                            "px-2 py-1 text-sm sticky left-0 z-20 bg-white flex items-center justify-center hover:bg-blue-100",
-                            idx % 2 && "bg-slate-50 flex items-center justify-center hover:bg-blue-100"
-                        )}
-                    >
-                        {p.full_name}
-                    </div>
+            {/** ================= RIADKY ================= */}
+            {shifts.map((shift, index) => {
+                const rowBg = index % 2 === 0 ? "bg-white" : "bg-slate-50";
 
-                    {/* 31 prázdnych buniek */}
-                    {days.map(d => (
+                return (
+                    <div
+                        key={shift.id}
+                        /** ► rovnaká šablóna ako hlavička */
+                        className={`grid text-sm ${rowBg}`}
+                        style={{ gridTemplateColumns: colTemplate }}
+                    >
+                        {/** bunka s menom */}
                         <div
-                            key={d}
-                            className={clsx(
-                                "h-9 flex items-center justify-center cursor-pointer border-l border-slate-200",
-                                idx % 2 && "bg-slate-50",     // zebra
-                                "hover:bg-blue-100"
-                            )}
-                        />
-                    ))}
-                </div>
-            ))}
+                            className={`sticky left-0 z-20 flex items-center justify-center px-2 py-1 ${rowBg} hover:bg-blue-100`}
+                        >
+                            {shift.profiles.full_name}
+                        </div>
+
+                        {/** bunky dní */}
+                        {days.map(({ dateStr, isWeekend }) => (
+                            <div
+                                key={`${shift.id}-${dateStr}`}
+                                className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 ${rowBg} /* zebra */ ${isWeekend && "bg-amber-100"} /* celý stĺpec víkendu */ hover:bg-blue-100`}
+                            >
+                                {/* Sem neskôr D / N / X */}
+                            </div>
+                        ))}
+                    </div>
+                );
+            })}
         </div>
     );
 }

@@ -1,12 +1,12 @@
 import Header from "../_components/Header"
 import ShiftsTable from "../_components/shifts/ShiftsTable";
-import { getAllProfiles } from "../_lib/data-service";
+import getAllShifts from "../_lib/data-service";
 
 export default async function page() {
 
-    const profiles = await getAllProfiles();
+    const shifts = await getAllShifts();
 
-    if (!profiles || profiles.length === 0) {
+    if (!shifts || shifts.length === 0) {
         return (
             <div className="flex h-screen items-center justify-center text-xl text-gray-500">
                 Žiadne profily nenájdené alebo chyba načítania.
@@ -14,11 +14,14 @@ export default async function page() {
         );
     }
 
+    console.log(shifts);
+
+
     return (
         <div>
             <Header />
             <div className="flex justify-center px-8">
-                <ShiftsTable profiles={profiles} />
+                <ShiftsTable shifts={shifts} />
             </div>
         </div>
     )

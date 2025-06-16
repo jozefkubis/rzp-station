@@ -184,3 +184,17 @@ export async function updateTask(task) {
 //   return true;
 // }
 
+export default async function getAllShifts() {
+  const supabase = await createClient();
+
+  const { data: shifts, error } = await supabase.from("shifts").select("*, profiles!shifts_user_id_fkey(full_name, avatar_url)");
+
+
+  if (error) {
+    console.error("Supabase error – shifts:", error);
+    throw error;
+  }
+
+  return shifts;
+}
+
