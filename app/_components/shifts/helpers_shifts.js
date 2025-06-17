@@ -19,3 +19,16 @@ export function getDaysArray(year, month) {
         };
     });
 }
+
+export function getMonthOnly() {
+    const today = new Date();
+
+    const monthLower = new Intl.DateTimeFormat("sk-SK", {
+        month: "long",
+    }).format(today);                // „jún“
+
+    const monthCapital =
+        monthLower.charAt(0).toUpperCase() + monthLower.slice(1);
+
+    return monthCapital;
+}
