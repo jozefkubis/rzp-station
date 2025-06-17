@@ -56,7 +56,7 @@ export default function ShiftsTable({ shifts }) {
                         {days.map(({ dateStr, isWeekend }) => (
                             <div
                                 key={`${shift.id}-${dateStr}`}
-                                className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 ${rowBg} /* zebra */ ${isWeekend && "bg-amber-100"} /* celý stĺpec víkendu */ hover:bg-blue-100`}
+                                className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${isWeekend ? "bg-amber-100" : rowBg} `}
                             >
                                 {/* Sem neskôr D / N / X */}
                             </div>
