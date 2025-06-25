@@ -18,21 +18,26 @@ export default function ShiftsTable({ shifts }) {
     return (
         <>
             <div className="mx-auto mt-8 overflow-x-auto border border-slate-300">
-                <div className="text-center py-2 h-[2.5rem] border-b"><span className="fixed">{monthName}{" "}{year}</span></div>
+                <div className="h-[2.5rem] border-b py-2 text-center">
+                    <span className="fixed">
+                        {monthName} {year}
+                    </span>
+                </div>
+
                 {/** ================= HLAVIČKA ================ */}
                 <div
                     /** ► odstránime pevný Tailwind reťazec, necháme len “grid” */
                     className="sticky top-0 z-30 grid"
                     style={{ gridTemplateColumns: colTemplate }}
                 >
-                    <div className="flex items-center justify-center border-b border-slate-300 bg-white px-2 py-1 text-sm font-bold sticky left-0 z-20">
+                    <div className="sticky left-0 z-20 flex items-center justify-center border-b border-slate-300 bg-white px-2 py-1 text-sm font-bold">
                         Meno
                     </div>
 
-                    {days.map(({ day, isWeekend }) => (
+                    {days.map(({ day, isWeekend, isToday }) => (
                         <div
                             key={`head-${day}`} /** unikátny reťazec */
-                            className={`flex h-9 items-center justify-center border-b border-l text-xs ${isWeekend ? "bg-amber-100" : "bg-white"}`}
+                            className={`flex h-9 items-center justify-center border-b border-l text-xs ${isWeekend ? "bg-amber-100" : "bg-white"} ${isToday ? "bg-primary-200" : ""}`}
                         >
                             {day}
                         </div>
@@ -58,10 +63,10 @@ export default function ShiftsTable({ shifts }) {
                             </div>
 
                             {/** bunky dní */}
-                            {days.map(({ dateStr, isWeekend }) => (
+                            {days.map(({ dateStr, isWeekend, isToday }) => (
                                 <div
                                     key={`${shift.id}-${dateStr}`}
-                                    className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${isWeekend ? "bg-amber-100" : rowBg} `}
+                                    className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${isWeekend ? "bg-amber-100" : rowBg} ${isToday ? "bg-primary-200" : ""}`}
                                 >
                                     {/* Sem neskôr D / N / X */}
                                 </div>

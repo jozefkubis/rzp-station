@@ -115,7 +115,7 @@ export default function Calendar() {
     function dayPropGetter(date) {
         const isWeekend = [0, 6].includes(date.getDay()); // nedeľa=0, sobota=6
         return {
-            className: isWeekend ? "bg-yellow-50" : "",
+            className: isWeekend ? "bg-amber-100" : "",
         };
     }
 
