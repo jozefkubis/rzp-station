@@ -37,7 +37,7 @@ export default function ShiftsTable({ shifts }) {
                     {days.map(({ day, isWeekend, isToday }) => (
                         <div
                             key={`head-${day}`} /** unikátny reťazec */
-                            className={`flex h-9 items-center justify-center border-b border-l text-xs ${isWeekend ? "bg-amber-100" : "bg-white"} ${isToday ? "bg-primary-200" : ""}`}
+                            className={`flex h-9 items-center justify-center border-b border-l text-xs ${isWeekend ? "bg-amber-100" : "bg-white"} ${isToday ? "bg-blue-100" : ""}`}
                         >
                             {day}
                         </div>
@@ -66,7 +66,7 @@ export default function ShiftsTable({ shifts }) {
                             {days.map(({ dateStr, isWeekend, isToday }) => (
                                 <div
                                     key={`${shift.id}-${dateStr}`}
-                                    className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${isWeekend ? "bg-amber-100" : rowBg} ${isToday ? "bg-primary-200" : ""}`}
+                                    className={`flex h-9 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${isWeekend ? "bg-amber-100" : rowBg} ${isToday ? "bg-blue-100" : ""}`}
                                 >
                                     {/* Sem neskôr D / N / X */}
                                 </div>

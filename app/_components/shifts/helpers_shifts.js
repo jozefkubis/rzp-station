@@ -5,23 +5,24 @@ export function getDayCount(year, month) {
 }
 
 export function getDaysArray(year, month) {
-    const total = getDayCount(year, month); // 28/30/31
+    const total = getDayCount(year, month);
+    const todayStr = new Date().toISOString().slice(0, 10); // „2025-06-25“
+
     return Array.from({ length: total }, (_, i) => {
         const day = i + 1;
-        const dateObj = new Date(year, month - 1, day); // JS mesiac = 0–11
+        const dateObj = new Date(year, month - 1, day);
+        const dateStr = dateObj.toISOString().slice(0, 10);
         const weekday = dateObj.getDay();
-        const today = new Date().getDate();
-        console.log(today);
-
 
         return {
-            day,                              // 1, 2, 3…
-            dateStr: dateObj.toISOString().slice(0, 10), // "2025-06-15"
-            isWeekend: weekday === 0 || weekday === 6,   // true/false
-            isToday: day === today,
+            day,
+            dateStr,
+            isWeekend: weekday === 0 || weekday === 6,
+            isToday: dateStr === todayStr,   // 🔸 porovnávame celý dátum
         };
     });
 }
+
 
 export function getMonthOnly() {
     const today = new Date();
