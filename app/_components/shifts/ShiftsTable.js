@@ -18,14 +18,14 @@ export default function ShiftsTable({ shifts }) {
     return (
         <>
             <div className="mx-auto mt-8 overflow-x-auto border border-slate-300">
-                <div className="text-center py-2 border-b">{monthName}{" "}{year}</div>
+                <div className="text-center py-2 h-[2.5rem] border-b"><span className="fixed">{monthName}{" "}{year}</span></div>
                 {/** ================= HLAVIČKA ================ */}
                 <div
                     /** ► odstránime pevný Tailwind reťazec, necháme len “grid” */
                     className="sticky top-0 z-30 grid"
                     style={{ gridTemplateColumns: colTemplate }}
                 >
-                    <div className="flex items-center justify-center border-b border-slate-300 bg-white px-2 py-1 text-sm font-bold">
+                    <div className="flex items-center justify-center border-b border-slate-300 bg-white px-2 py-1 text-sm font-bold sticky left-0 z-20">
                         Meno
                     </div>
 
