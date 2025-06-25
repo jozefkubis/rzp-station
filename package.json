@@ -20,14 +20,14 @@
     "date-holidays": "^3.24.3",
     "next": "^15.1.6",
     "react": "^18.3.0",
-    "react-big-calendar": "^1.18.0",
+    "react-big-calendar": "^1.19.4",
     "react-dom": "^18.3.0",
     "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "cypress": "^14.3.3",
+    "cypress": "^14.5.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.20",
     "eslint-plugin-cypress": "^2.15.2",

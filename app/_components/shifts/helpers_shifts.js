@@ -1,38 +1,41 @@
+// 1) Koľko dní má mesiac (month = 1-12)
 export function getDayCount(year, month) {
-    // month píšeme 1–12 (január = 1)
-    // 0. deň nasledujúceho mesiaca = posledný deň hľadaného
-    return new Date(year, month, 0).getDate();
+  // 0. deň nasledujúceho mesiaca = posledný deň hľadaného
+  return new Date(year, month, 0).getDate();
 }
 
+// 2) Vygeneruje pole objektov pre každý deň mesiaca
 export function getDaysArray(year, month) {
-    const total = getDayCount(year, month);
-    const todayStr = new Date().toISOString().slice(0, 10); // „2025-06-25“
+  const total = getDayCount(year, month); // 28 / 30 / 31
 
-    return Array.from({ length: total }, (_, i) => {
-        const day = i + 1;
-        const dateObj = new Date(year, month - 1, day);
-        const dateStr = dateObj.toISOString().slice(0, 10);
-        const weekday = dateObj.getDay();
+  // dnešok – lokálne, čistá polnoc
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-        return {
-            day,
-            dateStr,
-            isWeekend: weekday === 0 || weekday === 6,
-            isToday: dateStr === todayStr,   // 🔸 porovnávame celý dátum
-        };
-    });
+  return Array.from({ length: total }, (_, i) => {
+    // dátum i-tého dňa (tiež lokálna polnoc)
+    const date = new Date(year, month - 1, i + 1);
+    date.setHours(0, 0, 0, 0);
+
+    const weekday = date.getDay(); // 0 = nedeľa … 6 = sobota
+
+    return {
+      day: i + 1, // 1, 2, 3…
+      dateStr: date.toISOString().slice(0, 10), // "YYYY-MM-DD"
+      isWeekend: weekday === 0 || weekday === 6,
+      isToday: date.getTime() === today.getTime(), // presne dnešok
+    };
+  });
 }
-
 
 export function getMonthOnly() {
-    const today = new Date();
+  const today = new Date();
 
-    const monthLower = new Intl.DateTimeFormat("sk-SK", {
-        month: "long",
-    }).format(today);                // „jún“
+  const monthLower = new Intl.DateTimeFormat("sk-SK", {
+    month: "long",
+  }).format(today); // „jún“
 
-    const monthCapital =
-        monthLower.charAt(0).toUpperCase() + monthLower.slice(1);
+  const monthCapital = monthLower.charAt(0).toUpperCase() + monthLower.slice(1);
 
-    return monthCapital;
+  return monthCapital;
 }
