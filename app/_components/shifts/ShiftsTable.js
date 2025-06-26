@@ -7,8 +7,10 @@ import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
 import RowDays from "./RowDays";
 import MainShiftsTable from "./MainShiftsTable";
+import { useState, useCallback } from "react";
 
 export default function ShiftsTable({ shifts }) {
+    const [selected, setSelected] = useState(null);
 
     const today = new Date();
     const year = today.getFullYear();
@@ -18,6 +20,11 @@ export default function ShiftsTable({ shifts }) {
     const monthName = getMonthOnly();
 
     const colTemplate = `10rem repeat(${days.length}, 3rem)`; // ► dynamický grid
+
+    const handleSelect = useCallback((shiftId, dateStr) => {
+        setSelected({ shiftId, dateStr });
+        console.log(selected);
+    }, []);
 
     return (
         <>
@@ -76,7 +83,7 @@ export default function ShiftsTable({ shifts }) {
                                         : rowBg; // zebra
 
                                 return (
-                                    <RowDays key={`${shift.id}-${dateStr}`} cellBg={cellBg}>
+                                    <RowDays key={`${shift.id}-${dateStr}`} cellBg={cellBg} dateStr={dateStr} onSelect={(d) => handleSelect(shift.id, d)}>
                                         {/* Sem neskôr D / N / X */}
                                     </RowDays>
                                 );
