@@ -8,6 +8,7 @@ import ParamedName from "./ParamedName";
 import RowDays from "./RowDays";
 import MainShiftsTable from "./MainShiftsTable";
 import { useState, useCallback } from "react";
+import ShiftRow from "./ShiftRow";
 
 export default function ShiftsTable({ shifts }) {
     const [selected, setSelected] = useState(null);
@@ -23,7 +24,7 @@ export default function ShiftsTable({ shifts }) {
 
     const handleSelect = useCallback((shiftId, dateStr) => {
         setSelected({ shiftId, dateStr });
-        console.log(selected);
+        console.log(shiftId, dateStr);
     }, []);
 
     return (
@@ -59,38 +60,16 @@ export default function ShiftsTable({ shifts }) {
                 </div>
 
                 {/** ================= RIADKY ================= */}
-                {shifts.map((shift, index) => {
-                    const rowBg = index % 2 === 0 ? "bg-white" : "bg-slate-50";
-
-                    return (
-                        <div
-                            key={shift.id}
-                            /** ► rovnaká šablóna ako hlavička */
-                            className={`grid text-sm ${rowBg}`}
-                            style={{ gridTemplateColumns: colTemplate }}
-                        >
-                            {/** bunka s menom */}
-                            <AllParamedics rowBg={rowBg}>
-                                {shift.profiles.full_name}
-                            </AllParamedics>
-
-                            {/** bunky dní */}
-                            {days.map(({ dateStr, isWeekend, isToday }) => {
-                                const cellBg = isToday
-                                    ? "bg-primary-100 font-semibold"
-                                    : isWeekend
-                                        ? "bg-amber-100"
-                                        : rowBg; // zebra
-
-                                return (
-                                    <RowDays key={`${shift.id}-${dateStr}`} cellBg={cellBg} dateStr={dateStr} onSelect={(d) => handleSelect(shift.id, d)}>
-                                        {/* Sem neskôr D / N / X */}
-                                    </RowDays>
-                                );
-                            })}
-                        </div>
-                    );
-                })}
+                {shifts.map((shift, index) => (
+                    <ShiftRow
+                        key={shift.id}
+                        shift={shift}
+                        days={days}
+                        rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                        colTemplate={colTemplate}
+                        onSelect={handleSelect}  // priamo memoizovaný callback
+                    />
+                ))}
             </MainShiftsTable>
         </>
     );
