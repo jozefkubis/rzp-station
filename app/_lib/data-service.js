@@ -187,8 +187,9 @@ export async function updateTask(task) {
 export default async function getAllShifts() {
   const supabase = await createClient();
 
-  const { data: shifts, error } = await supabase.from("shifts").select("*, profiles!shifts_user_id_fkey(full_name, avatar_url)");
-
+  const { data: shifts, error } = await supabase
+    .from("shifts")
+    .select("*, profiles!shifts_user_id_fkey(full_name, avatar_url)");
 
   if (error) {
     console.error("Supabase error – shifts:", error);
@@ -198,3 +199,20 @@ export default async function getAllShifts() {
   return shifts;
 }
 
+// MARK: ADD SHIFT
+export async function addShift(shift) {
+  const supabase = await createClient();
+
+  const { data: newShift, error } = await supabase
+    .from("shifts")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (error) {
+    console.error("Chyba pri vytvorení novej služby:", error);
+    throw error;
+  }
+
+  return newShift;
+}
