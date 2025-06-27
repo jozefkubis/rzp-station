@@ -28,6 +28,7 @@ export default function ShiftRow({
             : rowBg; // zebra
 
         const cellContent = dateStr === shiftDate ? shiftType : "";
+        console.log(dateStr);
 
         return (
           <RowDays

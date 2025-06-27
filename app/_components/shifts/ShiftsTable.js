@@ -9,9 +9,12 @@ import RowDays from "./RowDays";
 import MainShiftsTable from "./MainShiftsTable";
 import { useState, useCallback } from "react";
 import ShiftRow from "./ShiftRow";
+import ShiftChoiceModal from "./ShiftChoiceModal";
+import Modal from "../Modal";
 
 export default function ShiftsTable({ shifts }) {
   const [selected, setSelected] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const today = new Date();
   const year = today.getFullYear();
@@ -24,7 +27,8 @@ export default function ShiftsTable({ shifts }) {
 
   const handleSelect = useCallback((shiftId, dateStr) => {
     setSelected({ shiftId, dateStr });
-    console.log(shiftId, dateStr);
+    setIsModalOpen(true);
+    // console.log(shiftId, dateStr);
   }, []);
 
   return (
@@ -71,6 +75,16 @@ export default function ShiftsTable({ shifts }) {
           />
         ))}
       </MainShiftsTable>
+
+      {isModalOpen && (
+        <Modal
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+        >
+          <ShiftChoiceModal />
+        </Modal>
+      )}
     </>
   );
 }
