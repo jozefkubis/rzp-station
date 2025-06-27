@@ -11,15 +11,15 @@ export default function ShiftChoiceModal() {
         N
       </Button>
 
-      <Button variant="secondary" size="medium">
+      <Button variant="secondaryShiftX" size="medium">
         X
       </Button>
 
-      <Button variant="secondary" size="medium">
+      <Button variant="secondaryShiftX" size="medium">
         xD
       </Button>
 
-      <Button variant="secondary" size="medium">
+      <Button variant="secondaryShiftX" size="medium">
         xN
       </Button>
 
@@ -39,7 +39,7 @@ export default function ShiftChoiceModal() {
         zN
       </Button>
 
-      <Button variant="secondary" size="medium">
+      <Button variant="secondaryShiftRD" size="medium">
         RD
       </Button>
     </div>
