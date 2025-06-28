@@ -200,7 +200,7 @@ export default async function getAllShifts() {
 }
 
 // MARK: ADD SHIFT
-export async function addShift(shift) {
+export async function addShift() {
   const supabase = await createClient();
 
   const { data: newShift, error } = await supabase

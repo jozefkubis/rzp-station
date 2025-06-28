@@ -384,18 +384,42 @@ export async function deleteTask(id) {
 
 // MARK: GET SHIFT FOR MONTH
 export async function getShiftsForMonth({ year, month }) {
-  const supabase = await createClient()
+  const supabase = createClient();
 
-  const from = `${year}-${String(month).padStart(2, '0')}-01`
+  const from = `${year}-${String(month).padStart(2, "0")}-01`;
   const lastDayDate = new Date(year, month, 0);
   const to = lastDayDate.toISOString().slice(0, 10);
 
   const { data, error } = await supabase
-    .from('shifts')
-    .select('*')
-    .gte('date', from)
-    .lte('date', to)
+    .from("shifts")
+    .select("*, profiles(full_name)")
+    .gte("date", from)
+    .lte("date", to)
+    .order("full_name", { ascending: true, foreignTable: "profiles" })
+    .order("date", { ascending: true });
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
+}
+
+
+// MARK: UPSER SHIFT
+export async function upsertShift(shiftId, dateStr, type) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('shifts')
+    .upsert({
+      id: shiftId,
+      date: dateStr,
+      shift_type: type,
+    })
+
+  if (error) {
+    console.error("Chyba pri pridávaní/aktualizáci služby:", error);
+    return null;
+  }
+
+  revalidatePath("/", "shifts");
+  return { success: true }
 }

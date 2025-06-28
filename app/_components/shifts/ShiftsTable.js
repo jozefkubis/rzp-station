@@ -11,10 +11,12 @@ import { useState, useCallback } from "react";
 import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
+import { upsertShift } from "@/app/_lib/actions";
 
 export default function ShiftsTable({ shifts }) {
   const [selected, setSelected] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const today = new Date();
   const year = today.getFullYear();
@@ -31,6 +33,22 @@ export default function ShiftsTable({ shifts }) {
     // console.log(shiftId, dateStr);
   }, []);
 
+  function handlePick(type) {
+    if (!selected) return;
+
+    setIsModalOpen(false);
+
+    upsertShift(selected.shiftId, selected.dateStr, type);
+    //   .then(() => {
+    //     // priprava na toast
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     alert("Ups, nepodarilo sa uložiť zmeny");
+    //   });
+  }
+
+
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
@@ -44,7 +62,7 @@ export default function ShiftsTable({ shifts }) {
           className="sticky top-0 z-30 grid"
           style={{ gridTemplateColumns: colTemplate }}
         >
-          <ParamedName>Meno</ParamedName>
+          <ParamedName>Záchranár</ParamedName>
 
           {days.map(({ day, isWeekend, isToday }) => {
             const headBg = isToday
@@ -82,7 +100,7 @@ export default function ShiftsTable({ shifts }) {
             setIsModalOpen(false);
           }}
         >
-          <ShiftChoiceModal />
+          <ShiftChoiceModal onPick={handlePick} />
         </Modal>
       )}
     </>

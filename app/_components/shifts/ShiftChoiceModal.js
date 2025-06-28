@@ -1,7 +1,7 @@
 import Button from "../Button";
 
 // ShiftChoiceModal.jsx
-export default function ShiftChoiceModal() {
+export default function ShiftChoiceModal({ onPick }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {["D", "N", "X", "xD", "xN", "vD", "vN", "zD", "zN", "RD"].map((t) => (
@@ -15,6 +15,7 @@ export default function ShiftChoiceModal() {
                 : "secondary"
           }
           size="medium"
+          onClick={() => onPick(t)}
         >
           {t}
         </Button>
