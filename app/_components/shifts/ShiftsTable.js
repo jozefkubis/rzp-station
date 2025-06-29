@@ -70,11 +70,11 @@ export default function ShiftsTable({ shifts }) {
     setIsModalOpen(false);
   }
 
-  async function handleClearMonth() {
-    if (!confirm("Naozaj vymazať všetky služby v aktuálnom mesiaci?")) return;
-    await clearMonth(year, month);
-    router.refresh();
-  }
+  // async function handleClearMonth() {
+  //   if (!confirm("Naozaj vymazať všetky služby v aktuálnom mesiaci?")) return;
+  //   await clearMonth(year, month);
+  //   router.refresh();
+  // }
 
   return (
     <>
@@ -118,11 +118,11 @@ export default function ShiftsTable({ shifts }) {
           />
         ))}
 
-        <div className="mb-2 flex justify-end">
+        {/* <div className="mb-2 flex justify-end">
           <Button variant="danger" onClick={handleClearMonth}>
             🧹 Vymaž celý mesiac
           </Button>
-        </div>
+        </div> */}
       </MainShiftsTable>
 
       {isModalOpen && (

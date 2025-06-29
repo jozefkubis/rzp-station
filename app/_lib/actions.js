@@ -448,11 +448,9 @@ export async function clearMonth(year, month) {
   const from = `${year}-${String(month).padStart(2, "0")}-01`;
   const to = new Date(year, month, 0).toISOString().slice(0, 10);
 
-  console.log("[clearMonth]", from, "→", to);
-
   const { error } = await supabase
     .from("shifts")
-    .delete()
+    .update({ shift_type: null })
     .gte("date", from)
     .lte("date", to);
 
