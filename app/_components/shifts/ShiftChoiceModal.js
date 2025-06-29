@@ -4,7 +4,20 @@ import Button from "../Button";
 export default function ShiftChoiceModal({ onPick }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
-      {["D", "N", "X", "xD", "xN", "vD", "vN", "zD", "zN", "RD"].map((t) => (
+      {[
+        "D",
+        "N",
+        "DN",
+        "ND",
+        "vD",
+        "vN",
+        "zD",
+        "zN",
+        "X",
+        "xD",
+        "xN",
+        "RD",
+      ].map((t) => (
         <Button
           key={t}
           variant={
