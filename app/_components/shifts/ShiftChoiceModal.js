@@ -1,7 +1,7 @@
 import Button from "../Button";
 
 // ShiftChoiceModal.jsx
-export default function ShiftChoiceModal({ onPick }) {
+export default function ShiftChoiceModal({ onPick, onDelete }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {[
@@ -33,6 +33,10 @@ export default function ShiftChoiceModal({ onPick }) {
           {t}
         </Button>
       ))}
+
+      <Button variant="danger" onClick={onDelete}>
+        🗑️ zmazať
+      </Button>
     </div>
   );
 }

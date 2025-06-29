@@ -402,7 +402,6 @@ export async function getShiftsForMonth({ year, month }) {
 
 // MARK: UPSER SHIFT
 export async function upsertShift(userId, dateStr, type) {
-  // console.log("[upsertShift] userId:", userId, "date:", dateStr, "type:", type);
   const supabase = await createClient();
 
   const { error } = await supabase.from("shifts").upsert(
@@ -421,4 +420,41 @@ export async function upsertShift(userId, dateStr, type) {
 
   revalidatePath("/", "shifts");
   return { success: true };
+}
+
+// MARK: DELETE SHIFT
+export async function deleteShift(userId, dateStr) {
+  const supabase = await createClient();
+
+  console.log("[deleteShift]", userId, dateStr);
+
+  const { error } = await supabase
+    .from("shifts")
+    .delete()
+    .match({ user_id: userId, date: dateStr });
+
+  if (error) {
+    console.error("Chyba pri mazaní služby:", error);
+    return null;
+  }
+  revalidatePath("/", "shifts");
+  return { success: true };
+}
+
+// MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
+export async function clearMonth(year, month) {
+  const supabase = await createClient();
+
+  const from = `${year}-${String(month).padStart(2, "0")}-01`;
+  const to = new Date(year, month, 0).toISOString().slice(0, 10);
+
+  console.log("[clearMonth]", from, "→", to);
+
+  const { error } = await supabase
+    .from("shifts")
+    .delete()
+    .gte("date", from)
+    .lte("date", to);
+
+  if (error) throw error;
 }

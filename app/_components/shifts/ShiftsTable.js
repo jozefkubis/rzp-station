@@ -11,7 +11,7 @@ import { useState, useCallback } from "react";
 import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
-import { upsertShift } from "@/app/_lib/actions";
+import { deleteShift, upsertShift } from "@/app/_lib/actions";
 import { useRouter } from "next/navigation";
 
 export default function ShiftsTable({ shifts }) {
@@ -62,6 +62,13 @@ export default function ShiftsTable({ shifts }) {
     }, {}),
   ).sort((a, b) => a.full_name.localeCompare(b.full_name, "sk"));
 
+  async function handleDelete() {
+    if (!selected) return;
+    await deleteShift(selected.shiftId, selected.dateStr);
+    router.refresh();
+    setIsModalOpen(false);
+  }
+
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
@@ -111,7 +118,7 @@ export default function ShiftsTable({ shifts }) {
             setIsModalOpen(false);
           }}
         >
-          <ShiftChoiceModal onPick={handlePick} />
+          <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
         </Modal>
       )}
     </>
