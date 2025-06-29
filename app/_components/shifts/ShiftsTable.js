@@ -12,11 +12,12 @@ import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
 import { upsertShift } from "@/app/_lib/actions";
+import { useRouter } from "next/navigation";
 
 export default function ShiftsTable({ shifts }) {
+  const router = useRouter();
   const [selected, setSelected] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   const today = new Date();
   const year = today.getFullYear();
@@ -33,21 +34,33 @@ export default function ShiftsTable({ shifts }) {
     // console.log(shiftId, dateStr);
   }, []);
 
-  function handlePick(type) {
+  async function handlePick(type) {
     if (!selected) return;
 
     setIsModalOpen(false);
 
-    upsertShift(selected.shiftId, selected.dateStr, type);
-    //   .then(() => {
-    //     // priprava na toast
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     alert("Ups, nepodarilo sa uložiť zmeny");
-    //   });
+    // počkaj na zápis
+    await upsertShift(selected.shiftId, selected.dateStr, type);
+
+    // refetch všetkých server-componentov na stránke
+    router.refresh();
   }
 
+  const roster = Object.values(
+    shifts.reduce((acc, row) => {
+      const id = row.user_id;
+      if (!acc[id]) {
+        acc[id] = {
+          user_id: id,
+          full_name: row.profiles.full_name,
+          avatar: row.profiles.avatar_url,
+          shifts: [],
+        };
+      }
+      acc[id].shifts.push({ date: row.date, type: row.shift_type });
+      return acc;
+    }, {}),
+  ).sort((a, b) => a.full_name.localeCompare(b.full_name, "sk"));
 
   return (
     <>
@@ -80,16 +93,14 @@ export default function ShiftsTable({ shifts }) {
         </div>
 
         {/** ================= RIADKY ================= */}
-        {shifts.map((shift, index) => (
+        {roster.map((p, index) => (
           <ShiftRow
-            key={shift.id}
-            shift={shift}
+            key={p.user_id}
+            user={p} // ➊ celé „resume“ osoby
             days={days}
-            rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
             colTemplate={colTemplate}
-            onSelect={handleSelect} // priamo memoizovaný callback
-            shiftDate={shift.date}
-            shiftType={shift.shift_type}
+            onSelect={handleSelect}
+            rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
           />
         ))}
       </MainShiftsTable>

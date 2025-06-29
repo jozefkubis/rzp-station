@@ -317,7 +317,7 @@ export async function createNewTask(formData) {
     startTime: formData.get("startTime") || null,
     endTime: formData.get("endTime") || null,
     note: formData.get("note")?.trim() || null,
-    isAllDay: !!formData.get("isAllDay")
+    isAllDay: !!formData.get("isAllDay"),
   };
 
   const { error } = await supabase.from("tasks").insert(newTask);
@@ -330,7 +330,6 @@ export async function createNewTask(formData) {
   revalidatePath("/", "calendar");
   return { success: true };
 }
-
 
 // MARK: UPDATE TASK
 export async function updateTask(formData) {
@@ -348,7 +347,7 @@ export async function updateTask(formData) {
     startTime: formData.get("startTime") || null,
     endTime: formData.get("endTime") || null,
     note: formData.get("note")?.trim() || null,
-    isAllDay: !!formData.get("isAllDay")
+    isAllDay: !!formData.get("isAllDay"),
   };
 
   const { error } = await supabase
@@ -364,7 +363,6 @@ export async function updateTask(formData) {
   revalidatePath("/", "calendar");
   return { success: true };
 }
-
 
 // MARK: DELETE TASK
 export async function deleteTask(id) {
@@ -402,18 +400,19 @@ export async function getShiftsForMonth({ year, month }) {
   return data;
 }
 
-
 // MARK: UPSER SHIFT
-export async function upsertShift(shiftId, dateStr, type) {
-  const supabase = await createClient()
+export async function upsertShift(userId, dateStr, type) {
+  // console.log("[upsertShift] userId:", userId, "date:", dateStr, "type:", type);
+  const supabase = await createClient();
 
-  const { error } = await supabase
-    .from('shifts')
-    .upsert({
-      id: shiftId,
-      date: dateStr,
-      shift_type: type,
-    })
+  const { error } = await supabase.from("shifts").upsert(
+    {
+      user_id: userId,
+      date: dateStr, // "YYYY-MM-DD"
+      shift_type: type, // "D", "N", "X"…
+    },
+    { onConflict: "user_id,date" }, // ❶
+  );
 
   if (error) {
     console.error("Chyba pri pridávaní/aktualizáci služby:", error);
@@ -421,5 +420,5 @@ export async function upsertShift(shiftId, dateStr, type) {
   }
 
   revalidatePath("/", "shifts");
-  return { success: true }
+  return { success: true };
 }
