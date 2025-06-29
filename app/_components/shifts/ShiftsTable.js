@@ -11,8 +11,9 @@ import { useState, useCallback } from "react";
 import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
-import { deleteShift, upsertShift } from "@/app/_lib/actions";
+import { clearMonth, deleteShift, upsertShift } from "@/app/_lib/actions";
 import { useRouter } from "next/navigation";
+import Button from "../Button";
 
 export default function ShiftsTable({ shifts }) {
   const router = useRouter();
@@ -69,6 +70,12 @@ export default function ShiftsTable({ shifts }) {
     setIsModalOpen(false);
   }
 
+  async function handleClearMonth() {
+    if (!confirm("Naozaj vymazať všetky služby v aktuálnom mesiaci?")) return;
+    await clearMonth(year, month);
+    router.refresh();
+  }
+
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
@@ -110,6 +117,12 @@ export default function ShiftsTable({ shifts }) {
             rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
           />
         ))}
+
+        <div className="mb-2 flex justify-end">
+          <Button variant="danger" onClick={handleClearMonth}>
+            🧹 Vymaž celý mesiac
+          </Button>
+        </div>
       </MainShiftsTable>
 
       {isModalOpen && (
