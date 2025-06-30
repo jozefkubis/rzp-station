@@ -443,23 +443,23 @@ export async function deleteShift(userId, dateStr) {
 
 // MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
 export async function clearMonth(year, month) {
-  const supabase = await createClient();       // ← bez await
+  const supabase = await createClient();
 
   // 1. deň v mesiaci (YYYY-MM-DD)
-  const from = `${year}-${String(month).padStart(2, '0')}-01`;
+  const from = `${year}-${String(month).padStart(2, "0")}-01`;
 
   // exkluzívna horná hranica = 1. deň nasledujúceho mesiaca
   const nextMonth = month === 12 ? 1 : month + 1;
   const nextYear = month === 12 ? year + 1 : year;
-  const toExclusive = `${nextYear}-${String(nextMonth).padStart(2, '0')}-01`;
+  const toExclusive = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
 
   const { error } = await supabase
-    .from('shifts')
+    .from("shifts")
     .update({ shift_type: null }) // alebo ''
-    .gte('date', from)            // vrátane 1. dňa
-    .lt('date', toExclusive);     // < 1. deň ďalšieho mesiaca
+    .gte("date", from) // vrátane 1. dňa
+    .lt("date", toExclusive); // < 1. deň ďalšieho mesiaca
 
   if (error) throw error;
 
-  revalidatePath('/', 'shifts');
+  revalidatePath("/", "shifts");
 }
