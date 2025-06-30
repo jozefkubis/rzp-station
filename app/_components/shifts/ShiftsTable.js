@@ -1,54 +1,122 @@
 "use client";
 
-import AllParamedics from "./AllParamedics";
+import { useState, useCallback, useOptimistic, useTransition } from "react";
+import { useRouter } from "next/navigation";
+
 import DaysMonth from "./DaysMonth";
-import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
-import RowDays from "./RowDays";
 import MainShiftsTable from "./MainShiftsTable";
-import { useState, useCallback } from "react";
 import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
-import { clearMonth, deleteShift, upsertShift } from "@/app/_lib/actions";
-import { useRouter } from "next/navigation";
-import Button from "../Button";
 
+import { deleteShift, upsertShift } from "@/app/_lib/actions";
+
+import { getDaysArray, getMonthOnly } from "./helpers_shifts";
+
+/* ─────────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({ shifts }) {
+  /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(null); // { shiftId, dateStr }
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  /* ---------- dátumové údaje ---------- */
   const today = new Date();
   const year = today.getFullYear();
-  const month = today.getMonth() + 1; // 1–12
+  const month = today.getMonth() + 1; // 1-12
   const days = getDaysArray(year, month);
-
   const monthName = getMonthOnly();
+  const colTemplate = `10rem repeat(${days.length}, 3rem)`;
 
-  const colTemplate = `10rem repeat(${days.length}, 3rem)`; // ► dynamický grid
+  /* ---------- useOptimistic ---------- */
+  const [optimisticShifts, applyOptimistic] = useOptimistic(
+    shifts,
+    (current, action) => {
+      /* ---------- UPSERT ---------- */
+      if (action.type === "UPSERT") {
+        const { userId, date, shift_type } = action;
+        const next = current.filter(
+          (s) => !(s.user_id === userId && s.date === date),
+        );
+        const proto = current.find((s) => s.user_id === userId);
+        next.push({
+          id: `tmp-${Date.now()}`,
+          user_id: userId,
+          date,
+          shift_type,
+          profiles: proto?.profiles ?? { full_name: "", avatar_url: "" },
+        });
+        return next;
+      }
 
+      /* ---------- DELETE ---------- */
+      if (action.type === "DELETE") {
+        const { userId, date } = action;
+        return current.filter(
+          (s) => !(s.user_id === userId && s.date === date),
+        );
+      }
+
+      return current;
+    },
+  );
+
+  const [isPending, startTransition] = useTransition();
+
+  /* ---------- handlers ---------- */
   const handleSelect = useCallback((shiftId, dateStr) => {
     setSelected({ shiftId, dateStr });
     setIsModalOpen(true);
-    // console.log(shiftId, dateStr);
   }, []);
 
   async function handlePick(type) {
     if (!selected) return;
 
+    /* A. optimistický UPSERT */
+    startTransition(() =>
+      applyOptimistic({
+        type: "UPSERT",
+        userId: selected.shiftId,
+        date: selected.dateStr,
+        shift_type: type,
+      }),
+    );
+
     setIsModalOpen(false);
 
-    // počkaj na zápis
+    /* B. reálny zápis */
     await upsertShift(selected.shiftId, selected.dateStr, type);
 
-    // refetch všetkých server-componentov na stránke
+    /* C. refresh (nahradí tmp-id alebo rollbackne) */
     router.refresh();
   }
 
+  async function handleDelete() {
+    if (!selected) return;
+
+    /* A. optimistický DELETE */
+    startTransition(() =>
+      applyOptimistic({
+        type: "DELETE",
+        userId: selected.shiftId,
+        date: selected.dateStr,
+      }),
+    );
+
+    setIsModalOpen(false);
+
+    /* B. reálny DELETE */
+    await deleteShift(selected.shiftId, selected.dateStr);
+
+    /* C. refresh na zosúladenie */
+    router.refresh();
+  }
+
+  /* ---------- zoskupenie do riadkov ---------- */
   const roster = Object.values(
-    shifts.reduce((acc, row) => {
+    optimisticShifts.reduce((acc, row) => {
       const id = row.user_id;
       if (!acc[id]) {
         acc[id] = {
@@ -63,35 +131,27 @@ export default function ShiftsTable({ shifts }) {
     }, {}),
   ).sort((a, b) => a.full_name.localeCompare(b.full_name, "sk"));
 
-  async function handleDelete() {
-    if (!selected) return;
-    await deleteShift(selected.shiftId, selected.dateStr);
-    router.refresh();
-    setIsModalOpen(false);
-  }
-
+  /* ───────────── JSX ───────────── */
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
+        {/* nadpis mesiaca */}
         <MonthYearHead>
           {monthName} {year}
         </MonthYearHead>
 
-        {/** ================= HLAVIČKA ================ */}
+        {/* hlavička dní */}
         <div
-          /** ► odstránime pevný Tailwind reťazec, necháme len “grid” */
           className="sticky top-0 z-30 grid"
           style={{ gridTemplateColumns: colTemplate }}
         >
           <ParamedName>Záchranár</ParamedName>
-
           {days.map(({ day, isWeekend, isToday }) => {
             const headBg = isToday
               ? "bg-primary-100 font-semibold"
               : isWeekend
                 ? "bg-amber-100"
                 : "bg-white";
-
             return (
               <DaysMonth key={`head-${day}`} headBg={headBg}>
                 {day}
@@ -100,25 +160,22 @@ export default function ShiftsTable({ shifts }) {
           })}
         </div>
 
-        {/** ================= RIADKY ================= */}
-        {roster.map((p, index) => (
+        {/* dátové riadky */}
+        {roster.map((p, idx) => (
           <ShiftRow
             key={p.user_id}
-            user={p} // ➊ celé „resume“ osoby
+            user={p}
             days={days}
             colTemplate={colTemplate}
             onSelect={handleSelect}
-            rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
+            rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
           />
         ))}
       </MainShiftsTable>
 
+      {/* modal výberu / mazania */}
       {isModalOpen && (
-        <Modal
-          onClose={() => {
-            setIsModalOpen(false);
-          }}
-        >
+        <Modal onClose={() => setIsModalOpen(false)}>
           <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
         </Modal>
       )}
