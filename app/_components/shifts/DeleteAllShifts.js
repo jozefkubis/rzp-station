@@ -18,7 +18,7 @@ export default function DeleteAllShifts() {
     }
 
     return (
-        <div className="mt-4 self-start 2xl:px-32">
+        <div className="mt-6 self-start 2xl:px-32">
             <Button variant="danger" onClick={handleClearMonth}>
                 🧹 Vymaž celý mesiac
             </Button>

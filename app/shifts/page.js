@@ -18,9 +18,13 @@ export default async function page() {
     return (
         <div>
             <Header />
-            <div className="flex flex-col gap-5 justify-center px-8">
-                <ShiftsTable shifts={shifts} />
-                <DeleteAllShifts />
+            <div>
+                <div className="flex justify-center px-8">
+                    <ShiftsTable shifts={shifts} />
+                </div>
+                <div className="px-8">
+                    <DeleteAllShifts />
+                </div>
             </div>
         </div>
     )
