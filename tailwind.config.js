@@ -90,6 +90,9 @@ const config = {
       backgroundImage: {
         "login-bg": "url('/bg-login.png')",
       },
+      screens: {
+        xs: '480px',   // vlastný najmenší breakpoint
+      },
       // animation: {
       //   "pulse-gradient": "pulse-gradient 6s ease-in-out infinite",
       // },

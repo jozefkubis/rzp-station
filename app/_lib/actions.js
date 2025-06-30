@@ -443,16 +443,21 @@ export async function deleteShift(userId, dateStr) {
 
 // MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
 export async function clearMonth(year, month) {
-  const supabase = await createClient();
+  const supabase = await createClient();          // ← bez await a bez destructuringu
 
-  const from = `${year}-${String(month).padStart(2, "0")}-01`;
+  const from = `${year}-${String(month).padStart(2, '0')}-01`;
   const to = new Date(year, month, 0).toISOString().slice(0, 10);
 
   const { error } = await supabase
-    .from("shifts")
+    .from('shifts')
     .update({ shift_type: null })
-    .gte("date", from)
-    .lte("date", to);
+    .gte('date', from)
+    .lte('date', to);
 
-  if (error) throw error;
+  if (error) {
+    console.error('clearMonth error →', error);
+    throw error;
+  }
+
+  revalidatePath('/', 'shifts')
 }

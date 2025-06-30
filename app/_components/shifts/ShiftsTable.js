@@ -78,7 +78,7 @@ export default function ShiftsTable({ shifts }) {
 
   return (
     <>
-      <MainShiftsTable colTemplate={colTemplate}>
+      <MainShiftsTable colTemplate={colTemplate} >
         <MonthYearHead>
           {monthName} {year}
         </MonthYearHead>
@@ -107,23 +107,20 @@ export default function ShiftsTable({ shifts }) {
         </div>
 
         {/** ================= RIADKY ================= */}
-        {roster.map((p, index) => (
-          <ShiftRow
-            key={p.user_id}
-            user={p} // ➊ celé „resume“ osoby
-            days={days}
-            colTemplate={colTemplate}
-            onSelect={handleSelect}
-            rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
-          />
-        ))}
+        {
+          roster.map((p, index) => (
+            <ShiftRow
+              key={p.user_id}
+              user={p} // ➊ celé „resume“ osoby
+              days={days}
+              colTemplate={colTemplate}
+              onSelect={handleSelect}
+              rowBg={index % 2 === 0 ? "bg-white" : "bg-slate-50"}
+            />
+          ))
+        }
 
-        {/* <div className="mb-2 flex justify-end">
-          <Button variant="danger" onClick={handleClearMonth}>
-            🧹 Vymaž celý mesiac
-          </Button>
-        </div> */}
-      </MainShiftsTable>
+      </MainShiftsTable >
 
       {isModalOpen && (
         <Modal
@@ -133,7 +130,13 @@ export default function ShiftsTable({ shifts }) {
         >
           <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
         </Modal>
-      )}
+      )
+      }
+      {/* <div className="mb-2 flex justify-start">
+        <Button variant="danger" onClick={handleClearMonth}>
+          🧹 Vymaž celý mesiac
+        </Button>
+      </div> */}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import Header from "../_components/Header"
+import DeleteAllShifts from "../_components/shifts/DeleteAllShifts";
 import ShiftsTable from "../_components/shifts/ShiftsTable";
 import getAllShifts from "../_lib/data-service";
 
@@ -17,8 +18,9 @@ export default async function page() {
     return (
         <div>
             <Header />
-            <div className="flex justify-center px-8">
+            <div className="flex flex-col gap-5 justify-center px-8">
                 <ShiftsTable shifts={shifts} />
+                <DeleteAllShifts />
             </div>
         </div>
     )
