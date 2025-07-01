@@ -189,7 +189,9 @@ export default async function getAllShifts() {
 
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select("*, profiles!shifts_user_id_fkey(full_name, avatar_url)");
+    .select(
+      "*, profiles!shifts_user_id_fkey(*)",
+    );
 
   if (error) {
     console.error("Supabase error – shifts:", error);
@@ -216,3 +218,5 @@ export async function addShift() {
 
   return newShift;
 }
+
+
