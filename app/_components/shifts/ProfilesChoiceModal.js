@@ -1,13 +1,20 @@
 import Button from "../Button";
 
-export default function ProfilesChoiceModal() {
+export default function ProfilesChoiceModal({ profiles }) {
   function handleClick() {}
 
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
-      <Button variant="secondary" size="small" onClick={handleClick}>
-        ProfilesChoiceModal
-      </Button>
+      {profiles.map((p) => (
+        <Button
+          key={p.id}
+          variant="secondary"
+          size="small"
+          onClick={handleClick}
+        >
+          {p.full_name}
+        </Button>
+      ))}
     </div>
   );
 }

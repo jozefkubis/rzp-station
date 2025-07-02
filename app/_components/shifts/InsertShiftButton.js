@@ -5,7 +5,7 @@ import Button from "../Button";
 import Modal from "../Modal";
 import ProfilesChoiceModal from "./ProfilesChoiceModal";
 
-export default function InsertShiftButton() {
+export default function InsertShiftButton({ profiles }) {
   const [isProfilesModalOpen, setIsProfilesModalOpen] = useState(false);
 
   function handleProfilesModalOpen() {
@@ -25,7 +25,7 @@ export default function InsertShiftButton() {
 
       {isProfilesModalOpen && (
         <Modal onClose={() => setIsProfilesModalOpen(false)}>
-          <ProfilesChoiceModal />
+          <ProfilesChoiceModal profiles={profiles} />
         </Modal>
       )}
     </>

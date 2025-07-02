@@ -2,12 +2,13 @@ import Header from "../_components/Header";
 import DeleteAllShifts from "../_components/shifts/DeleteAllShifts";
 import InsertShiftButton from "../_components/shifts/InsertShiftButton";
 import ShiftsTable from "../_components/shifts/ShiftsTable";
-import getAllShifts from "../_lib/data-service";
+import getAllShifts, { getAllProfiles } from "../_lib/data-service";
 
 export default async function page() {
   const shifts = await getAllShifts();
+  const profiles = await getAllProfiles();
 
-  if (!shifts || shifts.length === 0) {
+  if (!shifts || !profiles || shifts.length === 0 || profiles.length === 0) {
     return (
       <div className="flex h-screen items-center justify-center text-xl text-gray-500">
         Žiadne profily nenájdené alebo chyba načítania.
@@ -27,7 +28,7 @@ export default async function page() {
             <DeleteAllShifts />
           </div>
           <div>
-            <InsertShiftButton />
+            <InsertShiftButton profiles={profiles} />
           </div>
         </div>
       </div>
