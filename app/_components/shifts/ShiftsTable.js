@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useCallback,
-  useOptimistic,
-  useTransition,
-} from "react";
+import { useState, useCallback, useOptimistic, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import DaysMonth from "./DaysMonth";
@@ -18,18 +13,20 @@ import Modal from "../Modal";
 
 import { deleteShift, upsertShift } from "@/app/_lib/actions";
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
+import ProfilesChoiceModal from "./ProfilesChoiceModal";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({ shifts }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
-  const [selected, setSelected] = useState(null);  // { userId, dateStr }
+  const [selected, setSelected] = useState(null); // { userId, dateStr }
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isProfilesModalOpen, setIsProfilesModalOpen] = useState(false);
 
   /* ---------- dátumové údaje ---------- */
   const today = new Date();
   const year = today.getFullYear();
-  const month = today.getMonth() + 1;           // 1-12
+  const month = today.getMonth() + 1; // 1-12
   const days = getDaysArray(year, month);
   const monthName = getMonthOnly();
   const colTemplate = `10rem repeat(${days.length}, 3rem)`;
@@ -44,21 +41,21 @@ export default function ShiftsTable({ shifts }) {
 
         /* odstráň prípadný starší záznam pre rovnaký deň */
         const next = current.filter(
-          (s) => !(s.user_id === userId && s.date === date)
+          (s) => !(s.user_id === userId && s.date === date),
         );
 
         /* nájdi prototyp (aby sme mali meno, email…) */
         const proto = current.find((s) => s.user_id === userId);
 
         next.push({
-          id: `tmp-${Date.now()}`,       // dočasné ID len pre React key
+          id: `tmp-${Date.now()}`, // dočasné ID len pre React key
           user_id: userId,
           date,
           shift_type,
           profiles: {
-            full_name: proto?.profiles.full_name ?? "",     // môže byť prázdne
+            full_name: proto?.profiles.full_name ?? "", // môže byť prázdne
             avatar_url: proto?.profiles.avatar_url ?? "",
-            email: proto?.profiles.email ?? "",    // fallback pre zobrazenie
+            email: proto?.profiles.email ?? "", // fallback pre zobrazenie
           },
         });
         return next;
@@ -68,12 +65,12 @@ export default function ShiftsTable({ shifts }) {
       if (action.type === "DELETE") {
         const { userId, date } = action;
         return current.filter(
-          (s) => !(s.user_id === userId && s.date === date)
+          (s) => !(s.user_id === userId && s.date === date),
         );
       }
 
       return current;
-    }
+    },
   );
 
   const [isPending, startTransition] = useTransition();
@@ -94,7 +91,7 @@ export default function ShiftsTable({ shifts }) {
         userId: selected.userId,
         date: selected.dateStr,
         shift_type: type,
-      })
+      }),
     );
 
     setIsModalOpen(false);
@@ -115,7 +112,7 @@ export default function ShiftsTable({ shifts }) {
         type: "DELETE",
         userId: selected.userId,
         date: selected.dateStr,
-      })
+      }),
     );
 
     setIsModalOpen(false);
@@ -142,13 +139,18 @@ export default function ShiftsTable({ shifts }) {
       }
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
-    }, {})
+    }, {}),
   ).sort((a, b) => {
     const nameA = a.full_name || a.email || `User ${a.user_id}`;
     const nameB = b.full_name || b.email || `User ${b.user_id}`;
     return nameA.localeCompare(nameB, "sk");
   });
   console.log("roster", roster);
+
+  // function handleProfilesModalOpen() {
+  //   setIsProfilesModalOpen(true);
+  // }
+
   /* ───────────── JSX ───────────── */
   return (
     <>
@@ -166,10 +168,11 @@ export default function ShiftsTable({ shifts }) {
           <ParamedName>Záchranár</ParamedName>
 
           {days.map(({ day, isWeekend, isToday }) => {
-            const headBg =
-              isToday ? "bg-primary-100 font-semibold"
-                : isWeekend ? "bg-amber-100"
-                  : "bg-white";
+            const headBg = isToday
+              ? "bg-primary-100 font-semibold"
+              : isWeekend
+                ? "bg-amber-100"
+                : "bg-white";
             return (
               <DaysMonth key={day} headBg={headBg}>
                 {day}
@@ -191,12 +194,18 @@ export default function ShiftsTable({ shifts }) {
         ))}
       </MainShiftsTable>
 
-      {/* modal */}
+      {/* modals */}
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
         </Modal>
       )}
+
+      {/* {isProfilesModalOpen && (
+        <Modal onClose={() => setIsProfilesModalOpen(false)}>
+          <ProfilesChoiceModal />
+        </Modal>
+      )} */}
     </>
   );
 }
