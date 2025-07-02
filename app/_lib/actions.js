@@ -463,3 +463,22 @@ export async function clearMonth(year, month) {
 
   revalidatePath("/", "shifts");
 }
+
+// MARK: INSERT PROFILE IN TO ROSTER
+export async function insertProfileInToRoster(userId, dateStr, type) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("shifts")
+    .insert([
+      {
+        user_id: userId,
+        date: dateStr,
+        shift_type: type,
+      },
+    ])
+    .select();
+
+  if (error) throw error;
+  revalidatePath("/", "shifts");
+}
