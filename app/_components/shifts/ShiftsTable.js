@@ -13,7 +13,6 @@ import Modal from "../Modal";
 
 import { deleteShift, upsertShift } from "@/app/_lib/actions";
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
-import ProfilesChoiceModal from "./ProfilesChoiceModal";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({ shifts }) {

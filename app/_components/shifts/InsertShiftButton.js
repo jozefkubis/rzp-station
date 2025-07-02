@@ -25,7 +25,10 @@ export default function InsertShiftButton({ profiles }) {
 
       {isProfilesModalOpen && (
         <Modal onClose={() => setIsProfilesModalOpen(false)}>
-          <ProfilesChoiceModal profiles={profiles} />
+          <ProfilesChoiceModal
+            profiles={profiles}
+            setIsProfilesModalOpen={setIsProfilesModalOpen}
+          />
         </Modal>
       )}
     </>

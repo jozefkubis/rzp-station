@@ -1,7 +1,14 @@
 import Button from "../Button";
 
-export default function ProfilesChoiceModal({ profiles }) {
-  function handleClick() {}
+export default function ProfilesChoiceModal({
+  profiles,
+  setIsProfilesModalOpen,
+}) {
+  const date = new Date();
+
+  function handleClick() {
+    setIsProfilesModalOpen(false);
+  }
 
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
