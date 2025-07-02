@@ -4,8 +4,6 @@ export default function ProfilesChoiceModal({
   profiles,
   setIsProfilesModalOpen,
 }) {
-  const date = new Date();
-
   function handleClick() {
     setIsProfilesModalOpen(false);
   }

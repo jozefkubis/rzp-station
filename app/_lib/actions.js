@@ -465,16 +465,18 @@ export async function clearMonth(year, month) {
 }
 
 // MARK: INSERT PROFILE IN TO ROSTER
-export async function insertProfileInToRoster(userId, dateStr, type) {
+export async function insertProfileInToRoster(userId) {
   const supabase = await createClient();
+
+  const todayDate = new Date().toISOString().slice(0, 10);
 
   const { error } = await supabase
     .from("shifts")
     .insert([
       {
         user_id: userId,
-        date: dateStr,
-        shift_type: type,
+        date: todayDate,
+        shift_type: null,
       },
     ])
     .select();
