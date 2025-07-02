@@ -10,7 +10,7 @@ const buttonSizes = {
 };
 
 const buttonVariants = {
-  primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95",
+  primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl",
   secondary:
     "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95",
   secondaryShiftRD:
