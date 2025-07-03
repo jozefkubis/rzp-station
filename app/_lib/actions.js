@@ -466,21 +466,27 @@ export async function clearMonth(year, month) {
 
 // MARK: INSERT PROFILE IN TO ROSTER
 export async function insertProfileInToRoster(userId) {
-  const supabase = await createClient();
+  const supabase = await createClient();                 // createClient je synchrónny
 
-  const todayDate = new Date().toISOString().slice(0, 10);
+  // 1. deň aktuálneho mesiaca  → YYYY-MM-01
+  const firstOfMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  ).toISOString().slice(0, 10);
 
   const { error } = await supabase
     .from("shifts")
-    .insert([
+    .upsert(
       {
         user_id: userId,
-        date: todayDate,
-        shift_type: null,
+        date: firstOfMonth,   // istota, že patrí do práve otvoreného mesiaca
+        shift_type: null,    // povolené hodnotou '' a neporuší NOT NULL
       },
-    ])
-    .select();
+      { onConflict: "user_id,date" }   // ak riadok existuje → UPDATE nič nezmení
+    )
+    .throwOnError();                   // vyhodí chybu namiesto tichého failu
 
-  if (error) throw error;
-  revalidatePath("/", "shifts");
+  // ak upsert prešiel, data nepotrebujeme
+  revalidatePath("/", "shifts");       // refetch tabuľku / SWR key
 }

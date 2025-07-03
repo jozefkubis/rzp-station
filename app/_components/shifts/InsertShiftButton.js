@@ -13,7 +13,7 @@ export default function InsertShiftButton({ profiles }) {
   }
   return (
     <>
-      <div className="mt-6 self-start 2xl:px-32">
+      <div>
         <Button
           variant="primary"
           size="medium"

@@ -19,7 +19,7 @@ export default function Page() {
       icon: <PiAmbulance className="h-20 w-20 text-primary-700" />,
     },
     {
-      name: "Posádka",
+      name: "Záchranári",
       href: "/profiles",
       icon: <HiOutlineUsers className="h-20 w-20 text-primary-700" />,
     },
