@@ -41,7 +41,7 @@ export default async function page() {
     <div className="pb-10">
       <Header />
       {(!shifts?.length || !profiles?.length) ? (
-        <div className="flex h-60 items-center justify-center text-xl text-gray-500">
+        <div className="flex h-60 items-center justify-center text-xl text-primary-700">
           Žiadne profily nenájdené alebo chyba načítania.
         </div>
       ) : (
