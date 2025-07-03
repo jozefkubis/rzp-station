@@ -490,3 +490,20 @@ export async function insertProfileInToRoster(userId) {
   // ak upsert prešiel, data nepotrebujeme
   revalidatePath("/", "shifts");       // refetch tabuľku / SWR key
 }
+
+// MARK: DELETE PROFILE FROM ROSTER
+export async function deleteProfileFromRoster(userId) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("shifts")
+    .delete()
+    .match({ user_id: userId });
+
+  if (error) {
+    console.error("Chyba pri mazaní služby:", error);
+    return null;
+  }
+  revalidatePath("/", "shifts");
+  return { success: true }
+}

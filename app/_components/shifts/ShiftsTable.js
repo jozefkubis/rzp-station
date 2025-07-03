@@ -28,7 +28,7 @@ export default function ShiftsTable({ shifts }) {
   const month = today.getMonth() + 1; // 1-12
   const days = getDaysArray(year, month);
   const monthName = getMonthOnly();
-  const colTemplate = `10rem repeat(${days.length}, 3rem)`;
+  const colTemplate = `11rem repeat(${days.length}, 3rem)`;
 
   /* ---------- useOptimistic ---------- */
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -164,7 +164,7 @@ export default function ShiftsTable({ shifts }) {
           className="sticky top-0 z-30 grid"
           style={{ gridTemplateColumns: colTemplate }}
         >
-          <ParamedName>Záchranár</ParamedName>
+          <ParamedName>Záchranári</ParamedName>
 
           {days.map(({ day, isWeekend, isToday }) => {
             const headBg = isToday
