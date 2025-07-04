@@ -16,7 +16,6 @@ npm install @radix-ui/react-tooltip
 npm install cypress --save-dev
 npm install --save-dev eslint
 npm install --save-dev eslint-plugin-cypress
-npm i swr@latest
 
 
 
