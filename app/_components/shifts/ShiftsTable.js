@@ -145,6 +145,12 @@ export default function ShiftsTable({ shifts }) {
     return nameA.localeCompare(nameB, "sk");
   });
 
+  const [optimisticRoster, apply] = useOptimistic(
+    roster, // celé pole
+    (curr, act) =>
+      act.type === "DELETE" ? curr.filter((u) => u.user_id !== act.id) : curr,
+  );
+
   /* ───────────── JSX ───────────── */
   return (
     <>
@@ -176,10 +182,11 @@ export default function ShiftsTable({ shifts }) {
         </div>
 
         {/* dátové riadky */}
-        {roster.map((p, idx) => (
+        {optimisticRoster.map((p, idx) => (
           <ShiftRow
             key={p.user_id}
             user={p}
+            onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
             days={days}
             colTemplate={colTemplate}
             onSelect={handleSelect}

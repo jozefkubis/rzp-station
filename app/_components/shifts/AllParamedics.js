@@ -1,11 +1,20 @@
+"use client";
+
 import { deleteProfileFromRoster } from "@/app/_lib/actions";
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import Modal from "../Modal";
 import ConfirmDelete from "../ConfirmDelete";
+import { useRouter } from "next/navigation";
 
-export default function AllParamedics({ children, rowBg, user }) {
+export default function AllParamedics({
+  children,
+  rowBg,
+  user,
+  onDeleteOptimistic,
+}) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   function handleClick() {
     // deleteProfileFromRoster(user.user_id);
@@ -13,10 +22,9 @@ export default function AllParamedics({ children, rowBg, user }) {
   }
 
   async function handleConfirmDelete() {
-    setIsDeleting(true);
+    startTransition(() => onDeleteOptimistic(user.user_id));
     await deleteProfileFromRoster(user.user_id);
-    setIsDeleting(false);
-    setIsOpenDeleteModal(false);
+    router.refresh();
   }
 
   return (

@@ -2,13 +2,24 @@ import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
 
 // ShiftRow.jsx
-export default function ShiftRow({ user, days, colTemplate, onSelect, rowBg }) {
+export default function ShiftRow({
+  user,
+  days,
+  colTemplate,
+  onSelect,
+  rowBg,
+  onDeleteOptimistic,
+}) {
   return (
     <div
       className={`grid text-sm ${rowBg}`}
       style={{ gridTemplateColumns: colTemplate }}
     >
-      <AllParamedics rowBg={rowBg} user={user}>
+      <AllParamedics
+        rowBg={rowBg}
+        user={user}
+        onDeleteOptimistic={onDeleteOptimistic}
+      >
         {user.full_name}
       </AllParamedics>
 
