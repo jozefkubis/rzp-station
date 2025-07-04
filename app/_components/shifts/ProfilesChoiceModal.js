@@ -1,52 +1,50 @@
-"use client";
+'use client';
 
-import { insertProfileInToRoster } from "@/app/_lib/actions";
-import Button from "../Button";
-import { startTransition, useOptimistic } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { insertProfileInToRoster } from '@/app/_lib/actions';
+import Button from '../Button';
+import { startTransition, useOptimistic } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function ProfilesChoiceModal({
   profiles,
   setIsProfilesModalOpen,
+  onInsertEmptyShift,
 }) {
   const router = useRouter();
 
-  /* --- 1. useOptimistic nad CELÝM poľom --- */
-  const [optimisticProfiles, apply] = useOptimistic(
-    profiles, // pôvodné pole
-    (current, action) => {
-      if (action.type === "INSERT") {
-        return [...current, action.profile]; // pridaj nový profil
-      }
-      return current; // default vetva
-    },
+  /* 1️⃣  useOptimistic – odstránenie zo zoznamu voľných profilov */
+  const [optimisticProfiles, applyRemove] = useOptimistic(
+    profiles,
+    (current, action) =>
+      action.type === 'REMOVE'
+        ? current.filter(p => p.id !== action.id)
+        : current
   );
 
-  /* --- 2. klik na meno --- */
+  /* 2️⃣  klik na záchranára */
   async function handleClick(id, full_name) {
-    /* a) optimistický zápis */
-    startTransition(() =>
-      apply({ type: "INSERT", profile: { id, full_name } }),
-    );
+    /* A) dva optimistické zápisy v transition */
+    startTransition(() => {
+      applyRemove({ type: 'REMOVE', id });            // modál: skryť
+      onInsertEmptyShift({ userId: id, full_name });  // tabuľka: pridať rad
+    });
 
     setIsProfilesModalOpen(false);
 
     try {
-      /* b) zápis do DB */
+      /* B) zápis do DB */
       await insertProfileInToRoster(id);
-
-      /* c) potvrdenie pre používateľa */
       toast.success(`${full_name} zahrnutý do služieb`);
-    } catch (err) {
-      toast.error("Nepodarilo sa pridať záchranára");
+    } catch {
+      toast.error('Nepodarilo sa pridať záchranára');
     } finally {
-      /* d) refresh – synchronizuje UI s reálnym stavom */
+      /* C) refresh – potvrdí alebo rollbackne obidva optimizmy */
       router.refresh();
     }
   }
 
-  /* --- 3. renderuj OPTIMISTICKÉ pole --- */
+  /* 3️⃣  UI */
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {optimisticProfiles.length ? (
@@ -57,7 +55,7 @@ export default function ProfilesChoiceModal({
             size="small"
             onClick={() => handleClick(id, full_name)}
           >
-            {full_name || "Neznámy záchranár"}
+            {full_name || 'Neznámy záchranár'}
           </Button>
         ))
       ) : (

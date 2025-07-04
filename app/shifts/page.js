@@ -1,7 +1,8 @@
 import Header from "../_components/Header";
 import DeleteAllShifts from "../_components/shifts/DeleteAllShifts";
-import InsertShiftButton from "../_components/shifts/InsertShiftButton";
-import ShiftsTable from "../_components/shifts/ShiftsTable";
+// import InsertShiftButton from "../_components/shifts/InsertShiftButton";
+import RosterSection from "../_components/shifts/RosterSection";
+// import ShiftsTable from "../_components/shifts/ShiftsTable";
 import getAllShifts, { getAllProfiles } from "../_lib/data-service";
 
 export default async function page() {
@@ -40,21 +41,23 @@ export default async function page() {
   return (
     <div className="pb-10">
       <Header />
-      {(!shifts?.length || !profiles?.length) ? (
+
+      {!shifts.length || !profiles.length ? (
         <div className="flex h-60 items-center justify-center text-xl text-primary-700">
           Žiadne profily nenájdené alebo chyba načítania.
         </div>
       ) : (
         <div className="flex justify-center px-8">
-          <ShiftsTable shifts={shifts} />
+          {/* ⬇️ namiesto priameho ShiftsTable použijeme wrapper */}
+          <RosterSection
+            initialShifts={shifts}
+            diffProfiles={diffProfiles}
+          />
         </div>
       )}
-
-      <div className="mt-6 flex gap-2 self-start px-8 2xl:px-36">
+      {/* <div className="mt-6 flex gap-2 self-start px-8 2xl:px-36">
         <DeleteAllShifts />
-        <InsertShiftButton profiles={diffProfiles} />
-      </div>
+      </div> */}
     </div>
-
   );
 }
