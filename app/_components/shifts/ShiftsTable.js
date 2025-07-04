@@ -144,11 +144,6 @@ export default function ShiftsTable({ shifts }) {
     const nameB = b.full_name || b.email || `User ${b.user_id}`;
     return nameA.localeCompare(nameB, "sk");
   });
-  // console.log("roster", roster);
-
-  // function handleProfilesModalOpen() {
-  //   setIsProfilesModalOpen(true);
-  // }
 
   /* ───────────── JSX ───────────── */
   return (
