@@ -4,6 +4,7 @@ import { insertProfileInToRoster } from "@/app/_lib/actions";
 import Button from "../Button";
 import { startTransition, useOptimistic } from "react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ProfilesChoiceModal({
   profiles,
@@ -24,18 +25,25 @@ export default function ProfilesChoiceModal({
 
   /* --- 2. klik na meno --- */
   async function handleClick(id, full_name) {
-    // a) okamžitý zápis
+    /* a) optimistický zápis */
     startTransition(() =>
       apply({ type: "INSERT", profile: { id, full_name } }),
     );
 
     setIsProfilesModalOpen(false);
 
-    // b) zápis do DB
-    await insertProfileInToRoster(id);
+    try {
+      /* b) zápis do DB */
+      await insertProfileInToRoster(id);
 
-    // c) refresh – zosynchronizuje cache/UI
-    router.refresh();
+      /* c) potvrdenie pre používateľa */
+      toast.success(`${full_name} zahrnutý do služieb`);
+    } catch (err) {
+      toast.error("Nepodarilo sa pridať záchranára");
+    } finally {
+      /* d) refresh – synchronizuje UI s reálnym stavom */
+      router.refresh();
+    }
   }
 
   /* --- 3. renderuj OPTIMISTICKÉ pole --- */

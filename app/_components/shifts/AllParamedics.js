@@ -5,6 +5,7 @@ import { startTransition, useState } from "react";
 import Modal from "../Modal";
 import ConfirmDelete from "../ConfirmDelete";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AllParamedics({
   children,
@@ -22,9 +23,21 @@ export default function AllParamedics({
   }
 
   async function handleConfirmDelete() {
+    // A) okamžitý optimistický update (riadok zmizne hneď)
     startTransition(() => onDeleteOptimistic(user.user_id));
-    await deleteProfileFromRoster(user.user_id);
-    router.refresh();
+
+    try {
+      // B) skutočný DELETE na serveri
+      await deleteProfileFromRoster(user.user_id);
+
+      // C) spätná väzba pre používateľa
+      toast.success(`${user.full_name ?? "Záchranár"} odstránený zo služieb`);
+    } catch (err) {
+      toast.error("Nepodarilo sa zmazať záchranára");
+    } finally {
+      // D) refresh – zosynchronizuje UI (potvrdí alebo rollbackne optimistiku)
+      router.refresh();
+    }
   }
 
   return (
