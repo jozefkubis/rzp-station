@@ -201,12 +201,6 @@ export default function ShiftsTable({ shifts }) {
           <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
         </Modal>
       )}
-
-      {/* {isProfilesModalOpen && (
-        <Modal onClose={() => setIsProfilesModalOpen(false)}>
-          <ProfilesChoiceModal />
-        </Modal>
-      )} */}
     </>
   );
 }
