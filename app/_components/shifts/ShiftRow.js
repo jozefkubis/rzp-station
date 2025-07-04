@@ -8,7 +8,9 @@ export default function ShiftRow({ user, days, colTemplate, onSelect, rowBg }) {
       className={`grid text-sm ${rowBg}`}
       style={{ gridTemplateColumns: colTemplate }}
     >
-      <AllParamedics rowBg={rowBg} user={user} >{user.full_name}</AllParamedics>
+      <AllParamedics rowBg={rowBg} user={user}>
+        {user.full_name}
+      </AllParamedics>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
         const found = (user.shifts || []).find((s) => s.date === dateStr);
