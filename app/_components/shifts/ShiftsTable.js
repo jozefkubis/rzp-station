@@ -28,7 +28,7 @@ export default function ShiftsTable({ shifts }) {
   const month = today.getMonth() + 1; // 1-12
   const days = getDaysArray(year, month);
   const monthName = getMonthOnly();
-  const colTemplate = `11rem repeat(${days.length}, 3rem)`;
+  const colTemplate = `12rem repeat(${days.length}, 3rem)`;
 
   /* ---------- useOptimistic ---------- */
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -125,7 +125,7 @@ export default function ShiftsTable({ shifts }) {
 
   /* ---------- zoskupenie riadkov ---------- */
   const roster = Object.values(
-    optimisticShifts.reduce((acc, row) => {
+    optimisticShifts.reduce((acc, row, idx) => {
       const id = row.user_id;
       if (!acc[id]) {
         acc[id] = {
@@ -134,16 +134,14 @@ export default function ShiftsTable({ shifts }) {
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
           shifts: [],
+          order: idx
         };
       }
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
-  ).sort((a, b) => {
-    const nameA = a.full_name || a.email || `User ${a.user_id}`;
-    const nameB = b.full_name || b.email || `User ${b.user_id}`;
-    return nameA.localeCompare(nameB, "sk");
-  });
+  ).sort((a, b) => a.order - b.order);
+
 
   const [optimisticRoster, apply] = useOptimistic(
     roster, // celé pole
