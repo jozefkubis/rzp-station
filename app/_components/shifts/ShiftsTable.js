@@ -134,14 +134,13 @@ export default function ShiftsTable({ shifts }) {
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
           shifts: [],
-          order: idx
+          order: idx,
         };
       }
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
   ).sort((a, b) => a.order - b.order);
-
 
   const [optimisticRoster, apply] = useOptimistic(
     roster, // celé pole

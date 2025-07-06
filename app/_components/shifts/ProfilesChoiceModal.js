@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { insertProfileInToRoster } from '@/app/_lib/actions';
-import Button from '../Button';
-import { startTransition, useOptimistic } from 'react';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { insertProfileInToRoster } from "@/app/_lib/actions";
+import Button from "../Button";
+import { startTransition, useOptimistic } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ProfilesChoiceModal({
   profiles,
@@ -17,17 +17,17 @@ export default function ProfilesChoiceModal({
   const [optimisticProfiles, applyRemove] = useOptimistic(
     profiles,
     (current, action) =>
-      action.type === 'REMOVE'
-        ? current.filter(p => p.id !== action.id)
-        : current
+      action.type === "REMOVE"
+        ? current.filter((p) => p.id !== action.id)
+        : current,
   );
 
   /* 2️⃣  klik na záchranára */
   async function handleClick(id, full_name) {
     /* A) dva optimistické zápisy v transition */
     startTransition(() => {
-      applyRemove({ type: 'REMOVE', id });            // modál: skryť
-      onInsertEmptyShift({ userId: id, full_name });  // tabuľka: pridať rad
+      applyRemove({ type: "REMOVE", id }); // modál: skryť
+      onInsertEmptyShift({ userId: id, full_name }); // tabuľka: pridať rad
     });
 
     setIsProfilesModalOpen(false);
@@ -37,7 +37,7 @@ export default function ProfilesChoiceModal({
       await insertProfileInToRoster(id);
       toast.success(`${full_name} zahrnutý do služieb`);
     } catch {
-      toast.error('Nepodarilo sa pridať záchranára');
+      toast.error("Nepodarilo sa pridať záchranára");
     } finally {
       /* C) refresh – potvrdí alebo rollbackne obidva optimizmy */
       router.refresh();
@@ -55,7 +55,7 @@ export default function ProfilesChoiceModal({
             size="small"
             onClick={() => handleClick(id, full_name)}
           >
-            {full_name || 'Neznámy záchranár'}
+            {full_name || "Neznámy záchranár"}
           </Button>
         ))
       ) : (

@@ -6,7 +6,6 @@ import Modal from "../Modal";
 import ConfirmDelete from "../ConfirmDelete";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { FaAngleUp } from "react-icons/fa";
 
 export default function AllParamedics({
   children,
@@ -41,23 +40,15 @@ export default function AllParamedics({
     }
   }
 
-  function handleReorder() { }
-
-
   return (
     <>
-      <div className="flex items-center justify-between px-2 py-1">
-        <button
-          type="button"
-          className={`sticky left-0 z-20 flex items-center justify-between  ${rowBg} cursor-pointer hover:bg-blue-100`}
-          onClick={!isDeleting ? handleClick : undefined}
-        >
-          {children}
-        </button>
-        <button type="button" onClick={() => handleReorder()}>
-          <FaAngleUp className="text-primary-500 h-3 w-3 hover:text-primary-700 hover:font-bold" />
-        </button>
-      </div>
+      <button
+        type="button"
+        className={`sticky left-0 z-20 flex items-center justify-between px-3 py-1 ${rowBg} cursor-pointer hover:bg-blue-100`}
+        onClick={!isDeleting ? handleClick : undefined}
+      >
+        {children}
+      </button>
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>

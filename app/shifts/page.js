@@ -30,34 +30,28 @@ export default async function page() {
   // }))
 
   // 1. priprav si množiny pre rýchlejšie vyhľadávanie
-  const shiftUserIdSet = new Set(shifts.map(s => s.user_id));
+  const shiftUserIdSet = new Set(shifts.map((s) => s.user_id));
 
   // 2. vyfiltruj len profily bez služby a hneď z nich vytvor požadované pole
   const diffProfiles = profiles
-    .filter(p => !shiftUserIdSet.has(p.id))
+    .filter((p) => !shiftUserIdSet.has(p.id))
     .map(({ id, full_name }) => ({ id, full_name }));
-
 
   return (
     <div className="pb-10">
       <Header />
 
-      {!shifts.length || !profiles.length ? (
+      {/* ak nie sú absolútne žiadne profily → nemá zmysel nič zobrazovať */}
+      {!profiles.length ? (
         <div className="flex h-60 items-center justify-center text-xl text-primary-700">
           Žiadne profily nenájdené alebo chyba načítania.
         </div>
       ) : (
+        /* RosterSection zobraz aj pri prázdnych shifts */
         <div className="flex justify-center px-8">
-          {/* ⬇️ namiesto priameho ShiftsTable použijeme wrapper */}
-          <RosterSection
-            initialShifts={shifts}
-            diffProfiles={diffProfiles}
-          />
+          <RosterSection initialShifts={shifts} diffProfiles={diffProfiles} />
         </div>
       )}
-      {/* <div className="mt-6 flex gap-2 self-start px-8 2xl:px-36">
-        <DeleteAllShifts />
-      </div> */}
     </div>
   );
 }
