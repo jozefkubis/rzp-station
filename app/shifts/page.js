@@ -1,8 +1,5 @@
 import Header from "../_components/Header";
-import DeleteAllShifts from "../_components/shifts/DeleteAllShifts";
-// import InsertShiftButton from "../_components/shifts/InsertShiftButton";
 import RosterSection from "../_components/shifts/RosterSection";
-// import ShiftsTable from "../_components/shifts/ShiftsTable";
 import getAllShifts, { getAllProfiles } from "../_lib/data-service";
 
 export default async function page() {
