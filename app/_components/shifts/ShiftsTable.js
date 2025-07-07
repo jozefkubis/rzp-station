@@ -140,7 +140,9 @@ export default function ShiftsTable({ shifts }) {
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
-  ).sort((a, b) => a.order - b.order);
+  ).sort((a, b) =>
+    (a.full_name || "").localeCompare(b.full_name || "", "sk")
+  );
 
   const [optimisticRoster, apply] = useOptimistic(
     roster, // celé pole
