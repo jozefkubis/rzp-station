@@ -390,10 +390,10 @@ export async function getShiftsForMonth({ year, month }) {
 
   const { data, error } = await supabase
     .from("shifts")
-    .select("*, profiles(full_name)")
+    .select("*, profiles(full_name, order_index)")
     .gte("date", from)
     .lte("date", to)
-    .order("full_name", { ascending: true, foreignTable: "profiles" })
+    .order("order_index", { ascending: true, foreignTable: "profiles" })
     .order("date", { ascending: true });
 
   if (error) throw error;

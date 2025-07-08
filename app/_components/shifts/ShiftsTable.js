@@ -125,7 +125,7 @@ export default function ShiftsTable({ shifts }) {
 
   /* ---------- zoskupenie riadkov ---------- */
   const roster = Object.values(
-    optimisticShifts.reduce((acc, row, idx) => {
+    optimisticShifts.reduce((acc, row) => {
       const id = row.user_id;
       if (!acc[id]) {
         acc[id] = {
@@ -134,15 +134,16 @@ export default function ShiftsTable({ shifts }) {
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
           shifts: [],
-          order: idx,
+          order: row.profiles.order_index,
         };
       }
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
-  ).sort((a, b) =>
-    (a.full_name || "").localeCompare(b.full_name || "", "sk")
-  );
+  )
+
+  console.log("roster", roster);
+
 
   const [optimisticRoster, apply] = useOptimistic(
     roster, // celé pole
