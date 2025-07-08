@@ -390,11 +390,11 @@ export async function getShiftsForMonth({ year, month }) {
 
   const { data, error } = await supabase
     .from("shifts")
-    .select("*, profiles(full_name)")
+    .select("*, profiles!inner (full_name, order_index, avatar_url)")
     .gte("date", from)
     .lte("date", to)
-  // .order("full_name", { ascending: true, foreignTable: "profiles" })
-  // .order("date", { ascending: true });
+    .order('order_index', { ascending: true, foreignTable: 'profiles' })
+    .order('date', { ascending: true });
 
   if (error) throw error;
   return data;
@@ -508,4 +508,42 @@ export async function deleteProfileFromRoster(userId) {
   }
   revalidatePath("/", "shifts");
   return { success: true };
+}
+
+// MARK: MOVE ARROW
+export async function moveArrow({ userId, direction }) {
+  const supabase = await createClient();
+
+  const delta = direction === 'up' ? -1 : 1;
+
+  // 1️⃣ nájdi môj aktuálny index
+  const { data: me } = await supabase
+    .from('profiles')
+    .select('order_index')
+    .eq('id', userId)
+    .single();
+
+  if (!me) throw new Error('Profil nenájdený');
+
+  const target = me.order_index + delta;
+
+  // 2️⃣ nájdi človeka, ktorý má target index
+  const { data: other } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('order_index', target)
+    .single();
+
+
+  if (!other) return;                      // sme na kraji tabuľky – nič na swap
+
+  // 3️⃣ prehoďte si čísla
+  //    (dva UPDATE-y; pri pár desiatkach ľudí je to OK)
+  await supabase.from('profiles')
+    .update({ order_index: me.order_index })
+    .eq('id', other.id);
+
+  await supabase.from('profiles')
+    .update({ order_index: target })
+    .eq('id', userId);
 }

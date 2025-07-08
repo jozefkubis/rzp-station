@@ -9,6 +9,8 @@ export default function ShiftRow({
   onSelect,
   rowBg,
   onDeleteOptimistic,
+  idx,
+  roster,
 }) {
   return (
     <div
@@ -19,6 +21,8 @@ export default function ShiftRow({
         rowBg={rowBg}
         user={user}
         onDeleteOptimistic={onDeleteOptimistic}
+        idx={idx}
+        roster={roster}
       >
         {user.full_name}
       </AllParamedics>

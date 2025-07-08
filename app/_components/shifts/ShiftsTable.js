@@ -11,11 +11,11 @@ import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
 
-import { deleteShift, upsertShift } from "@/app/_lib/actions";
+import { deleteShift, getShiftsForMonth, upsertShift } from "@/app/_lib/actions";
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts }) {
+export default function ShiftsTable({ shifts, idx }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -125,7 +125,7 @@ export default function ShiftsTable({ shifts }) {
 
   /* ---------- zoskupenie riadkov ---------- */
   const roster = Object.values(
-    optimisticShifts.reduce((acc, row, idx) => {
+    optimisticShifts.reduce((acc, row) => {
       const id = row.user_id;
       if (!acc[id]) {
         acc[id] = {
@@ -134,13 +134,13 @@ export default function ShiftsTable({ shifts }) {
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
           shifts: [],
+          order: row.profiles.order_index,
         };
       }
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
-  )
-
+  ).sort((a, b) => a.order - b.order) /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/;
 
   const [optimisticRoster, apply] = useOptimistic(
     roster, // celé pole
@@ -188,6 +188,8 @@ export default function ShiftsTable({ shifts }) {
             colTemplate={colTemplate}
             onSelect={handleSelect}
             rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+            idx={idx}
+            roster={roster}
           />
         ))}
       </MainShiftsTable>

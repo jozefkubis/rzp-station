@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteProfileFromRoster } from "@/app/_lib/actions";
+import { deleteProfileFromRoster, moveArrow } from "@/app/_lib/actions";
 import { startTransition, useState } from "react";
 import Modal from "../Modal";
 import ConfirmDelete from "../ConfirmDelete";
@@ -13,10 +13,14 @@ export default function AllParamedics({
   rowBg,
   user,
   onDeleteOptimistic,
+  roster,
+  idx,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
 
   function handleClick() {
     // deleteProfileFromRoster(user.user_id);
@@ -41,9 +45,18 @@ export default function AllParamedics({
     }
   }
 
-  function handleReorderUp() { }
-  function handleReorderDown() { }
 
+  async function handleReorder(dir) {
+    setLoading(true);
+    try {
+      await moveArrow({ userId: user.user_id, direction: dir });
+      router.refresh();          // načíta novo zoradený roster
+    } catch (err) {
+      toast.error('Nepodarilo sa zmeniť poradie');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -57,14 +70,14 @@ export default function AllParamedics({
         </button>
 
         <div className="flex flex-col">
-          <button type="button" onClick={() => handleReorderUp()}>
+          <button type="button" disabled={loading || idx === 0} onClick={() => handleReorder("up")} aria-label="Posunúť hore">
             <FaAngleUp className="text-primary-500 h-3 w-3 hover:text-primary-700 hover:font-bold" />
           </button>
-          <button type="button" onClick={() => handleReorderDown()}>
+          <button type="button" disabled={loading || idx === roster.length - 1} onClick={() => handleReorder("down")} aria-label="Posunúť dole">
             <FaAngleDown className="text-primary-500 h-3 w-3 hover:text-primary-700 hover:font-bold" />
           </button>
         </div>
-      </div>
+      </div >
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
@@ -75,7 +88,8 @@ export default function AllParamedics({
             disabled={isDeleting}
           />
         </Modal>
-      )}
+      )
+      }
     </>
   );
 }
