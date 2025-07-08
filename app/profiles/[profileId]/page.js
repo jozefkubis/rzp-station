@@ -49,25 +49,25 @@ export default async function Page({ params }) {
   const contactInfo = [
     {
       label: "Telefón:",
-      value: profile.phone || "❔",
+      value: profile.phone || "-",
       icon: <HiOutlinePhone className="text-primary-700" />,
     },
     {
       label: "Email:",
-      value: profile.email || "❔",
+      value: profile.email || "-",
       icon: <HiOutlineAtSymbol className="text-primary-700" />,
     },
   ];
 
   const profileInfo = [
-    { title: "Adresa:", value: profile.address || "❔" },
+    { title: "Adresa:", value: profile.address || "-" },
     {
       title: "Dátum narodenia:",
-      value: profile.dateOfBirth ? formatDate(profile.dateOfBirth) : "❔",
+      value: profile.dateOfBirth ? formatDate(profile.dateOfBirth) : "-",
     },
     {
       title: "Lekárska prehliadka:",
-      value: profile.medCheckDate ? formatDate(profile.medCheckDate) : "❔",
+      value: profile.medCheckDate ? formatDate(profile.medCheckDate) : "-",
     },
   ];
 

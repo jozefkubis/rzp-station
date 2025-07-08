@@ -35,7 +35,7 @@ export default function UserCard({ profile }) {
         </h1>
         <p data-cy="user-card-email" className="text-sm text-gray-500">{profile.email}</p>
         <p data-cy="user-card-phone" className="text-sm text-gray-500">
-          {profile.phone ? `Tel.: ${profile.phone}` : "❔"}
+          {profile.phone ? `Tel.: ${profile.phone}` : "-"}
         </p>
       </div>
     </li>
