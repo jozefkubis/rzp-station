@@ -57,16 +57,13 @@ export default function RosterSection({ initialShifts, diffProfiles }) {
     });
   }
 
-  const idx = diffProfiles.map((s) => s.order_index);
-
-
   /* 🟡 3) UI – tabuľka + tlačidlo */
   return (
     <div className="flex w-[100%] flex-col">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
         <div className="max-w-full overflow-x-auto">
-          <ShiftsTable shifts={optimShifts} idx={idx} />
+          <ShiftsTable shifts={optimShifts} />
         </div>
       </div>
 

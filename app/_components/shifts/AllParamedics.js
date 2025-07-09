@@ -13,14 +13,12 @@ export default function AllParamedics({
   rowBg,
   user,
   onDeleteOptimistic,
+  onReorderOptimistic,
   roster,
-  idx,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
 
   function handleClick() {
     // deleteProfileFromRoster(user.user_id);
@@ -45,39 +43,51 @@ export default function AllParamedics({
     }
   }
 
-
   async function handleReorder(dir) {
-    setLoading(true);
+    startTransition(() =>
+      onReorderOptimistic({ userId: user.user_id, direction: dir }),
+    );
+
     try {
       await moveArrow({ userId: user.user_id, direction: dir });
-      router.refresh();          // načíta novo zoradený roster
+      router.refresh();
     } catch (err) {
-      toast.error('Nepodarilo sa zmeniť poradie');
-    } finally {
-      setLoading(false);
+      toast.error("Nepodarilo sa zmeniť poradie");
     }
   }
+
+  const currentIdx = roster.findIndex((u) => u.user_id === user.user_id);
 
   return (
     <>
       <div className="flex items-center justify-between px-2 py-1">
         <button
           type="button"
-          className={`sticky left-0 z-20 flex items-center justify-between  ${rowBg} cursor-pointer hover:bg-blue-100`}
+          className={`sticky left-0 z-20 flex items-center justify-between ${rowBg} cursor-pointer hover:bg-blue-100`}
           onClick={!isDeleting ? handleClick : undefined}
         >
           {children}
         </button>
 
         <div className="flex flex-col">
-          <button type="button" disabled={loading || idx === 0} onClick={() => handleReorder("up")} aria-label="Posunúť hore">
-            <FaAngleUp className="text-primary-500 h-3 w-3 hover:text-primary-700 hover:font-bold" />
+          <button
+            type="button"
+            disabled={currentIdx === 0}
+            onClick={() => handleReorder("up")}
+            aria-label="Posunúť hore"
+          >
+            <FaAngleUp className="h-3 w-3 text-primary-500 hover:font-bold hover:text-primary-700" />
           </button>
-          <button type="button" disabled={loading || idx === roster.length - 1} onClick={() => handleReorder("down")} aria-label="Posunúť dole">
-            <FaAngleDown className="text-primary-500 h-3 w-3 hover:text-primary-700 hover:font-bold" />
+          <button
+            type="button"
+            disabled={currentIdx === roster.length - 1}
+            onClick={() => handleReorder("down")}
+            aria-label="Posunúť dole"
+          >
+            <FaAngleDown className="h-3 w-3 text-primary-500 hover:font-bold hover:text-primary-700" />
           </button>
         </div>
-      </div >
+      </div>
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
@@ -88,8 +98,7 @@ export default function AllParamedics({
             disabled={isDeleting}
           />
         </Modal>
-      )
-      }
+      )}
     </>
   );
 }

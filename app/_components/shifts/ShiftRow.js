@@ -9,7 +9,7 @@ export default function ShiftRow({
   onSelect,
   rowBg,
   onDeleteOptimistic,
-  idx,
+  onReorderOptimistic,
   roster,
 }) {
   return (
@@ -21,7 +21,7 @@ export default function ShiftRow({
         rowBg={rowBg}
         user={user}
         onDeleteOptimistic={onDeleteOptimistic}
-        idx={idx}
+        onReorderOptimistic={onReorderOptimistic}
         roster={roster}
       >
         {user.full_name}

@@ -15,7 +15,7 @@ import { deleteShift, getShiftsForMonth, upsertShift } from "@/app/_lib/actions"
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts, idx }) {
+export default function ShiftsTable({ shifts }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -143,9 +143,24 @@ export default function ShiftsTable({ shifts, idx }) {
   ).sort((a, b) => a.order - b.order) /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/;
 
   const [optimisticRoster, apply] = useOptimistic(
-    roster, // celé pole
-    (curr, act) =>
-      act.type === "DELETE" ? curr.filter((u) => u.user_id !== act.id) : curr,
+    roster,
+    (curr, act) => {
+      if (act.type === "DELETE") {
+        return curr.filter((u) => u.user_id !== act.id);
+      }
+
+      if (act.type === "MOVE") {
+        const index = curr.findIndex((u) => u.user_id === act.userId);
+        const newIndex = act.direction === "up" ? index - 1 : index + 1;
+        if (index < 0 || newIndex < 0 || newIndex >= curr.length) return curr;
+
+        const updated = [...curr];
+        [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+        return updated;
+      }
+
+      return curr;
+    },
   );
 
   /* ───────────── JSX ───────────── */
@@ -184,11 +199,11 @@ export default function ShiftsTable({ shifts, idx }) {
             key={p.user_id}
             user={p}
             onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+            onReorderOptimistic={(act) => apply({ type: "MOVE", ...act })}
             days={days}
             colTemplate={colTemplate}
             onSelect={handleSelect}
             rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-            idx={idx}
             roster={roster}
           />
         ))}
