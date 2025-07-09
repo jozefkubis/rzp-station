@@ -10,16 +10,16 @@ const buttonSizes = {
 };
 
 const buttonVariants = {
-  primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl",
+  primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondary:
-    "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95",
+    "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondaryShiftRD:
-    "text-gray-600 bg-green-500 border border-geen-500 hover:bg-green-300 hover:border-green-300 active:scale-95",
+    "text-gray-600 bg-green-500 border border-geen-500 hover:bg-green-300 hover:border-green-300 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondaryShiftX:
-    "text-gray-600 bg-red-300 border border-red-300 hover:bg-red-200 hover:border-red-200 active:scale-95",
+    "text-gray-600 bg-red-300 border border-red-300 hover:bg-red-200 hover:border-red-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   tertiary:
-    "text-gray-600 bg-[#FFF144] border border-gray-300 hover:bg-[#FFD01C] active:scale-95",
-  danger: "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl",
+    "text-gray-600 bg-[#FFF144] border border-gray-300 hover:bg-[#FFD01C] active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
+  danger: "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
 };
 
 export default function Button({

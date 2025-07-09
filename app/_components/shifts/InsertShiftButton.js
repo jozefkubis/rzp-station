@@ -18,6 +18,7 @@ export default function InsertShiftButton({ profiles, onInsertEmptyShift }) {
           variant="primary"
           size="medium"
           onClick={handleProfilesModalOpen}
+          disabled={profiles.length === 0}
         >
           Pridať záchranára
         </Button>
