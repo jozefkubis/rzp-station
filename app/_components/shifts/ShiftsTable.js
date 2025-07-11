@@ -155,7 +155,10 @@ export default function ShiftsTable({ shifts }) {
         if (index < 0 || newIndex < 0 || newIndex >= curr.length) return curr;
 
         const updated = [...curr];
-        [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+        const temp = updated[index];
+        updated[index] = updated[newIndex];
+        updated[newIndex] = temp;
+
         return updated;
       }
 
@@ -199,7 +202,14 @@ export default function ShiftsTable({ shifts }) {
             key={p.user_id}
             user={p}
             onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-            onReorderOptimistic={(act) => apply({ type: "MOVE", ...act })}
+            onReorderOptimistic={(act) =>
+              apply({
+                type: "MOVE",
+                userId: act.userId,
+                direction: act.direction,
+              })
+            }
+
             days={days}
             colTemplate={colTemplate}
             onSelect={handleSelect}
