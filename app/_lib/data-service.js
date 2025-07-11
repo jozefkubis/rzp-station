@@ -184,14 +184,13 @@ export async function updateTask(task) {
 //   return true;
 // }
 
+// MARK: GET ALL SHIFTS
 export default async function getAllShifts() {
   const supabase = await createClient();
 
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select(
-      "*, profiles!shifts_user_id_fkey(*)",
-    );
+    .select("*, profiles!shifts_user_id_fkey(*)");
 
   if (error) {
     console.error("Supabase error – shifts:", error);
@@ -219,4 +218,78 @@ export async function addShift() {
   return newShift;
 }
 
+// MARK: GET SHIFT FOR TODAY
+export async function getShiftForToday() {
+  const supabase = await createClient();
 
+  const { data: shifts, error } = await supabase
+    .from("shifts")
+    .select("*, profiles!shifts_user_id_fkey(*)")
+    .eq("date", new Date().toISOString().slice(0, 10));
+
+  if (error) {
+    console.error("Supabase error – shifts:", error);
+    throw error;
+  }
+
+  return shifts;
+}
+
+// MARK: GET SHIFT FOR TOMORROW
+export async function getShiftForTomorrow() {
+  const supabase = await createClient();
+
+  const tomortow = new Date();
+  tomortow.setDate(tomortow.getDate() + 1);
+  const tomorrowIso = tomortow.toISOString().slice(0, 10);
+
+  const { data: shifts, error } = await supabase
+    .from("shifts")
+    .select("*, profiles!shifts_user_id_fkey(*)")
+    .eq("date", tomorrowIso);
+
+  if (error) {
+    console.error("Supabase error – shifts:", error);
+    throw error;
+  }
+
+  return shifts;
+}
+
+// MARK: GET TASK FOR TODAY
+export async function getTasksForToday() {
+  const supabase = await createClient();
+
+  const { data: tasks, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("dateFrom", new Date().toISOString().slice(0, 10));
+
+  if (error) {
+    console.error("Supabase error – tasks:", error);
+    throw error;
+  }
+
+  return tasks;
+}
+
+// MARK: GET TASK FOR TOMORROW
+export async function getTasksForTomorrow() {
+  const supabase = await createClient();
+
+  const tomortow = new Date();
+  tomortow.setDate(tomortow.getDate() + 1);
+  const tomorrowIso = tomortow.toISOString().slice(0, 10);
+
+  const { data: tasks, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("dateFrom", tomorrowIso);
+
+  if (error) {
+    console.error("Supabase error – tasks:", error);
+    throw error;
+  }
+
+  return tasks;
+}
