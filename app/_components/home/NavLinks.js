@@ -12,14 +12,14 @@ import { PiAmbulance } from "react-icons/pi";
 export default function NavLinks() {
   const links = [
     {
-      href: "/calendar",
-      label: "Kalendár",
-      icon: <HiOutlineCalendarDays className="h-8 w-8" />,
-    },
-    {
       href: "/shifts",
       label: "Výjazdy",
       icon: <PiAmbulance className="h-8 w-8" />,
+    },
+    {
+      href: "/calendar",
+      label: "Kalendár",
+      icon: <HiOutlineCalendarDays className="h-8 w-8" />,
     },
     {
       href: "/profiles",

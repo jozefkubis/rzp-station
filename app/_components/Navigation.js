@@ -17,12 +17,12 @@ export default function Navigation() {
 
   const navLinks = [
     { name: "Domov", href: "/", icon: <HiOutlineHome size={20} /> },
+    { name: "Služby", href: "/shifts", icon: <PiAmbulance size={20} /> },
     {
       name: "Kalendár",
       href: "/calendar",
       icon: <HiOutlineCalendarDays size={20} />,
     },
-    { name: "Služby", href: "/shifts", icon: <PiAmbulance size={20} /> },
     {
       name: "Záchranári",
       href: "/profiles",
