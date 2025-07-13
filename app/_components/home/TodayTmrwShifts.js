@@ -1,6 +1,7 @@
 import { getShiftForToday, getShiftForTomorrow } from "@/app/_lib/data-service";
 
 export default async function TodayTmrwShifts() {
+  // MARK: GET SHIFT FOR TODAY
   const shiftFroToday = await getShiftForToday();
   const dayShift = shiftFroToday
     .filter((shift) => shift.shift_type === "D")
@@ -9,6 +10,7 @@ export default async function TodayTmrwShifts() {
     .filter((shift) => shift.shift_type === "N")
     .map((shift) => shift.profiles.full_name);
 
+  // MARK: GET SHIFT FOR TOMORROW
   const shiftForTomorrow = await getShiftForTomorrow();
   const dayShiftTomorrow = shiftForTomorrow
     .filter((shift) => shift.shift_type === "D")

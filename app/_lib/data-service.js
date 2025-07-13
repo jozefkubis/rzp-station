@@ -293,3 +293,20 @@ export async function getTasksForTomorrow() {
 
   return tasks;
 }
+
+// MARK: GET SHIFTS FOR PROFILE
+export async function getShiftsForProfile(profileId) {
+  const supabase = await createClient();
+
+  const { data: shifts, error } = await supabase
+    .from("shifts")
+    .select("*, profiles!shifts_user_id_fkey(*)")
+    .eq("user_id", profileId);
+
+  if (error) {
+    console.error("Supabase error – shifts:", error);
+    throw error;
+  }
+
+  return shifts;
+}
