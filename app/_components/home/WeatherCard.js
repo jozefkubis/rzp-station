@@ -56,7 +56,9 @@ export default function WeatherCard() {
 
   return (
     <div className="w-full space-y-4 rounded-2xl bg-white p-4 shadow">
-      <h2 className="text-lg font-semibold">Počasie – Rajec {icon}</h2>
+      <h2 className="text-lg font-semibold">
+        Počasie – Rajec <span className="text-4xl">{icon}</span>
+      </h2>
 
       {/* Dnes */}
       <div className="flex justify-between">
