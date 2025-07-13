@@ -26,3 +26,23 @@ export function getDaysUntilNextMedCheck(medCheckDateStr) {
 
   return diffDays;
 }
+
+export function getWeatherIcon(code) {
+  // https://open-meteo.com/en/docs#weathervariables
+  if (code === 0) return "☀️"; // jasno
+  if (code === 1 || code === 2) return "⛅"; // polooblačno
+  if (code === 3) return "☁️"; // zamračené
+
+  if (code === 45 || code === 48) return "🌫️"; // hmla
+  if (code === 51 || code === 53 || code === 55) return "🌦️"; // mrholenie
+  if (code === 61 || code === 63) return "🌧️"; // dážď mierny
+  if (code === 65 || code === 82) return "⛈️"; // lejak
+  if (code === 66 || code === 67) return "🌧️❄️"; // mrznúci dážď
+  if (code === 71 || code === 73) return "🌨️"; // sneženie
+  if (code === 75 || code === 77) return "❄️"; // silné sneženie
+  if (code === 80 || code === 81) return "🌦️"; // prehánky
+  if (code === 95) return "⛈️"; // búrka
+  if (code === 96 || code === 99) return "⛈️⚡"; // búrka s krúpami
+
+  return "❔"; // fallback
+}

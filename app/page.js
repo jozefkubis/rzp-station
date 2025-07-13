@@ -2,6 +2,7 @@ import TodayTmrwShifts from "./_components/home/TodayTmrwShifts";
 import NavLinks from "./_components/home/NavLinks";
 import CalendarTodayTmrw from "./_components/home/CalendarTodayTmrw";
 import MyProfile from "./_components/home/MyProfile";
+import WeatherCard from "./_components/home/WeatherCard";
 
 export const revalidate = 0;
 
@@ -27,11 +28,7 @@ export default async function Page() {
         <CalendarTodayTmrw />
 
         {/* Karta: Počasie */}
-        <section className="flex w-full flex-col items-center justify-center rounded-2xl bg-white p-4 shadow">
-          <span className="text-3xl">🌤️</span>
-          <p className="mt-2 text-4xl font-bold">26 °C</p>
-          <p className="text-sm text-gray-600">Slnečno, mierny vietor</p>
-        </section>
+        <WeatherCard />
       </main>
     </div>
   );
