@@ -1,5 +1,12 @@
 import { getShiftForToday, getShiftForTomorrow } from "@/app/_lib/data-service";
-import { ShiftDay, ShiftRowDay, ShiftRowNight, ShiftsDayNightTable, ShiftsSection, ShiftsTable } from "./ShiftRow";
+import {
+  ShiftDay,
+  ShiftRowDay,
+  ShiftRowNight,
+  ShiftsDayNightTable,
+  ShiftsSection,
+  ShiftsTable,
+} from "./ShiftRow";
 
 export default async function TodayTmrwShifts() {
   /* 1. Načítanie dát paralelne */
@@ -37,28 +44,20 @@ export default async function TodayTmrwShifts() {
         <ShiftDay>Služba dnes</ShiftDay>
 
         <ShiftsDayNightTable>
-          <ShiftRowDay>
-            ☀ {line(dayToday, "D")}
-          </ShiftRowDay>
-          <ShiftRowNight>
-            🌙 {line(nightToday, "N")}
-          </ShiftRowNight>
+          <ShiftRowDay>☀ {line(dayToday, "D")}</ShiftRowDay>
+          <ShiftRowNight>🌙 {line(nightToday, "N")}</ShiftRowNight>
         </ShiftsDayNightTable>
       </ShiftsTable>
 
       {/* ======= Zajtra ======= */}
-      <div className="h-px bg-slate-200 my-2" />
+      <div className="my-2 h-px bg-slate-200" />
 
       <ShiftsTable>
         <ShiftDay>Služba zajtra</ShiftDay>
 
         <ShiftsDayNightTable>
-          <ShiftRowDay>
-            ☀ {line(dayTomorrow, "D")}
-          </ShiftRowDay>
-          <ShiftRowNight>
-            🌙 {line(nightTomorrow, "N")}
-          </ShiftRowNight>
+          <ShiftRowDay>☀ {line(dayTomorrow, "D")}</ShiftRowDay>
+          <ShiftRowNight>🌙 {line(nightTomorrow, "N")}</ShiftRowNight>
         </ShiftsDayNightTable>
       </ShiftsTable>
     </ShiftsSection>
