@@ -49,24 +49,24 @@ export default async function MyProfile() {
   const psychoCheckDaysLeft = getDaysUntilNextMedCheck(profile.psycho_check);
 
   return (
-    <section className="flex w-full flex-col justify-center gap-y-4 rounded-2xl bg-white p-8 shadow">
-      <p className="rounded-lg bg-slate-50 px-3 py-1 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
+    <section className="flex w-full flex-col justify-center gap-y-2 rounded-2xl bg-white p-8 shadow">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
         💵 Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
       </p>
-      <p className="rounded-lg bg-yellow-300 px-3 py-1 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-yellow-300 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
         ☀️ Denné: {dayShifts} - ({dayHours} hod.)
       </p>
-      <p className="rounded-lg bg-primary-600 px-3 py-1 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-primary-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🌙 Nočné: {nightShifts} - ({nightHours} hod.)
       </p>
-      <p className="rounded-lg bg-green-600 px-3 py-1 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-green-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🧳 Dovolenka: {rd} - ({rdHours} hod.)
       </p>
-      <p className="rounded-lg bg-red-600 px-3 py-1 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-red-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🚮 Požiadavky: {xShifts}
       </p>
 
-      <p className="rounded-lg bg-blue-600 px-3 py-1 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-blue-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🧑‍⚕️ Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
         <span
           className={
@@ -84,7 +84,7 @@ export default async function MyProfile() {
         )
       </p>
       {profile.psycho_check !== null && (
-        <p className="rounded-lg bg-primary-50 px-3 py-1 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
+        <p className="rounded-lg bg-primary-50 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
           🤪 Psychotesty: {formatDate(profile.psycho_check)} (
           <span
             className={
