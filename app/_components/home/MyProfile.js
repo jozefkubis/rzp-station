@@ -67,7 +67,7 @@ export default async function MyProfile() {
       </p>
 
       <p className="rounded-lg bg-blue-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
-        🧑‍⚕️ Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
+        💉 Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
         <span
           className={
             medCheckDaysLeft < 0
