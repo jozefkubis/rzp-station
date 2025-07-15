@@ -7,6 +7,7 @@ import {
   ShiftsSection,
   ShiftsTable,
 } from "./ShiftRow";
+import { PiAmbulance } from "react-icons/pi";
 
 export default async function TodayTmrwShifts() {
   /* 1. Načítanie dát paralelne */
@@ -41,7 +42,7 @@ export default async function TodayTmrwShifts() {
     <ShiftsSection>
       {/* ======= Dnes ======= */}
       <ShiftsTable>
-        <ShiftDay>🚑 Služba dnes</ShiftDay>
+        <ShiftDay><PiAmbulance /> Služba dnes</ShiftDay>
 
         <ShiftsDayNightTable>
           <ShiftRowDay>☀ {line(dayToday, "D")}</ShiftRowDay>
@@ -53,7 +54,7 @@ export default async function TodayTmrwShifts() {
       {/* <div className="my-2 h-px bg-slate-200" /> */}
 
       <ShiftsTable>
-        <ShiftDay>🚑 Služba zajtra</ShiftDay>
+        <ShiftDay><PiAmbulance /> Služba zajtra</ShiftDay>
 
         <ShiftsDayNightTable>
           <ShiftRowDay>☀ {line(dayTomorrow, "D")}</ShiftRowDay>

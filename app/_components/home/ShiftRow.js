@@ -16,7 +16,7 @@ export function ShiftRowNight({ children }) {
 
 export function ShiftDay({ children }) {
   return (
-    <h2 className="text-lg self-start font-extrabold 2xl:text-xl bg-slate-50 rounded-lg px-3 py-3">
+    <h2 className="text-lg self-start font-extrabold 2xl:text-xl bg-slate-50 rounded-lg px-3 py-3 flex items-center gap-3">
       {children}
     </h2>
   );

@@ -7,7 +7,15 @@ import {
   formatDate,
   getDaysUntilNextMedCheck,
 } from "@/app/_lib/helpers/functions";
-import { format } from "date-fns";
+import { CiSun } from "react-icons/ci";
+import { TbCoinEuro, TbPlaneDeparture, TbMoodCrazyHappy } from "react-icons/tb";
+import { IoMoonOutline } from "react-icons/io5";
+import { LiaVolumeOffSolid } from "react-icons/lia";
+import { BiInjection } from "react-icons/bi";
+
+
+
+
 
 export default async function MyProfile() {
   const user = await getUser();
@@ -50,31 +58,34 @@ export default async function MyProfile() {
 
   return (
     <section className="flex w-full flex-col justify-center gap-y-2 rounded-2xl bg-white p-8 shadow">
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
-        💵 Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <TbCoinEuro /> Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
       </p>
-      <p className="rounded-lg bg-yellow-200 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
-        ☀️ Denné: {dayShifts} - ({dayHours} hod.)
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <CiSun /> Denné: {dayShifts} - ({dayHours} hod.)
       </p>
-      <p className="rounded-lg bg-primary-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
-        🌙 Nočné: {nightShifts} - ({nightHours} hod.)
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <IoMoonOutline />
+        Nočné: {nightShifts} - ({nightHours} hod.)
       </p>
-      <p className="rounded-lg bg-green-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
-        🧳 Dovolenka: {rd} - ({rdHours} hod.)
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <TbPlaneDeparture />
+        Dovolenka: {rd} - ({rdHours} hod.)
       </p>
-      <p className="rounded-lg bg-red-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
-        🚮 Požiadavky: {xShifts}
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <LiaVolumeOffSolid /> Požiadavky: {xShifts}
       </p>
 
-      <p className="rounded-lg bg-blue-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
-        💉 Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <BiInjection />
+        Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
         <span
           className={
             medCheckDaysLeft < 0
-              ? "text-red-500"
+              ? "text-red-600"
               : medCheckDaysLeft < 30
-                ? "text-orange-500"
-                : "text-green-500"
+                ? "text-orange-400"
+                : "text-primary-700"
           }
         >
           {medCheckDaysLeft < 0
@@ -84,15 +95,15 @@ export default async function MyProfile() {
         )
       </p>
       {profile.psycho_check !== null && (
-        <p className="rounded-lg bg-primary-50 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
-          🤪 Psychotesty: {formatDate(profile.psycho_check)} (
+        <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+          <TbMoodCrazyHappy /> Psychotesty: {formatDate(profile.psycho_check)} (
           <span
             className={
               psychoCheckDaysLeft < 0
-                ? "text-red-700"
+                ? "text-red-600"
                 : psychoCheckDaysLeft < 30
-                  ? "text-orange-700"
-                  : "text-green-500"
+                  ? "text-orange-400"
+                  : "text-primary-700"
             }
           >
             {psychoCheckDaysLeft < 0
