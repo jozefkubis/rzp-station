@@ -41,7 +41,7 @@ export default async function TodayTmrwShifts() {
     <ShiftsSection>
       {/* ======= Dnes ======= */}
       <ShiftsTable>
-        <ShiftDay>Služba dnes ➡️</ShiftDay>
+        <ShiftDay>🚑 Služba dnes</ShiftDay>
 
         <ShiftsDayNightTable>
           <ShiftRowDay>☀ {line(dayToday, "D")}</ShiftRowDay>
@@ -50,10 +50,10 @@ export default async function TodayTmrwShifts() {
       </ShiftsTable>
 
       {/* ======= Zajtra ======= */}
-      <div className="my-2 h-px bg-slate-200" />
+      {/* <div className="my-2 h-px bg-slate-200" /> */}
 
       <ShiftsTable>
-        <ShiftDay>Služba zajtra ➡️</ShiftDay>
+        <ShiftDay>🚑 Služba zajtra</ShiftDay>
 
         <ShiftsDayNightTable>
           <ShiftRowDay>☀ {line(dayTomorrow, "D")}</ShiftRowDay>

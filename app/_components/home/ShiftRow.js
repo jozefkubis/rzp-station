@@ -1,6 +1,6 @@
 export function ShiftRowDay({ children }) {
   return (
-    <p className="rounded-full bg-yellow-300 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
+    <p className="rounded-full bg-yellow-200 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
       {children}
     </p>
   );
@@ -8,7 +8,7 @@ export function ShiftRowDay({ children }) {
 
 export function ShiftRowNight({ children }) {
   return (
-    <p className="rounded-full bg-primary-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+    <p className="rounded-full bg-primary-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
       {children}
     </p>
   );
@@ -16,7 +16,7 @@ export function ShiftRowNight({ children }) {
 
 export function ShiftDay({ children }) {
   return (
-    <h2 className="mx-auto my-auto text-2xl font-extrabold 2xl:text-3xl">
+    <h2 className="text-lg self-start font-extrabold 2xl:text-xl bg-slate-50 rounded-lg px-3 py-3">
       {children}
     </h2>
   );
@@ -24,19 +24,19 @@ export function ShiftDay({ children }) {
 
 export function ShiftsTable({ children }) {
   return (
-    <div className="grid items-start gap-y-3 md:grid-cols-[10rem_1fr] xl:grid-cols-[13rem_1fr] 2xl:grid-cols-[18rem_1fr]">
+    <div className="flex flex-col p-4 gap-2 w-full">
       {children}
     </div>
   );
 }
 
 export function ShiftsDayNightTable({ children }) {
-  return <div className="flex flex-col gap-2">{children}</div>;
+  return <div className="flex flex-col p-4 gap-2 w-[80%] mx-auto">{children}</div>;
 }
 
 export function ShiftsSection({ children }) {
   return (
-    <div className="flex w-full flex-col justify-center space-y-6 rounded-2xl bg-white p-8 text-primary-700 shadow">
+    <div className="w-full rounded-2xl bg-white p-8 shadow text-primary-700 divide-y divide-slate-200">
       {children}
     </div>
   );

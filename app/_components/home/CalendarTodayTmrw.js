@@ -1,4 +1,5 @@
 import { getTasksForToday, getTasksForTomorrow } from "@/app/_lib/data-service";
+import { CalendarDivRow, CalendarHeaderRow, CalendarMainRow, CalendarPRow } from "./CalendarRow";
 
 export default async function CalendarToday() {
   const tasksForToday = await getTasksForToday();
@@ -7,12 +8,19 @@ export default async function CalendarToday() {
   const taskTitleForTmrw = taskForTmrw.map((task) => task.title);
 
   return (
-    <section className="w-full space-y-2 rounded-2xl bg-white p-4 shadow">
-      <h2 className="text-lg font-semibold">Kalendár dnes</h2>
-      <p className="text-sm text-gray-600">{taskTitleForToday}</p>
+    <section className="w-full rounded-2xl bg-white p-8 shadow text-primary-700">
+      <CalendarMainRow>
+        <CalendarDivRow>
+          <CalendarHeaderRow>📅 Kalendár dnes</CalendarHeaderRow>
+          <CalendarPRow>{taskTitleForToday}</CalendarPRow>
+        </CalendarDivRow>
 
-      <h2 className="pt-4 text-lg font-semibold">Kalendár zajtra</h2>
-      <p className="text-sm text-gray-600">{taskTitleForTmrw}</p>
+        {/* <div className="my-2 h-px bg-slate-200" /> */}
+        <CalendarDivRow>
+          <CalendarHeaderRow>📅 Kalendár zajtra</CalendarHeaderRow>
+          <CalendarPRow>{taskTitleForTmrw}</CalendarPRow>
+        </CalendarDivRow>
+      </CalendarMainRow>
     </section>
   );
 }

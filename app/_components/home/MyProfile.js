@@ -53,16 +53,16 @@ export default async function MyProfile() {
       <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
         💵 Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
       </p>
-      <p className="rounded-lg bg-yellow-300 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-yellow-200 px-3 py-3 text-[1rem] font-semibold text-primary-800 shadow-sm 2xl:text-2xl">
         ☀️ Denné: {dayShifts} - ({dayHours} hod.)
       </p>
-      <p className="rounded-lg bg-primary-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-primary-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🌙 Nočné: {nightShifts} - ({nightHours} hod.)
       </p>
-      <p className="rounded-lg bg-green-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-green-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🧳 Dovolenka: {rd} - ({rdHours} hod.)
       </p>
-      <p className="rounded-lg bg-red-600 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
+      <p className="rounded-lg bg-red-500 px-3 py-3 text-[1rem] font-semibold text-primary-50 shadow-sm 2xl:text-2xl">
         🚮 Požiadavky: {xShifts}
       </p>
 
