@@ -31,7 +31,7 @@ export function ShiftsTable({ children }) {
 }
 
 export function ShiftsDayNightTable({ children }) {
-  return <div className="flex flex-col p-4 gap-3 w-[80%] mx-auto">{children}</div>;
+  return <div className="flex flex-col p-4 gap-3 w-[70%] mx-auto">{children}</div>;
 }
 
 export function ShiftsSection({ children }) {
