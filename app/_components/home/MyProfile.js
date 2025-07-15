@@ -58,25 +58,25 @@ export default async function MyProfile() {
 
   return (
     <section className="flex w-full flex-col justify-center gap-y-2 rounded-2xl bg-white p-8 shadow">
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
         <TbCoinEuro /> Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
       </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
         <CiSun /> Denné: {dayShifts} - ({dayHours} hod.)
       </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
         <IoMoonOutline />
         Nočné: {nightShifts} - ({nightHours} hod.)
       </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
         <TbPlaneDeparture />
         Dovolenka: {rd} - ({rdHours} hod.)
       </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
         <LiaVolumeOffSolid /> Požiadavky: {xShifts}
       </p>
 
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-2xl flex items-center gap-3">
+      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
         <BiInjection />
         Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
         <span
@@ -95,7 +95,7 @@ export default async function MyProfile() {
         )
       </p>
       {profile.psycho_check !== null && (
-        <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-2xl flex items-center gap-3">
+        <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
           <TbMoodCrazyHappy /> Psychotesty: {formatDate(profile.psycho_check)} (
           <span
             className={
