@@ -8,7 +8,9 @@ const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, "0"); // pripája nulku vpredu
 const day = String(today.getDate()).padStart(2, "0");
+const tmrwDay = String(today.getDate() + 1).padStart(2, "0");
 export const dateStr = `${year}-${month}-${day}`; // napr. "2025-06-01"
+export const tmrwDateStr = `${year}-${month}-${tmrwDay}`;
 
 export function getDaysUntilNextMedCheck(medCheckDateStr) {
   if (!medCheckDateStr) return null;

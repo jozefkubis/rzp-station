@@ -55,29 +55,32 @@ export default function WeatherCard() {
   const icon = getWeatherIcon(today.code);
 
   return (
-    <div className="w-full space-y-4 rounded-2xl bg-white p-4 shadow">
-      <h2 className="text-lg font-semibold">
-        Počasie – Rajec <span className="text-4xl">{icon}</span>
-      </h2>
+    <div className="flex w-full items-center justify-end gap-2 rounded-2xl px-8">
+      <div className="flex items-center justify-center gap-4 rounded-2xl bg-blue-600 p-4 text-white">
+        <div className="text-4xl">{icon}</div>
+        {/* Dnes */}
+        <div className="flex">
+          <div className="font-medium">
+            Dnes{" "}
+            <span>
+              {today.max} °C / {today.min} °C
+            </span>
+          </div>
+        </div>
 
-      {/* Dnes */}
-      <div className="flex justify-between">
-        <span>Dnes</span>
-        <span className="font-medium">
-          {today.max} °C / {today.min} °C
-        </span>
-      </div>
-
-      {/* Zajtra */}
-      <div className="flex justify-between">
-        <span>Zajtra</span>
-        <span className="font-medium">
-          {tomorrow.max} °C / {tomorrow.min} °C
-        </span>
+        {/* Zajtra */}
+        <div className="flex">
+          <div className="font-medium">
+            Zajtra{" "}
+            <span>
+              {tomorrow.max} °C / {tomorrow.min} °C
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Týždeň */}
-      <div className="space-y-1 border-t pt-2 text-sm text-gray-600">
+      {/* <div className="space-y-1 border-t pt-2 text-sm text-gray-600">
         {week.map((d) => (
           <div key={d.date} className="flex justify-between">
             <span>
@@ -90,7 +93,7 @@ export default function WeatherCard() {
             </span>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -12,10 +12,7 @@ import { TbCoinEuro, TbPlaneDeparture, TbMoodCrazyHappy } from "react-icons/tb";
 import { IoMoonOutline } from "react-icons/io5";
 import { LiaVolumeOffSolid } from "react-icons/lia";
 import { BiInjection } from "react-icons/bi";
-
-
-
-
+import Stat from "./Stat";
 
 export default async function MyProfile() {
   const user = await getUser();
@@ -57,61 +54,56 @@ export default async function MyProfile() {
   const psychoCheckDaysLeft = getDaysUntilNextMedCheck(profile.psycho_check);
 
   return (
-    <section className="flex w-full flex-col justify-center gap-y-2 rounded-2xl bg-white p-8 shadow">
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
-        <TbCoinEuro /> Služby tento mesiac spolu: {allShifts} - ({allHours} hod.)
-      </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
-        <CiSun /> Denné: {dayShifts} - ({dayHours} hod.)
-      </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
-        <IoMoonOutline />
-        Nočné: {nightShifts} - ({nightHours} hod.)
-      </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
-        <TbPlaneDeparture />
-        Dovolenka: {rd} - ({rdHours} hod.)
-      </p>
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
-        <LiaVolumeOffSolid /> Požiadavky: {xShifts}
-      </p>
+    <section className="col-span-full flex w-full flex-wrap items-center justify-between bg-slate-50 px-8">
+      <Stat
+        title="Služby mesiac"
+        color="green"
+        icon={<TbCoinEuro size={32} />}
+        value={`${allShifts} / ${allHours} hod.`}
+      />
 
-      <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700  shadow-sm 2xl:text-xl flex items-center gap-3">
-        <BiInjection />
-        Lekárska prehliadka: {formatDate(profile.medCheckDate)} (
-        <span
-          className={
-            medCheckDaysLeft < 0
-              ? "text-red-600"
-              : medCheckDaysLeft < 30
-                ? "text-orange-400"
-                : "text-primary-700"
-          }
-        >
-          {medCheckDaysLeft < 0
-            ? `Prehliadka vypršala pred ${Math.abs(medCheckDaysLeft)} dňami`
-            : `Do prehliadky ostáva ${medCheckDaysLeft} dní`}
-        </span>
-        )
-      </p>
-      {profile.psycho_check !== null && (
-        <p className="rounded-lg bg-slate-50 px-3 py-3 text-[1rem] font-semibold text-primary-700 shadow-sm 2xl:text-xl flex items-center gap-3">
-          <TbMoodCrazyHappy /> Psychotesty: {formatDate(profile.psycho_check)} (
-          <span
-            className={
-              psychoCheckDaysLeft < 0
-                ? "text-red-600"
-                : psychoCheckDaysLeft < 30
-                  ? "text-orange-400"
-                  : "text-primary-700"
-            }
-          >
-            {psychoCheckDaysLeft < 0
-              ? `Prehliadka vypršala pred ${Math.abs(psychoCheckDaysLeft)} dňami`
-              : `Do prehliadky ostáva ${psychoCheckDaysLeft} dní`}
-          </span>
-          )
-        </p>
+      <Stat
+        title="Denné služby"
+        color="yellow"
+        icon={<CiSun size={32} />}
+        value={`${dayShifts} / ${dayHours} hod.`}
+      />
+
+      <Stat
+        title="Nočné služby"
+        color="slate"
+        icon={<IoMoonOutline size={32} />}
+        value={`${nightShifts} / ${nightHours} hod.`}
+      />
+
+      <Stat
+        title="Dovolenka"
+        color="green"
+        icon={<TbPlaneDeparture size={32} />}
+        value={`${rd} / ${rdHours} hod.`}
+      />
+
+      <Stat
+        title="Požiadavky"
+        color="red"
+        icon={<LiaVolumeOffSolid size={32} />}
+        value={`${xShifts}`}
+      />
+
+      <Stat
+        title="Lekárska kontrola"
+        color="blue"
+        icon={<BiInjection size={32} />}
+        value={`${medCheckDaysLeft < 0 ? `- ${Math.abs(medCheckDaysLeft)} dní` : `+ ${medCheckDaysLeft} dní`}`}
+      />
+
+      {profile.psycho_check && (
+        <Stat
+          title="Psychotesty"
+          color="pink"
+          icon={<TbMoodCrazyHappy size={32} />}
+          value={`${psychoCheckDaysLeft < 0 ? `- ${Math.abs(psychoCheckDaysLeft)} dní` : `+ ${psychoCheckDaysLeft} dní`}`}
+        />
       )}
     </section>
   );
