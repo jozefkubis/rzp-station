@@ -23,7 +23,7 @@ export default function Stat({ icon, title, value, color = "blue" }) {
       <h5 className="2xl:text-md self-end text-xs font-semibold uppercase tracking-wide text-primary-700">
         {title}
       </h5>
-      <p className="text-2xl font-medium leading-none text-primary-700">
+      <p className="text-sm font-medium leading-none text-primary-700 2xl:text-2xl">
         {value}
       </p>
     </div>
