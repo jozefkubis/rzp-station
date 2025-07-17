@@ -1,6 +1,6 @@
 export function ShiftRowDay({ children }) {
   return (
-    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs md:text-sm font-semibold text-primary-700 shadow ring-2 ring-yellow-400">
+    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-yellow-400 md:text-sm">
       {children}
     </p>
   );
@@ -8,7 +8,7 @@ export function ShiftRowDay({ children }) {
 
 export function ShiftRowNight({ children }) {
   return (
-    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs md:text-sm font-semibold text-primary-700 shadow ring-2 ring-primary-400">
+    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-primary-400 md:text-sm">
       {children}
     </p>
   );
@@ -16,14 +16,14 @@ export function ShiftRowNight({ children }) {
 
 export function ShiftDay({ children }) {
   return (
-    <h2 className="flex items-center gap-3 self-start rounded-lg px-3 py-3 text-sm md:text-base font-bold 2xl:text-lg">
+    <h2 className="flex items-center gap-3 self-start rounded-lg px-3 py-3 text-sm font-bold md:text-base 2xl:text-lg">
       {children}
     </h2>
   );
 }
 export function Day({ children }) {
   return (
-    <h2 className="text-sm md:text-base flex items-center gap-3 self-start rounded-lg px-3 py-3 font-bold 2xl:text-xl">
+    <h2 className="flex items-center gap-3 self-start rounded-lg px-3 py-3 text-sm font-bold md:text-base 2xl:text-xl">
       {children}
     </h2>
   );
@@ -35,13 +35,13 @@ export function ShiftsTable({ children }) {
 
 export function ShiftsDayNightTable({ children }) {
   return (
-    <div className="mx-auto flex w-[80%] flex-col gap-3">{children}</div>
+    <div className="mx-auto flex w-[80%] flex-col gap-3 p-4">{children}</div>
   );
 }
 
 export function ShiftsSection({ children }) {
   return (
-    <div className="flex w-full flex-col divide-y divide-slate-200 rounded-2xl bg-white p-6 shadow-sm">
+    <div className="flex w-full flex-col divide-y divide-slate-200 rounded-2xl bg-white p-6 text-primary-700 shadow-sm">
       {children}
     </div>
   );
