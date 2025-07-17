@@ -11,7 +11,11 @@ import ShiftRow from "./ShiftRow";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import Modal from "../Modal";
 
-import { deleteShift, getShiftsForMonth, upsertShift } from "@/app/_lib/actions";
+import {
+  deleteShift,
+  getShiftsForMonth,
+  upsertShift,
+} from "@/app/_lib/actions";
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -140,31 +144,33 @@ export default function ShiftsTable({ shifts }) {
       acc[id].shifts.push({ date: row.date, type: row.shift_type });
       return acc;
     }, {}),
-  ).sort((a, b) => a.order - b.order) /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/;
+  ).sort(
+    (a, b) => a.order - b.order,
+  ); /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/
 
-  const [optimisticRoster, apply] = useOptimistic(
-    roster,
-    (curr, act) => {
-      if (act.type === "DELETE") {
-        return curr.filter((u) => u.user_id !== act.id);
-      }
+  const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
+    if (act.type === "DELETE") {
+      return curr.filter((u) => u.user_id !== act.id);
+    }
 
-      if (act.type === "MOVE") {
-        const index = curr.findIndex((u) => u.user_id === act.userId);
-        const newIndex = act.direction === "up" ? index - 1 : index + 1;
-        if (index < 0 || newIndex < 0 || newIndex >= curr.length) return curr;
+    if (act.type === "MOVE") {
+      const index = curr.findIndex((u) => u.user_id === act.userId);
+      const newIndex = act.direction === "up" ? index - 1 : index + 1;
+      if (index < 0 || newIndex < 0 || newIndex >= curr.length) return curr;
 
-        const updated = [...curr];
-        const temp = updated[index];
-        updated[index] = updated[newIndex];
-        updated[newIndex] = temp;
+      const updated = [...curr];
+      const temp = updated[index];
+      updated[index] = updated[newIndex];
+      updated[newIndex] = temp;
 
-        return updated;
-      }
+      return updated;
+    }
 
-      return curr;
-    },
-  );
+    return curr;
+  });
+
+  const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
+  const normHours = weekdays * 7.5;
 
   /* ───────────── JSX ───────────── */
   return (
@@ -172,7 +178,7 @@ export default function ShiftsTable({ shifts }) {
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          {monthName} {year}
+          {monthName} {year} - Norma hodín: {normHours}
         </MonthYearHead>
 
         {/* hlavička dní */}
@@ -209,7 +215,6 @@ export default function ShiftsTable({ shifts }) {
                 direction: act.direction,
               })
             }
-
             days={days}
             colTemplate={colTemplate}
             onSelect={handleSelect}

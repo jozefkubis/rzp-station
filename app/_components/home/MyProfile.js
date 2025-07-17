@@ -16,12 +16,22 @@ import {
   TbBellRinging,
   TbStethoscope,
   TbBrain,
+  TbClockPlus,
+  P,
 } from "react-icons/tb";
+import { getDaysArray } from "../shifts/helpers_shifts";
 
 export default async function MyProfile() {
   const user = await getUser();
   const shiftsForProfile = await getShiftsForProfile(user.id);
   const profile = await getProfile(user.id);
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // 1-12
+  const days = getDaysArray(year, month);
+
+  const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
+  const normHours = weekdays * 7.5;
 
   // MARK: DAY SHIFTS
   const dayShifts = shiftsForProfile.filter(
@@ -48,10 +58,8 @@ export default async function MyProfile() {
   const allShifts = dayShifts + nightShifts;
   const allHours = allShifts * 12 + rdHours;
 
-  // MARK: DAY OFF
-  const xShifts = shiftsForProfile.filter((shift) =>
-    shift.shift_type?.toLowerCase().includes("x"),
-  ).length;
+  // MARK: OVERTIME
+  const overTime = allHours - normHours;
 
   //MARK: DAYS LEFT TO MEDCHECK
   const medCheckDaysLeft = getDaysUntilNextMedCheck(profile.medCheckDate);
@@ -88,10 +96,10 @@ export default async function MyProfile() {
       />
 
       <Stat
-        title="Požiadavky"
+        title="Nadčas"
         color="red"
-        icon={<TbBellRinging />}
-        value={`${xShifts}`}
+        icon={<TbClockPlus />}
+        value={`${overTime} h.`}
       />
 
       <Stat
