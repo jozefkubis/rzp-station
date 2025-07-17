@@ -56,7 +56,7 @@ export default function WeatherCard() {
 
   return (
     <div className="flex w-full items-center justify-end gap-2 rounded-2xl px-8">
-      <div className="flex items-center justify-center gap-4 rounded-2xl bg-blue-600 p-4 text-white">
+      <div className="flex items-center justify-center gap-4 rounded-2xl bg-gradient-to-tr from-blue-300 to-blue-600 p-4 text-white shadow-md">
         <div className="text-4xl">{icon}</div>
         {/* Dnes */}
         <div className="flex">
@@ -91,8 +91,8 @@ export default function WeatherCard() {
             <span>
               {d.max} / {d.min} °C
             </span>
-          </div>
-        ))}
+          </div>)
+        )}
       </div> */}
     </div>
   );

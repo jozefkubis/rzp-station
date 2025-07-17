@@ -50,23 +50,23 @@ export default async function Page() {
   //......................................................................................................
 
   return (
-    <div className="grid h-screen grid-cols-[4rem_1fr] bg-gray-50">
-      {/* NAVBAR */}
-      <nav data-cy="home-nav" className="bg-primary-700 py-8">
-        <ul className="flex flex-col items-center gap-5">
+    <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
+      {/* NAVBAR / ASIDE */}
+      <aside className="bg-primary-700 py-8 lg:sticky lg:top-0 lg:w-16">
+        <ul className="flex gap-5 lg:flex-col lg:items-center">
           <NavLinks />
         </ul>
-      </nav>
+      </aside>
 
       {/* DASHBOARD GRID */}
-      <main className="flex h-screen flex-col gap-8 py-6">
+      <main className="flex flex-col gap-8 p-6 flex-1 overflow-y-auto">
         {/* Karta: Počasie */}
         <WeatherCard />
 
         {/* Karta: Môj profil */}
         <MyProfile />
         {/* Karta: Služba a Kanlendar */}
-        <div className="flex gap-6 px-8">
+        <section className="grid gap-6 md:grid-cols-2 w-full">
           <TodayShiftsCalendar
             dayToday={dayToday}
             nightToday={nightToday}
@@ -82,7 +82,7 @@ export default async function Page() {
             taskForTmrw={taskForTmrw}
             taskTitleForTmrw={taskTitleForTmrw}
           />
-        </div>
+        </section>
       </main>
     </div>
   );

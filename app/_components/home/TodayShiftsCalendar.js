@@ -23,7 +23,10 @@ export default async function TodayShiftsCalendar({
       <Day>Dnes: {formatDate(dateStr)}</Day>
       <ShiftsTable>
         <ShiftDay>
-          <PiAmbulance /> Služba
+          <span className="row-span-2 flex aspect-square w-10 items-center justify-center rounded-full bg-gradient-to-tr from-yellow-200 to-red-300 text-yellow-700">
+            <PiAmbulance className="text-xl md:text-2xl lg:text-3xl" />
+          </span>{" "}
+          Služba
         </ShiftDay>
 
         <ShiftsDayNightTable>
@@ -35,7 +38,10 @@ export default async function TodayShiftsCalendar({
       <ShiftsTable>
         <CalendarDivRow>
           <ShiftDay>
-            <IoCalendarOutline /> Kalendár
+            <span className="row-span-2 flex aspect-square w-10 items-center justify-center rounded-full bg-green-100 text-green-700">
+              <IoCalendarOutline className="text-xl md:text-2xl lg:text-3xl" />
+            </span>{" "}
+            Kalendár
           </ShiftDay>
           <CalendarPRow>
             {taskTitleForToday.length ? taskTitleForToday : "Žiadne úlohy"}

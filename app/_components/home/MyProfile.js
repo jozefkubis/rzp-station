@@ -7,12 +7,16 @@ import {
   formatDate,
   getDaysUntilNextMedCheck,
 } from "@/app/_lib/helpers/functions";
-import { CiSun } from "react-icons/ci";
-import { TbCoinEuro, TbPlaneDeparture, TbMoodCrazyHappy } from "react-icons/tb";
-import { IoMoonOutline } from "react-icons/io5";
-import { LiaVolumeOffSolid } from "react-icons/lia";
-import { BiInjection } from "react-icons/bi";
 import Stat from "./Stat";
+import {
+  TbCalendarStats,
+  TbSun,
+  TbMoonStars,
+  TbPlaneDeparture,
+  TbBellRinging,
+  TbStethoscope,
+  TbBrain,
+} from "react-icons/tb";
 
 export default async function MyProfile() {
   const user = await getUser();
@@ -54,46 +58,46 @@ export default async function MyProfile() {
   const psychoCheckDaysLeft = getDaysUntilNextMedCheck(profile.psycho_check);
 
   return (
-    <section className="col-span-full flex w-full flex-wrap items-center justify-between bg-slate-50 px-8">
+    <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
       <Stat
         title="Služby mesiac"
         color="green"
-        icon={<TbCoinEuro size={32} />}
-        value={`${allShifts} / ${allHours} hod.`}
+        icon={<TbCalendarStats />}
+        value={`${allShifts} / ${allHours} h.`}
       />
 
       <Stat
         title="Denné služby"
         color="yellow"
-        icon={<CiSun size={32} />}
-        value={`${dayShifts} / ${dayHours} hod.`}
+        icon={<TbSun />}
+        value={`${dayShifts} / ${dayHours} h.`}
       />
 
       <Stat
         title="Nočné služby"
         color="slate"
-        icon={<IoMoonOutline size={32} />}
-        value={`${nightShifts} / ${nightHours} hod.`}
+        icon={<TbMoonStars />}
+        value={`${nightShifts} / ${nightHours} h.`}
       />
 
       <Stat
         title="Dovolenka"
         color="green"
-        icon={<TbPlaneDeparture size={32} />}
-        value={`${rd} / ${rdHours} hod.`}
+        icon={<TbPlaneDeparture />}
+        value={`${rd} / ${rdHours} h.`}
       />
 
       <Stat
         title="Požiadavky"
         color="red"
-        icon={<LiaVolumeOffSolid size={32} />}
+        icon={<TbBellRinging />}
         value={`${xShifts}`}
       />
 
       <Stat
-        title="Lekárska kontrola"
+        title="Lek. prehliadka"
         color="blue"
-        icon={<BiInjection size={32} />}
+        icon={<TbStethoscope />}
         value={`${medCheckDaysLeft < 0 ? `- ${Math.abs(medCheckDaysLeft)} dní` : `+ ${medCheckDaysLeft} dní`}`}
       />
 
@@ -101,7 +105,7 @@ export default async function MyProfile() {
         <Stat
           title="Psychotesty"
           color="pink"
-          icon={<TbMoodCrazyHappy size={32} />}
+          icon={<TbBrain />}
           value={`${psychoCheckDaysLeft < 0 ? `- ${Math.abs(psychoCheckDaysLeft)} dní` : `+ ${psychoCheckDaysLeft} dní`}`}
         />
       )}

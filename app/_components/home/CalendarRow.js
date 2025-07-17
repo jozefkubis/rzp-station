@@ -12,7 +12,7 @@ export function CalendarDivRow({ children }) {
 
 export function CalendarHeaderRow({ children }) {
   return (
-    <h2 className="text-md flex items-center gap-3 self-start rounded-lg bg-slate-50 px-3 py-3 font-extrabold 2xl:text-lg">
+    <h2 className="flex items-center gap-3 self-start rounded-lg px-3 py-3 text-sm font-extrabold md:text-base 2xl:text-lg">
       {children}
     </h2>
   );
@@ -20,7 +20,7 @@ export function CalendarHeaderRow({ children }) {
 
 export function CalendarPRow({ children }) {
   return (
-    <p className="mx-auto w-[70%] rounded-xl bg-slate-50 p-4 py-6 text-xl font-semibold ring-2 ring-slate-300 2xl:text-2xl">
+    <p className="mx-auto w-full rounded-xl bg-slate-50 p-4 text-sm font-medium ring-1 ring-slate-300 md:text-base 2xl:text-xl">
       {children}
     </p>
   );

@@ -11,19 +11,20 @@ export default function Stat({ icon, title, value, color = "blue" }) {
   const { bg, text } = COLOR_STYLES[color] ?? COLOR_STYLES.blue;
 
   return (
-    <div className="grid grid-cols-[4rem_1fr] grid-rows-2 gap-x-4 gap-y-1 rounded-md border border-gray-200 bg-white px-4 py-12">
+    <div className="shadow-sm grid grid-cols-[auto_1fr] grid-rows-2 gap-x-4 gap-y-1 rounded-md border border-gray-200 bg-white px-4 py-6">
       {/* ikona */}
       <div
         className={`${bg} row-span-2 flex aspect-square items-center justify-center rounded-full`}
       >
-        <span className={`${text}`}>{icon}</span>
+        <span className={`${text} text-xl md:text-2xl lg:text-3xl`}>{icon}</span>
+
       </div>
 
       {/* nadpis + hodnota */}
-      <h5 className="2xl:text-md self-end text-xs font-semibold uppercase tracking-wide text-primary-700">
+      <h5 className="2xl:text-[0.8rem] self-end text-[0.6rem] font-semibold uppercase tracking-wide text-primary-700">
         {title}
       </h5>
-      <p className="text-sm font-medium leading-none text-primary-700 2xl:text-2xl">
+      <p className="text-sm font-medium leading-none text-primary-700 2xl:text-lg">
         {value}
       </p>
     </div>
