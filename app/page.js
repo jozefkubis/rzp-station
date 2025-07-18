@@ -59,14 +59,14 @@ export default async function Page() {
       </aside>
 
       {/* DASHBOARD GRID */}
-      <main className="flex flex-col gap-8 p-6 flex-1 overflow-y-auto">
+      <main className="flex flex-1 flex-col gap-8 overflow-y-auto p-6">
         {/* Karta: Počasie */}
         <WeatherCard />
 
         {/* Karta: Môj profil */}
         <MyProfile />
         {/* Karta: Služba a Kanlendar */}
-        <section className="grid gap-6 md:grid-cols-2 w-full">
+        <section className="grid w-full gap-6 md:grid-cols-2">
           <TodayShiftsCalendar
             dayToday={dayToday}
             nightToday={nightToday}

@@ -1,77 +1,69 @@
-// components/NavLinks.tsx
-import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
+// components/NavLinks.tsx  (server component)
 import Image from "next/image";
 import Link from "next/link";
+
 import {
   HiOutlineCalendarDays,
-  HiOutlineUser,
   HiOutlineUserPlus,
   HiOutlineUsers,
   HiArrowRightOnRectangle,
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
 
+import { getUser, getAvatarUrl } from "@/app/_lib/data-service";
+
+const BLANK_AVATAR =
+  "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
+
 export default async function NavLinks() {
-  const blankAvatar =
-    "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
-
+  /* -------- avatar fetch (server → OK) -------- */
   const user = await getUser();
-  const email = user?.email;
-  const avatarUrl = await getAvatarUrl(email);
+  const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
+  /* -------- definuj navigačné odkazy -------- */
   const links = [
-    {
-      href: "/shifts",
-      label: "Výjazdy",
-      icon: <PiAmbulance className="h-8 w-8" />,
-    },
+    { href: "/shifts", label: "Výjazdy", icon: <PiAmbulance size={28} /> },
     {
       href: "/calendar",
       label: "Kalendár",
-      icon: <HiOutlineCalendarDays className="h-8 w-8" />,
+      icon: <HiOutlineCalendarDays size={28} />,
     },
-    {
-      href: "/profiles",
-      label: "Profily",
-      icon: <HiOutlineUsers className="h-8 w-8" />,
-    },
-    // {
-    //   href: "/settings/profile",
-    //   label: "Nastavenia",
-    //   icon: <HiOutlineUser className="h-8 w-8" />,
-    // },
+    { href: "/profiles", label: "Profily", icon: <HiOutlineUsers size={28} /> },
     {
       href: "/register",
       label: "Registrácia",
-      icon: <HiOutlineUserPlus className="h-8 w-8" />,
+      icon: <HiOutlineUserPlus size={28} />,
     },
     {
       href: "/login",
       label: "Logout",
-      icon: <HiArrowRightOnRectangle className="h-8 w-8" />,
+      icon: <HiArrowRightOnRectangle size={28} />,
     },
   ];
 
   return (
     <>
-      <Link href="/settings/profile">
-        <div className="relative h-[55px] w-[55px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
+      {/* -------- avatar -------- */}
+      <Link href="/settings/profile" aria-label="Profil">
+        <div className="relative size-14 overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
           <Image
-            src={avatarUrl || blankAvatar}
-            fill
+            src={avatarUrl || BLANK_AVATAR}
             alt="Avatar"
+            fill
             className="object-cover"
           />
         </div>
       </Link>
-      {links.map((link) => (
-        <li key={link.href}>
+
+      {/* -------- ikonové odkazy -------- */}
+      {links.map(({ href, label, icon }) => (
+        <li key={href}>
           <Link
-            href={link.href}
-            aria-label={link.label}
-            className="grid place-items-center rounded-xl p-2 text-primary-200 transition hover:bg-primary-600/40 hover:text-primary-50 active:scale-95"
+            href={href}
+            aria-label={label}
+            className="grid size-12 place-items-center rounded-xl text-primary-200 transition hover:bg-primary-600/40 hover:text-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95"
           >
-            {link.icon}
+            {icon}
           </Link>
         </li>
       ))}
