@@ -33,30 +33,17 @@ export default async function MyProfile() {
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
 
-  // MARK: DAY SHIFTS
-  const dayShifts = shiftsForProfile.filter(
-    (shift) => shift.shift_type === "D",
-  ).length;
+  // MARK: SHIFTS
+  function shiftsByType(type) {
+    return shiftsForProfile.filter((shift) => shift.shift_type === type).length;
+  }
 
-  const dayHours = dayShifts * 12;
-
-  // MARK: NIGHT SHIFTS
-  const nightShifts = shiftsForProfile.filter(
-    (shift) => shift.shift_type === "N",
-  ).length;
-
-  const nightHours = nightShifts * 12;
-
-  // MARK: VACATIONS
-  const rd = shiftsForProfile.filter(
-    (shift) => shift.shift_type === "RD",
-  ).length;
-
-  const rdHours = rd * 7.5;
-
-  // MARK: ALL SHIFTS
-  const allShifts = dayShifts + nightShifts;
+  const allShifts = shiftsByType("D") + shiftsByType("N");
+  const rdHours = shiftsByType("RD") * 7.5;
   const allHours = allShifts * 12 + rdHours;
+
+  const dayHours = shiftsByType("D") * 12;
+  const nightHours = shiftsByType("N") * 12;
 
   // MARK: OVERTIME
   const overTime = allHours - normHours;
@@ -78,21 +65,21 @@ export default async function MyProfile() {
         title="Denné služby"
         color="yellow"
         icon={<TbSun />}
-        value={`${dayShifts} / ${dayHours} h.`}
+        value={`${shiftsByType("D")} / ${dayHours} h.`}
       />
 
       <Stat
         title="Nočné služby"
         color="slate"
         icon={<TbMoonStars />}
-        value={`${nightShifts} / ${nightHours} h.`}
+        value={`${shiftsByType("N")} / ${nightHours} h.`}
       />
 
       <Stat
         title="Dovolenka"
         color="green"
         icon={<TbPlaneDeparture />}
-        value={`${rd} / ${rdHours} h.`}
+        value={`${shiftsByType("RD")} / ${rdHours} h.`}
       />
 
       <Stat
