@@ -23,6 +23,14 @@ export default async function TmrwShiftsCalendar({
   line,
   taskTitleForTmrw,
 }) {
+  const boxContent = taskTitleForTmrw.map((task, i) => (
+    <li key={task.id}>
+      <span className="flex gap-2 items-center">
+        {i + 1}. {task}
+      </span>
+    </li>
+  ));
+
   return (
     <ShiftsSection>
       <Day>Zajtra: {formatDate(tmrwDateStr)}</Day>
@@ -49,7 +57,7 @@ export default async function TmrwShiftsCalendar({
             Kalendár
           </ShiftDay>
           <CalendarPRow>
-            {taskTitleForTmrw.length ? taskTitleForTmrw : "Žiadne úlohy"}
+            {boxContent.length ? boxContent : "Žiadne úlohy"}
           </CalendarPRow>
         </CalendarDivRow>
       </ShiftsTable>

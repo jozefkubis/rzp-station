@@ -18,6 +18,14 @@ export default async function TodayShiftsCalendar({
   line,
   taskTitleForToday,
 }) {
+  const boxContent = taskTitleForToday.map((task, i) => (
+    <li key={task.id}>
+      <span className="flex gap-2 items-center">
+        {i + 1}. {task}
+      </span>
+    </li>
+  ));
+
   return (
     <ShiftsSection>
       <Day>Dnes: {formatDate(dateStr)}</Day>
@@ -44,7 +52,7 @@ export default async function TodayShiftsCalendar({
             Kalendár
           </ShiftDay>
           <CalendarPRow>
-            {taskTitleForToday.length ? taskTitleForToday : "Žiadne úlohy"}
+            {boxContent.length ? boxContent : "Žiadne úlohy"}
           </CalendarPRow>
         </CalendarDivRow>
       </ShiftsTable>

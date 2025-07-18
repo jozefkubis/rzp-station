@@ -20,8 +20,10 @@ export function CalendarHeaderRow({ children }) {
 
 export function CalendarPRow({ children }) {
   return (
-    <p className="mx-auto w-[80%] rounded-xl bg-slate-50 p-4 text-sm font-medium ring-1 ring-slate-300 md:text-base 2xl:text-xl">
-      {children}
-    </p>
+    <div className="mx-auto w-[80%] rounded-xl bg-slate-50 p-4 text-sm font-medium ring-1 ring-slate-300 md:text-base 2xl:text-xl">
+      <ul>
+        {children}
+      </ul>
+    </div>
   );
 }
