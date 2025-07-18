@@ -1,6 +1,6 @@
 export function ShiftRowDay({ children }) {
   return (
-    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-yellow-400 md:text-sm">
+    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-yellow-400 md:text-[1rem] 2xl:text-xl">
       {children}
     </p>
   );
@@ -8,7 +8,7 @@ export function ShiftRowDay({ children }) {
 
 export function ShiftRowNight({ children }) {
   return (
-    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-primary-400 md:text-sm">
+    <p className="rounded-full bg-slate-50 px-3 py-3 text-xs font-semibold text-primary-700 shadow ring-2 ring-primary-400 md:text-[1rem] 2xl:text-xl">
       {children}
     </p>
   );
