@@ -17,7 +17,11 @@ npm install cypress --save-dev
 npm install --save-dev eslint
 npm install --save-dev eslint-plugin-cypress
 
-
+settings.json v vscode:
+"editor.codeActionsOnSave": {
+  "source.organizeImports": "explicit", // spustí sa pri ručnom Ctrl/⌘ + S
+  "source.fixAll": "explicit"           // (voliteľné) ESLint/Prettier auto‑fix
+}
 
 
 

@@ -3,23 +3,18 @@ import {
   getShiftsForProfile,
   getUser,
 } from "@/app/_lib/data-service";
+import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
 import {
-  formatDate,
-  getDaysUntilNextMedCheck,
-} from "@/app/_lib/helpers/functions";
-import Stat from "./Stat";
-import {
+  TbBrain,
   TbCalendarStats,
-  TbSun,
+  TbClockPlus,
   TbMoonStars,
   TbPlaneDeparture,
-  TbBellRinging,
   TbStethoscope,
-  TbBrain,
-  TbClockPlus,
-  P,
+  TbSun,
 } from "react-icons/tb";
 import { getDaysArray } from "../shifts/helpers_shifts";
+import Stat from "./Stat";
 
 export default async function MyProfile() {
   const user = await getUser();
