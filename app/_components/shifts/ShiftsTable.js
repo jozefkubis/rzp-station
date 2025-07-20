@@ -33,6 +33,12 @@ export default function ShiftsTable({ shifts }) {
   const monthName = getMonthOnly();
   const colTemplate = `12rem repeat(${days.length}, 3rem)`;
 
+
+  // const nextMonth = month === 12 ? 1 : month + 1;
+  // const prevMonth = month === 1 ? 12 : month - 1;
+  // console.log("nextMonth", nextMonth, "prevMonth", prevMonth);
+
+
   /* ---------- useOptimistic ---------- */
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
