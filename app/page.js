@@ -1,14 +1,14 @@
-import NavLinks from "./_components/home/NavLinks";
+import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
 import MyProfile from "./_components/home/MyProfile";
+import NavLinks from "./_components/home/NavLinks";
+import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
-import TodayShiftsCalendar from "./_components/home/TodayShiftsCalendar";
 import {
   getShiftForToday,
   getShiftForTomorrow,
   getTasksForToday,
   getTasksForTomorrow,
 } from "./_lib/data-service";
-import TmrwShiftsCalendar from "./_components/home/TmrwShiftsCalendar";
 
 export const revalidate = 0;
 
@@ -67,20 +67,22 @@ export default async function Page() {
         <MyProfile />
         {/* Karta: Služba a Kanlendar */}
         <section className="grid w-full gap-6 md:grid-cols-2">
-          <TodayShiftsCalendar
-            dayToday={dayToday}
-            nightToday={nightToday}
+          <ShiftCalendar
+            label="Dnes"
+            dateString={formatDate(dateStr)}
+            dayData={dayToday}
+            nightData={nightToday}
             line={line}
-            taskTitleForToday={taskTitleForToday}
-            tasksForToday={tasksForToday}
+            tasks={taskTitleForToday}
           />
 
-          <TmrwShiftsCalendar
-            dayTomorrow={dayTomorrow}
-            nightTomorrow={nightTomorrow}
+          <ShiftCalendar
+            label="Zajtra"
+            dateString={formatDate(tmrwDateStr)}
+            dayData={dayTomorrow}
+            nightData={nightTomorrow}
             line={line}
-            taskForTmrw={taskForTmrw}
-            taskTitleForTmrw={taskTitleForTmrw}
+            tasks={taskTitleForTmrw}
           />
         </section>
       </main>
