@@ -1,6 +1,6 @@
 import {
   getProfile,
-  getShiftsForProfile,
+  getShiftsForProfileForMonth,
   getUser,
 } from "@/app/_lib/data-service";
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
@@ -47,7 +47,7 @@ export default async function MyProfile() {
   const user = await getUser();
   const [profile, shifts] = await Promise.all([
     getProfile(user.id),
-    getShiftsForProfile(user.id),
+    getShiftsForProfileForMonth(user.id),
   ]);
 
   // 2️⃣ Koľko je tento mesiac pracovných dní (bez víkendov)
