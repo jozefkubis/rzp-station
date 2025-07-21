@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useOptimistic, useState, useTransition } from "react";
 
+
 import Modal from "../Modal";
 import DaysMonth from "./DaysMonth";
 import MainShiftsTable from "./MainShiftsTable";
@@ -15,6 +16,8 @@ import {
   deleteShift,
   upsertShift
 } from "@/app/_lib/actions";
+import ArrowBack from "./ArrowBack";
+import ArrowForword from "./ArrowForword";
 import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -177,13 +180,20 @@ export default function ShiftsTable({ shifts }) {
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
 
-  /* ───────────── JSX ───────────── */
+  // MARK: RETURN
   return (
     <>
+      {/* <div className="flex ">
+      </div> */}
+
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          {monthName} {year} - Norma hodín: {normHours}
+          <ArrowBack />
+          <div>
+            {monthName} {year} - Norma hodín: {normHours}
+          </div>
+          <ArrowForword />
         </MonthYearHead>
 
         {/* hlavička dní */}
@@ -208,33 +218,37 @@ export default function ShiftsTable({ shifts }) {
         </div>
 
         {/* dátové riadky */}
-        {optimisticRoster.map((p, idx) => (
-          <ShiftRow
-            key={p.user_id}
-            user={p}
-            onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-            onReorderOptimistic={(act) =>
-              apply({
-                type: "MOVE",
-                userId: act.userId,
-                direction: act.direction,
-              })
-            }
-            days={days}
-            colTemplate={colTemplate}
-            onSelect={handleSelect}
-            rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-            roster={roster}
-          />
-        ))}
-      </MainShiftsTable>
+        {
+          optimisticRoster.map((p, idx) => (
+            <ShiftRow
+              key={p.user_id}
+              user={p}
+              onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+              onReorderOptimistic={(act) =>
+                apply({
+                  type: "MOVE",
+                  userId: act.userId,
+                  direction: act.direction,
+                })
+              }
+              days={days}
+              colTemplate={colTemplate}
+              onSelect={handleSelect}
+              rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+              roster={roster}
+            />
+          ))
+        }
+      </MainShiftsTable >
 
       {/* modals */}
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
-        </Modal>
-      )}
+      {
+        isModalOpen && (
+          <Modal onClose={() => setIsModalOpen(false)}>
+            <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
+          </Modal>
+        )
+      }
     </>
   );
 }

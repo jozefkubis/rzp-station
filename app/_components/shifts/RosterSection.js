@@ -1,9 +1,9 @@
 "use client";
 
 import { useOptimistic } from "react";
-import ShiftsTable from "./ShiftsTable";
-import InsertShiftButton from "./InsertShiftButton";
 import DeleteAllShifts from "./DeleteAllShifts";
+import InsertShiftButton from "./InsertShiftButton";
+import ShiftsTable from "./ShiftsTable";
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
