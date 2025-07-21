@@ -4,21 +4,20 @@ import { useRouter } from "next/navigation";
 import { useCallback, useOptimistic, useState, useTransition } from "react";
 
 
+import {
+  deleteShift,
+  upsertShift
+} from "@/app/_lib/actions";
 import Modal from "../Modal";
+import ArrowBack from "./ArrowBack";
+import ArrowForword from "./ArrowForword";
 import DaysMonth from "./DaysMonth";
+import { getDaysArray, MONTHS } from "./helpers_shifts";
 import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftRow from "./ShiftRow";
-
-import {
-  deleteShift,
-  upsertShift
-} from "@/app/_lib/actions";
-import ArrowBack from "./ArrowBack";
-import ArrowForword from "./ArrowForword";
-import { getDaysArray, getMonthOnly } from "./helpers_shifts";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({ shifts }) {
@@ -27,20 +26,21 @@ export default function ShiftsTable({ shifts }) {
   const [selected, setSelected] = useState(null); // { userId, dateStr }
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [isProfilesModalOpen, setIsProfilesModalOpen] = useState(false);
+  const [count, setCount] = useState(0);
 
   /* ---------- dátumové údaje ---------- */
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1; // 1-12
+
+
+  const base = new Date();                                 // dnes
+  const date = new Date(base.getFullYear(), base.getMonth() + count, 1);
+
+  const year = date.getFullYear();
+  const mIndex = date.getMonth();          // 0‑based
+  const month = mIndex + 1;               // 1‑12 pre tvoju util funkciu
   const days = getDaysArray(year, month);
-  const monthName = getMonthOnly();
+  const monthName = MONTHS()[mIndex];      // jedno priame načítanie
+
   const colTemplate = `12rem repeat(${days.length}, 3rem)`;
-
-
-  // const nextMonth = month === 12 ? 1 : month + 1;
-  // const prevMonth = month === 1 ? 12 : month - 1;
-  // console.log("nextMonth", nextMonth, "prevMonth", prevMonth);
-
 
   /* ---------- useOptimistic ---------- */
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -189,11 +189,11 @@ export default function ShiftsTable({ shifts }) {
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          <ArrowBack />
+          <ArrowBack count={count} setCount={setCount} />
           <div>
             {monthName} {year} - Norma hodín: {normHours}
           </div>
-          <ArrowForword />
+          <ArrowForword count={count} setCount={setCount} />
         </MonthYearHead>
 
         {/* hlavička dní */}

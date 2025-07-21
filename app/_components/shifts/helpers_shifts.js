@@ -39,3 +39,26 @@ export function getMonthOnly() {
 
   return monthCapital;
 }
+
+
+export function MONTHS() {
+  const months = [
+    "január",
+    "február",
+    "marec",
+    "apríl",
+    "máj",
+    "jún",
+    "júl",
+    "august",
+    "september",
+    "oktober",
+    "november",
+    "december",
+  ];
+  return months
+}
+
+
+
+
