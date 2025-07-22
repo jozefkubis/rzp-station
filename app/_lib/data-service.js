@@ -295,7 +295,7 @@ export async function getTasksForTomorrow() {
 }
 
 // MARK: GET ALL SHIFTS FOR PROFILE
-export async function getaLLShiftsForProfile(profileId) {
+export async function getAllShiftsForProfile(profileId) {
   const supabase = await createClient();
 
   const { data: shifts, error } = await supabase
