@@ -14,8 +14,6 @@ import {
   TbSun,
 } from "react-icons/tb";
 import { getDaysArray } from "../shifts/helpers_shifts";
-import ArrowBackDashboard from "./ArrowBackDashboard";
-import ArrowForwDashboard from "./ArrowForwDashboard";
 import Stat from "./Stat";
 
 /**
@@ -44,19 +42,27 @@ const hours = (count, perShift = 12) => count * perShift;
 const fmtDaysLeft = (value) =>
   value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
-export default async function MyProfile() {
+// MARK: MAIN MY PROFILE
+
+export default async function MyProfile({ offset = 0 }) {
+  // vypočítaj cieľový mesiac
+  const target = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + offset,
+    1,
+  );
+
   // 1️⃣ Načítame potrebné dáta paralelne
   const user = await getUser();
   const [profile, shifts] = await Promise.all([
     getProfile(user.id),
-    getShiftsForProfileForMonth(user.id),
+    getShiftsForProfileForMonth(user.id, target),
   ]);
 
   // 2️⃣ Koľko je tento mesiac pracovných dní (bez víkendov)
-  const today = new Date();
   const weekdays = getDaysArray(
-    today.getFullYear(),
-    today.getMonth() + 1,
+    target.getFullYear(),
+    target.getMonth() + 1,
   ).filter((d) => !d.isWeekend).length;
   const normHours = weekdays * 7.5; // 7.5 h / deň
 
@@ -79,58 +85,51 @@ export default async function MyProfile() {
 
   // 5️⃣ Render kachličiek
   return (
-    <div>
-      <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
-        <ArrowBackDashboard />
-        <h3 className="text-lg">{new Date().toLocaleDateString("sv-SE")}</h3>
-        <ArrowForwDashboard />
-      </div>
-      <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
+    <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
+      <Stat
+        title="Služby mesiac"
+        color="green"
+        icon={<TbCalendarStats />}
+        value={`${totalShifts} / ${totalHours} h.`}
+      />
+      <Stat
+        title="Denné služby"
+        color="yellow"
+        icon={<TbSun />}
+        value={`${dayShifts} / ${hours(dayShifts)} h.`}
+      />
+      <Stat
+        title="Nočné služby"
+        color="slate"
+        icon={<TbMoonStars />}
+        value={`${nightShifts} / ${hours(nightShifts)} h.`}
+      />
+      <Stat
+        title="Dovolenka"
+        color="green"
+        icon={<TbPlaneDeparture />}
+        value={`${holidayShifts} / ${rdHours} h.`}
+      />
+      <Stat
+        title="Nadčas"
+        color="red"
+        icon={<TbClockPlus />}
+        value={`${overtime} h.`}
+      />
+      <Stat
+        title="Lek. prehliadka"
+        color="blue"
+        icon={<TbStethoscope />}
+        value={fmtDaysLeft(medLeft)}
+      />
+      {psyLeft !== null && (
         <Stat
-          title="Služby mesiac"
-          color="green"
-          icon={<TbCalendarStats />}
-          value={`${totalShifts} / ${totalHours} h.`}
+          title="Psychotesty"
+          color="pink"
+          icon={<TbBrain />}
+          value={fmtDaysLeft(psyLeft)}
         />
-        <Stat
-          title="Denné služby"
-          color="yellow"
-          icon={<TbSun />}
-          value={`${dayShifts} / ${hours(dayShifts)} h.`}
-        />
-        <Stat
-          title="Nočné služby"
-          color="slate"
-          icon={<TbMoonStars />}
-          value={`${nightShifts} / ${hours(nightShifts)} h.`}
-        />
-        <Stat
-          title="Dovolenka"
-          color="green"
-          icon={<TbPlaneDeparture />}
-          value={`${holidayShifts} / ${rdHours} h.`}
-        />
-        <Stat
-          title="Nadčas"
-          color="red"
-          icon={<TbClockPlus />}
-          value={`${overtime} h.`}
-        />
-        <Stat
-          title="Lek. prehliadka"
-          color="blue"
-          icon={<TbStethoscope />}
-          value={fmtDaysLeft(medLeft)}
-        />
-        {psyLeft !== null && (
-          <Stat
-            title="Psychotesty"
-            color="pink"
-            icon={<TbBrain />}
-            value={fmtDaysLeft(psyLeft)}
-          />
-        )}
-      </section>
-    </div>
+      )}
+    </section>
   );
 }

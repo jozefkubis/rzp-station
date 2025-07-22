@@ -1,4 +1,6 @@
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import Link from "next/link";
+import { HiArrowNarrowLeft, HiArrowNarrowRight } from "react-icons/hi";
 import MyProfile from "./_components/home/MyProfile";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
@@ -12,7 +14,16 @@ import {
 
 export const revalidate = 0;
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
+  const { m } = await searchParams;
+  const offset = Number(m ?? 0);
+
+
+  const label = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + offset,
+  ).toLocaleDateString("sk-SK", { month: "long", year: "numeric" });
+
   // MARK: SHIFTS...........................................................................................
   /* 1. Načítanie dát paralelne */
   const [todayShifts, tomorrowShifts] = await Promise.all([
@@ -64,8 +75,31 @@ export default async function Page() {
         <WeatherCard />
 
         {/* Karta: Môj profil */}
-        <MyProfile />
-        {/* Karta: Služba a Kanlendar */}
+        <div className="flex items-center justify-end gap-6 px-8 py-0 font-semibold text-primary-700">
+          <Link
+            href={`?m=${offset - 1}`}
+            prefetch={false}
+            aria-label="Predchádzajúci mesiac"
+            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
+          >
+            <HiArrowNarrowLeft className="text-2xl text-primary-300" />
+          </Link>
+
+          <h3 className="text-lg">{label}</h3>
+
+          <Link
+            href={`?m=${offset + 1}`}
+            prefetch={false}
+            aria-label="Ďalší mesiac"
+            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
+          >
+            <HiArrowNarrowRight className="text-2xl text-primary-300" />
+          </Link>
+        </div>
+
+        {/* 💡 MyProfile dostáva offset ako prop */}
+        <MyProfile offset={offset} />
+
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar
             label="Dnes"
