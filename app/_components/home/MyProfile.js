@@ -21,15 +21,14 @@ import {
 /* ---------- helpers ---------- */
 function countShiftsByType(shifts) {
   return shifts.reduce(
-    (accumulator, shift) => {
+    (acc, shift) => {
       if (shift.shift_type === "DN" || shift.shift_type === "ND") {
-        accumulator.D += 1;
-        accumulator.N += 1;
+        acc.D += 1;
+        acc.N += 1;
       } else {
-        accumulator[shift.shift_type] =
-          (accumulator[shift.shift_type] || 0) + 1;
+        acc[shift.shift_type] = (acc[shift.shift_type] || 0) + 1;
       }
-      return accumulator;
+      return acc;
     },
     { D: 0, N: 0, RD: 0, vD: 0, vN: 0, zD: 0, zN: 0 },
   );
