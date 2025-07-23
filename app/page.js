@@ -1,28 +1,27 @@
-import QueryProvider from "@/app/_components/QueryProvider";
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
-import Link from "next/link";
-import { HiArrowNarrowLeft, HiArrowNarrowRight } from "react-icons/hi";
 import MyProfile from "./_components/home/MyProfile";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
 import {
+  getProfile,
   getShiftForToday,
   getShiftForTomorrow,
+  getShiftsForProfileForYear,
   getTasksForToday,
   getTasksForTomorrow,
+  getUser,
 } from "./_lib/data-service";
 
 export const revalidate = 0;
 
-export default async function Page({ searchParams }) {
-  const { m } = await searchParams;
-  const offset = Number(m ?? 0);
-
-  const label = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth() + offset,
-  ).toLocaleDateString("sk-SK", { month: "long", year: "numeric" });
+export default async function Page() {
+  // 1️⃣ Načítame potrebné dáta paralelne
+  const user = await getUser();
+  const [profile, shifts] = await Promise.all([
+    getProfile(user.id),
+    getShiftsForProfileForYear(user.id),
+  ]);
 
   // MARK: SHIFTS...........................................................................................
   /* 1. Načítanie dát paralelne */
@@ -75,32 +74,8 @@ export default async function Page({ searchParams }) {
         <WeatherCard />
 
         {/* Karta: Môj profil */}
-        <div className="flex items-center justify-end gap-6 px-8 py-0 font-semibold text-primary-700">
-          <Link
-            href={`?m=${offset - 1}`}
-            prefetch={false}
-            aria-label="Predchádzajúci mesiac"
-            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
-          >
-            <HiArrowNarrowLeft className="text-2xl text-primary-300" />
-          </Link>
 
-          <h3 className="text-lg">{label}</h3>
-
-          <Link
-            href={`?m=${offset + 1}`}
-            prefetch={false}
-            aria-label="Ďalší mesiac"
-            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
-          >
-            <HiArrowNarrowRight className="text-2xl text-primary-300" />
-          </Link>
-        </div>
-
-        {/* 💡 MyProfile dostáva offset ako prop */}
-        <QueryProvider>
-          <MyProfile offset={offset} />
-        </QueryProvider>
+        <MyProfile profile={profile} shifts={shifts} />
 
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar

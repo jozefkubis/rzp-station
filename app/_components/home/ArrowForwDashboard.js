@@ -1,11 +1,10 @@
 import { HiArrowNarrowRight } from "react-icons/hi";
 
-export default function ArrowForwDashboard() {
-
+export default function ArrowForwDashboard({ onClick }) {
   return (
     <button
       type="button"
-      // onClick={}
+      onClick={onClick}
       aria-label="Next month"
       className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
     >

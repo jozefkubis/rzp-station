@@ -311,27 +311,24 @@ export async function getAllShiftsForProfile(profileId) {
   return shifts;
 }
 
-// MARK: GET SHIFTS FOR PROFILE FOR MONTH
-export async function getShiftsForProfileForMonth(
+// MARK: GET SHIFTS FOR PROFILE FOR YEAR
+export async function getShiftsForProfileForYear(
   profileId,
-  when = new Date(),
+  year = new Date().getFullYear(), // napr. 2025
 ) {
   const supabase = await createClient();
 
-  // 1️⃣ Vypočítame prvý a posledný deň mesiaca
-  const year = when.getFullYear();
-  const month = when.getMonth(); // 0‑based (0 = január)
+  // 1️⃣ Prvý a posledný deň roka
+  const firstDay = new Date(year, 0, 1, 0, 0, 0, 0); // 1. január 00:00
+  const lastDay = new Date(year, 11, 31, 23, 59, 59, 999); // 31. december 23:59
 
-  const firstDay = new Date(year, month, 1); // 1. v mesiaci 00:00
-  const lastDay = new Date(year, month + 1, 0, 23, 59, 59, 999); // posledný deň 23:59
-
-  // 2️⃣ Query s rozsahom
+  // 2️⃣ Query v rozsahu roka
   const { data: shifts, error } = await supabase
     .from("shifts")
     .select("*, profiles!shifts_user_id_fkey(*)")
     .eq("user_id", profileId)
-    .gte("date", firstDay.toISOString()) // >= 1. deň
-    .lte("date", lastDay.toISOString()); // <= posledný deň
+    .gte("date", firstDay.toISOString())
+    .lte("date", lastDay.toISOString());
 
   if (error) {
     console.error("Supabase error – shifts:", error);

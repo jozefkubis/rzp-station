@@ -1,7 +1,13 @@
 "use client";
 
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { getDaysArray } from "../shifts/helpers_shifts";
+
+import ArrowBackDashboard from "./ArrowBackDashboard";
+import ArrowForwDashboard from "./ArrowForwDashboard";
+import Stat from "./Stat";
+
 import {
   TbBrain,
   TbCalendarStats,
@@ -11,117 +17,157 @@ import {
   TbStethoscope,
   TbSun,
 } from "react-icons/tb";
-import { getDaysArray } from "../shifts/helpers_shifts";
-import Skeleton from "./ProfileSkeleton";
-import Stat from "./Stat";
 
-/* helpery -------------------------------------------------------------- */
-const countShiftsByType = (shifts) =>
-  shifts.reduce(
-    (a, s) => {
-      if (s.shift_type === "DN" || s.shift_type === "ND") {
-        a.D += 1;
-        a.N += 1;
+/* ---------- helpers ---------- */
+function countShiftsByType(shifts) {
+  return shifts.reduce(
+    (accumulator, shift) => {
+      if (shift.shift_type === "DN" || shift.shift_type === "ND") {
+        accumulator.D += 1;
+        accumulator.N += 1;
       } else {
-        a[s.shift_type] = (a[s.shift_type] || 0) + 1;
+        accumulator[shift.shift_type] =
+          (accumulator[shift.shift_type] || 0) + 1;
       }
-      return a;
+      return accumulator;
     },
-    { D: 0, N: 0, RD: 0, vD: 0, vN: 0, zD: 0, zN: 0, DN: 0, ND: 0 },
+    { D: 0, N: 0, RD: 0, vD: 0, vN: 0, zD: 0, zN: 0 },
   );
+}
 
-const hours = (n, per = 12) => n * per;
-const fmtDaysLeft = (v) => (v < 0 ? `- ${Math.abs(v)} dní` : `+ ${v} dní`);
+const hoursForShifts = (count, perShift = 12) => count * perShift;
 
-/* klientský komponent -------------------------------------------------- */
-export default function MyProfile({ offset = 0 }) {
-  /* React‑Query -------------------------------------------------------- */
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["profile", offset],
-    queryFn: () => fetch(`/api/profile?m=${offset}`).then((r) => r.json()),
-    staleTime: 60_000,
-  });
+const formatDaysLeft = (value) =>
+  value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
-  if (isLoading) return <Skeleton />;
-  if (error || data?.error)
-    return <p className="text-red-600">Chyba načítania</p>;
+/* ---------- component ---------- */
+export default function MyProfile({ profile, shifts }) {
+  const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
 
-  const { profile, shifts } = data;
+  /* vypočítame všetko, čo závisí od offsetu a shifts */
+  const { monthLabel, calculated } = useMemo(() => {
+    const targetDate = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + offset,
+      1,
+    );
 
-  /* výpočty ------------------------------------------------------------ */
-  const target = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth() + offset,
-    1,
+    /* filtrovanie na konkrétny mesiac */
+    const yearTarget = targetDate.getFullYear();
+    const monthTarget = targetDate.getMonth() + 1; // 1‑12
+
+    const shiftsForMonth = (Array.isArray(shifts) ? shifts : []).filter(
+      ({ date }) => {
+        const [year, month] = date.split("-").map(Number);
+        return year === yearTarget && month === monthTarget;
+      },
+    );
+
+    /* norma hodín */
+    const weekdaysCount = getDaysArray(yearTarget, monthTarget).filter(
+      (d) => !d.isWeekend,
+    ).length;
+    const normHours = weekdaysCount * 7.5;
+
+    /* počty služieb */
+    const counts = countShiftsByType(shiftsForMonth);
+
+    const dayShiftCount =
+      counts.D + counts.vD + counts.zD; /* hlavný + vedľajší + záložný deň */
+    const nightShiftCount =
+      counts.N + counts.vN + counts.zN; /* hlavný + vedľajší + záložný noc */
+    const holidayShiftCount = counts.RD;
+
+    const totalShiftCount = dayShiftCount + nightShiftCount;
+    const holidayHours = hoursForShifts(holidayShiftCount, 7.5);
+    const totalHours = hoursForShifts(totalShiftCount) + holidayHours;
+    const overtimeHours = totalHours - normHours;
+
+    /* nadpis mesiaca */
+    const monthLabel = targetDate
+      .toLocaleDateString("sk-SK", { month: "long", year: "numeric" })
+      .replace(/^./, (char) => char.toUpperCase());
+
+    return {
+      monthLabel,
+      calculated: {
+        dayShiftCount,
+        nightShiftCount,
+        holidayShiftCount,
+        totalShiftCount,
+        holidayHours,
+        totalHours,
+        overtimeHours,
+      },
+    };
+  }, [shifts, offset]);
+
+  /* dni k prehliadkam */
+  const medCheckLeft = formatDaysLeft(
+    getDaysUntilNextMedCheck(profile.medCheckDate),
   );
-  const weekdays = getDaysArray(
-    target.getFullYear(),
-    target.getMonth() + 1,
-  ).filter((d) => !d.isWeekend).length;
-  const normHours = weekdays * 7.5;
+  const psychoCheckLeft =
+    profile.psycho_check !== null
+      ? formatDaysLeft(getDaysUntilNextMedCheck(profile.psycho_check))
+      : null;
 
-  const c = countShiftsByType(shifts);
-  const dayShifts = c.D + c.vD + c.zD;
-  const nightShifts = c.N + c.vN + c.zN;
-  const holidayShifts = c.RD;
-
-  const totalShifts = dayShifts + nightShifts;
-  const rdHours = hours(holidayShifts, 7.5);
-  const totalHours = hours(totalShifts) + rdHours;
-  const overtime = totalHours - normHours;
-
-  const medLeft = getDaysUntilNextMedCheck(profile.medCheckDate);
-  const psyLeft = profile.psycho_check
-    ? getDaysUntilNextMedCheck(profile.psycho_check)
-    : null;
-
-  /* render ------------------------------------------------------------- */
+  /* ---------- render ---------- */
   return (
-    <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
-      <Stat
-        title="Služby mesiac"
-        color="green"
-        icon={<TbCalendarStats />}
-        value={`${totalShifts} / ${totalHours} h.`}
-      />
-      <Stat
-        title="Denné služby"
-        color="yellow"
-        icon={<TbSun />}
-        value={`${dayShifts} / ${hours(dayShifts)} h.`}
-      />
-      <Stat
-        title="Nočné služby"
-        color="slate"
-        icon={<TbMoonStars />}
-        value={`${nightShifts} / ${hours(nightShifts)} h.`}
-      />
-      <Stat
-        title="Dovolenka"
-        color="green"
-        icon={<TbPlaneDeparture />}
-        value={`${holidayShifts} / ${rdHours} h.`}
-      />
-      <Stat
-        title="Nadčas"
-        color="red"
-        icon={<TbClockPlus />}
-        value={`${overtime} h.`}
-      />
-      <Stat
-        title="Lek. prehliadka"
-        color="blue"
-        icon={<TbStethoscope />}
-        value={fmtDaysLeft(medLeft)}
-      />
-      {psyLeft !== null && (
+    <div>
+      {/* navigácia mesiaca */}
+      <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
+        <ArrowBackDashboard onClick={() => setOffset((o) => o - 1)} />
+        <h3 className="text-lg">{monthLabel}</h3>
+        <ArrowForwDashboard onClick={() => setOffset((o) => o + 1)} />
+      </div>
+
+      {/* kachličky */}
+      <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
         <Stat
-          title="Psychotesty"
-          color="pink"
-          icon={<TbBrain />}
-          value={fmtDaysLeft(psyLeft)}
+          title="Služby mesiac"
+          color="green"
+          icon={<TbCalendarStats />}
+          value={`${calculated.totalShiftCount} / ${calculated.totalHours} h.`}
         />
-      )}
-    </section>
+        <Stat
+          title="Denné služby"
+          color="yellow"
+          icon={<TbSun />}
+          value={`${calculated.dayShiftCount} / ${hoursForShifts(calculated.dayShiftCount)} h.`}
+        />
+        <Stat
+          title="Nočné služby"
+          color="slate"
+          icon={<TbMoonStars />}
+          value={`${calculated.nightShiftCount} / ${hoursForShifts(calculated.nightShiftCount)} h.`}
+        />
+        <Stat
+          title="Dovolenka"
+          color="green"
+          icon={<TbPlaneDeparture />}
+          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours} h.`}
+        />
+        <Stat
+          title="Nadčas"
+          color="red"
+          icon={<TbClockPlus />}
+          value={`${calculated.overtimeHours} h.`}
+        />
+        <Stat
+          title="Lek. prehliadka"
+          color="blue"
+          icon={<TbStethoscope />}
+          value={medCheckLeft}
+        />
+        {psychoCheckLeft !== null && (
+          <Stat
+            title="Psychotesty"
+            color="pink"
+            icon={<TbBrain />}
+            value={psychoCheckLeft}
+          />
+        )}
+      </section>
+    </div>
   );
 }
