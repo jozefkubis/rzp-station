@@ -39,7 +39,7 @@ const hoursForShifts = (count, perShift = 12) => count * perShift;
 const formatDaysLeft = (value) =>
   value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
-/* ---------- component ---------- */
+// MARK: MY PROFILE COMPONENT
 export default function MyProfile({ profile, shifts }) {
   const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
 
