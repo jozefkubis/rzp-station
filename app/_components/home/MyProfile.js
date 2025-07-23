@@ -1,7 +1,7 @@
 "use client";
 
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { getDaysArray } from "../shifts/helpers_shifts";
 
 import ArrowBackDashboard from "./ArrowBackDashboard";
@@ -40,14 +40,20 @@ const formatDaysLeft = (value) =>
   value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
 // MARK: MY PROFILE COMPONENT
-export default function MyProfile({ profile, shifts }) {
-  const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
+export default function MyProfile({ profile, shifts, initialOffset }) {
+  // const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("dashOffset", String(initialOffset));
+    }
+  }, [initialOffset]);
 
   /* vypočítame všetko, čo závisí od offsetu a shifts */
   const { monthLabel, calculated } = useMemo(() => {
     const targetDate = new Date(
       new Date().getFullYear(),
-      new Date().getMonth() + offset,
+      new Date().getMonth() + initialOffset,
       1,
     );
 
@@ -99,7 +105,7 @@ export default function MyProfile({ profile, shifts }) {
         overtimeHours,
       },
     };
-  }, [shifts, offset]);
+  }, [shifts, initialOffset]);
 
   /* dni k prehliadkam */
   const medCheckLeft = formatDaysLeft(
@@ -115,9 +121,9 @@ export default function MyProfile({ profile, shifts }) {
     <div>
       {/* navigácia mesiaca */}
       <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
-        <ArrowBackDashboard onClick={() => setOffset((o) => o - 1)} />
+        <ArrowBackDashboard offset={initialOffset} />
         <h3 className="text-lg">{monthLabel}</h3>
-        <ArrowForwDashboard onClick={() => setOffset((o) => o + 1)} />
+        <ArrowForwDashboard offset={initialOffset} />
       </div>
 
       {/* kachličky */}

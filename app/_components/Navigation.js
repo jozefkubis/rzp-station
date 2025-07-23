@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   HiOutlineCalendarDays,
   HiOutlineHome,
@@ -14,6 +14,14 @@ import LogOutButton from "./LogOutButton";
 
 export default function Navigation() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const urlOffset = searchParams.get("m");
+
+  // bezpečne prečítať sessionStorage len v prehliadači
+  const ssOffset =
+    typeof window !== "undefined" ? sessionStorage.getItem("dashOffset") : null;
+
+  const offsetParam = urlOffset ?? ssOffset ?? "0";
 
   const navLinks = [
     { name: "Domov", href: "/", icon: <HiOutlineHome size={20} /> },
@@ -28,8 +36,6 @@ export default function Navigation() {
       href: "/profiles",
       icon: <HiOutlineUsers size={20} />,
     },
-    // { name: 'Dokumenty', href: '/documents', icon: <HiOutlineFolder size={20} /> },
-    // { name: 'Fotky', href: '/photos', icon: <HiOutlinePhoto size={20} /> },
     {
       name: "Registrácia",
       href: "/register",
@@ -41,7 +47,9 @@ export default function Navigation() {
     <nav data-cy="navigation">
       <ul className="flex gap-1 px-10 py-1">
         {navLinks.map(({ name, href, icon }) => {
-          const isActive = pathname === href;
+          const isDashboard = href === "/";
+          const hrefWithOffset = isDashboard ? `/?m=${offsetParam}` : href;
+          const isActive = pathname === href; // query param sa neporovnáva
 
           return (
             <li
@@ -52,7 +60,8 @@ export default function Navigation() {
               )}
             >
               <Link
-                href={href}
+                href={hrefWithOffset}
+                prefetch={false} // menej zbytočných requestov
                 className={clsx(
                   "flex items-center gap-2 font-semibold text-primary-700",
                   isActive && "text-primary-700",
@@ -65,7 +74,6 @@ export default function Navigation() {
           );
         })}
 
-        {/* <SettingsButton /> */}
         <LogOutButton />
       </ul>
     </nav>

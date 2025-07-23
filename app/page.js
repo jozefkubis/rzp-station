@@ -15,7 +15,10 @@ import {
 
 export const revalidate = 0;
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
+  const { m } = await searchParams;
+  const offset = Number(m ?? 0);
+
   // 1️⃣ Načítame potrebné dáta paralelne
   const user = await getUser();
   const [profile, shifts] = await Promise.all([
@@ -75,7 +78,7 @@ export default async function Page() {
 
         {/* Karta: Môj profil */}
 
-        <MyProfile profile={profile} shifts={shifts} />
+        <MyProfile profile={profile} shifts={shifts} initialOffset={offset} />
 
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar

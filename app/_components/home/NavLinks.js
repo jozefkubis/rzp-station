@@ -3,14 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import {
+  HiArrowRightOnRectangle,
   HiOutlineCalendarDays,
   HiOutlineUserPlus,
   HiOutlineUsers,
-  HiArrowRightOnRectangle,
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
 
-import { getUser, getAvatarUrl } from "@/app/_lib/data-service";
+import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
 
 const BLANK_AVATAR =
   "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
