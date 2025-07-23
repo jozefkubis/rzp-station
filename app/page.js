@@ -1,3 +1,4 @@
+import QueryProvider from "@/app/_components/QueryProvider";
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
 import Link from "next/link";
 import { HiArrowNarrowLeft, HiArrowNarrowRight } from "react-icons/hi";
@@ -17,7 +18,6 @@ export const revalidate = 0;
 export default async function Page({ searchParams }) {
   const { m } = await searchParams;
   const offset = Number(m ?? 0);
-
 
   const label = new Date(
     new Date().getFullYear(),
@@ -98,7 +98,9 @@ export default async function Page({ searchParams }) {
         </div>
 
         {/* 💡 MyProfile dostáva offset ako prop */}
-        <MyProfile offset={offset} />
+        <QueryProvider>
+          <MyProfile offset={offset} />
+        </QueryProvider>
 
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar
