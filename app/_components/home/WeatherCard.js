@@ -48,7 +48,12 @@ export default function WeatherCard() {
 
   /* ---------- UI ---------- */
   if (error) return <div className="p-4 text-red-600">Chyba: {error}</div>;
-  if (!data) return <div className="p-4">Načítavam počasie…</div>;
+  if (!data)
+    return (
+      <div className="text-md mr-10 self-end p-4 font-bold italic text-primary-300">
+        Načítavam počasie…
+      </div>
+    );
 
   const { today, tomorrow, week } = data;
 
