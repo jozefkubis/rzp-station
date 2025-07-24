@@ -2,6 +2,10 @@ import Header from "../_components/Header";
 import RosterSection from "../_components/shifts/RosterSection";
 import getAllShifts, { getAllProfiles } from "../_lib/data-service";
 
+export const metadata = {
+  title: "Služby",
+};
+
 export default async function page() {
   const shifts = await getAllShifts();
   const profiles = await getAllProfiles();

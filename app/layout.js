@@ -1,6 +1,6 @@
 import "@/app/_styles/globals.css";
-import { Toaster } from "react-hot-toast";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { Toaster } from "react-hot-toast";
 // import Header from "./_components/Header"
 // import { Josefin_Sans } from "next/font/google"
 
@@ -8,6 +8,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 //   subsets: ["latin"],
 //   display: "swap",
 // })
+
+export const runtime = "edge";
 
 export const metadata = {
   title: {
