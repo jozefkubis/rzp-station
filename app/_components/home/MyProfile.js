@@ -40,20 +40,20 @@ const formatDaysLeft = (value) =>
   value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
 // MARK: MY PROFILE COMPONENT
-export default function MyProfile({ profile, shifts, initialOffset }) {
+export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   // const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("dashOffset", String(initialOffset));
+      sessionStorage.setItem("dashOffset", String(offset));
     }
-  }, [initialOffset]);
+  }, [offset]);
 
   /* vypočítame všetko, čo závisí od offsetu a shifts */
   const { monthLabel, calculated } = useMemo(() => {
     const targetDate = new Date(
       new Date().getFullYear(),
-      new Date().getMonth() + initialOffset,
+      new Date().getMonth() + offset,
       1,
     );
 
@@ -105,7 +105,7 @@ export default function MyProfile({ profile, shifts, initialOffset }) {
         overtimeHours,
       },
     };
-  }, [shifts, initialOffset]);
+  }, [shifts, offset]);
 
   /* dni k prehliadkam */
   const medCheckLeft = formatDaysLeft(
@@ -120,11 +120,11 @@ export default function MyProfile({ profile, shifts, initialOffset }) {
   return (
     <div>
       {/* navigácia mesiaca */}
-      <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700 w-full">
-        <div className="flex justify-between min-w-60">
-          <ArrowBackDashboard offset={initialOffset} />
+      <div className="flex w-full items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
+        <div className="flex min-w-60 justify-between">
+          <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
           <h3 className="text-lg">{monthLabel}</h3>
-          <ArrowForwDashboard offset={initialOffset} />
+          <ArrowForwDashboard offset={offset} goTo={goTo} disabled={disabled} />
         </div>
       </div>
 

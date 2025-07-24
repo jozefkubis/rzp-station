@@ -1,5 +1,5 @@
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
-import MyProfile from "./_components/home/MyProfile";
+import MyProfileWrapper from "./_components/home/MyProfileWrapper";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
@@ -78,7 +78,11 @@ export default async function Page({ searchParams }) {
 
         {/* Karta: Môj profil */}
 
-        <MyProfile profile={profile} shifts={shifts} initialOffset={offset} />
+        <MyProfileWrapper
+          profile={profile}
+          shifts={shifts}
+          initialOffset={offset}
+        />
 
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar
