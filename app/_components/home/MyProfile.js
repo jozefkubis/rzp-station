@@ -120,10 +120,12 @@ export default function MyProfile({ profile, shifts, initialOffset }) {
   return (
     <div>
       {/* navigácia mesiaca */}
-      <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
-        <ArrowBackDashboard offset={initialOffset} />
-        <h3 className="text-lg">{monthLabel}</h3>
-        <ArrowForwDashboard offset={initialOffset} />
+      <div className="flex items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700 w-full">
+        <div className="flex justify-between min-w-60">
+          <ArrowBackDashboard offset={initialOffset} />
+          <h3 className="text-lg">{monthLabel}</h3>
+          <ArrowForwDashboard offset={initialOffset} />
+        </div>
       </div>
 
       {/* kachličky */}

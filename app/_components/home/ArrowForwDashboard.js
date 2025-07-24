@@ -7,8 +7,7 @@ export default function ArrowForwDashboard({ offset }) {
 
   return (
     <Link
-      href={`?m=${newOffset}`}
-      prefetch={false}
+      href={`/?m=${newOffset}`}
       aria-label="Ďalší mesiac"
       className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95"
     >
