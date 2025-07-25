@@ -20,7 +20,7 @@ import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftRow from "./ShiftRow";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts, goTo, shiftsOffset }) {
+export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -186,11 +186,11 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset }) {
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          <ArrowBack goTo={goTo} shiftsOffset={shiftsOffset} />
+          <ArrowBack goTo={goTo} shiftsOffset={shiftsOffset} disabled={disabled} />
           <div>
             {monthName} {year} - Norma hodín: {normHours}
           </div>
-          <ArrowForword goTo={goTo} shiftsOffset={shiftsOffset} />
+          <ArrowForword goTo={goTo} shiftsOffset={shiftsOffset} disabled={disabled} />
         </MonthYearHead>
 
         {/* hlavička dní */}
@@ -242,7 +242,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset }) {
       {
         isModalOpen && (
           <Modal onClose={() => setIsModalOpen(false)}>
-            <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} />
+            <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} disabled={isPending} />
           </Modal>
         )
       }

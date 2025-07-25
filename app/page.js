@@ -35,14 +35,15 @@ export default async function Page({ searchParams }) {
   ]);
 
   /* 2. Helper – podľa typu vracia pole mien */
-  function namesByType(arr, type) {
+  function namesByType(arr, baseType) {
+    const ALIASES = {
+      D: new Set(["D", "zD", "vD"]),
+      N: new Set(["N", "zN", "vN"]),
+    };
+
     return arr
-      .filter(function (s) {
-        return s.shift_type === type;
-      })
-      .map(function (s) {
-        return s.profiles.full_name;
-      });
+      .filter((s) => ALIASES[baseType].has(s.shift_type))
+      .map((s) => s.profiles.full_name);
   }
 
   const dayToday = namesByType(todayShifts, "D");
