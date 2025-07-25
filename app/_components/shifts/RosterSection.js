@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useOptimistic } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
 import InsertShiftButton from "./InsertShiftButton";
@@ -11,7 +12,16 @@ import ShiftsTable from "./ShiftsTable";
  *   - initialShifts  : pole shiftov získané na serveri
  *   - diffProfiles   : voľní záchranári (pole { id, full_name })
  */
-export default function RosterSection({ initialShifts, diffProfiles }) {
+export default function RosterSection({ initialShifts, diffProfiles, initialShiftsOffset }) {
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     sessionStorage.setItem("shiftOffset", String(initialShiftsOffset));
+  //   }
+  // }, [initialShiftsOffset]);
+
+
   /* 🟡 1) useOptimistic nad SHIFTAMI (tabuľka) */
   const [optimShifts, applyShifts] = useOptimistic(
     initialShifts,
@@ -57,13 +67,17 @@ export default function RosterSection({ initialShifts, diffProfiles }) {
     });
   }
 
+  function goTo(offset) {
+    router.push(`/shifts?m=${offset}`);
+  }
+
   /* 🟡 3) UI – tabuľka + tlačidlo */
   return (
     <div className="flex w-[100%] flex-col">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
         <div className="max-w-full overflow-x-auto">
-          <ShiftsTable shifts={optimShifts} />
+          <ShiftsTable shifts={optimShifts} goTo={goTo} shiftsOffset={initialShiftsOffset} />
         </div>
       </div>
 

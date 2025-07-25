@@ -15,14 +15,18 @@ import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
 const BLANK_AVATAR =
   "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
 
-export default async function NavLinks() {
+export default async function NavLinks({ searchParams }) {
+  const { m } = await searchParams;
+  const shiftsOffset = Number(m ?? 0);
+
+
   /* -------- avatar fetch (server → OK) -------- */
   const user = await getUser();
   const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
   /* -------- definuj navigačné odkazy -------- */
   const links = [
-    { href: "/shifts", label: "Výjazdy", icon: <PiAmbulance size={28} /> },
+    { href: `/shifts?m=${shiftsOffset}`, label: "Výjazdy", icon: <PiAmbulance size={28} /> },
     {
       href: "/calendar",
       label: "Kalendár",

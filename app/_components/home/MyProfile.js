@@ -41,7 +41,6 @@ const formatDaysLeft = (value) =>
 
 // MARK: MY PROFILE COMPONENT
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
-  // const [offset, setOffset] = useState(0); // 0 = aktuálny mesiac
 
   useEffect(() => {
     if (typeof window !== "undefined") {

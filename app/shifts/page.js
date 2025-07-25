@@ -6,32 +6,16 @@ export const metadata = {
   title: "Služby",
 };
 
-export default async function page() {
-  const shifts = await getAllShifts();
-  const profiles = await getAllProfiles();
+export default async function page({ searchParams }) {
+  const { m } = await searchParams;
+  const shiftsOffset = Number(m ?? 0);
+  // console.log(s);
 
-  // if (!shifts || !profiles || shifts.length === 0 || profiles.length === 0) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center text-xl text-gray-500">
-  //       Žiadne profily nenájdené alebo chyba načítania.
-  //     </div>
-  //   );
-  // }
 
-  // const profileIds = profiles.map((profile) => profile.id);
-  // const shiftUserIds = shifts.map((shift) => shift.user_id);
-  // const diffProfileIds = profileIds.filter((id) => !shiftUserIds.includes(id));
-
-  // const diffProfileNmesShifts = profiles.filter((profile) =>
-  //   diffProfileIds.includes(profile.id)
-  // );
-  // const diffProfileNmesShiftsMap = diffProfileNmesShifts.map((profile) => ({
-  //   id: profile.id,
-  //   full_name: profile.full_name,
-  // }))
+  const [shifts, profiles] = await Promise.all([getAllShifts(), getAllProfiles()]);
 
   // 1. priprav si množiny pre rýchlejšie vyhľadávanie
-  const shiftUserIdSet = new Set(shifts.map((s) => s.user_id));
+  const shiftUserIdSet = new Set(shifts.map((shift) => shift.user_id));
 
   // 2. vyfiltruj len profily bez služby a hneď z nich vytvor požadované pole
   const diffProfiles = profiles
@@ -50,7 +34,7 @@ export default async function page() {
       ) : (
         /* RosterSection zobraz aj pri prázdnych shifts */
         <div className="flex justify-center px-8">
-          <RosterSection initialShifts={shifts} diffProfiles={diffProfiles} />
+          <RosterSection initialShifts={shifts} diffProfiles={diffProfiles} initialShiftsOffset={shiftsOffset} />
         </div>
       )}
     </div>

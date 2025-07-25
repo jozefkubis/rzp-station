@@ -19,6 +19,7 @@ export default async function Page({ searchParams }) {
   const { m } = await searchParams;
   const offset = Number(m ?? 0);
 
+
   // 1️⃣ Načítame potrebné dáta paralelne
   const user = await getUser();
   const [profile, shifts] = await Promise.all([
@@ -67,7 +68,7 @@ export default async function Page({ searchParams }) {
       {/* NAVBAR / ASIDE */}
       <aside className="bg-primary-700 py-8 lg:sticky lg:top-0 lg:w-16">
         <ul className="flex gap-5 lg:flex-col lg:items-center">
-          <NavLinks />
+          <NavLinks searchParams={searchParams} />
         </ul>
       </aside>
 

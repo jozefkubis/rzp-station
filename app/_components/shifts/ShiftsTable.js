@@ -20,19 +20,16 @@ import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftRow from "./ShiftRow";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts }) {
+export default function ShiftsTable({ shifts, goTo, shiftsOffset }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [isProfilesModalOpen, setIsProfilesModalOpen] = useState(false);
-  const [count, setCount] = useState(0);
+
 
   /* ---------- dátumové údaje ---------- */
-
-
   const base = new Date();                                 // dnes
-  const date = new Date(base.getFullYear(), base.getMonth() + count, 1);
+  const date = new Date(base.getFullYear(), base.getMonth() + shiftsOffset, 1);
 
   const year = date.getFullYear();
   const mIndex = date.getMonth();          // 0‑based
@@ -189,11 +186,11 @@ export default function ShiftsTable({ shifts }) {
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          <ArrowBack count={count} setCount={setCount} />
+          <ArrowBack goTo={goTo} shiftsOffset={shiftsOffset} />
           <div>
             {monthName} {year} - Norma hodín: {normHours}
           </div>
-          <ArrowForword count={count} setCount={setCount} />
+          <ArrowForword goTo={goTo} shiftsOffset={shiftsOffset} />
         </MonthYearHead>
 
         {/* hlavička dní */}
