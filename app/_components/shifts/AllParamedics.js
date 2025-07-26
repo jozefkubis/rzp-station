@@ -69,7 +69,7 @@ export default function AllParamedics({
           {children}
         </button>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col hover:scale-150">
           <button
             type="button"
             disabled={currentIdx === 0}
