@@ -19,20 +19,27 @@ export default async function NavLinks({ searchParams }) {
   const { m } = await searchParams;
   const shiftsOffset = Number(m ?? 0);
 
-
   /* -------- avatar fetch (server → OK) -------- */
   const user = await getUser();
   const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
-  /* -------- definuj navigačné odkazy -------- */
+  /* -------- definicia navigačné odkazy -------- */
   const links = [
-    { href: `/shifts?m=${shiftsOffset}`, label: "Výjazdy", icon: <PiAmbulance size={28} /> },
+    {
+      href: `/shifts?m=${shiftsOffset}`,
+      label: "Služby",
+      icon: <PiAmbulance size={28} />,
+    },
     {
       href: "/calendar",
       label: "Kalendár",
       icon: <HiOutlineCalendarDays size={28} />,
     },
-    { href: "/profiles", label: "Profily", icon: <HiOutlineUsers size={28} /> },
+    {
+      href: "/profiles",
+      label: "Záchranári",
+      icon: <HiOutlineUsers size={28} />,
+    },
     {
       href: "/register",
       label: "Registrácia",
@@ -65,7 +72,8 @@ export default async function NavLinks({ searchParams }) {
           <Link
             href={href}
             aria-label={label}
-            className="grid size-12 place-items-center rounded-xl text-primary-200 transition hover:bg-primary-600/40 hover:text-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95"
+            data-tip={label}
+            className="relative grid size-12 place-items-center rounded-xl text-primary-200 transition before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-1 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-r-full before:bg-primary-700 before:px-4 before:py-2 before:text-lg before:text-primary-50 before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-600/40 hover:text-primary-50 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95"
           >
             {icon}
           </Link>

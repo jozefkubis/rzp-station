@@ -18,7 +18,8 @@ import {
   TbSun,
 } from "react-icons/tb";
 
-/* ---------- helpers ---------- */
+// MARK: HELPERS MIMO KOMPONENTU
+// vypocitame pocty vsetkych typov sluzeb
 function countShiftsByType(shifts) {
   return shifts.reduce(
     (acc, shift) => {
@@ -34,20 +35,23 @@ function countShiftsByType(shifts) {
   );
 }
 
+// vypocitame pocty hodin vsetkych typov sluzeb
 const hoursForShifts = (count, perShift = 12) => count * perShift;
 
+// odpocitavanie dni do prehliadky
 const formatDaysLeft = (value) =>
   value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
 
-// MARK: MY PROFILE COMPONENT
+// MARK: MY PROFILE HLAVNY COMPONENT
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
-
+  // ulozenie offsetu do sessionStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("dashOffset", String(offset));
     }
   }, [offset]);
 
+  // MARK: USEMEMO..................................................
   /* vypočítame všetko, čo závisí od offsetu a shifts */
   const { monthLabel, calculated } = useMemo(() => {
     const targetDate = new Date(
@@ -105,6 +109,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
       },
     };
   }, [shifts, offset]);
+  //..........................................................
 
   /* dni k prehliadkam */
   const medCheckLeft = formatDaysLeft(

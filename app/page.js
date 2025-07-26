@@ -19,9 +19,9 @@ export default async function Page({ searchParams }) {
   const { m } = await searchParams;
   const offset = Number(m ?? 0);
 
-
-  // 1️⃣ Načítame potrebné dáta paralelne
+  // MARK: NACITANIE DÁT ...................................................................................
   const user = await getUser();
+  // Načítanie dát paralelne
   const [profile, shifts] = await Promise.all([
     getProfile(user.id),
     getShiftsForProfileForYear(user.id),
@@ -79,13 +79,13 @@ export default async function Page({ searchParams }) {
         <WeatherCard />
 
         {/* Karta: Môj profil */}
-
         <MyProfileWrapper
           profile={profile}
           shifts={shifts}
           initialOffset={offset}
         />
 
+        {/* Karty: Kalendáre */}
         <section className="grid w-full gap-6 md:grid-cols-2">
           <ShiftCalendar
             label="Dnes"
