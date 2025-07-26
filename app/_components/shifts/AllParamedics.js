@@ -1,12 +1,12 @@
 "use client";
 
 import { deleteProfileFromRoster, moveArrow } from "@/app/_lib/actions";
-import { startTransition, useState } from "react";
-import Modal from "../Modal";
-import ConfirmDelete from "../ConfirmDelete";
 import { useRouter } from "next/navigation";
+import { startTransition, useState } from "react";
 import toast from "react-hot-toast";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import ConfirmDelete from "../ConfirmDelete";
+import Modal from "../Modal";
 
 export default function AllParamedics({
   children,
@@ -60,10 +60,10 @@ export default function AllParamedics({
 
   return (
     <>
-      <div className="flex items-center justify-between px-2 py-1">
+      <div className="hover:z-500 flex items-center justify-between px-2 py-1">
         <button
           type="button"
-          className={`sticky left-0 z-20 flex items-center justify-between ${rowBg} cursor-pointer hover:bg-blue-100`}
+          className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
           onClick={!isDeleting ? handleClick : undefined}
         >
           {children}

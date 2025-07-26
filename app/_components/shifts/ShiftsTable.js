@@ -3,11 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useOptimistic, useState, useTransition } from "react";
 
-
-import {
-  deleteShift,
-  upsertShift
-} from "@/app/_lib/actions";
+import { deleteShift, upsertShift } from "@/app/_lib/actions";
 import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
@@ -26,16 +22,15 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const [selected, setSelected] = useState(null); // { userId, dateStr }
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   /* ---------- dátumové údaje ---------- */
-  const base = new Date();                                 // dnes
+  const base = new Date(); // dnes
   const date = new Date(base.getFullYear(), base.getMonth() + shiftsOffset, 1);
 
   const year = date.getFullYear();
-  const mIndex = date.getMonth();          // 0‑based
-  const month = mIndex + 1;               // 1‑12 pre tvoju util funkciu
+  const mIndex = date.getMonth(); // 0‑based
+  const month = mIndex + 1; // 1‑12 pre tvoju util funkciu
   const days = getDaysArray(year, month);
-  const monthName = MONTHS()[mIndex];      // jedno priame načítanie
+  const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
   const colTemplate = `12rem repeat(${days.length}, 3rem)`;
 
@@ -186,11 +181,19 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
-          <ArrowBack goTo={goTo} shiftsOffset={shiftsOffset} disabled={disabled} />
+          <ArrowBack
+            goTo={goTo}
+            shiftsOffset={shiftsOffset}
+            disabled={disabled}
+          />
           <div>
             {monthName} {year} - Norma hodín: {normHours}
           </div>
-          <ArrowForword goTo={goTo} shiftsOffset={shiftsOffset} disabled={disabled} />
+          <ArrowForword
+            goTo={goTo}
+            shiftsOffset={shiftsOffset}
+            disabled={disabled}
+          />
         </MonthYearHead>
 
         {/* hlavička dní */}
@@ -215,37 +218,37 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         </div>
 
         {/* dátové riadky */}
-        {
-          optimisticRoster.map((p, idx) => (
-            <ShiftRow
-              key={p.user_id}
-              user={p}
-              onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-              onReorderOptimistic={(act) =>
-                apply({
-                  type: "MOVE",
-                  userId: act.userId,
-                  direction: act.direction,
-                })
-              }
-              days={days}
-              colTemplate={colTemplate}
-              onSelect={handleSelect}
-              rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-              roster={roster}
-            />
-          ))
-        }
-      </MainShiftsTable >
+        {optimisticRoster.map((p, idx) => (
+          <ShiftRow
+            key={p.user_id}
+            user={p}
+            onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+            onReorderOptimistic={(act) =>
+              apply({
+                type: "MOVE",
+                userId: act.userId,
+                direction: act.direction,
+              })
+            }
+            days={days}
+            colTemplate={colTemplate}
+            onSelect={handleSelect}
+            rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+            roster={roster}
+          />
+        ))}
+      </MainShiftsTable>
 
       {/* modals */}
-      {
-        isModalOpen && (
-          <Modal onClose={() => setIsModalOpen(false)}>
-            <ShiftChoiceModal onPick={handlePick} onDelete={handleDelete} disabled={isPending} />
-          </Modal>
-        )
-      }
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <ShiftChoiceModal
+            onPick={handlePick}
+            onDelete={handleDelete}
+            disabled={isPending}
+          />
+        </Modal>
+      )}
     </>
   );
 }
