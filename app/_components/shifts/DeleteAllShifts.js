@@ -1,20 +1,25 @@
 "use client";
 
+import { clearMonth } from "@/app/_lib/actions";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Button from "../Button";
-import { clearMonth } from "@/app/_lib/actions";
-import Modal from "../Modal";
 import ConfirmDelete from "../ConfirmDelete";
+import Modal from "../Modal";
 // import { useRouter } from "next/navigation";
 
 export default function DeleteAllShifts() {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const searchParams = useSearchParams();
+  const urlOffset = searchParams.get("m") ?? "0";
+  const offset = Number(urlOffset);
+  console.log("offset", offset);
+
   const today = new Date();
   const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-
+  const month = today.getMonth() + offset + 1;
 
   function handleOpenModal() {
     setIsOpenDeleteModal(true);
@@ -26,7 +31,6 @@ export default function DeleteAllShifts() {
     setIsDeleting(false);
     setIsOpenDeleteModal(false);
   }
-
 
   return (
     <>
