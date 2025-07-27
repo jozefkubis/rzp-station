@@ -81,7 +81,7 @@ export default function RosterSection({
     router.push(`/shifts?m=${offset}`);
   }
 
-  /* 🟡 3) UI – tabuľka + tlačidlo */
+  // MARK: RETURNT .......................................................................................
   return (
     <div className="flex w-[100%] flex-col">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
@@ -97,7 +97,7 @@ export default function RosterSection({
       </div>
 
       {/* 2️⃣ tlačidlá pod tabuľkou – zostaňme pri rovnakom odsadení */}
-      <div className="mt-6 flex gap-2 self-start px-8 2xl:px-36">
+      <div className="mt-6 flex max-w-full justify-center gap-2 px-8 2xl:px-36">
         <DeleteAllShifts />
         <InsertShiftButton
           profiles={diffProfiles}
