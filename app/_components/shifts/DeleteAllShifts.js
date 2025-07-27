@@ -36,7 +36,7 @@ export default function DeleteAllShifts() {
     <>
       <div className="">
         <Button variant="danger" onClick={handleOpenModal}>
-          🧹 Vymaž celý mesiac"
+          Vymazať celý mesiac
         </Button>
       </div>
 

@@ -30,8 +30,11 @@ export default async function Page({ params }) {
       <div className="flex flex-col items-end gap-8 pt-12">
         <div className="flex gap-2">
           <DeleteProfileButton profileId={profile.id} />
-          <Link data-cy="admin-edit-profile-button" href={`/profiles/${profile.id}/edit`}>
-            <Button>Upravit profil</Button>
+          <Link
+            data-cy="admin-edit-profile-button"
+            href={`/profiles/${profile.id}/edit`}
+          >
+            <Button>Upraviť profil</Button>
           </Link>
         </div>
         <Link
@@ -72,10 +75,10 @@ export default async function Page({ params }) {
   ];
 
   return (
-    <main className="flex min-h-screen  bg-white p-10">
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 text-lg sm:grid-cols-2 items-center px-14">
+    <main className="flex min-h-screen bg-white p-10">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-14 text-lg sm:grid-cols-2">
         {/* Ľavý stĺpec – avatar + kontakty */}
-        <div className="flex flex-col items-center gap-2 border-r border-gray-200 h-screen justify-center">
+        <div className="flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
           <ProfileImage profile={profile} blankAvatar={blankAvatar} />
           <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
         </div>
