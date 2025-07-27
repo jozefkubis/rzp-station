@@ -16,7 +16,7 @@ export default function AllParamedics({
   roster,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  // const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   function handleClick() {
@@ -27,7 +27,7 @@ export default function AllParamedics({
   async function handleConfirmDelete() {
     // A) okamžitý optimistický update (riadok zmizne hneď)
     startTransition(() => onDeleteOptimistic(user.user_id));
-
+    setIsDeleting(true);
     try {
       // B) skutočný DELETE na serveri
       await deleteProfileFromRoster(user.user_id);
@@ -38,6 +38,7 @@ export default function AllParamedics({
       toast.error("Nepodarilo sa zmazať záchranára");
     } finally {
       // D) refresh – zosynchronizuje UI (potvrdí alebo rollbackne optimistiku)
+      setIsDeleting(false);
       router.refresh();
     }
   }
@@ -94,7 +95,7 @@ export default function AllParamedics({
             resourceName="Zachranára"
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
-            // disabled={isDeleting}
+            disabled={isDeleting}
           />
         </Modal>
       )}
