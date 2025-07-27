@@ -16,7 +16,7 @@ export default function AllParamedics({
   roster,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
   function handleClick() {
@@ -63,7 +63,7 @@ export default function AllParamedics({
         <button
           type="button"
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
-          onClick={!isDeleting ? handleClick : undefined}
+          onClick={handleClick}
         >
           {currentIdx + 1}. {children}
         </button>
@@ -94,7 +94,7 @@ export default function AllParamedics({
             resourceName="Zachranára"
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
-            disabled={isDeleting}
+            // disabled={isDeleting}
           />
         </Modal>
       )}

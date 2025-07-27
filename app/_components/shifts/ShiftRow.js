@@ -18,7 +18,6 @@ export default function ShiftRow({
       style={{ gridTemplateColumns: colTemplate }}
     >
       <AllParamedics
-        rowBg={rowBg}
         user={user}
         onDeleteOptimistic={onDeleteOptimistic}
         onReorderOptimistic={onReorderOptimistic}
