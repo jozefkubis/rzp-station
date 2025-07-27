@@ -60,7 +60,7 @@ export default function AllParamedics({
 
   return (
     <>
-      <div className="hover:z-500 flex items-center justify-between px-2 py-1">
+      <div className="hover:z-500 flex items-center justify-between border-b border-slate-200 px-2 py-1">
         <button
           type="button"
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
