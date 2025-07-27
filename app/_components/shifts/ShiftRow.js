@@ -34,7 +34,7 @@ export default function ShiftRow({
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
           : isWeekend
-            ? "bg-amber-100"
+            ? "bg-amber-50"
             : rowBg;
 
         return (

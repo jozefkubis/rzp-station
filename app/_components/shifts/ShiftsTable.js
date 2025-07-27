@@ -210,7 +210,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             const headBg = isToday
               ? "bg-primary-100 font-semibold"
               : isWeekend
-                ? "bg-amber-100"
+                ? "bg-amber-50"
                 : "bg-white";
             return (
               <DaysMonth key={day} headBg={headBg}>
