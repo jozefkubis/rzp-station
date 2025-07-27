@@ -33,7 +33,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `12rem repeat(${days.length}, 3rem)`;
+  const colTemplate = `12rem repeat(${days.length}, 2rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
