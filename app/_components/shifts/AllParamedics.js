@@ -10,7 +10,6 @@ import Modal from "../Modal";
 
 export default function AllParamedics({
   children,
-  rowBg,
   user,
   onDeleteOptimistic,
   onReorderOptimistic,
@@ -66,7 +65,7 @@ export default function AllParamedics({
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
           onClick={!isDeleting ? handleClick : undefined}
         >
-          {children}
+          {currentIdx + 1}. {children}
         </button>
 
         <div className="flex flex-col hover:scale-150">
