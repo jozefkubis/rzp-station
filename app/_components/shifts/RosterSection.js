@@ -11,11 +11,15 @@ import ShiftsTable from "./ShiftsTable";
  * Props:
  *   - initialShifts  : pole shiftov získané na serveri
  *   - diffProfiles   : voľní záchranári (pole { id, full_name })
+ *   - initialShiftsOffset: offset pre pagináciu
  */
-export default function RosterSection({ initialShifts, diffProfiles, initialShiftsOffset }) {
+export default function RosterSection({
+  initialShifts,
+  diffProfiles,
+  initialShiftsOffset,
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
 
   /* 🟡 1) useOptimistic nad SHIFTAMI (tabuľka) */
   const [optimShifts, applyShifts] = useOptimistic(
@@ -62,15 +66,17 @@ export default function RosterSection({ initialShifts, diffProfiles, initialShif
     });
   }
 
+  /* 🟡 3) useOptimistic pre shiftsTable - pre rychle prepinanie mesiacov v sluzbach */
   const [shiftsOptimOffset, setShiftsOptimOffset] = useOptimistic(
     initialShiftsOffset,
     (_, next) => next,
   );
 
+  /* 🟡 4) callback, pre ShiftsTable */
   function goTo(offset) {
     startTransition(() => {
       setShiftsOptimOffset(offset);
-    })
+    });
 
     router.push(`/shifts?m=${offset}`);
   }
@@ -81,7 +87,12 @@ export default function RosterSection({ initialShifts, diffProfiles, initialShif
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
         <div className="max-w-full overflow-x-auto">
-          <ShiftsTable shifts={optimShifts} goTo={goTo} shiftsOffset={shiftsOptimOffset} disabled={isPending} />
+          <ShiftsTable
+            shifts={optimShifts}
+            goTo={goTo}
+            shiftsOffset={shiftsOptimOffset}
+            disabled={isPending}
+          />
         </div>
       </div>
 

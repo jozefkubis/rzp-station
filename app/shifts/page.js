@@ -7,17 +7,21 @@ export const metadata = {
 };
 
 export default async function page({ searchParams }) {
+  // MARK: NACITANIE PARAMETROV URL .....................................................................
   const { m } = await searchParams;
   const shiftsOffset = Number(m ?? 0);
-  // console.log(s);
+  // console.log(m);
 
+  // MARK: NACITANIE DÁT ...................................................................................
+  const [shifts, profiles] = await Promise.all([
+    getAllShifts(),
+    getAllProfiles(),
+  ]);
 
-  const [shifts, profiles] = await Promise.all([getAllShifts(), getAllProfiles()]);
-
-  // 1. priprav si množiny pre rýchlejšie vyhľadávanie
+  // 1. Množiny pre rýchlejšie vyhľadávanie
   const shiftUserIdSet = new Set(shifts.map((shift) => shift.user_id));
 
-  // 2. vyfiltruj len profily bez služby a hneď z nich vytvor požadované pole
+  // 2. Filter pre profily bez služby a map pre vytvorenie pola
   const diffProfiles = profiles
     .filter((p) => !shiftUserIdSet.has(p.id))
     .map(({ id, full_name }) => ({ id, full_name }));
@@ -34,7 +38,11 @@ export default async function page({ searchParams }) {
       ) : (
         /* RosterSection zobraz aj pri prázdnych shifts */
         <div className="flex justify-center px-8">
-          <RosterSection initialShifts={shifts} diffProfiles={diffProfiles} initialShiftsOffset={shiftsOffset} />
+          <RosterSection
+            initialShifts={shifts}
+            diffProfiles={diffProfiles}
+            initialShiftsOffset={shiftsOffset}
+          />
         </div>
       )}
     </div>

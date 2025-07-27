@@ -32,9 +32,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
+  /* ---------- CSS grid template ---------- */
   const colTemplate = `12rem repeat(${days.length}, 3rem)`;
 
-  /* ---------- useOptimistic ---------- */
+  // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
     (current, action) => {
@@ -50,6 +51,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         /* nájdi prototyp (aby sme mali meno, email…) */
         const proto = current.find((s) => s.user_id === userId);
 
+        /* pridaj nový záznam */
         next.push({
           id: `tmp-${Date.now()}`, // dočasné ID len pre React key
           user_id: userId,
@@ -75,10 +77,11 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       return current;
     },
   );
+  //......................................................................................
 
   const [isPending, startTransition] = useTransition();
 
-  /* ---------- handlers ---------- */
+  // MARK: HANDELERS
   const handleSelect = useCallback((userId, dateStr) => {
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
@@ -126,8 +129,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     /* C. refresh */
     router.refresh();
   }
+  //......................................................................................
 
-  /* ---------- zoskupenie riadkov ---------- */
+  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZAZNAMOV DO ROSTERU
   const roster = Object.values(
     optimisticShifts.reduce((acc, row) => {
       const id = row.user_id;
@@ -147,7 +151,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   ).sort(
     (a, b) => a.order - b.order,
   ); /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/
+  //......................................................................................
 
+  // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZACHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
     if (act.type === "DELETE") {
       return curr.filter((u) => u.user_id !== act.id);
@@ -172,12 +178,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
 
-  // MARK: RETURN
+  // MARK: RETURN.........................................................................
   return (
     <>
-      {/* <div className="flex ">
-      </div> */}
-
       <MainShiftsTable colTemplate={colTemplate}>
         {/* nadpis mesiaca */}
         <MonthYearHead>
