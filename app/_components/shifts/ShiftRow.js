@@ -1,6 +1,6 @@
 import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
-import ShiftStatsRowDay from "./shiftStatsRowDay";
+import ShiftStatsRowDay from "./ShiftStatsRowDay";
 
 // ShiftRow.jsx
 export default function ShiftRow({
