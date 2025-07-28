@@ -8,7 +8,7 @@ import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
 import DaysMonth from "./DaysMonth";
-import { getDaysArray, MONTHS } from "./helpers_shifts";
+import { getDaysArray, MONTHS, shiftTableStats } from "./helpers_shifts";
 import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
@@ -33,7 +33,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `12rem repeat(${days.length}, 2rem)`;
+  const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
+  const shiftStats = shiftTableStats();
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -210,7 +211,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             const headBg = isToday
               ? "bg-primary-100 font-semibold"
               : isWeekend
-                ? "bg-amber-50"
+                ? "bg-amber-100"
                 : "bg-white";
             return (
               <DaysMonth key={day} headBg={headBg}>
@@ -218,6 +219,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
               </DaysMonth>
             );
           })}
+
+          {shiftStats.map((s) => (
+            <DaysMonth key={s}>{s}</DaysMonth>
+          ))}
         </div>
 
         {/* dátové riadky */}
@@ -238,6 +243,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             onSelect={handleSelect}
             rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
             roster={roster}
+            shiftStats={shiftStats}
           />
         ))}
       </MainShiftsTable>

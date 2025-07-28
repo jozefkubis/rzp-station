@@ -1,5 +1,6 @@
 import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
+import ShiftStatsRowDay from "./shiftStatsRowDay";
 
 // ShiftRow.jsx
 export default function ShiftRow({
@@ -11,6 +12,7 @@ export default function ShiftRow({
   onDeleteOptimistic,
   onReorderOptimistic,
   roster,
+  shiftStats,
 }) {
   return (
     <div
@@ -33,7 +35,7 @@ export default function ShiftRow({
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
           : isWeekend
-            ? "bg-amber-50"
+            ? "bg-amber-100"
             : rowBg;
 
         return (
@@ -47,6 +49,16 @@ export default function ShiftRow({
           </RowDays>
         );
       })}
-    </div>
+
+      {shiftStats.map((s) => (
+        <ShiftStatsRowDay
+          key={s}
+          onSelect={(d) => onSelect(user.user_id, d)}
+        >
+          {" "}
+        </ShiftStatsRowDay>
+      ))
+      }
+    </div >
   );
 }

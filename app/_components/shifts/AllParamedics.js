@@ -60,7 +60,7 @@ export default function AllParamedics({
 
   return (
     <>
-      <div className="hover:z-500 flex items-center justify-between border-b border-slate-200 px-2 py-1">
+      <div className="hover:z-500 flex items-center justify-between border-b border-slate-200 px-2 py-1 text-[1rem]">
         <button
           type="button"
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
@@ -69,7 +69,7 @@ export default function AllParamedics({
           {currentIdx + 1}. {children}
         </button>
 
-        <div className="flex flex-col hover:scale-150">
+        <div className="flex flex-col hover:scale-150 gap-4">
           <button
             type="button"
             disabled={currentIdx === 0}

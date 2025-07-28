@@ -59,6 +59,18 @@ export function MONTHS() {
   return months
 }
 
+export function shiftTableStats() {
+  const shiftStats = [
+    "SH",
+    "D",
+    "N",
+    "RD",
+    "NC",
+    "SS",
+  ];
+  return shiftStats
+}
+
 
 
 
