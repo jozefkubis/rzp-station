@@ -34,7 +34,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
   /* ---------- CSS grid template ---------- */
   // const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
-  const colTemplate = `13.5rem repeat(${days.length}, 2.5rem) repeat(7, 3.3rem)`;
+  const colTemplate = `13.5rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
