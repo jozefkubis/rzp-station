@@ -62,17 +62,17 @@ export default function AllParamedics({
   return (
     <>
       <div
-        className={`hover:z-500 z-100 sticky left-0 flex items-center justify-between border-b border-slate-200 px-2 py-1 text-[1rem] ${rowBg}`}
+        className={`sticky left-0 flex items-center justify-between border-b border-slate-200 px-2 py-1 text-[1rem] hover:bg-blue-100 ${rowBg}`}
       >
         <button
           type="button"
-          className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
+          className="sticky left-0 z-20 flex cursor-pointer items-center justify-between hover:scale-105"
           onClick={handleClick}
         >
           {currentIdx + 1}. {children}
         </button>
 
-        <div className="flex flex-col gap-4 hover:scale-150">
+        <div className="flex flex-col gap-3 hover:scale-150">
           <button
             type="button"
             disabled={currentIdx === 0}
