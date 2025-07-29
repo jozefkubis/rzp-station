@@ -17,6 +17,7 @@ export default function ShiftChoiceModal({ onPick, onDelete, disabled }) {
         "xD",
         "xN",
         "RD",
+        "PN",
       ].map((t) => (
         <Button
           key={t}

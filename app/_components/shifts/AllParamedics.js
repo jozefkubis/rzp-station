@@ -14,6 +14,7 @@ export default function AllParamedics({
   onDeleteOptimistic,
   onReorderOptimistic,
   roster,
+  rowBg,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -60,7 +61,9 @@ export default function AllParamedics({
 
   return (
     <>
-      <div className="hover:z-500 flex items-center justify-between border-b border-slate-200 px-2 py-1 text-[1rem]">
+      <div
+        className={`hover:z-500 z-100 sticky left-0 flex items-center justify-between border-b border-slate-200 px-2 py-1 text-[1rem] ${rowBg}`}
+      >
         <button
           type="button"
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between"
@@ -69,7 +72,7 @@ export default function AllParamedics({
           {currentIdx + 1}. {children}
         </button>
 
-        <div className="flex flex-col hover:scale-150 gap-4">
+        <div className="flex flex-col gap-4 hover:scale-150">
           <button
             type="button"
             disabled={currentIdx === 0}

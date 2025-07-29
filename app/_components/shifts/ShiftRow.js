@@ -43,6 +43,7 @@ export default function ShiftRow({
         onDeleteOptimistic={onDeleteOptimistic}
         onReorderOptimistic={onReorderOptimistic}
         roster={roster}
+        rowBg={rowBg}
       >
         {user.full_name}
       </AllParamedics>
@@ -70,7 +71,9 @@ export default function ShiftRow({
       })}
 
       {shiftStats.map((col) => (
-        <ShiftStatsRowDay key={col.key}>{stats[col.key]}</ShiftStatsRowDay>
+        <ShiftStatsRowDay rowBg={rowBg} key={col.key}>
+          {stats[col.key]}
+        </ShiftStatsRowDay>
       ))}
     </div>
   );

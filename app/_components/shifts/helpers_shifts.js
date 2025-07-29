@@ -96,7 +96,6 @@ const UNITS = {
 // 4️⃣ Konfigurácia stĺpcov tabuľky
 export function shiftTableStats(normHours) {
   return [
-    // Σ hodín
     {
       key: "totalHours",
       label: "SH",
@@ -104,28 +103,28 @@ export function shiftTableStats(normHours) {
         shifts.reduce((sum, s) => sum + (HOURS[s.type] || 0), 0),
     },
 
-    // Denné služby
     {
       key: "dayShifts",
       label: "D",
       calc: (shifts) => shifts.filter((s) => DAY_SET.has(s.type)).length,
     },
 
-    // Nočné služby
     {
       key: "nightShifts",
       label: "N",
       calc: (shifts) => shifts.filter((s) => NIGHT_SET.has(s.type)).length,
     },
 
-    // Dovolenka
     {
       key: "holiday",
       label: "RD",
       calc: (shifts) => shifts.filter((s) => s.type === HOLIDAY).length,
     },
-
-    // Nadčas = Σ hodín − norma
+    {
+      key: "sickness",
+      label: "PN",
+      calc: (shifts) => shifts.filter((s) => s.type === "PN").length,
+    },
     {
       key: "overtime",
       label: "NČ",
@@ -133,7 +132,6 @@ export function shiftTableStats(normHours) {
         shifts.reduce((sum, s) => sum + (HOURS[s.type] || 0), 0) - normHours,
     },
 
-    // Σ služieb (vážené)
     {
       key: "totalShifts",
       label: "PS",
