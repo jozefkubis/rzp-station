@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
 import ShiftStatsRowDay from "./ShiftStatsRowDay";
@@ -14,6 +15,24 @@ export default function ShiftRow({
   roster,
   shiftStats,
 }) {
+  // ❶ Vyrob Set všetkých dátumov toho mesiaca (rýchly lookup)
+  const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
+
+  // ❷ Vyfiltruj smeny, ktoré patria do aktuálneho mesiaca
+  const monthShifts = useMemo(
+    () => user.shifts.filter((s) => monthDates.has(s.date)),
+    [user.shifts, monthDates],
+  );
+
+  const stats = useMemo(
+    () =>
+      shiftStats.reduce(
+        (acc, col) => ({ ...acc, [col.key]: col.calc(monthShifts) }),
+        {},
+      ),
+    [monthShifts, shiftStats],
+  );
+
   return (
     <div
       className={`grid text-sm ${rowBg} hover:bg-blue-100`}
@@ -50,15 +69,9 @@ export default function ShiftRow({
         );
       })}
 
-      {shiftStats.map((s) => (
-        <ShiftStatsRowDay
-          key={s}
-          onSelect={(d) => onSelect(user.user_id, d)}
-        >
-          {" "}
-        </ShiftStatsRowDay>
-      ))
-      }
-    </div >
+      {shiftStats.map((col) => (
+        <ShiftStatsRowDay key={col.key}>{stats[col.key]}</ShiftStatsRowDay>
+      ))}
+    </div>
   );
 }

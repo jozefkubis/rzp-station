@@ -15,7 +15,6 @@ export default function DeleteAllShifts() {
   const searchParams = useSearchParams();
   const urlOffset = searchParams.get("m") ?? "0";
   const offset = Number(urlOffset);
-  console.log("offset", offset);
 
   const today = new Date();
   const year = today.getFullYear();

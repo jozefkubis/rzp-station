@@ -33,8 +33,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
-  const shiftStats = shiftTableStats();
+  // const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
+  const colTemplate = `13.5rem repeat(${days.length}, 2.5rem) repeat(6, 3.3rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -178,6 +178,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
+  const shiftStats = shiftTableStats(normHours);
 
   // MARK: RETURN.........................................................................
   return (
@@ -220,8 +221,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             );
           })}
 
-          {shiftStats.map((s) => (
-            <DaysMonth key={s}>{s}</DaysMonth>
+          {shiftStats.map((col) => (
+            <DaysMonth key={col.key}>{col.label}</DaysMonth>
           ))}
         </div>
 
@@ -244,6 +245,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
             roster={roster}
             shiftStats={shiftStats}
+            normHours={normHours}
           />
         ))}
       </MainShiftsTable>
