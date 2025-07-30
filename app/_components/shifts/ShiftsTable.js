@@ -13,6 +13,7 @@ import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
+import ShiftChoiceModalBottom from "./ShiftChoisceModalBottom";
 import ShiftRow from "./ShiftRow";
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -20,7 +21,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
+  const [bottomSelected, setBottomSelected] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBottomModalOpen, setIsBottomModalOpen] = useState(false);
 
   /* ---------- dátumové údaje ---------- */
   const base = new Date(); // dnes
@@ -83,12 +86,17 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const [isPending, startTransition] = useTransition();
 
   // MARK: HANDELERS
-  const handleSelect = useCallback((userId, dateStr) => {
+  const handleTopSelect = useCallback((userId, dateStr) => {
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
   }, []);
 
-  async function handlePick(type) {
+  const handleBottomSelect = useCallback((userId, dateStr) => {
+    setBottomSelected({ userId, dateStr });
+    setIsBottomModalOpen(true);
+  }, []);
+
+  async function handlePickTop(type) {
     if (!selected) return;
 
     /* A. optimistický UPSERT */
@@ -110,7 +118,29 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     router.refresh();
   }
 
-  async function handleDelete() {
+  async function handlePickBottom(type) {
+    if (!bottomSelected) return;
+
+    /* A. optimistický UPSERT */
+    startTransition(() =>
+      applyOptimistic({
+        type: "UPSERT",
+        userId: bottomSelected.userId,
+        date: bottomSelected.dateStr,
+        shift_type: type,
+      }),
+    );
+
+    setIsBottomModalOpen(false);
+
+    /* B. zápis do DB */
+    await upsertShift(bottomSelected.userId, bottomSelected.dateStr, type);
+
+    /* C. refresh (potvrdí alebo rollbackne) */
+    router.refresh();
+  }
+
+  async function handleDeleteTop() {
     if (!selected) return;
 
     /* A. optimistický DELETE */
@@ -126,6 +156,27 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
     /* B. reálny DELETE */
     await deleteShift(selected.userId, selected.dateStr);
+
+    /* C. refresh */
+    router.refresh();
+  }
+
+  async function handleDeleteBottom() {
+    if (!bottomSelected) return;
+
+    /* A. optimistický DELETE */
+    startTransition(() =>
+      applyOptimistic({
+        type: "DELETE",
+        userId: bottomSelected.userId,
+        date: bottomSelected.dateStr,
+      }),
+    );
+
+    setIsBottomModalOpen(false);
+
+    /* B. reálny DELETE */
+    await deleteShift(bottomSelected.userId, bottomSelected.dateStr);
 
     /* C. refresh */
     router.refresh();
@@ -241,7 +292,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             }
             days={days}
             colTemplate={colTemplate}
-            onSelect={handleSelect}
+            onTopSelect={handleTopSelect}
+            onBottomSelect={handleBottomSelect}
             rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
             roster={roster}
             shiftStats={shiftStats}
@@ -254,8 +306,18 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <ShiftChoiceModal
-            onPick={handlePick}
-            onDelete={handleDelete}
+            onPickTop={handlePickTop}
+            onDeleteTop={handleDeleteTop}
+            disabled={isPending}
+          />
+        </Modal>
+      )}
+
+      {isBottomModalOpen && (
+        <Modal onClose={() => setIsBottomModalOpen(false)}>
+          <ShiftChoiceModalBottom
+            onPickBottom={handlePickBottom}
+            onDeleteBottom={handleDeleteBottom}
             disabled={isPending}
           />
         </Modal>

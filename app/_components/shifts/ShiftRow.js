@@ -9,7 +9,8 @@ export default function ShiftRow({
   user,
   days,
   colTemplate,
-  onSelect,
+  onTopSelect,
+  onBottomSelect,
   rowBg,
   onDeleteOptimistic,
   onReorderOptimistic,
@@ -50,8 +51,34 @@ export default function ShiftRow({
       </AllParamedics>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
-        const found = (user.shifts || []).find((s) => s.date === dateStr);
-        const cellContent = found ? found.type : "";
+        const found = user.shifts.find((s) => s.date === dateStr);
+
+        // 👉 funkcia, ktorá rozpozná „požiadavkový“ typ
+        const requestSet = new Set([
+          "xD",
+          "xN",
+          "X",
+          "0.5",
+          "1",
+          "1.5",
+          "2",
+          "2.5",
+          "3",
+          "3.5",
+          "4",
+          "4.5",
+          "5",
+        ]);
+
+        const isRequestType = (t) => requestSet.has(String(t));
+
+        /* ---------- horná bunka ---------- */
+        const cellContent =
+          found && !isRequestType(found.type) ? found.type : "";
+
+        /* ---------- spodná bunka ---------- */
+        const bottomContent =
+          found && isRequestType(found.type) ? found.type : "";
 
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
@@ -64,14 +91,23 @@ export default function ShiftRow({
             key={`${user.user_id}-${dateStr}`}
             className="flex flex-col text-[0.9rem]"
           >
+            {/* horný rad */}
             <RowDays
               dateStr={dateStr}
               cellBg={cellBg}
-              onSelect={(d) => onSelect(user.user_id, d)}
+              onSelect={(d) => onTopSelect(user.user_id, d)}
             >
               {cellContent}
             </RowDays>
-            <RowDaysBottom cellBg={cellBg}></RowDaysBottom>
+
+            {/* spodný rad */}
+            <RowDaysBottom
+              dateStr={dateStr}
+              cellBg={cellBg}
+              onSelect={(d) => onBottomSelect(user.user_id, d)}
+            >
+              {bottomContent}
+            </RowDaysBottom>
           </div>
         );
       })}
