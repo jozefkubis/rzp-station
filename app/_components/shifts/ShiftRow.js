@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
+import RowDaysBottom from "./RowDaysBottom";
 import ShiftStatsRowDay from "./ShiftStatsRowDay";
 
 // ShiftRow.jsx
@@ -59,14 +60,19 @@ export default function ShiftRow({
             : rowBg;
 
         return (
-          <RowDays
+          <div
             key={`${user.user_id}-${dateStr}`}
-            dateStr={dateStr}
-            cellBg={cellBg}
-            onSelect={(d) => onSelect(user.user_id, d)}
+            className="flex flex-col text-[0.9rem]"
           >
-            {cellContent}
-          </RowDays>
+            <RowDays
+              dateStr={dateStr}
+              cellBg={cellBg}
+              onSelect={(d) => onSelect(user.user_id, d)}
+            >
+              {cellContent}
+            </RowDays>
+            <RowDaysBottom cellBg={cellBg}></RowDaysBottom>
+          </div>
         );
       })}
 
