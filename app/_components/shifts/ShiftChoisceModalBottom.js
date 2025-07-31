@@ -1,14 +1,29 @@
 import Button from "../Button";
 
-// ShiftChoiceModal.jsx
+// ShiftChoiceModalBottom.jsx
 export default function ShiftChoiceModalBottom({
   onPickBottom,
   onDeleteBottom,
   disabled,
 }) {
+  const options = [
+    { t: "xD", h: null },
+    { t: "xN", h: null },
+    { t: "X", h: null },
+    { t: "1", h: 1 },
+    { t: "1.5", h: 1.5 },
+    { t: "2", h: 2 },
+    { t: "2.5", h: 2.5 },
+    { t: "3", h: 3 },
+    { t: "3.5", h: 3.5 },
+    { t: "4", h: 4 },
+    { t: "4.5", h: 4.5 },
+    { t: "5", h: 5 },
+  ];
+
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
-      {["X", "xD", "xN", 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((t) => (
+      {options.map(({ t, h }) => (
         <Button
           key={t}
           variant={
@@ -17,7 +32,7 @@ export default function ShiftChoiceModalBottom({
               : "secondary"
           }
           size="medium"
-          onClick={() => onPickBottom(t)}
+          onClick={() => onPickBottom(t, h)}
           disabled={disabled}
         >
           {t}

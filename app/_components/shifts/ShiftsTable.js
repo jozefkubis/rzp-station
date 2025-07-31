@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useOptimistic, useState, useTransition } from "react";
 
-import { deleteShift, upsertShift } from "@/app/_lib/actions";
+import { clearRequest, clearShift, upsertRequest, upsertShift } from "@/app/_lib/actions";
 import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
@@ -43,44 +43,85 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
     (current, action) => {
-      /* ---------- UPSERT ---------- */
       if (action.type === "UPSERT") {
-        const { userId, date, shift_type } = action;
-
-        /* odstráň prípadný starší záznam pre rovnaký deň */
-        const next = current.filter(
-          (s) => !(s.user_id === userId && s.date === date),
+        const exists = current.find(
+          (s) => s.user_id === action.userId && s.date === action.date
         );
 
-        /* nájdi prototyp (aby sme mali meno, email…) */
-        const proto = current.find((s) => s.user_id === userId);
+        if (exists) {
+          return current.map((s) =>
+            s.user_id === action.userId && s.date === action.date
+              ? { ...s, shift_type: action.shift_type }
+              : s
+          );
+        }
 
-        /* pridaj nový záznam */
-        next.push({
-          id: `tmp-${Date.now()}`, // dočasné ID len pre React key
-          user_id: userId,
-          date,
-          shift_type,
-          profiles: {
-            full_name: proto?.profiles.full_name ?? "", // môže byť prázdne
-            avatar_url: proto?.profiles.avatar_url ?? "",
-            email: proto?.profiles.email ?? "", // fallback pre zobrazenie
+        return [
+          ...current,
+          {
+            id: `tmp-${Date.now()}`,
+            user_id: action.userId,
+            date: action.date,
+            shift_type: action.shift_type,
+            request_type: null,
+            request_hours: null,
+            profiles: exists?.profiles ?? {},
           },
-        });
-        return next;
+        ];
       }
 
-      /* ---------- DELETE ---------- */
-      if (action.type === "DELETE") {
+      if (action.type === "UPSERT_REQUEST") {
+        // NEMAZE riadok – len doplní/aktualizuje request_* polia
+        const exists = current.find(
+          (s) => s.user_id === action.userId && s.date === action.date
+        );
+
+        if (exists) {
+          // aktualizuj existujúci riadok
+          return current.map((s) =>
+            s.user_id === action.userId && s.date === action.date
+              ? { ...s, request_type: action.reqType, request_hours: action.hours ?? null }
+              : s
+          );
+        }
+
+        // ✔️ záznam ešte neexistuje: vytvor nový rad len so spodkom
+        return [
+          ...current,
+          {
+            id: `tmp-${Date.now()}`,
+            user_id: action.userId,
+            date: action.date,
+            shift_type: null,
+            request_type: action.reqType,
+            request_hours: action.hours ?? null,
+          },
+        ];
+      }
+
+      if (action.type === "CLEAR_SHIFT") {
+        return current
+          .map((s) =>
+            s.user_id === action.userId && s.date === action.date
+              ? { ...s, shift_type: null }
+              : s
+          )
+      }
+
+      if (action.type === "DELETE_REQUEST") {
         const { userId, date } = action;
-        return current.filter(
-          (s) => !(s.user_id === userId && s.date === date),
+        // NEMAZE riadok – len nulovanie spodku
+        return current.map(s =>
+          s.user_id === userId && s.date === date
+            ? { ...s, request_type: null, request_hours: null }
+            : s
         );
       }
 
       return current;
-    },
+    }
   );
+
   //......................................................................................
 
   const [isPending, startTransition] = useTransition();
@@ -99,46 +140,39 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   async function handlePickTop(type) {
     if (!selected) return;
 
-    /* A. optimistický UPSERT */
     startTransition(() =>
       applyOptimistic({
         type: "UPSERT",
         userId: selected.userId,
         date: selected.dateStr,
         shift_type: type,
-      }),
+      })
     );
 
     setIsModalOpen(false);
-
-    /* B. zápis do DB */
     await upsertShift(selected.userId, selected.dateStr, type);
-
-    /* C. refresh (potvrdí alebo rollbackne) */
     router.refresh();
   }
 
-  async function handlePickBottom(type) {
+
+  async function handlePickBottom(type, hours) {
     if (!bottomSelected) return;
 
-    /* A. optimistický UPSERT */
     startTransition(() =>
       applyOptimistic({
-        type: "UPSERT",
+        type: "UPSERT_REQUEST",
         userId: bottomSelected.userId,
         date: bottomSelected.dateStr,
-        shift_type: type,
-      }),
+        reqType: type,     // camelCase!
+        hours,
+      })
     );
 
     setIsBottomModalOpen(false);
-
-    /* B. zápis do DB */
-    await upsertShift(bottomSelected.userId, bottomSelected.dateStr, type);
-
-    /* C. refresh (potvrdí alebo rollbackne) */
+    await upsertRequest(bottomSelected.userId, bottomSelected.dateStr, type, hours);
     router.refresh();
   }
+
 
   async function handleDeleteTop() {
     if (!selected) return;
@@ -146,16 +180,14 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     /* A. optimistický DELETE */
     startTransition(() =>
       applyOptimistic({
-        type: "DELETE",
-        userId: selected.userId,
-        date: selected.dateStr,
+        type: "CLEAR_SHIFT", userId: selected.userId, date: selected.dateStr
       }),
     );
 
     setIsModalOpen(false);
 
     /* B. reálny DELETE */
-    await deleteShift(selected.userId, selected.dateStr);
+    await clearShift(selected.userId, selected.dateStr);
 
     /* C. refresh */
     router.refresh();
@@ -164,23 +196,19 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   async function handleDeleteBottom() {
     if (!bottomSelected) return;
 
-    /* A. optimistický DELETE */
     startTransition(() =>
       applyOptimistic({
-        type: "DELETE",
+        type: "DELETE_REQUEST",
         userId: bottomSelected.userId,
         date: bottomSelected.dateStr,
-      }),
+      })
     );
 
     setIsBottomModalOpen(false);
-
-    /* B. reálny DELETE */
-    await deleteShift(bottomSelected.userId, bottomSelected.dateStr);
-
-    /* C. refresh */
+    await clearRequest(bottomSelected.userId, bottomSelected.dateStr);
     router.refresh();
   }
+
   //......................................................................................
 
   // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZAZNAMOV DO ROSTERU
@@ -197,7 +225,13 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           order: row.profiles.order_index,
         };
       }
-      acc[id].shifts.push({ date: row.date, type: row.shift_type });
+      acc[id].shifts.push({
+        date: row.date,
+        shift_type: row.shift_type,
+        request_type: row.request_type,
+        request_hours: row.request_hours,
+      });
+
       return acc;
     }, {}),
   ).sort(

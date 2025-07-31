@@ -422,23 +422,46 @@ export async function upsertShift(userId, dateStr, type) {
 }
 
 // MARK: DELETE SHIFT
-export async function deleteShift(userId, dateStr) {
-  const supabase = await createClient();
+// export async function deleteShift(userId, dateStr) {
+//   const supabase = await createClient();
 
-  console.log("[deleteShift]", userId, dateStr);
+//   const { error } = await supabase
+//     .from("shifts")
+//     .delete()
+//     .match({ user_id: userId, date: dateStr });
+
+//   if (error) {
+//     console.error("Chyba pri mazaní služby:", error);
+//     return null;
+//   }
+//   revalidatePath("/", "shifts");
+//   return { success: true };
+// }
+
+// MARK: CLEAR SHIFT  (vynuluje len hornú smenu, požiadavka ostane)
+export async function clearShift(userId, dateStr) {
+  const supabase = await createClient();
 
   const { error } = await supabase
     .from("shifts")
-    .delete()
-    .match({ user_id: userId, date: dateStr });
+    .upsert(
+      {
+        user_id: userId,
+        date: dateStr,   // "YYYY-MM-DD"
+        shift_type: null,   // ← len toto nulujeme
+      },
+      { onConflict: "user_id,date" }
+    );
 
   if (error) {
-    console.error("Chyba pri mazaní služby:", error);
-    return null;
+    console.error("clearShift:", error);
+    throw error;
   }
+
   revalidatePath("/", "shifts");
   return { success: true };
 }
+
 
 // MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
 export async function clearMonth(year, month) {
@@ -454,7 +477,7 @@ export async function clearMonth(year, month) {
 
   const { error } = await supabase
     .from("shifts")
-    .update({ shift_type: null }) // alebo ''
+    .update({ shift_type: null, request_type: null, request_hours: null }) // alebo ''
     .gte("date", from) // vrátane 1. dňa
     .lt("date", toExclusive); // < 1. deň ďalšieho mesiaca
 
@@ -547,3 +570,46 @@ export async function moveArrow({ userId, direction }) {
     .update({ order_index: target })
     .eq("id", userId);
 }
+
+// MARK: UPSERT REQUEST
+export async function upsertRequest(userId, dateStr, reqType, hours) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("shifts")
+    .upsert(
+      {
+        user_id: userId,
+        date: dateStr,
+        request_type: reqType,
+        request_hours: hours,
+      },
+      { onConflict: "user_id,date" },
+    );
+  if (error) {
+    console.error("Chyba pri pridávaní požiadavky:", error);
+    return null;
+  }
+  revalidatePath("/", "shifts");
+  return { success: true };
+}
+
+// MARK: CLEAR REQUEST
+export async function clearRequest(userId, dateStr) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("shifts").upsert(
+    {
+      user_id: userId,
+      date: dateStr,
+      request_type: null,
+      request_hours: null,
+    },
+    { onConflict: "user_id,date" }
+  );
+
+  if (error) { console.error("clearRequest:", error); return null; }
+  revalidatePath("/", "shifts");
+  return { success: true };
+}
+

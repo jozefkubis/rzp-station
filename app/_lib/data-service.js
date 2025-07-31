@@ -300,7 +300,21 @@ export async function getAllShiftsForProfile(profileId) {
 
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select("*, profiles!shifts_user_id_fkey(*)")
+    .select(`
+  id,
+  user_id,
+  date,
+  shift_type,
+  request_type,
+  request_hours,
+  profiles:profiles!shifts_user_id_fkey (
+    id,
+    full_name,
+    order_index,
+    avatar_url
+  )
+`)
+
     .eq("user_id", profileId);
 
   if (error) {
@@ -314,26 +328,47 @@ export async function getAllShiftsForProfile(profileId) {
 // MARK: GET SHIFTS FOR PROFILE FOR YEAR
 export async function getShiftsForProfileForYear(
   profileId,
-  year = new Date().getFullYear(), // napr. 2025
+  year = new Date().getFullYear()   // napr. 2025
 ) {
   const supabase = await createClient();
 
-  // 1️⃣ Prvý a posledný deň roka
-  const firstDay = new Date(year, 0, 1, 0, 0, 0, 0); // 1. január 00:00
-  const lastDay = new Date(year, 11, 31, 23, 59, 59, 999); // 31. december 23:59
+  /* 1️⃣  Rozsah roka – rovno ako stringy YYYY-MM-DD */
+  const from = `${year}-01-01`;
+  const to = `${year}-12-31`;
 
-  // 2️⃣ Query v rozsahu roka
+  /* 2️⃣  Query */
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select("*, profiles!shifts_user_id_fkey(*)")
-    .eq("user_id", profileId)
-    .gte("date", firstDay.toISOString())
-    .lte("date", lastDay.toISOString());
+    .select(`
+  id,
+  user_id,
+  date,
+  shift_type,
+  request_type,
+  request_hours,
+  profiles:profiles!shifts_user_id_fkey (
+    id,
+    full_name,
+    order_index,
+    avatar_url
+  )
+`)
 
+
+    .eq("user_id", profileId)
+    .gte("date", from)
+    .lte("date", to);
+
+  /* 3️⃣  Loguj len naozajstnú chybu */
   if (error) {
-    console.error("Supabase error – shifts:", error);
-    throw error;
+    console.error("Supabase error – shifts:", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+    });
+    throw error;          // nech sa dostane do errorBoundary, ak je vážna
   }
 
-  return shifts;
+  return shifts ?? [];
 }
+

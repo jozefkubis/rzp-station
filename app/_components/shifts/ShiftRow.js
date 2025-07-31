@@ -51,34 +51,11 @@ export default function ShiftRow({
       </AllParamedics>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
-        const found = user.shifts.find((s) => s.date === dateStr);
+        const found = user.shifts.find(s => s.date === dateStr);
 
-        // 👉 funkcia, ktorá rozpozná „požiadavkový“ typ
-        const requestSet = new Set([
-          "xD",
-          "xN",
-          "X",
-          "0.5",
-          "1",
-          "1.5",
-          "2",
-          "2.5",
-          "3",
-          "3.5",
-          "4",
-          "4.5",
-          "5",
-        ]);
+        const cellContent = found?.shift_type ?? "";   // horná bunka
+        const bottomContent = found?.request_type ?? "";   // spodná bunka
 
-        const isRequestType = (t) => requestSet.has(String(t));
-
-        /* ---------- horná bunka ---------- */
-        const cellContent =
-          found && !isRequestType(found.type) ? found.type : "";
-
-        /* ---------- spodná bunka ---------- */
-        const bottomContent =
-          found && isRequestType(found.type) ? found.type : "";
 
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
