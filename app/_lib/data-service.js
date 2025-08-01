@@ -375,7 +375,7 @@ export async function getShiftsForProfileForYear(
   return shifts ?? [];
 }
 
-// MARK: GET REQUEST_HOURS FOR PROFILE FOR YEAR
+// MARK: GET REQUEST_HOURS FOR PROFILE FOR MONTH
 export async function getRequestHoursForMonth(monthOffset = 0) {
   const supabase = await createClient();
 
