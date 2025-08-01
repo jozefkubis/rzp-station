@@ -18,8 +18,8 @@ import {
   TbSun,
 } from "react-icons/tb";
 
-// MARK: HELPERS MIMO KOMPONENTU
-// vypocitame pocty vsetkych typov sluzeb
+/* ---------- HELPERS mimo komponentu ---------- */
+// počty služieb podľa typu
 function countShiftsByType(shifts) {
   return shifts.reduce(
     (acc, shift) => {
@@ -35,35 +35,37 @@ function countShiftsByType(shifts) {
   );
 }
 
-// vypocitame pocty hodin vsetkych typov sluzeb
+// hodiny pre daný počet služieb
 const hoursForShifts = (count, perShift = 12) => count * perShift;
 
-// odpocitavanie dni do prehliadky
-const formatDaysLeft = (value) =>
-  value < 0 ? `- ${Math.abs(value)} dní` : `+ ${value} dní`;
+// formát +- dni do prehliadky
+const formatDaysLeft = (v) => (v < 0 ? `- ${Math.abs(v)} dní` : `+ ${v} dní`);
 
-// MARK: MY PROFILE HLAVNY COMPONENT
+/* -------------------------------------------------------------------------- */
+/*                                KOMPONENT                                   */
+/* -------------------------------------------------------------------------- */
+
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
-  // ulozenie offsetu do sessionStorage
+  /* uložíme offset do sessionStorage (na zapamätanie medzi reloadmi) */
   useEffect(() => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("dashOffset", String(offset));
     }
   }, [offset]);
 
-  // MARK: USEMEMO..................................................
-  /* vypočítame všetko, čo závisí od offsetu a shifts */
+  /* všetky odvodené výpočty v jednom useMemo */
   const { monthLabel, calculated } = useMemo(() => {
+    /* cieľový mesiac podľa offsetu (0 = aktuálny) */
     const targetDate = new Date(
       new Date().getFullYear(),
       new Date().getMonth() + offset,
       1,
     );
 
-    /* filtrovanie na konkrétny mesiac */
     const yearTarget = targetDate.getFullYear();
-    const monthTarget = targetDate.getMonth() + 1; // 1‑12
+    const monthTarget = targetDate.getMonth() + 1; // 1-12
 
+    /* služby len pre daný mesiac */
     const shiftsForMonth = (Array.isArray(shifts) ? shifts : []).filter(
       ({ date }) => {
         const [year, month] = date.split("-").map(Number);
@@ -71,27 +73,33 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
       },
     );
 
-    /* norma hodín */
+    /* norma (počet pracovných dní × 7.5 h) */
     const weekdaysCount = getDaysArray(yearTarget, monthTarget).filter(
       (d) => !d.isWeekend,
     ).length;
     const normHours = weekdaysCount * 7.5;
 
-    /* počty služieb */
+    /* počty služieb podľa typu */
     const counts = countShiftsByType(shiftsForMonth);
 
-    const dayShiftCount =
-      counts.D + counts.vD + counts.zD; /* hlavný + vedľajší + záložný deň */
-    const nightShiftCount =
-      counts.N + counts.vN + counts.zN; /* hlavný + vedľajší + záložný noc */
+    const dayShiftCount = counts.D + counts.vD + counts.zD; // hlavný + vedľajší + záložný deň
+    const nightShiftCount = counts.N + counts.vN + counts.zN; // hlavný + vedľajší + záložný noc
     const holidayShiftCount = counts.RD;
 
+    /* hodiny z číselných požiadaviek (spodný riadok) */
+    const extraHours = shiftsForMonth.reduce((sum, s) => {
+      const n = Number(s.request_hours);
+      return isNaN(n) ? sum : sum + n;
+    }, 0);
+
+    /* sumarizácia hodín */
     const totalShiftCount = dayShiftCount + nightShiftCount;
     const holidayHours = hoursForShifts(holidayShiftCount, 7.5);
-    const totalHours = hoursForShifts(totalShiftCount) + holidayHours;
+    const totalHours =
+      hoursForShifts(totalShiftCount) + holidayHours + extraHours;
     const overtimeHours = totalHours - normHours;
 
-    /* nadpis mesiaca */
+    /* lokalizovaný nadpis mesiaca */
     const monthLabel = targetDate
       .toLocaleDateString("sk-SK", { month: "long", year: "numeric" })
       .replace(/^./, (char) => char.toUpperCase());
@@ -109,21 +117,20 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
       },
     };
   }, [shifts, offset]);
-  //..........................................................
 
-  /* dni k prehliadkam */
+  /* dni do periodických prehliadok */
   const medCheckLeft = formatDaysLeft(
     getDaysUntilNextMedCheck(profile.medCheckDate),
   );
   const psychoCheckLeft =
-    profile.psycho_check !== null
+    profile.psycho_check != null
       ? formatDaysLeft(getDaysUntilNextMedCheck(profile.psycho_check))
       : null;
 
-  /* ---------- render ---------- */
+  /* -------------------- render -------------------- */
   return (
     <div>
-      {/* navigácia mesiaca */}
+      {/* navigácia medzi mesiacmi */}
       <div className="flex w-full items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700">
         <div className="flex min-w-60 justify-between">
           <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
@@ -132,7 +139,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
         </div>
       </div>
 
-      {/* kachličky */}
+      {/* kachličky so štatistikou */}
       <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
         <Stat
           title="Služby mesiac"
@@ -170,7 +177,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           icon={<TbStethoscope />}
           value={medCheckLeft}
         />
-        {psychoCheckLeft !== null && (
+        {psychoCheckLeft != null && (
           <Stat
             title="Psychotesty"
             color="pink"

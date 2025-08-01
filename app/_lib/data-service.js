@@ -300,7 +300,8 @@ export async function getAllShiftsForProfile(profileId) {
 
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select(`
+    .select(
+      `
   id,
   user_id,
   date,
@@ -313,7 +314,8 @@ export async function getAllShiftsForProfile(profileId) {
     order_index,
     avatar_url
   )
-`)
+`,
+    )
 
     .eq("user_id", profileId);
 
@@ -328,7 +330,7 @@ export async function getAllShiftsForProfile(profileId) {
 // MARK: GET SHIFTS FOR PROFILE FOR YEAR
 export async function getShiftsForProfileForYear(
   profileId,
-  year = new Date().getFullYear()   // napr. 2025
+  year = new Date().getFullYear(), // napr. 2025
 ) {
   const supabase = await createClient();
 
@@ -339,7 +341,8 @@ export async function getShiftsForProfileForYear(
   /* 2️⃣  Query */
   const { data: shifts, error } = await supabase
     .from("shifts")
-    .select(`
+    .select(
+      `
   id,
   user_id,
   date,
@@ -352,8 +355,8 @@ export async function getShiftsForProfileForYear(
     order_index,
     avatar_url
   )
-`)
-
+`,
+    )
 
     .eq("user_id", profileId)
     .gte("date", from)
@@ -366,9 +369,49 @@ export async function getShiftsForProfileForYear(
       message: error.message,
       details: error.details,
     });
-    throw error;          // nech sa dostane do errorBoundary, ak je vážna
+    throw error; // nech sa dostane do errorBoundary, ak je vážna
   }
 
   return shifts ?? [];
 }
 
+// MARK: GET REQUEST_HOURS FOR PROFILE FOR YEAR
+export async function getRequestHoursForMonth(monthOffset = 0) {
+  const supabase = await createClient();
+
+  /* 1️⃣  aktuálny používateľ */
+  const {
+    data: { user },
+    error: userErr,
+  } = await supabase.auth.getUser();
+  if (userErr || !user) throw new Error("No active session");
+
+  /* 2️⃣  vypočítaj rozsah mesiaca podľa offsetu */
+  const base = new Date();
+  const target = new Date(base.getFullYear(), base.getMonth() + monthOffset, 1);
+
+  const year = target.getFullYear();
+  const month = target.getMonth() + 1; // 1-12
+
+  const from = `${year}-${String(month).padStart(2, "0")}-01`;
+
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+  const toExclusive = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
+
+  /* 3️⃣  select všetkých request_hours v danom mesiaci */
+  const { data, error } = await supabase
+    .from("shifts")
+    .select("request_hours")
+    .eq("user_id", user.id)
+    .gte("date", from)
+    .lt("date", toExclusive);
+
+  if (error) throw error;
+
+  /* 4️⃣  súčet len z číselných hodnôt */
+  return (data ?? []).reduce((sum, row) => {
+    const n = Number(row.request_hours);
+    return isNaN(n) ? sum : sum + n;
+  }, 0);
+}
