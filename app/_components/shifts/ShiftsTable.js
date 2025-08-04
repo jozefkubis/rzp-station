@@ -67,7 +67,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         return [
           ...current,
           {
-            id: `tmp-${Date.now()}`,
+            id: crypto.randomUUID(),
             user_id: action.userId,
             date: action.date,
             shift_type: action.shift_type,
@@ -101,7 +101,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         return [
           ...current,
           {
-            id: `tmp-${Date.now()}`,
+            id: crypto.randomUUID(),
             user_id: action.userId,
             date: action.date,
             shift_type: null,
