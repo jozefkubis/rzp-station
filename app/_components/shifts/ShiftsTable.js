@@ -3,7 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useOptimistic, useState, useTransition } from "react";
 
-import { clearRequest, clearShift, upsertRequest, upsertShift } from "@/app/_lib/actions";
+import {
+  clearRequest,
+  clearShift,
+  upsertRequest,
+  upsertShift,
+} from "@/app/_lib/actions";
 import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
@@ -35,6 +40,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
+  const monthLabel =
+    monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+
   /* ---------- CSS grid template ---------- */
   // const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
   const colTemplate = `13.5rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
@@ -45,14 +53,14 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     (current, action) => {
       if (action.type === "UPSERT") {
         const exists = current.find(
-          (s) => s.user_id === action.userId && s.date === action.date
+          (s) => s.user_id === action.userId && s.date === action.date,
         );
 
         if (exists) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? { ...s, shift_type: action.shift_type }
-              : s
+              : s,
           );
         }
 
@@ -73,15 +81,19 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       if (action.type === "UPSERT_REQUEST") {
         // NEMAZE riadok – len doplní/aktualizuje request_* polia
         const exists = current.find(
-          (s) => s.user_id === action.userId && s.date === action.date
+          (s) => s.user_id === action.userId && s.date === action.date,
         );
 
         if (exists) {
           // aktualizuj existujúci riadok
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
-              ? { ...s, request_type: action.reqType, request_hours: action.hours ?? null }
-              : s
+              ? {
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
+              : s,
           );
         }
 
@@ -100,26 +112,25 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       }
 
       if (action.type === "CLEAR_SHIFT") {
-        return current
-          .map((s) =>
-            s.user_id === action.userId && s.date === action.date
-              ? { ...s, shift_type: null }
-              : s
-          )
+        return current.map((s) =>
+          s.user_id === action.userId && s.date === action.date
+            ? { ...s, shift_type: null }
+            : s,
+        );
       }
 
       if (action.type === "DELETE_REQUEST") {
         const { userId, date } = action;
         // NEMAZE riadok – len nulovanie spodku
-        return current.map(s =>
+        return current.map((s) =>
           s.user_id === userId && s.date === date
             ? { ...s, request_type: null, request_hours: null }
-            : s
+            : s,
         );
       }
 
       return current;
-    }
+    },
   );
 
   //......................................................................................
@@ -146,14 +157,13 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         userId: selected.userId,
         date: selected.dateStr,
         shift_type: type,
-      })
+      }),
     );
 
     setIsModalOpen(false);
     await upsertShift(selected.userId, selected.dateStr, type);
     router.refresh();
   }
-
 
   async function handlePickBottom(type, hours) {
     if (!bottomSelected) return;
@@ -163,16 +173,20 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         type: "UPSERT_REQUEST",
         userId: bottomSelected.userId,
         date: bottomSelected.dateStr,
-        reqType: type,     // camelCase!
+        reqType: type, // camelCase!
         hours,
-      })
+      }),
     );
 
     setIsBottomModalOpen(false);
-    await upsertRequest(bottomSelected.userId, bottomSelected.dateStr, type, hours);
+    await upsertRequest(
+      bottomSelected.userId,
+      bottomSelected.dateStr,
+      type,
+      hours,
+    );
     router.refresh();
   }
-
 
   async function handleDeleteTop() {
     if (!selected) return;
@@ -180,7 +194,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     /* A. optimistický DELETE */
     startTransition(() =>
       applyOptimistic({
-        type: "CLEAR_SHIFT", userId: selected.userId, date: selected.dateStr
+        type: "CLEAR_SHIFT",
+        userId: selected.userId,
+        date: selected.dateStr,
       }),
     );
 
@@ -201,7 +217,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         type: "DELETE_REQUEST",
         userId: bottomSelected.userId,
         date: bottomSelected.dateStr,
-      })
+      }),
     );
 
     setIsBottomModalOpen(false);
@@ -277,7 +293,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             disabled={disabled}
           />
           <div>
-            {monthName} {year} - Norma hodín: {normHours}
+            {monthLabel} {year} - Norma hodín: {normHours}
           </div>
           <ArrowForword
             goTo={goTo}
