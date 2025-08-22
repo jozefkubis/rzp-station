@@ -34,7 +34,7 @@ export default function RosterSection({
         return [
           ...curr,
           {
-            id: `tmp-${Date.now()}`, // len kľúč pre React
+            id: `tmp-${crypto.randomUUID()}`, // len kľúč pre React
             user_id: act.userId,
             date: act.date, // YYYY-MM-DD (prvý deň mesiaca)
             shift_type: null,
