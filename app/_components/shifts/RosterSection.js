@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
-import GenerateShifts from "./GenerateRoster";
+import GenerateRoster from "./GenerateRoster";
+import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
 
@@ -103,6 +104,7 @@ export default function RosterSection({
           profiles={diffProfiles}
           onInsertEmptyShift={handleInsertEmptyShift}
         />
+        <GenerateRoster />
         <GenerateShifts />
         <DeleteAllShifts />
       </div>

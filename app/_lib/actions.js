@@ -674,3 +674,366 @@ export async function generateRoster(m) {
   revalidatePath("/", "shifts");
   return { success: true, inserted: toUpsert.length, date: firstOfMonth };
 }
+
+// MARK: GENERATE SHIFTS AUTO
+// - rešpektuje existujúce shift_type (D/N/RD/PN/X) a neprepíše ich
+// - RD/PN/X v shift_type blokujú priraďovanie v daný deň
+// - request_type slúži len na xD/xN (len N / len D)
+// - pravidlá: D nie hneď po N; max 2 rovnaké po sebe; 2×N + 2×D denne; targety D/N; roster-only
+export async function generateShiftsAuto(m) {
+  const supabase = await createClient();
+
+  // ===== 1) Dátumy
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m || 0);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month = month0 + 1; // 1..12
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month)}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+  const prevDateStr = (dateStr) => {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    dt.setDate(dt.getDate() - 1);
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  };
+
+  // ===== 2) Roster → profily
+  const { data: rosterIdsRows, error: rosterIdsErr } = await supabase
+    .from("shifts")
+    .select("user_id")
+    .eq("date", from);
+  if (rosterIdsErr) return { error: rosterIdsErr.message };
+
+  const rosterIds = Array.from(
+    new Set((rosterIdsRows ?? []).map((r) => r.user_id).filter(Boolean)),
+  );
+  if (!rosterIds.length)
+    return { error: "Roster je prázdny – vlož ľudí do 1. dňa mesiaca." };
+
+  const { data: profiles, error: profErr } = await supabase
+    .from("profiles")
+    .select("id, full_name, order_index")
+    .in("id", rosterIds)
+    .order("order_index", { ascending: true });
+  if (profErr) return { error: profErr.message };
+  if (!profiles?.length)
+    return { error: "Nepodarilo sa načítať profily pre daný roster." };
+
+  // ===== 3) Načítaj všetky záznamy shifts pre mesiac (shift_type + request_type)
+  const { data: monthShifts, error: monthErr } = await supabase
+    .from("shifts")
+    .select("user_id, date, shift_type, request_type")
+    .gte("date", from)
+    .lte("date", to);
+  if (monthErr) return { error: monthErr.message };
+
+  // Indexy pre rýchle rozhodovanie
+  const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
+
+  // existType[date][userId] = "D"|"N"|"RD"|"PN"|"X"|null
+  const existType = new Map(); // date -> Map(userId -> shift_type_norm or null)
+  // reqOnly[date][userId] = "D"|"N" (z request_type xN/xD); iné requesty neriešime, lebo X/PN/RD sú v shift_type
+  const reqOnly = new Map(); // date -> Map(userId -> "D"|"N")
+
+  for (const row of monthShifts ?? []) {
+    const d = row.date;
+    const u = row.user_id;
+    const st = norm(row.shift_type);
+    const rt = norm(row.request_type);
+
+    if (!existType.has(d)) existType.set(d, new Map());
+    existType.get(d).set(u, st || null);
+
+    if (rt === "XD") {
+      // len N
+      if (!reqOnly.has(d)) reqOnly.set(d, new Map());
+      reqOnly.get(d).set(u, "N");
+    } else if (rt === "XN") {
+      // len D
+      if (!reqOnly.has(d)) reqOnly.set(d, new Map());
+      reqOnly.get(d).set(u, "D");
+    }
+  }
+
+  // ===== 4) Pokrytie a targety
+  const coverage = { N: 2, D: 2 }; // denne 2×N + 2×D
+  const totalN = lastDay * coverage.N;
+  const totalD = lastDay * coverage.D;
+
+  function buildTargetsEqual(people, total) {
+    const n = people.length;
+    const base = Math.floor(total / n);
+    let extra = total % n;
+    const map = new Map();
+    for (let i = 0; i < n; i++)
+      map.set(people[i].id, base + (extra-- > 0 ? 1 : 0));
+    return map;
+  }
+  const targetN = buildTargetsEqual(profiles, totalN);
+  const targetD = buildTargetsEqual(profiles, totalD);
+
+  // ===== 5) Stav medzi dňami + počítadlá
+  // userId -> { lastDate, lastType("D"|"N"|null), consecSame }
+  const dayState = new Map();
+  const dnCount = new Map(); // userId -> { D, N }
+
+  function getCounts(uid) {
+    return dnCount.get(uid) || { D: 0, N: 0 };
+  }
+  function incCount(uid, type) {
+    const c = getCounts(uid);
+    dnCount.set(uid, { ...c, [type]: (c[type] || 0) + 1 });
+  }
+  function reachedTarget(uid, type) {
+    const c = getCounts(uid);
+    const t = type === "N" ? targetN.get(uid) : targetD.get(uid);
+    return (c[type] || 0) >= (t || 0);
+  }
+
+  function violatesDaywise(uid, type, dateStr) {
+    const s = dayState.get(uid) || {
+      lastDate: null,
+      lastType: null,
+      consecSame: 0,
+    };
+    if (!s.lastDate) return false;
+    const wasYesterday = s.lastDate === prevDateStr(dateStr);
+
+    // (1) D nesmie bezprostredne po N
+    if (wasYesterday && s.lastType === "N" && type === "D") return true;
+
+    // (2/3) max 2 rovnaké po sebe (len ak sú to naozaj susedné dni)
+    if (wasYesterday && s.lastType === type && s.consecSame >= 2) return true;
+
+    return false;
+  }
+
+  function pushDayState(uid, type, dateStr) {
+    const s = dayState.get(uid) || {
+      lastDate: null,
+      lastType: null,
+      consecSame: 0,
+    };
+    const wasYesterday = s.lastDate === prevDateStr(dateStr);
+    const consecSame =
+      wasYesterday && s.lastType === type ? s.consecSame + 1 : 1;
+    dayState.set(uid, { lastDate: dateStr, lastType: type, consecSame });
+  }
+
+  // deterministická náhoda (seed per day)
+  function lcg(seed) {
+    let s = seed >>> 0;
+    return () => {
+      s = (s * 1664525 + 1013904223) >>> 0;
+      return s / 0xffffffff;
+    };
+  }
+  function shuffle(arr, rnd) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ===== 6) Výber kandidáta (rešpektuje existujúce záznamy v daný deň)
+  function balanceScore(uid, type) {
+    const c = getCounts(uid);
+    const other = type === "D" ? "N" : "D";
+    return (c[type] || 0) - (c[other] || 0); // menšie = lepšie
+  }
+
+  function pickCandidate(
+    type,
+    dateStr,
+    dayProfiles,
+    assignedToday,
+    rnd,
+    allowExceedBy1 = false,
+  ) {
+    const existMap = existType.get(dateStr) || new Map(); // userId -> shift_type | null
+    const onlyMap = reqOnly.get(dateStr) || new Map(); // userId -> "D"|"N"
+
+    const candidates = [];
+    for (const p of dayProfiles) {
+      const uid = p.id;
+
+      if (assignedToday.has(uid)) continue;
+
+      // ak už má človek v DB smenu v tento deň → vyraď
+      const st = norm(existMap.get(uid));
+      if (st === "D" || st === "N" || st === "RD" || st === "PN" || st === "X")
+        continue;
+
+      // xD/xN z request_type: obmedz len na daný typ
+      const only = onlyMap.get(uid);
+      if (only && only !== type) continue;
+
+      // denná logika medzi dňami
+      if (violatesDaywise(uid, type, dateStr)) continue;
+
+      // cap na target (alebo target+1 vo fallbacku)
+      const cap =
+        (type === "N" ? targetN.get(uid) : targetD.get(uid)) +
+        (allowExceedBy1 ? 1 : 0);
+      const c = getCounts(uid);
+      if ((c[type] || 0) >= cap) continue;
+
+      candidates.push({ uid, score: balanceScore(uid, type) });
+    }
+    if (!candidates.length) return null;
+
+    const min = Math.min(...candidates.map((c) => c.score));
+    const best = candidates.filter((c) => c.score === min).map((c) => c.uid);
+    return shuffle(best, rnd)[0] ?? null;
+  }
+
+  // ===== 7) Generovanie
+  const toInsert = []; // len nové riadky (pre dvojice user+date, ktoré v DB neexistujú)
+  const toUpdate = []; // existuje riadok, ale shift_type je NULL → doplníme D/N
+
+  // Pomocná mapa: existuje riadok pre (user,date)?
+  const hasRow = new Map(); // `${date}#${user}` -> true
+  for (const row of monthShifts ?? []) {
+    hasRow.set(`${row.date}#${row.user_id}`, true);
+  }
+
+  for (let day = 1; day <= lastDay; day++) {
+    const dateStr = `${year}-${pad(month)}-${pad(day)}`;
+    const rnd = lcg(year * 10000 + month * 100 + day);
+    const dayProfiles = shuffle(profiles, rnd);
+
+    const existMap = existType.get(dateStr) || new Map();
+    const assignedToday = new Set();
+    const remaining = { N: coverage.N, D: coverage.D };
+
+    // 7a) Zohľadni existujúce smeny v DB pre tento deň
+    for (const p of dayProfiles) {
+      const uid = p.id;
+      const st = norm(existMap.get(uid)); // "D","N","RD","PN","X",null
+
+      if (st === "D" || st === "N") {
+        // blokuj človeka dnes, zníž remaining a zapíš do histórie & počítadiel
+        if (remaining[st] > 0) remaining[st] -= 1;
+        assignedToday.add(uid);
+        pushDayState(uid, st, dateStr);
+        incCount(uid, st);
+      } else if (st === "RD" || st === "PN" || st === "X") {
+        // blokovaný deň – nič nepriraďujeme
+        assignedToday.add(uid);
+        // RD/PN/X neovplyvňuje D/N počty, ani históriu D/N (nechceme zbytočne brzdiť)
+        // Ak by si chcel, aby RD resetovalo "včerajší" sled, dá sa doplniť.
+      }
+    }
+
+    // 7b) Doplň zvyšné sloty pre N a D
+    for (const type of ["N", "D"]) {
+      const need = remaining[type];
+      for (let k = 0; k < need; k++) {
+        // 1) drž presne target
+        let uid = pickCandidate(
+          type,
+          dateStr,
+          dayProfiles,
+          assignedToday,
+          rnd,
+          false,
+        );
+        // 2) fallback – dovoľ target+1
+        if (!uid)
+          uid = pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
+          );
+
+        if (!uid) {
+          // nechaj neobsadené (uvidíš v unfilled reporte)
+          continue;
+        }
+
+        assignedToday.add(uid);
+        pushDayState(uid, type, dateStr);
+        incCount(uid, type);
+
+        const key = `${dateStr}#${uid}`;
+        if (hasRow.get(key)) {
+          // existuje riadok → updatuj len tam, kde je shift_type NULL
+          // (na úrovni DB to zabezpečíme cez update s .is("shift_type", null))
+          toUpdate.push({ user_id: uid, date: dateStr, shift_type: type });
+        } else {
+          // neexistuje riadok → vlož nový
+          toInsert.push({ user_id: uid, date: dateStr, shift_type: type });
+          hasRow.set(key, true);
+        }
+      }
+    }
+  }
+
+  // ===== 8) Zápis do DB – nikdy neprepíšeme existujúcu D/N/RD/PN/X
+  // a) INSERT len nových riadkov
+  if (toInsert.length) {
+    const { error: insErr } = await supabase.from("shifts").insert(toInsert);
+    if (insErr) {
+      console.error("Insert shifts error:", insErr);
+      return { error: insErr.message };
+    }
+  }
+
+  // b) UPDATE len tam, kde je shift_type NULL (aby sme neprepisovali existujúce)
+  //    (Supabase podporuje filter .is('col', null))
+  if (toUpdate.length) {
+    // rozdelíme podľa dát, aby sme použili .in() na (user_id,date)
+    // (alebo pre jednoduchosť spravíme jeden update per row; pri desiatkach ľudí/mesiaci OK)
+    for (const row of toUpdate) {
+      const { error: upErr } = await supabase
+        .from("shifts")
+        .update({ shift_type: row.shift_type })
+        .eq("user_id", row.user_id)
+        .eq("date", row.date)
+        .is("shift_type", null);
+      if (upErr) {
+        console.error("Update shift (null->type) error:", upErr, row);
+        return { error: upErr.message };
+      }
+    }
+  }
+
+  revalidatePath("/", "shifts");
+
+  // ===== 9) Report
+  const report = profiles.map((p) => {
+    const c = getCounts(p.id);
+    return {
+      name: p.full_name,
+      D: c.D || 0,
+      N: c.N || 0,
+      targetD: targetD.get(p.id) || 0,
+      targetN: targetN.get(p.id) || 0,
+    };
+  });
+
+  // Skontrolujeme, či si mal v mesiaci RD v shift_type (len informatívne)
+  let rdSeen = 0;
+  for (const [d, map] of existType) {
+    for (const [uid, st] of map) {
+      if (norm(st) === "RD") rdSeen++;
+    }
+  }
+
+  return {
+    ok: true,
+    generated_new: toInsert.length + toUpdate.length,
+    range: { from, to },
+    rdSeen,
+    report,
+  };
+}

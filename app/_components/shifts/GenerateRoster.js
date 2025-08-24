@@ -28,7 +28,7 @@ export default function GenerateRoster() {
 
   return (
     <Button onClick={handleClick} disabled={isPending}>
-      {isPending ? "Generujem…" : "Generuj záchranárov"}
+      {isPending ? "Pridávam..." : "Pridať záchranárov"}
     </Button>
   );
 }
