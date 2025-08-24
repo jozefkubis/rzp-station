@@ -442,16 +442,14 @@ export async function upsertShift(userId, dateStr, type) {
 export async function clearShift(userId, dateStr) {
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from("shifts")
-    .upsert(
-      {
-        user_id: userId,
-        date: dateStr,   // "YYYY-MM-DD"
-        shift_type: null,   // ← len toto nulujeme
-      },
-      { onConflict: "user_id,date" }
-    );
+  const { error } = await supabase.from("shifts").upsert(
+    {
+      user_id: userId,
+      date: dateStr, // "YYYY-MM-DD"
+      shift_type: null, // ← len toto nulujeme
+    },
+    { onConflict: "user_id,date" },
+  );
 
   if (error) {
     console.error("clearShift:", error);
@@ -461,7 +459,6 @@ export async function clearShift(userId, dateStr) {
   revalidatePath("/", "shifts");
   return { success: true };
 }
-
 
 // MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
 export async function clearMonth(year, month) {
@@ -575,17 +572,15 @@ export async function moveArrow({ userId, direction }) {
 export async function upsertRequest(userId, dateStr, reqType, hours) {
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from("shifts")
-    .upsert(
-      {
-        user_id: userId,
-        date: dateStr,
-        request_type: reqType,
-        request_hours: hours,
-      },
-      { onConflict: "user_id,date" },
-    );
+  const { error } = await supabase.from("shifts").upsert(
+    {
+      user_id: userId,
+      date: dateStr,
+      request_type: reqType,
+      request_hours: hours,
+    },
+    { onConflict: "user_id,date" },
+  );
   if (error) {
     console.error("Chyba pri pridávaní požiadavky:", error);
     return null;
@@ -605,11 +600,77 @@ export async function clearRequest(userId, dateStr) {
       request_type: null,
       request_hours: null,
     },
-    { onConflict: "user_id,date" }
+    { onConflict: "user_id,date" },
   );
 
-  if (error) { console.error("clearRequest:", error); return null; }
+  if (error) {
+    console.error("clearRequest:", error);
+    return null;
+  }
   revalidatePath("/", "shifts");
   return { success: true };
 }
 
+// MARK: GENERATE ROSTER (MVP – jeden klik)
+export async function generateRoster(m) {
+  const supabase = await createClient();
+
+  // 1) prvý deň zobrazeného mesiaca (bez UTC posunu)
+  const now = new Date();
+  const baseY = now.getFullYear();
+  const baseM = now.getMonth(); // 0..11
+  const totalM = baseM + Number(m || 0);
+  const year = baseY + Math.floor(totalM / 12);
+  const monthIdx = ((totalM % 12) + 12) % 12; // späť do 0..11
+  const firstOfMonth = `${year}-${String(monthIdx + 1).padStart(2, "0")}-01`;
+
+  // 2) profily (zoraď podľa order_index pre stabilitu)
+  const { data: profiles, error: profErr } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .order("order_index", { ascending: true });
+
+  if (profErr) {
+    console.error("Chyba pri načítaní profilov:", profErr);
+    return { error: profErr.message };
+  }
+
+  // 3) existujúce riadky v shifts pre tento mesiac (kotva = 1. deň)
+  const { data: existing, error: existErr } = await supabase
+    .from("shifts")
+    .select("user_id")
+    .eq("date", firstOfMonth);
+
+  if (existErr) {
+    console.error("Chyba pri načítaní existujúcich služieb:", existErr);
+    return { error: existErr.message };
+  }
+
+  // 4) rozdiel – len tí, čo ešte nemajú záznam
+  const existingSet = new Set((existing ?? []).map((s) => s.user_id));
+  const toUpsert = (profiles ?? [])
+    .filter((p) => !existingSet.has(p.id))
+    .map((p) => ({
+      user_id: p.id,
+      date: firstOfMonth,
+      shift_type: null,
+    }));
+
+  if (toUpsert.length === 0) {
+    revalidatePath("/", "shifts");
+    return { success: true, inserted: 0, date: firstOfMonth };
+  }
+
+  // 5) bulk upsert (idempotentné pri UNIQUE (user_id, date))
+  const { error } = await supabase
+    .from("shifts")
+    .upsert(toUpsert, { onConflict: "user_id,date" });
+
+  if (error) {
+    console.error("Chyba pri pridávaní služieb:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "shifts");
+  return { success: true, inserted: toUpsert.length, date: firstOfMonth };
+}

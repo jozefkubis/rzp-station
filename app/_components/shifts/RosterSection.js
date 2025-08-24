@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
+import GenerateShifts from "./GenerateRoster";
 import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
 
@@ -98,11 +99,12 @@ export default function RosterSection({
 
       {/* 2️⃣ tlačidlá pod tabuľkou – zostaňme pri rovnakom odsadení */}
       <div className="mt-6 flex max-w-full justify-center gap-2 px-8 2xl:px-36">
-        <DeleteAllShifts />
         <InsertShiftButton
           profiles={diffProfiles}
           onInsertEmptyShift={handleInsertEmptyShift}
         />
+        <GenerateShifts />
+        <DeleteAllShifts />
       </div>
     </div>
   );
