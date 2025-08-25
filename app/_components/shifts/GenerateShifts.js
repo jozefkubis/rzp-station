@@ -2,24 +2,33 @@
 
 import { generateShiftsAuto } from "@/app/_lib/actions";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import Button from "../Button";
 
 export default function GenerateShifts() {
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const router = useRouter();
   const m = Number(searchParams.get("m") ?? 0);
 
-  async function handleClick() {
-    try {
-      const res = await generateShiftsAuto(m);
-      console.log("Výsledok generateShiftsAuto:", res);
+  function handleClick() {
+    if (isPending) return; // poistka proti dvojkliku
 
-      // po úspechu refreshni UI
-      router.refresh();
-    } catch (err) {
-      console.error("Chyba pri generovaní služieb:", err);
-    }
+    startTransition(async () => {
+      try {
+        const res = await generateShiftsAuto(m);
+        console.log("Výsledok generateShiftsAuto:", res);
+      } catch (err) {
+        console.error("Chyba pri generovaní služieb:", err);
+      } finally {
+        router.refresh();
+      }
+    });
   }
 
-  return <Button onClick={handleClick}>Generuj služby</Button>;
+  return (
+    <Button onClick={handleClick} disabled={isPending}>
+      {isPending ? "Generujem..." : "Generuj služby"}
+    </Button>
+  );
 }

@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
+import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateRoster from "./GenerateRoster";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
-import StepBackButton from "./StepBackButton";
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
@@ -107,7 +107,7 @@ export default function RosterSection({
         />
         <GenerateRoster />
         <GenerateShifts />
-        <StepBackButton />
+        <DeleteOnlyShifts />
         <DeleteAllShifts />
       </div>
     </div>

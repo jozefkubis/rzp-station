@@ -460,7 +460,7 @@ export async function clearShift(userId, dateStr) {
   return { success: true };
 }
 
-// MARK: CLEAR MONTH - DELETE ALL SHIFTS FOR MONTH
+// MARK: CLEAR MONTH - DELETE ALL 
 export async function clearMonth(year, month) {
   const supabase = await createClient();
 
@@ -477,6 +477,31 @@ export async function clearMonth(year, month) {
     .update({ shift_type: null, request_type: null, request_hours: null }) // alebo ''
     .gte("date", from) // vrátane 1. dňa
     .lt("date", toExclusive); // < 1. deň ďalšieho mesiaca
+
+  if (error) throw error;
+
+  revalidatePath("/", "shifts");
+}
+
+// MARK: DELETE ONLY SHIFTS 
+export async function clearOnlyShifts(year, month) {
+  const supabase = await createClient();
+
+  // 1. deň v mesiaci (YYYY-MM-DD)
+  const from = `${year}-${String(month).padStart(2, "0")}-01`;
+
+  // exkluzívna horná hranica = 1. deň nasledujúceho mesiaca
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+  const toExclusive = `${nextYear}-${String(nextMonth).padStart(2, "0")}-01`;
+
+  // set shift_type = NULL len pre riadky, kde bolo D alebo N
+  const { error } = await supabase
+    .from("shifts")
+    .update({ shift_type: null })
+    .gte("date", from)
+    .lt("date", toExclusive)
+    .in("shift_type", ["D", "N", "DN", "ND", "vD", "vN", "zD", "zN"]);   // ← filter na D/N
 
   if (error) throw error;
 
@@ -700,7 +725,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m) {
     let c = 0;
     const daysInMonth = new Date(y, m, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m - 1, d).getDay(); // 0=Ne .. 6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -779,7 +804,7 @@ export async function generateShiftsAuto(m) {
     const base = Math.floor(total / n);
     let extra = total % n;
     const map = new Map();
-    for (let i = 0; i < n; i++)
+    for (let i = 0;i < n;i++)
       map.set(people[i].id, base + (extra-- > 0 ? 1 : 0));
     return map;
   }
@@ -792,7 +817,7 @@ export async function generateShiftsAuto(m) {
     const base = Math.floor(total / n);
     let extra = total % n;
     const map = new Map();
-    for (let i = 0; i < n; i++)
+    for (let i = 0;i < n;i++)
       map.set(people[i].id, base + (extra-- > 0 ? 1 : 0));
     return map;
   }
@@ -867,7 +892,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -965,7 +990,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -996,7 +1021,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty (striktne → target+1 → target+1 + hodinové +12)
     for (const type of ["N", "D"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         let uid =
           pickCandidate(
             type,

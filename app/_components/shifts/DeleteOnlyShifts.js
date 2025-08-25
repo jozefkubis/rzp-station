@@ -1,6 +1,6 @@
 "use client";
 
-import { clearMonth } from "@/app/_lib/actions";
+import { clearOnlyShifts } from "@/app/_lib/actions";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Button from "../Button";
@@ -26,7 +26,7 @@ export default function DeleteAllShifts() {
 
   async function handleConfirmDelete() {
     setIsDeleting(true);
-    await clearMonth(year, month);
+    await clearOnlyShifts(year, month);
     setIsDeleting(false);
     setIsOpenDeleteModal(false);
   }
@@ -34,15 +34,15 @@ export default function DeleteAllShifts() {
   return (
     <>
       <div className="">
-        <Button variant="danger" onClick={handleOpenModal}>
-          Vymazať všetko
+        <Button onClick={handleOpenModal}>
+          Vymazať služby
         </Button>
       </div>
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
           <ConfirmDelete
-            resourceName="všetko"
+            resourceName="služby"
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
             disabled={isDeleting}

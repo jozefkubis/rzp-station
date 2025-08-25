@@ -11,24 +11,24 @@ export default function GenerateRoster() {
   const searchParams = useSearchParams();
   const m = Number(searchParams.get("m") ?? 0);
 
-  async function handleClick() {
-    try {
-      // spustíme server action
-      const res = await generateRoster(m);
-      console.log("Výsledok:", res);
+  function handleClick() {
+    if (isPending) return; // poistka proti dvojkliku
 
-      // po úspechu refreshneme stránku
-      startTransition(() => {
+    startTransition(async () => {
+      try {
+        const res = await generateRoster(m);
+        console.log("Výsledok generateRoster:", res);
+      } catch (err) {
+        console.error("Chyba pri generovaní služieb:", err);
+      } finally {
         router.refresh();
-      });
-    } catch (err) {
-      console.error("Chyba pri generovaní služieb:", err);
-    }
+      }
+    });
   }
 
   return (
     <Button onClick={handleClick} disabled={isPending}>
-      {isPending ? "Pridávam..." : "Pridať záchranárov"}
+      {isPending ? "Pridávam..." : "Pridať všetkých záchranárov"}
     </Button>
   );
 }
