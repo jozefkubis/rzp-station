@@ -4,6 +4,7 @@ import { generateShiftsAuto } from "@/app/_lib/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import Button from "../Button";
+import ShiftLoader from "./ShiftLoader";
 
 export default function GenerateShifts() {
   const [isPending, startTransition] = useTransition();
@@ -27,8 +28,9 @@ export default function GenerateShifts() {
   }
 
   return (
-    <Button onClick={handleClick} disabled={isPending}>
-      {isPending ? "Generujem..." : "Generuj služby"}
-    </Button>
-  );
+    isPending ? <ShiftLoader /> :
+      <Button onClick={handleClick} disabled={isPending}>
+        Generuj služby
+      </Button>
+  )
 }

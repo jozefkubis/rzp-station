@@ -4,6 +4,7 @@ import { generateRoster } from "@/app/_lib/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import Button from "../Button";
+import ShiftLoader from "./ShiftLoader";
 
 export default function GenerateRoster() {
   const [isPending, startTransition] = useTransition();
@@ -27,8 +28,9 @@ export default function GenerateRoster() {
   }
 
   return (
-    <Button onClick={handleClick} disabled={isPending}>
-      {isPending ? "Pridávam..." : "Pridať všetkých záchranárov"}
-    </Button>
+    isPending ? <ShiftLoader /> :
+      <Button onClick={handleClick} disabled={isPending}>
+        Pridať všetkých záchranárov
+      </Button>
   );
 }
