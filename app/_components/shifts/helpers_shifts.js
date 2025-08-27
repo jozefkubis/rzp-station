@@ -14,7 +14,7 @@ export function getDaysArray(year, month) {
   return Array.from({ length: total }, (_, i) => {
     const date = new Date(year, month - 1, i + 1);
     date.setHours(0, 0, 0, 0);
-    const weekday = date.getDay();          // 0 = nedeľa
+    const weekday = date.getDay(); // 0 = nedeľa
 
     return {
       day: i + 1,
@@ -28,8 +28,18 @@ export function getDaysArray(year, month) {
 // 3️⃣ Lokalizované názvy mesiacov
 export function MONTHS() {
   return [
-    "január", "február", "marec", "apríl", "máj", "jún",
-    "júl", "august", "september", "október", "november", "december",
+    "január",
+    "február",
+    "marec",
+    "apríl",
+    "máj",
+    "jún",
+    "júl",
+    "august",
+    "september",
+    "október",
+    "november",
+    "december",
   ];
 }
 
@@ -38,9 +48,15 @@ export function MONTHS() {
 
 // ⌛ Trvanie smien v hodinách
 export const HOURS = {
-  D: 12, N: 12, vD: 12, zD: 12, vN: 12, zN: 12,
-  DN: 24, ND: 24,
-  RD: 7.5,                               // dovolenka
+  D: 12,
+  N: 12,
+  vD: 12,
+  zD: 12,
+  vN: 12,
+  zN: 12,
+  DN: 24,
+  ND: 24,
+  RD: 7.5, // dovolenka
 };
 
 // 🗂 Zoskupenia typov
@@ -50,9 +66,14 @@ const HOLIDAY = "RD";
 
 // 📊 Jednotky služby pre stĺpec PS
 const UNITS = {
-  D: 1, vD: 1, zD: 1,
-  N: 1, vN: 1, zN: 1,
-  DN: 2, ND: 2,
+  D: 1,
+  vD: 1,
+  zD: 1,
+  N: 1,
+  vN: 1,
+  zN: 1,
+  DN: 2,
+  ND: 2,
   RD: 0,
 };
 
@@ -87,8 +108,7 @@ export function shiftTableStats(normHours) {
     {
       key: "dayShifts",
       label: "D",
-      calc: (shifts) =>
-        shifts.filter((s) => DAY_SET.has(s.shift_type)).length,
+      calc: (shifts) => shifts.filter((s) => DAY_SET.has(s.shift_type)).length,
     },
     {
       key: "nightShifts",
@@ -99,14 +119,12 @@ export function shiftTableStats(normHours) {
     {
       key: "holiday",
       label: "RD",
-      calc: (shifts) =>
-        shifts.filter((s) => s.shift_type === HOLIDAY).length,
+      calc: (shifts) => shifts.filter((s) => s.shift_type === HOLIDAY).length,
     },
     {
       key: "sickness",
       label: "PN",
-      calc: (shifts) =>
-        shifts.filter((s) => s.shift_type === "PN").length,
+      calc: (shifts) => shifts.filter((s) => s.shift_type === "PN").length,
     },
     {
       key: "overtime",
@@ -114,7 +132,7 @@ export function shiftTableStats(normHours) {
       calc: (shifts) => {
         const regular = shifts.reduce(
           (sum, s) => sum + (HOURS[s.shift_type] || 0),
-          0
+          0,
         );
         const extra = shifts.reduce((sum, s) => sum + reqHours(s), 0);
         return regular + extra - normHours; // služba + čísla − norma

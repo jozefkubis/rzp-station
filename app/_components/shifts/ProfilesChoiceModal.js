@@ -1,10 +1,10 @@
 "use client";
 
 import { insertProfileInToRoster } from "@/app/_lib/actions";
-import Button from "../Button";
+import { useRouter, useSearchParams } from "next/navigation"; // 👈 pridaj
 import { startTransition, useOptimistic } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Button from "../Button";
 
 export default function ProfilesChoiceModal({
   profiles,
@@ -12,8 +12,9 @@ export default function ProfilesChoiceModal({
   onInsertEmptyShift,
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const m = Number(searchParams.get("m") ?? 0); // 👈 offset mesiaca z URL
 
-  /* 1️⃣  useOptimistic – odstránenie zo zoznamu voľných profilov */
   const [optimisticProfiles, applyRemove] = useOptimistic(
     profiles,
     (current, action) =>
@@ -22,29 +23,25 @@ export default function ProfilesChoiceModal({
         : current,
   );
 
-  /* 2️⃣  klik na záchranára */
   async function handleClick(id, full_name) {
-    /* A) dva optimistické zápisy v transition */
     startTransition(() => {
-      applyRemove({ type: "REMOVE", id }); // modál: skryť
-      onInsertEmptyShift({ userId: id, full_name }); // tabuľka: pridať rad
+      applyRemove({ type: "REMOVE", id });
+      onInsertEmptyShift({ userId: id, full_name });
     });
 
     setIsProfilesModalOpen(false);
 
     try {
-      /* B) zápis do DB */
-      await insertProfileInToRoster(id);
+      // 👇 teraz už posielame správny mesiac
+      await insertProfileInToRoster(id, m);
       toast.success(`${full_name} zahrnutý do služieb`);
     } catch {
       toast.error("Nepodarilo sa pridať záchranára");
     } finally {
-      /* C) refresh – potvrdí alebo rollbackne obidva optimizmy */
       router.refresh();
     }
   }
 
-  /* 3️⃣  UI */
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {optimisticProfiles.length ? (
