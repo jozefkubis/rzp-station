@@ -723,7 +723,7 @@ export async function generateShiftsAuto(m) {
   const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  // prev month (správne cez január)
+  // predchádzajúci mesiac (správne cez január)
   const prevYear = month === 1 ? year - 1 : year;
   const prevMonth = month === 1 ? 12 : month - 1;
   const prevFrom = `${prevYear}-${pad(prevMonth)}-01`;
@@ -771,7 +771,7 @@ export async function generateShiftsAuto(m) {
     ),
   );
 
-  // 🔁 Fallback: ak prázdny, prenes roster z minulého mesiaca
+  // 🔁 Fallback: ak je prázdno, prenes roster z minulého mesiaca
   if (!rosterIds.length) {
     const [{ data: prevDay1 }, { data: prevAny }] = await Promise.all([
       supabase.from("shifts").select("user_id").eq("date", prevFrom),
@@ -829,7 +829,7 @@ export async function generateShiftsAuto(m) {
   const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
 
   const existType = new Map(); // date -> Map(userId -> "D"|"N"|"RD"|"PN"|"X"|null)
-  const reqOnly = new Map(); // date -> Map(userId -> "D"|"N") z xN/xD
+  const reqOnly = new Map(); // date -> Map(userId -> "D"|"N") z xD/xN
   const blockReq = new Map(); // date -> Set(userId) pre request_type === "X"
   const hasRow = new Map(); // `${d}#${u}` -> true
 
@@ -878,7 +878,7 @@ export async function generateShiftsAuto(m) {
   /* ========== 5) Stav medzi dňami, počítadlá a HODINY ========== */
   const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
   const dnCount = new Map(); // userId -> { D, N, total }
-  const hoursCount = new Map(); // userId -> hours
+  const hoursCount = new Map(); // userId -> number
 
   const getCounts = (uid) => dnCount.get(uid) || { D: 0, N: 0, total: 0 };
   const incCount = (uid, type) => {
@@ -903,8 +903,21 @@ export async function generateShiftsAuto(m) {
     return getHours(uid) >= cap;
   };
 
+  /* ========== 6) Pravidlá dňa (cooldown, D->D cap, atď.) ========== */
+  function pushDayState(uid, type, dateStr) {
+    const s = dayState.get(uid) || {
+      lastDate: null,
+      lastType: null,
+      consecSame: 0,
+    };
+    const wasYesterday = s.lastDate === prevDateStr(dateStr);
+    const consecSame =
+      wasYesterday && s.lastType === type ? s.consecSame + 1 : 1;
+    dayState.set(uid, { lastDate: dateStr, lastType: type, consecSame });
+  }
+
+  // TVRDÉ: 2 dni voľno po N; + legacy obmedzenia (max 2 rovnaké po sebe, D po N)
   function violatesDaywise(uid, type, dateStr) {
-    // === TVRDÉ PRAVIDLO: 2 dni voľno po N ===
     const y1 = prevDateStr(dateStr);
     const y2 = prevDateStr(y1);
     const getOn = (d) => {
@@ -913,9 +926,8 @@ export async function generateShiftsAuto(m) {
     };
     const t1 = getOn(y1);
     const t2 = getOn(y2);
-    if (t1 === "N" || t2 === "N") return true; // po N musí mať dnes voľno
+    if (t1 === "N" || t2 === "N") return true; // po N dnes žiadna D/N
 
-    // zvyšok: max 2 rovnaké za sebou + legacy blok D po N
     const s = dayState.get(uid) || {
       lastDate: null,
       lastType: null,
@@ -930,18 +942,7 @@ export async function generateShiftsAuto(m) {
     return false;
   }
 
-  function pushDayState(uid, type, dateStr) {
-    const s = dayState.get(uid) || {
-      lastDate: null,
-      lastType: null,
-      consecSame: 0,
-    };
-    const wasYesterday = s.lastDate === prevDateStr(dateStr);
-    const consecSame =
-      wasYesterday && s.lastType === type ? s.consecSame + 1 : 1;
-    dayState.set(uid, { lastDate: dateStr, lastType: type, consecSame });
-  }
-
+  /* ========== 7) Pomocné pre výber kandidáta ========== */
   function lcg(seed) {
     let s = seed >>> 0;
     return () => {
@@ -980,7 +981,6 @@ export async function generateShiftsAuto(m) {
     return (c.total || 0) >= cap;
   };
 
-  // vracia typ, ktorý mal user v konkrétny deň (berie aj čerstvo priradené)
   function getTypeOn(dateStr, uid) {
     const m = existType.get(dateStr);
     if (!m) return null;
@@ -990,7 +990,6 @@ export async function generateShiftsAuto(m) {
     const [y, m, d] = dateStr.split("-").map(Number);
     const dt = new Date(y, m - 1, d);
     dt.setDate(dt.getDate() - days);
-    const pad = (n) => String(n).padStart(2, "0");
     return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
   }
   function patternTier(uid, type, dateStr) {
@@ -1002,18 +1001,21 @@ export async function generateShiftsAuto(m) {
     const hadShiftY1 = tY1 === "D" || tY1 === "N";
     const hadShiftY2 = tY2 === "D" || tY2 === "N";
 
-    // Perfektne: D po dvoch voľných dňoch, alebo N hneď po D
+    // Tier 0: ideál — D po dvoch voľných dňoch, N hneď po D
     if (type === "D" && !hadShiftY1 && !hadShiftY2) return 0;
     if (type === "N" && tY1 === "D") return 0;
 
-    // Slabé: sme 2. deň po N (ideálne by mal mať ešte voľno)
+    // Tier 2: slabé — sme 2. deň po N (ideálne voľno)
     if (tY2 === "N") return 2;
 
-    // Inak OK
+    // tvrdé penalizácie pre fallbacky
+    if (type === "N" && tY1 === "N") return 4; // N po N veľmi nechceme
+    if (type === "D" && tY1 === "D") return 4; // D po D úplne posledné
+
     return 1;
   }
 
-  /* ========== 6) Výber kandidáta (rešpektuje X, cyklus, normu, targety) ========== */
+  /* ========== 8) Výber kandidáta (X, cyklus, norma, targety) ========== */
   function pickCandidate(
     type,
     dateStr,
@@ -1022,7 +1024,7 @@ export async function generateShiftsAuto(m) {
     rnd,
     allowExceedBy1 = false,
     allowExceedHoursBy12 = false,
-    strictCycle = true, // ak true, úplne zakážeme D po D; vo fallbacku uvoľníme
+    strictCycle = true, // ak true: vylúč D->D úplne (1. vlna)
   ) {
     const existMap = existType.get(dateStr) || new Map();
     const onlyMap = reqOnly.get(dateStr) || new Map();
@@ -1038,9 +1040,9 @@ export async function generateShiftsAuto(m) {
       const st = norm(existMap.get(uid));
       if (st === "D" || st === "N" || st === "RD" || st === "PN" || st === "X")
         continue;
-      if (blockSet.has(uid)) continue; // X blokuje deň
+      if (blockSet.has(uid)) continue;
 
-      // STRICT: nedovoľ D po D v prvej vlne
+      // STRICT: úplne zakáž D po D v prvej vlne
       if (strictCycle) {
         const y1 = prevDateStr(dateStr);
         const mY1 = existType.get(y1);
@@ -1060,7 +1062,7 @@ export async function generateShiftsAuto(m) {
     }
     if (!base.length) return null;
 
-    // 1) priorita podľa cyklu D->N->voľno, voľno
+    // 1) cyklus D->N->voľno, voľno
     const withTier = base.map((uid) => ({
       uid,
       tier: patternTier(uid, type, dateStr),
@@ -1094,7 +1096,7 @@ export async function generateShiftsAuto(m) {
     return pick ?? null;
   }
 
-  /* ========== 7) Generovanie ========== */
+  /* ========== 9) Generovanie ========== */
   const toInsert = [];
   const toUpdate = [];
 
@@ -1108,7 +1110,7 @@ export async function generateShiftsAuto(m) {
     const assignedToday = new Set();
     const remaining = { N: coverage.N, D: coverage.D };
 
-    // započítaj existujúce (aj hodiny) + blok z X
+    // zarátať existujúce (aj hodiny) + blok z X
     for (const p of dayProfiles) {
       const uid = p.id;
       const st = norm(existMap.get(uid));
@@ -1121,16 +1123,17 @@ export async function generateShiftsAuto(m) {
         incCount(uid, st);
         incHours(uid, st);
       } else if (st === "RD" || st === "PN" || st === "X" || blockedByRequest) {
-        assignedToday.add(uid); // blok
+        assignedToday.add(uid); // blokuje deň
         if (st) incHours(uid, st);
       }
     }
 
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
-    for (const type of ["N", "D"]) {
+    for (const type of ["D", "N"]) {
       const need = remaining[type];
       for (let k = 0; k < need; k++) {
-        let uid =
+        const uid =
+          // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
             type,
             dateStr,
@@ -1141,6 +1144,7 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
+          // 2) striktne: žiadne D->D, povoliť +1 na targetoch
           pickCandidate(
             type,
             dateStr,
@@ -1151,6 +1155,7 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
+          // 3) fallback: povoliť už aj D->D, stále bez hodinového +12
           pickCandidate(
             type,
             dateStr,
@@ -1161,6 +1166,7 @@ export async function generateShiftsAuto(m) {
             false,
             false,
           ) ||
+          // 4) posledný fallback: povoliť aj hodinové +12
           pickCandidate(
             type,
             dateStr,
@@ -1192,7 +1198,7 @@ export async function generateShiftsAuto(m) {
     }
   }
 
-  /* ========== 8) Zápis do DB ========== */
+  /* ========== 10) Zápis do DB ========== */
   if (toInsert.length) {
     const { error: insErr } = await supabase.from("shifts").insert(toInsert);
     if (insErr) {
