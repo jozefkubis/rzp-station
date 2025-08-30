@@ -708,7 +708,7 @@ export async function generateRoster(m) {
   return { success: true, inserted: toUpsert.length, date: firstOfMonth };
 }
 
-// MARK: GENERATE SHIFTS AUTO (auto-seed z minulého mesiaca, norma hodín, requestové X blokuje deň)
+// MARK: GENERATE SHIFTS AUTO (auto-seed z minulého mesiaca, cyklus D->N->voľno, 2 dni voľno po N)
 export async function generateShiftsAuto(m) {
   const supabase = await createClient();
 
@@ -723,7 +723,7 @@ export async function generateShiftsAuto(m) {
   const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  // prev month (správne cez január)
+  // predchádzajúci mesiac (správne cez január)
   const prevYear = month === 1 ? year - 1 : year;
   const prevMonth = month === 1 ? 12 : month - 1;
   const prevFrom = `${prevYear}-${pad(prevMonth)}-01`;
@@ -771,7 +771,7 @@ export async function generateShiftsAuto(m) {
     ),
   );
 
-  // 🔁 Fallback: ak je prázdno, prenes roster z minulého mesiaca (1. deň ∪ hociktorý deň)
+  // 🔁 Fallback: ak je prázdno, prenes roster z minulého mesiaca
   if (!rosterIds.length) {
     const [{ data: prevDay1 }, { data: prevAny }] = await Promise.all([
       supabase.from("shifts").select("user_id").eq("date", prevFrom),
@@ -788,7 +788,6 @@ export async function generateShiftsAuto(m) {
           .filter(Boolean),
       ),
     );
-
     if (prevIds.length) {
       const seeds = prevIds.map((uid) => ({
         user_id: uid,
@@ -799,8 +798,7 @@ export async function generateShiftsAuto(m) {
         .from("shifts")
         .upsert(seeds, { onConflict: "user_id,date" });
       if (seedErr) return { error: seedErr.message };
-
-      rosterIds = prevIds.slice(); // generuj pre prenesený roster
+      rosterIds = prevIds.slice();
     }
   }
 
@@ -831,7 +829,7 @@ export async function generateShiftsAuto(m) {
   const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
 
   const existType = new Map(); // date -> Map(userId -> "D"|"N"|"RD"|"PN"|"X"|null)
-  const reqOnly = new Map(); // date -> Map(userId -> "D"|"N") z xN/xD
+  const reqOnly = new Map(); // date -> Map(userId -> "D"|"N") z xD/xN
   const blockReq = new Map(); // date -> Set(userId) pre request_type === "X"
   const hasRow = new Map(); // `${d}#${u}` -> true
 
@@ -878,9 +876,9 @@ export async function generateShiftsAuto(m) {
   const targetTotal = buildTargetsEqual(profiles, totalShiftsAll);
 
   /* ========== 5) Stav medzi dňami, počítadlá a HODINY ========== */
-  const dayState = new Map();
-  const dnCount = new Map(); // { D, N, total }
-  const hoursCount = new Map();
+  const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
+  const dnCount = new Map(); // userId -> { D, N, total }
+  const hoursCount = new Map(); // userId -> number
 
   const getCounts = (uid) => dnCount.get(uid) || { D: 0, N: 0, total: 0 };
   const incCount = (uid, type) => {
@@ -905,18 +903,7 @@ export async function generateShiftsAuto(m) {
     return getHours(uid) >= cap;
   };
 
-  function violatesDaywise(uid, type, dateStr) {
-    const s = dayState.get(uid) || {
-      lastDate: null,
-      lastType: null,
-      consecSame: 0,
-    };
-    if (!s.lastDate) return false;
-    const wasYesterday = s.lastDate === prevDateStr(dateStr);
-    if (wasYesterday && s.lastType === "N" && type === "D") return true;
-    if (wasYesterday && s.lastType === type && s.consecSame >= 2) return true;
-    return false;
-  }
+  /* ========== 6) Pravidlá dňa (cooldown, D->D cap, atď.) ========== */
   function pushDayState(uid, type, dateStr) {
     const s = dayState.get(uid) || {
       lastDate: null,
@@ -929,6 +916,33 @@ export async function generateShiftsAuto(m) {
     dayState.set(uid, { lastDate: dateStr, lastType: type, consecSame });
   }
 
+  // TVRDÉ: 2 dni voľno po N; + legacy obmedzenia (max 2 rovnaké po sebe, D po N)
+  function violatesDaywise(uid, type, dateStr) {
+    const y1 = prevDateStr(dateStr);
+    const y2 = prevDateStr(y1);
+    const getOn = (d) => {
+      const m = existType.get(d);
+      return norm(m ? m.get(uid) : null); // "D"|"N"|"RD"|"PN"|"X"|null
+    };
+    const t1 = getOn(y1);
+    const t2 = getOn(y2);
+    if (t1 === "N" || t2 === "N") return true; // po N dnes žiadna D/N
+
+    const s = dayState.get(uid) || {
+      lastDate: null,
+      lastType: null,
+      consecSame: 0,
+    };
+    if (!s.lastDate) return false;
+
+    const wasYesterday = s.lastDate === prevDateStr(dateStr);
+    if (wasYesterday && s.lastType === "N" && type === "D") return true;
+    if (wasYesterday && s.lastType === type && s.consecSame >= 2) return true;
+
+    return false;
+  }
+
+  /* ========== 7) Pomocné pre výber kandidáta ========== */
   function lcg(seed) {
     let s = seed >>> 0;
     return () => {
@@ -967,7 +981,41 @@ export async function generateShiftsAuto(m) {
     return (c.total || 0) >= cap;
   };
 
-  /* ========== 6) Výber kandidáta (rešpektuje aj requestové X) ========== */
+  function getTypeOn(dateStr, uid) {
+    const m = existType.get(dateStr);
+    if (!m) return null;
+    return m.get(uid) ?? null;
+  }
+  function shiftDaysAgo(dateStr, days) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    dt.setDate(dt.getDate() - days);
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  }
+  function patternTier(uid, type, dateStr) {
+    const y1 = shiftDaysAgo(dateStr, 1);
+    const y2 = shiftDaysAgo(dateStr, 2);
+    const tY1 = getTypeOn(y1, uid); // "D"|"N"|"RD"|"PN"|"X"|null
+    const tY2 = getTypeOn(y2, uid);
+
+    const hadShiftY1 = tY1 === "D" || tY1 === "N";
+    const hadShiftY2 = tY2 === "D" || tY2 === "N";
+
+    // Tier 0: ideál — D po dvoch voľných dňoch, N hneď po D
+    if (type === "D" && !hadShiftY1 && !hadShiftY2) return 0;
+    if (type === "N" && tY1 === "D") return 0;
+
+    // Tier 2: slabé — sme 2. deň po N (ideálne voľno)
+    if (tY2 === "N") return 2;
+
+    // tvrdé penalizácie pre fallbacky
+    if (type === "N" && tY1 === "N") return 4; // N po N veľmi nechceme
+    if (type === "D" && tY1 === "D") return 4; // D po D úplne posledné
+
+    return 1;
+  }
+
+  /* ========== 8) Výber kandidáta (X, cyklus, norma, targety) ========== */
   function pickCandidate(
     type,
     dateStr,
@@ -976,6 +1024,7 @@ export async function generateShiftsAuto(m) {
     rnd,
     allowExceedBy1 = false,
     allowExceedHoursBy12 = false,
+    strictCycle = true, // ak true: vylúč D->D úplne (1. vlna)
   ) {
     const existMap = existType.get(dateStr) || new Map();
     const onlyMap = reqOnly.get(dateStr) || new Map();
@@ -993,11 +1042,18 @@ export async function generateShiftsAuto(m) {
         continue;
       if (blockSet.has(uid)) continue;
 
+      // STRICT: úplne zakáž D po D v prvej vlne
+      if (strictCycle) {
+        const y1 = prevDateStr(dateStr);
+        const mY1 = existType.get(y1);
+        const tY1 = norm(mY1 ? mY1.get(uid) : null);
+        if (tY1 === "D" && type === "D") continue;
+      }
+
       const only = onlyMap.get(uid);
       if (only && only !== type) continue;
 
       if (violatesDaywise(uid, type, dateStr)) continue;
-
       if (overTypeCap(uid, type, allowExceedBy1)) continue;
       if (overTotalCap(uid, allowExceedBy1)) continue;
       if (overHoursCap(uid, allowExceedHoursBy12, anyUnderNorma)) continue;
@@ -1006,33 +1062,41 @@ export async function generateShiftsAuto(m) {
     }
     if (!base.length) return null;
 
-    const withDef = base.map((uid) => ({
+    // 1) cyklus D->N->voľno, voľno
+    const withTier = base.map((uid) => ({
+      uid,
+      tier: patternTier(uid, type, dateStr),
+    }));
+    const bestTier = Math.min(...withTier.map((x) => x.tier));
+    let pool = withTier.filter((x) => x.tier === bestTier).map((x) => x.uid);
+
+    // 2) dorovnanie hodín/targetov
+    let poolWithDef = pool.map((uid) => ({
       uid,
       defType: remainingToTarget(uid, type),
       defTotal: remainingToTotal(uid),
       hDef: remainingHours(uid),
     }));
+    const needHours = poolWithDef.filter((x) => x.hDef > 0);
+    poolWithDef = needHours.length ? needHours : poolWithDef;
 
-    const needHours = withDef.filter((x) => x.hDef > 0);
-    let pool = needHours.length ? needHours : withDef;
+    const maxDefType = Math.max(...poolWithDef.map((x) => x.defType));
+    poolWithDef = poolWithDef.filter((x) => x.defType === maxDefType);
 
-    const maxDefType = Math.max(...pool.map((x) => x.defType));
-    pool = pool.filter((x) => x.defType === maxDefType);
+    const maxDefTotal = Math.max(...poolWithDef.map((x) => x.defTotal));
+    poolWithDef = poolWithDef.filter((x) => x.defTotal === maxDefTotal);
 
-    const maxDefTotal = Math.max(...pool.map((x) => x.defTotal));
-    pool = pool.filter((x) => x.defTotal === maxDefTotal);
-
-    const maxHDef = Math.max(...pool.map((x) => x.hDef));
-    pool = pool.filter((x) => x.hDef === maxHDef);
+    const maxHDef = Math.max(...poolWithDef.map((x) => x.hDef));
+    poolWithDef = poolWithDef.filter((x) => x.hDef === maxHDef);
 
     const pick = shuffle(
-      pool.map((x) => x.uid),
+      poolWithDef.map((x) => x.uid),
       rnd,
     )[0];
     return pick ?? null;
   }
 
-  /* ========== 7) Generovanie ========== */
+  /* ========== 9) Generovanie ========== */
   const toInsert = [];
   const toUpdate = [];
 
@@ -1046,7 +1110,7 @@ export async function generateShiftsAuto(m) {
     const assignedToday = new Set();
     const remaining = { N: coverage.N, D: coverage.D };
 
-    // započítaj existujúce (aj hodiny) + blok z requestového X
+    // zarátať existujúce (aj hodiny) + blok z X
     for (const p of dayProfiles) {
       const uid = p.id;
       const st = norm(existMap.get(uid));
@@ -1059,42 +1123,59 @@ export async function generateShiftsAuto(m) {
         incCount(uid, st);
         incHours(uid, st);
       } else if (st === "RD" || st === "PN" || st === "X" || blockedByRequest) {
-        assignedToday.add(uid);
+        assignedToday.add(uid); // blokuje deň
         if (st) incHours(uid, st);
       }
     }
 
-    // doplň zvyšné sloty (striktne → target+1 → target+1 + hodinové +12)
-    for (const type of ["N", "D"]) {
+    // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
+    for (const type of ["D", "N"]) {
       const need = remaining[type];
       for (let k = 0; k < need; k++) {
-        let uid =
+        const uid =
+          // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
             type,
             dateStr,
             dayProfiles,
             assignedToday,
             rnd,
+            false,
+            false,
+            true,
+          ) ||
+          // 2) striktne: žiadne D->D, povoliť +1 na targetoch
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
+            false,
+            true,
+          ) ||
+          // 3) fallback: povoliť už aj D->D, stále bez hodinového +12
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
             false,
             false,
           ) ||
+          // 4) posledný fallback: povoliť aj hodinové +12
           pickCandidate(
             type,
             dateStr,
             dayProfiles,
             assignedToday,
             rnd,
+            true,
             true,
             false,
-          ) ||
-          pickCandidate(
-            type,
-            dateStr,
-            dayProfiles,
-            assignedToday,
-            rnd,
-            true,
-            true,
           );
 
         if (!uid) continue;
@@ -1117,7 +1198,7 @@ export async function generateShiftsAuto(m) {
     }
   }
 
-  /* ========== 8) Zápis do DB ========== */
+  /* ========== 10) Zápis do DB ========== */
   if (toInsert.length) {
     const { error: insErr } = await supabase.from("shifts").insert(toInsert);
     if (insErr) {
