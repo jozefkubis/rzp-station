@@ -8,6 +8,7 @@ import GenerateRoster from "./GenerateRoster";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
+import ValidateButton from "./ValidateButton";
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
@@ -108,6 +109,7 @@ export default function RosterSection({
         <GenerateRoster />
         <GenerateShifts />
         <DeleteOnlyShifts />
+        <ValidateButton />
         <DeleteAllShifts />
       </div>
     </div>

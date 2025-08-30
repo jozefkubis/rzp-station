@@ -740,7 +740,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -866,7 +866,7 @@ export async function generateShiftsAuto(m) {
     const base = Math.floor(total / n);
     let extra = total % n;
     const map = new Map();
-    for (let i = 0; i < n; i++)
+    for (let i = 0;i < n;i++)
       map.set(people[i].id, base + (extra-- > 0 ? 1 : 0));
     return map;
   }
@@ -952,7 +952,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1100,7 +1100,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1131,7 +1131,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
@@ -1229,3 +1229,135 @@ export async function generateShiftsAuto(m) {
     range: { from, to },
   };
 }
+
+// MARK: VALIDATE SHIFTS (pokrytie dňa + základné porušenia pravidiel)
+export async function validateShifts(m = 0) {
+  const supabase = await createClient();
+
+  // ==== dátumové helpery (rovnaká logika ako v generateShiftsAuto) ====
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m || 0);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month = month0 + 1; // 1..12
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month)}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+  const prevDateStr = (dateStr) => {
+    const [y, m2, d] = dateStr.split("-").map(Number);
+    const dt = new Date(y, m2 - 1, d);
+    dt.setDate(dt.getDate() - 1);
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  };
+
+  const labelSK = (t) => (t === "D" ? "Denná" : t === "N" ? "Nočná" : t);
+
+  // ==== definuj požadované pokrytie na deň ====
+  const coverage = { D: 2, N: 2 }; // uprav podľa reálnej potreby
+
+  // ==== načítaj všetky služby v mesiaci (iba to, čo treba) ====
+  const { data, error } = await supabase
+    .from("shifts")
+    .select("user_id, date, shift_type")
+    .gte("date", from)
+    .lte("date", to);
+
+  if (error) {
+    console.error("validateShifts: DB error", error);
+    return { error: error.message };
+  }
+
+  // ==== postav indexy: per-day a per-date->user ====
+  const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
+  const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
+  const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
+
+  for (let day = 1;day <= lastDay;day++) {
+    const d = `${year}-${pad(month)}-${pad(day)}`;
+    byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
+    existType.set(d, new Map());
+  }
+
+  for (const row of data ?? []) {
+    const d = row.date;
+    if (!byDate.has(d)) continue;
+    const t = norm(row.shift_type);
+    const uid = row.user_id;
+    if (!existType.has(d)) existType.set(d, new Map());
+    existType.get(d).set(uid, t || null);
+
+    if (t === "D" || t === "N") {
+      byDate.get(d)[t].add(uid);
+      byDate.get(d).ANY.add(uid);
+    }
+  }
+
+  // ==== helpery na porušenia pravidiel ====
+  const hasNightWithin2Days = (uid, dateStr) => {
+    const d1 = prevDateStr(dateStr);
+    const d2 = prevDateStr(d1);
+    const m1 = existType.get(d1);
+    const m2 = existType.get(d2);
+    const t1 = m1 ? norm(m1.get(uid)) : null;
+    const t2 = m2 ? norm(m2.get(uid)) : null;
+    return t1 === "N" || t2 === "N";
+  };
+
+  // ==== validácia po dňoch ====
+  const days = [];
+  let totalIssues = 0;
+
+  for (let day = 1;day <= lastDay;day++) {
+    const dateStr = `${year}-${pad(month)}-${pad(day)}`;
+    const rec = byDate.get(dateStr);
+    const countD = rec.D.size;
+    const countN = rec.N.size;
+    const issues = [];
+
+    // Pokrytie – nedostatok/služba navyše
+    for (const type of ["D", "N"]) {
+      const have = type === "D" ? countD : countN;
+      const need = coverage[type];
+
+      if (have < need) {
+        const missing = need - have;
+        issues.push({
+          level: "error",
+          code: "UNDER_COVERAGE",
+          message: `chýba ${missing} × ${labelSK(type)}.`,
+          meta: { type, need, have, missing },
+        });
+      } else if (have > need) {
+        const extra = have - need;
+        issues.push({
+          level: "warn",
+          code: "OVER_COVERAGE",
+          message: `${extra} × ${labelSK(type)} naviac.`,
+          meta: { type, need, have, extra },
+        });
+      }
+    }
+
+    totalIssues += issues.length;
+    days.push({
+      date: dateStr,
+      counts: { D: countD, N: countN },
+      coverage,
+      issues,
+    });
+  }
+
+  const hasErrors = days.some((d) => d.issues.some((i) => i.level === "error"));
+  return {
+    ok: true,
+    range: { from, to },
+    days,
+    summary: {
+      hasErrors,
+      totalIssues,
+    },
+  };
+}
+
