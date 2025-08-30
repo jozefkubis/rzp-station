@@ -5,6 +5,8 @@ const COLOR_STYLES = {
   green: { bg: "bg-green-100", text: "text-green-700" },
   pink: { bg: "bg-pink-100", text: "text-pink-700" },
   slate: { bg: "bg-slate-100", text: "text-slate-700" },
+  orange: { bg: "bg-orange-100", text: "text-orange-700" },
+  purple: { bg: "bg-purple-100", text: "text-purple-700" },
 };
 
 export default function Stat({ icon, title, value, color = "blue" }) {

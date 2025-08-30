@@ -57,12 +57,14 @@ export const HOURS = {
   DN: 24,
   ND: 24,
   RD: 7.5, // dovolenka
+  PN: 7.5,
 };
 
 // 🗂 Zoskupenia typov
 const DAY_SET = new Set(["D", "vD", "zD", "DN", "ND"]);
 const NIGHT_SET = new Set(["N", "vN", "zN", "DN", "ND"]);
 const HOLIDAY = "RD";
+const SICKDAY = "PN";
 
 // 📊 Jednotky služby pre stĺpec PS
 const UNITS = {
@@ -75,6 +77,7 @@ const UNITS = {
   DN: 2,
   ND: 2,
   RD: 0,
+  PN: 0,
 };
 
 //──────────────────────────────────────────────────────────────
@@ -124,7 +127,7 @@ export function shiftTableStats(normHours) {
     {
       key: "sickness",
       label: "PN",
-      calc: (shifts) => shifts.filter((s) => s.shift_type === "PN").length,
+      calc: (shifts) => shifts.filter((s) => s.shift_type === SICKDAY).length,
     },
     {
       key: "overtime",

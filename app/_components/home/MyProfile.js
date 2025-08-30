@@ -9,6 +9,7 @@ import ArrowForwDashboard from "./ArrowForwDashboard";
 import Stat from "./Stat";
 
 import {
+  TbBed,
   TbBrain,
   TbCalendarStats,
   TbClockPlus,
@@ -31,7 +32,7 @@ function countShiftsByType(shifts) {
       }
       return acc;
     },
-    { D: 0, N: 0, RD: 0, vD: 0, vN: 0, zD: 0, zN: 0 },
+    { D: 0, N: 0, RD: 0, vD: 0, vN: 0, zD: 0, zN: 0, PN: 0 },
   );
 }
 
@@ -85,6 +86,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     const dayShiftCount = counts.D + counts.vD + counts.zD; // hlavný + vedľajší + záložný deň
     const nightShiftCount = counts.N + counts.vN + counts.zN; // hlavný + vedľajší + záložný noc
     const holidayShiftCount = counts.RD;
+    const sickShiftCount = counts.PN;
 
     /* hodiny z číselných požiadaviek (spodný riadok) */
     const extraHours = shiftsForMonth.reduce((sum, s) => {
@@ -95,8 +97,9 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     /* sumarizácia hodín */
     const totalShiftCount = dayShiftCount + nightShiftCount;
     const holidayHours = hoursForShifts(holidayShiftCount, 7.5);
+    const sickHours = hoursForShifts(sickShiftCount, 7.5);
     const totalHours =
-      hoursForShifts(totalShiftCount) + holidayHours + extraHours;
+      hoursForShifts(totalShiftCount) + holidayHours + sickHours + extraHours;
     const overtimeHours = totalHours - normHours;
 
     /* lokalizovaný nadpis mesiaca */
@@ -114,6 +117,8 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
         holidayHours,
         totalHours,
         overtimeHours,
+        sickHours,
+        sickShiftCount
       },
     };
   }, [shifts, offset]);
@@ -140,7 +145,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
       </div>
 
       {/* kachličky so štatistikou */}
-      <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
+      <section className="grid w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
         <Stat
           title="Služby mesiac"
           color="green"
@@ -161,13 +166,19 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
         />
         <Stat
           title="Dovolenka"
-          color="green"
+          color="orange"
           icon={<TbPlaneDeparture />}
           value={`${calculated.holidayShiftCount} / ${calculated.holidayHours} h.`}
         />
         <Stat
+          title="PN"
+          color="purple"
+          icon={<TbBed />}
+          value={`${calculated.sickShiftCount} / ${calculated.sickHours} h.`}
+        />
+        <Stat
           title="Nadčas"
-          color="red"
+          color="green"
           icon={<TbClockPlus />}
           value={`${calculated.overtimeHours} h.`}
         />
