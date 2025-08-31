@@ -1,11 +1,11 @@
 // helpers_shifts.js
 //--------------------------------------------------------------
-// 1️⃣ Počet dní v mesiaci
+// 1) Počet dní v mesiaci (month = 1..12)
 export function getDayCount(year, month) {
   return new Date(year, month, 0).getDate();
 }
 
-// 2️⃣ Pole objektov pre každý deň mesiaca
+// 2) Pole objektov pre každý deň mesiaca
 export function getDaysArray(year, month) {
   const total = getDayCount(year, month);
   const today = new Date();
@@ -14,7 +14,7 @@ export function getDaysArray(year, month) {
   return Array.from({ length: total }, (_, i) => {
     const date = new Date(year, month - 1, i + 1);
     date.setHours(0, 0, 0, 0);
-    const weekday = date.getDay(); // 0 = nedeľa
+    const weekday = date.getDay(); // 0 = nedeľa, 6 = sobota
 
     return {
       day: i + 1,
@@ -25,7 +25,7 @@ export function getDaysArray(year, month) {
   });
 }
 
-// 3️⃣ Lokalizované názvy mesiacov
+// 3) Lokalizované názvy mesiacov
 export function MONTHS() {
   return [
     "január",
@@ -43,10 +43,35 @@ export function MONTHS() {
   ];
 }
 
-//──────────────────────────────────────────────────────────────
-// KONŠTANTY PRE ŠTATISTIKU
+/* ──────────────────────────────────────────────────────────
+   Pomocníci proti plávajúcej desatinnej bodke a formátovanie
+   ────────────────────────────────────────────────────────── */
+export function round1(n) {
+  // zaokrúhlenie na 1 desatinné miesto
+  return Math.round((Number(n) + Number.EPSILON) * 10) / 10;
+}
+export function clampNearZero(n) {
+  // zruší -0.0 a drobné zvyšky typu -0.08 → 0
+  return Math.abs(n) < 0.05 ? 0 : n;
+}
+export function fmtHours(n) {
+  const v = clampNearZero(round1(n));
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+}
+// tolerantný prevod textu na číslo (podporí aj čiarku)
+function toNumber(value) {
+  if (value == null) return 0;
+  if (typeof value === "number") return value;
+  const s = String(value).replace(",", ".").trim();
+  const num = parseFloat(s);
+  return isNaN(num) ? 0 : num;
+}
 
-// ⌛ Trvanie smien v hodinách
+/* ──────────────────────────────────────────────────────────
+   KONŠTANTY PRE ŠTATISTIKU
+   ────────────────────────────────────────────────────────── */
+
+// Trvanie smien v hodinách
 export const HOURS = {
   D: 12,
   N: 12,
@@ -57,16 +82,16 @@ export const HOURS = {
   DN: 24,
   ND: 24,
   RD: 7.5, // dovolenka
-  PN: 7.5,
+  PN: 7.5, // PN počítame ako 7.5h do normy
 };
 
-// 🗂 Zoskupenia typov
+// Zoskupenia typov
 const DAY_SET = new Set(["D", "vD", "zD", "DN", "ND"]);
 const NIGHT_SET = new Set(["N", "vN", "zN", "DN", "ND"]);
 const HOLIDAY = "RD";
 const SICKDAY = "PN";
 
-// 📊 Jednotky služby pre stĺpec PS
+// Jednotky služby pre stĺpec PS
 const UNITS = {
   D: 1,
   vD: 1,
@@ -80,33 +105,36 @@ const UNITS = {
   PN: 0,
 };
 
-//──────────────────────────────────────────────────────────────
 // Hodiny z požiadavky (spodný riadok)
 function reqHours(s) {
-  // 1) ak z modálu prišlo číslo               (request_hours)
-  if (s.request_hours != null) {
-    const n = Number(s.request_hours);
-    return isNaN(n) ? 0 : n;
-  }
+  // 1) ak prišlo číslo (request_hours má prioritu)
+  if (s.request_hours != null) return toNumber(s.request_hours);
 
-  // 2) ak je request_type číslo ("1", "1.5", ...)
-  if (s.request_type && /^[0-9]+(\.[0-9]+)?$/.test(s.request_type)) {
-    return parseFloat(s.request_type);
+  // 2) ak je request_type číselný string (podporí aj "1,5")
+  const rt = s.request_type;
+  if (rt && /^[0-9]+([.,][0-9]+)?$/.test(String(rt))) {
+    return toNumber(rt);
   }
 
   // 3) xD, xN, X, prázdne = 0 hodín
   return 0;
 }
 
-//──────────────────────────────────────────────────────────────
-// Definícia stĺpcov tabuľky
+/* ──────────────────────────────────────────────────────────
+   Definícia stĺpcov tabuľky (štatistika)
+   ────────────────────────────────────────────────────────── */
 export function shiftTableStats(normHours) {
   return [
     {
       key: "totalHours",
       label: "SH",
-      calc: (shifts) =>
-        shifts.reduce((sum, s) => sum + (HOURS[s.shift_type] || 0), 0),
+      calc: (shifts) => {
+        const raw = shifts.reduce(
+          (sum, s) => sum + (HOURS[s.shift_type] || 0),
+          0,
+        );
+        return clampNearZero(round1(raw));
+      },
     },
     {
       key: "dayShifts",
@@ -138,7 +166,8 @@ export function shiftTableStats(normHours) {
           0,
         );
         const extra = shifts.reduce((sum, s) => sum + reqHours(s), 0);
-        return regular + extra - normHours; // služba + čísla − norma
+        const raw = regular + extra - toNumber(normHours);
+        return clampNearZero(round1(raw));
       },
     },
     {

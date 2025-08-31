@@ -3,6 +3,7 @@ import AllParamedics from "./AllParamedics";
 import RowDays from "./RowDays";
 import RowDaysBottom from "./RowDaysBottom";
 import ShiftStatsRowDay from "./ShiftStatsRowDay";
+import { fmtHours } from "./helpers_shifts";
 
 // ShiftRow.jsx
 export default function ShiftRow({
@@ -17,15 +18,16 @@ export default function ShiftRow({
   roster,
   shiftStats,
 }) {
-  // ❶ Vyrob Set všetkých dátumov toho mesiaca (rýchly lookup)
+  // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
   const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
 
-  // ❷ Vyfiltruj smeny, ktoré patria do aktuálneho mesiaca
+  // ❷ Smeny iba pre aktuálny mesiac
   const monthShifts = useMemo(
     () => user.shifts.filter((s) => monthDates.has(s.date)),
     [user.shifts, monthDates],
   );
 
+  // ❸ Vypočítané štatistiky (raw hodnoty)
   const stats = useMemo(
     () =>
       shiftStats.reduce(
@@ -51,11 +53,10 @@ export default function ShiftRow({
       </AllParamedics>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
-        const found = user.shifts.find(s => s.date === dateStr);
+        const found = user.shifts.find((s) => s.date === dateStr);
 
-        const cellContent = found?.shift_type ?? "";   // horná bunka
-        const bottomContent = found?.request_type ?? "";   // spodná bunka
-
+        const cellContent = found?.shift_type ?? ""; // horná bunka
+        const bottomContent = found?.request_type ?? ""; // spodná bunka
 
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
@@ -89,11 +90,20 @@ export default function ShiftRow({
         );
       })}
 
-      {shiftStats.map((col) => (
-        <ShiftStatsRowDay rowBg={rowBg} key={col.key}>
-          {stats[col.key]}
-        </ShiftStatsRowDay>
-      ))}
+      {/* pravé štatistiky – formátuj hodiny, ostatné nechaj ako čísla */}
+      {shiftStats.map((col) => {
+        const raw = stats[col.key];
+        const display =
+          col.key === "totalHours" || col.key === "overtime"
+            ? fmtHours(raw) // zaokrúhlenie, -0.0 => 0, atď.
+            : raw;
+
+        return (
+          <ShiftStatsRowDay rowBg={rowBg} key={col.key}>
+            {display}
+          </ShiftStatsRowDay>
+        );
+      })}
     </div>
   );
 }

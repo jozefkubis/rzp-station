@@ -35,8 +35,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const date = new Date(base.getFullYear(), base.getMonth() + shiftsOffset, 1);
 
   const year = date.getFullYear();
-  const mIndex = date.getMonth(); // 0‑based
-  const month = mIndex + 1; // 1‑12 pre tvoju util funkciu
+  const mIndex = date.getMonth(); // 0-based
+  const month = mIndex + 1; // 1-12 pre tvoju util funkciu
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
@@ -44,7 +44,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
 
   /* ---------- CSS grid template ---------- */
-  // const colTemplate = `13.5rem repeat(${days.length + 6}, 2.5rem)`;
   const colTemplate = `13.5rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
@@ -79,13 +78,11 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       }
 
       if (action.type === "UPSERT_REQUEST") {
-        // NEMAZE riadok – len doplní/aktualizuje request_* polia
         const exists = current.find(
           (s) => s.user_id === action.userId && s.date === action.date,
         );
 
         if (exists) {
-          // aktualizuj existujúci riadok
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
@@ -97,7 +94,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           );
         }
 
-        // ✔️ záznam ešte neexistuje: vytvor nový rad len so spodkom
         return [
           ...current,
           {
@@ -121,7 +117,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
       if (action.type === "DELETE_REQUEST") {
         const { userId, date } = action;
-        // NEMAZE riadok – len nulovanie spodku
         return current.map((s) =>
           s.user_id === userId && s.date === date
             ? { ...s, request_type: null, request_hours: null }
@@ -132,8 +127,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
       return current;
     },
   );
-
-  //......................................................................................
 
   const [isPending, startTransition] = useTransition();
 
@@ -173,7 +166,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         type: "UPSERT_REQUEST",
         userId: bottomSelected.userId,
         date: bottomSelected.dateStr,
-        reqType: type, // camelCase!
+        reqType: type,
         hours,
       }),
     );
@@ -191,7 +184,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   async function handleDeleteTop() {
     if (!selected) return;
 
-    /* A. optimistický DELETE */
     startTransition(() =>
       applyOptimistic({
         type: "CLEAR_SHIFT",
@@ -201,11 +193,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     );
 
     setIsModalOpen(false);
-
-    /* B. reálny DELETE */
     await clearShift(selected.userId, selected.dateStr);
-
-    /* C. refresh */
     router.refresh();
   }
 
@@ -225,8 +213,6 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     router.refresh();
   }
 
-  //......................................................................................
-
   // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZAZNAMOV DO ROSTERU
   const roster = Object.values(
     optimisticShifts.reduce((acc, row) => {
@@ -237,6 +223,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           full_name: row.profiles.full_name,
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
+          contract: Number(row.profiles?.contract ?? 1), // ⟵ dôležité
           shifts: [],
           order: row.profiles.order_index,
         };
@@ -250,10 +237,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
       return acc;
     }, {}),
-  ).sort(
-    (a, b) => a.order - b.order,
-  ); /*.sort((a, b) => (a.order ?? 9_999) - (b.order ?? 9_999));*/
-  //......................................................................................
+  ).sort((a, b) => a.order - b.order);
 
   // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZACHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
@@ -277,9 +261,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     return curr;
   });
 
+  // Plná mesačná norma (1.0 úväzok) — pre header
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
-  const shiftStats = shiftTableStats(normHours);
 
   // MARK: RETURN.........................................................................
   return (
@@ -322,34 +306,42 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             );
           })}
 
-          {shiftStats.map((col) => (
+          {/* statické hlavičky štatistík */}
+          {shiftTableStats(0).map((col) => (
             <DaysMonth key={col.key}>{col.label}</DaysMonth>
           ))}
         </div>
 
         {/* dátové riadky */}
-        {optimisticRoster.map((p, idx) => (
-          <ShiftRow
-            key={p.user_id}
-            user={p}
-            onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-            onReorderOptimistic={(act) =>
-              apply({
-                type: "MOVE",
-                userId: act.userId,
-                direction: act.direction,
-              })
-            }
-            days={days}
-            colTemplate={colTemplate}
-            onTopSelect={handleTopSelect}
-            onBottomSelect={handleBottomSelect}
-            rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-            roster={roster}
-            shiftStats={shiftStats}
-            normHours={normHours}
-          />
-        ))}
+        {optimisticRoster.map((p, idx) => {
+          // per-user norma podľa úväzku (0.1..1.0)
+          const contract = Number(p.contract ?? 1);
+          const perUserNorm = Math.round(normHours * contract * 10) / 10;
+          const rowShiftStats = shiftTableStats(perUserNorm);
+
+          return (
+            <ShiftRow
+              key={p.user_id}
+              user={p}
+              onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+              onReorderOptimistic={(act) =>
+                apply({
+                  type: "MOVE",
+                  userId: act.userId,
+                  direction: act.direction,
+                })
+              }
+              days={days}
+              colTemplate={colTemplate}
+              onTopSelect={handleTopSelect}
+              onBottomSelect={handleBottomSelect}
+              rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+              roster={roster}
+              shiftStats={rowShiftStats} // ⟵ per-user stats
+              normHours={perUserNorm} // ⟵ per-user norma (pre NČ výpočet)
+            />
+          );
+        })}
       </MainShiftsTable>
 
       {/* modals */}
