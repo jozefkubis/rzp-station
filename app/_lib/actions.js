@@ -708,11 +708,11 @@ export async function generateRoster(m) {
   return { success: true, inserted: toUpsert.length, date: firstOfMonth };
 }
 
-// MARK: GENERATE SHIFTS AUTO (auto-seed z minulého mesiaca, cyklus D->N->voľno, 2 dni voľno po N)
+// MARK: GENERATE SHIFTS AUTO (auto-seed z minulého mesiaca, cyklus D->N->voľno, 2 dni voľno po N, vážené úväzkami)
 export async function generateShiftsAuto(m) {
   const supabase = await createClient();
 
-  /* ========== 1) Dátumy a norma hodín ========== */
+  /* ========== 1) Dátumy a norma hodín (plný úväzok) ========== */
   const now = new Date();
   const totalM = now.getMonth() + Number(m || 0);
   const year = now.getFullYear() + Math.floor(totalM / 12);
@@ -740,14 +740,14 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1;d <= daysInMonth;d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
     return c;
   }
   const workdays = countWorkdays(year, month);
-  const NORMA_FULL = workdays * 7.5;
+  const NORMA_FULL = workdays * 7.5; // hodiny pre contract=1
 
   /* ========== 2) Roster → profily (1. deň ∪ hociktorý deň v mesiaci) ========== */
   const { data: day1Rows, error: day1Err } = await supabase
@@ -811,12 +811,27 @@ export async function generateShiftsAuto(m) {
 
   const { data: profiles, error: profErr } = await supabase
     .from("profiles")
-    .select("id, full_name, order_index")
+    .select("id, full_name, order_index, contract") // ⟵ načítame aj úväzok
     .in("id", rosterIds)
     .order("order_index", { ascending: true });
   if (profErr) return { error: profErr.message };
   if (!profiles?.length)
     return { error: "Nepodarilo sa načítať profily pre daný roster." };
+
+  // úväzok: povolené 0, 0.1, 0.2, …; default 1, ak null/NaN
+  const getContract = (p) => {
+    const v = Number(p?.contract);
+    if (!Number.isFinite(v)) return 1;
+    if (v <= 0) return 0;
+    return v;
+  };
+  const CONTRACT = new Map(profiles.map((p) => [p.id, getContract(p)]));
+
+  // norma hodín pre užívateľa = úväzok × NORMA_FULL
+  const NORMA_BY_USER = new Map(
+    profiles.map((p) => [p.id, getContract(p) * NORMA_FULL]),
+  );
+  const getNorma = (uid) => NORMA_BY_USER.get(uid) ?? NORMA_FULL;
 
   /* ========== 3) Mesačné smeny (shift_type + request_type) ========== */
   const { data: monthShifts, error: monthErr } = await supabase
@@ -856,24 +871,49 @@ export async function generateShiftsAuto(m) {
     hasRow.set(`${d}#${u}`, true);
   }
 
-  /* ========== 4) Pokrytie a targety ========== */
+  /* ========== 4) Pokrytie a TARGETY (vážené úväzkami) ========== */
   const coverage = { N: 2, D: 2 };
   const totalN = lastDay * coverage.N;
   const totalD = lastDay * coverage.D;
 
-  function buildTargetsEqual(people, total) {
-    const n = people.length;
-    const base = Math.floor(total / n);
-    let extra = total % n;
-    const map = new Map();
-    for (let i = 0;i < n;i++)
-      map.set(people[i].id, base + (extra-- > 0 ? 1 : 0));
+  function buildTargetsWeighted(people, total) {
+    const weights = people.map((p) => getContract(p));
+    const sumW = weights.reduce((a, b) => a + b, 0);
+
+    // fallback: ak všetci majú 0, rozdeľ rovnomerne
+    if (sumW <= 0) {
+      const n = people.length || 1;
+      const base = Math.floor(total / n);
+      let rem = total - base * n;
+      const map = new Map(people.map((p) => [p.id, base]));
+      for (let i = 0; i < people.length && rem > 0; i++, rem--) {
+        map.set(people[i].id, (map.get(people[i].id) || 0) + 1);
+      }
+      return map;
+    }
+
+    const raw = people.map((p, i) => ({
+      id: p.id,
+      val: (total * weights[i]) / sumW,
+    }));
+
+    const map = new Map(raw.map((r) => [r.id, Math.floor(r.val)]));
+    let rem = total - [...map.values()].reduce((a, b) => a + b, 0);
+
+    const byFrac = raw
+      .map((r) => ({ id: r.id, frac: r.val - Math.floor(r.val) }))
+      .sort((a, b) => b.frac - a.frac);
+
+    for (let i = 0; i < byFrac.length && rem > 0; i++, rem--) {
+      map.set(byFrac[i].id, (map.get(byFrac[i].id) || 0) + 1);
+    }
     return map;
   }
-  const targetN = buildTargetsEqual(profiles, totalN);
-  const targetD = buildTargetsEqual(profiles, totalD);
+
+  const targetN = buildTargetsWeighted(profiles, totalN);
+  const targetD = buildTargetsWeighted(profiles, totalD);
   const totalShiftsAll = totalN + totalD;
-  const targetTotal = buildTargetsEqual(profiles, totalShiftsAll);
+  const targetTotal = buildTargetsWeighted(profiles, totalShiftsAll);
 
   /* ========== 5) Stav medzi dňami, počítadlá a HODINY ========== */
   const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
@@ -896,14 +936,14 @@ export async function generateShiftsAuto(m) {
     else if (type === "RD") hoursCount.set(uid, prev + 7.5);
   };
 
-  const remainingHours = (uid) => NORMA_FULL - getHours(uid);
+  const remainingHours = (uid) => getNorma(uid) - getHours(uid);
   const overHoursCap = (uid, allowExceedBy12, anyUnderNorma) => {
     if (!anyUnderNorma) return false;
-    const cap = NORMA_FULL + (allowExceedBy12 ? 12 : 0);
+    const cap = getNorma(uid) + (allowExceedBy12 ? 12 : 0);
     return getHours(uid) >= cap;
   };
 
-  /* ========== 6) Pravidlá dňa (cooldown, D->D cap, atď.) ========== */
+  /* ========== 6) Pravidlá dňa (cooldown, atď.) ========== */
   function pushDayState(uid, type, dateStr) {
     const s = dayState.get(uid) || {
       lastDate: null,
@@ -922,7 +962,7 @@ export async function generateShiftsAuto(m) {
     const y2 = prevDateStr(y1);
     const getOn = (d) => {
       const m = existType.get(d);
-      return norm(m ? m.get(uid) : null); // "D"|"N"|"RD"|"PN"|"X"|null
+      return norm(m ? m.get(uid) : null);
     };
     const t1 = getOn(y1);
     const t2 = getOn(y2);
@@ -952,7 +992,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1;i > 0;i--) {
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -995,7 +1035,7 @@ export async function generateShiftsAuto(m) {
   function patternTier(uid, type, dateStr) {
     const y1 = shiftDaysAgo(dateStr, 1);
     const y2 = shiftDaysAgo(dateStr, 2);
-    const tY1 = getTypeOn(y1, uid); // "D"|"N"|"RD"|"PN"|"X"|null
+    const tY1 = getTypeOn(y1, uid);
     const tY2 = getTypeOn(y2, uid);
 
     const hadShiftY1 = tY1 === "D" || tY1 === "N";
@@ -1024,13 +1064,14 @@ export async function generateShiftsAuto(m) {
     rnd,
     allowExceedBy1 = false,
     allowExceedHoursBy12 = false,
-    strictCycle = true, // ak true: vylúč D->D úplne (1. vlna)
+    strictCycle = true, // prvá vlna: vylúč D->D
   ) {
     const existMap = existType.get(dateStr) || new Map();
     const onlyMap = reqOnly.get(dateStr) || new Map();
     const blockSet = blockReq.get(dateStr) || new Set();
 
-    const anyUnderNorma = profiles.some((p) => remainingHours(p.id) > 0);
+    // aspoň niekto je pod svojou normou? (pre hodinový cap)
+    const anyUnderNorma = dayProfiles.some((p) => remainingHours(p.id) > 0);
 
     const base = [];
     for (const p of dayProfiles) {
@@ -1070,24 +1111,36 @@ export async function generateShiftsAuto(m) {
     const bestTier = Math.min(...withTier.map((x) => x.tier));
     let pool = withTier.filter((x) => x.tier === bestTier).map((x) => x.uid);
 
-    // 2) dorovnanie hodín/targetov
-    let poolWithDef = pool.map((uid) => ({
-      uid,
-      defType: remainingToTarget(uid, type),
-      defTotal: remainingToTotal(uid),
-      hDef: remainingHours(uid),
-    }));
-    const needHours = poolWithDef.filter((x) => x.hDef > 0);
+    // 2) dorovnanie hodín/targetov – RELATÍVNE k vlastnej norme
+    let poolWithDef = pool.map((uid) => {
+      const hAbs = remainingHours(uid); // absolútny deficit (h)
+      const norma = Math.max(getNorma(uid), 1); // osobná norma (min 1)
+      const hPct = hAbs / norma; // percentuálny deficit 0..1+
+      return {
+        uid,
+        defType: remainingToTarget(uid, type),
+        defTotal: remainingToTotal(uid),
+        hAbs,
+        hPct,
+      };
+    });
+
+    // ak niekto ešte nedosiahol svoju normu (hPct>0), priorizuj iba takých
+    const needHours = poolWithDef.filter((x) => x.hPct > 0);
     poolWithDef = needHours.length ? needHours : poolWithDef;
 
+    // poradie priorít: typový deficit → celkový deficit → percentuálny deficit → absolútny deficit
     const maxDefType = Math.max(...poolWithDef.map((x) => x.defType));
     poolWithDef = poolWithDef.filter((x) => x.defType === maxDefType);
 
     const maxDefTotal = Math.max(...poolWithDef.map((x) => x.defTotal));
     poolWithDef = poolWithDef.filter((x) => x.defTotal === maxDefTotal);
 
-    const maxHDef = Math.max(...poolWithDef.map((x) => x.hDef));
-    poolWithDef = poolWithDef.filter((x) => x.hDef === maxHDef);
+    const maxHPct = Math.max(...poolWithDef.map((x) => x.hPct));
+    poolWithDef = poolWithDef.filter((x) => x.hPct === maxHPct);
+
+    const maxHAbs = Math.max(...poolWithDef.map((x) => x.hAbs));
+    poolWithDef = poolWithDef.filter((x) => x.hAbs === maxHAbs);
 
     const pick = shuffle(
       poolWithDef.map((x) => x.uid),
@@ -1100,7 +1153,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1123,7 +1176,7 @@ export async function generateShiftsAuto(m) {
         incCount(uid, st);
         incHours(uid, st);
       } else if (st === "RD" || st === "PN" || st === "X" || blockedByRequest) {
-        assignedToday.add(uid); // blokuje deň
+        assignedToday.add(uid);
         if (st) incHours(uid, st);
       }
     }
@@ -1131,9 +1184,8 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0;k < need;k++) {
+      for (let k = 0; k < need; k++) {
         const uid =
-          // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
             type,
             dateStr,
@@ -1144,7 +1196,6 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
-          // 2) striktne: žiadne D->D, povoliť +1 na targetoch
           pickCandidate(
             type,
             dateStr,
@@ -1155,7 +1206,6 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
-          // 3) fallback: povoliť už aj D->D, stále bez hodinového +12
           pickCandidate(
             type,
             dateStr,
@@ -1166,7 +1216,6 @@ export async function generateShiftsAuto(m) {
             false,
             false,
           ) ||
-          // 4) posledný fallback: povoliť aj hodinové +12
           pickCandidate(
             type,
             dateStr,
@@ -1274,7 +1323,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1309,7 +1358,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
@@ -1360,4 +1409,3 @@ export async function validateShifts(m = 0) {
     },
   };
 }
-
