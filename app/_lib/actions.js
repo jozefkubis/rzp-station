@@ -717,8 +717,7 @@ export async function generateShiftsAuto(m) {
   const totalM = now.getMonth() + Number(m || 0);
   const year = now.getFullYear() + Math.floor(totalM / 12);
   const month0 = ((totalM % 12) + 12) % 12; // 0..11
-  const month = month0 + 1; // 1..12
-  const pad = (n) => String(n).padStart(2, "0");
+  const month = month0 + 1; // 1..12  const pad = (n) => String(n).padStart(2, "0");
 
   const from = `${year}-${pad(month)}-01`;
   const lastDay = new Date(year, month, 0).getDate();
@@ -740,7 +739,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -749,7 +748,7 @@ export async function generateShiftsAuto(m) {
   const workdays = countWorkdays(year, month);
   const NORMA_FULL = workdays * 7.5; // 1.0 úväzok
 
-  /* ========== 2) Roster (seed ak prázdne) ========== */
+  /* ========== 2) Roster → profily (UNION aktuálny mesiac ∪ minulý mesiac) ========== */
   const { data: day1Rows, error: day1Err } = await supabase
     .from("shifts")
     .select("user_id")
@@ -763,49 +762,50 @@ export async function generateShiftsAuto(m) {
     .lte("date", to);
   if (monthRowsErr) return { error: monthRowsErr.message };
 
-  let rosterIds = Array.from(
-    new Set(
-      [...(day1Rows ?? []), ...(monthRows ?? [])]
-        .map((r) => r.user_id)
-        .filter(Boolean),
-    ),
+  // aktuálne (tento mesiac)
+  const currIdsSet = new Set(
+    [...(day1Rows ?? []), ...(monthRows ?? [])]
+      .map((r) => r.user_id)
+      .filter(Boolean),
   );
 
-  if (!rosterIds.length) {
-    const [{ data: prevDay1 }, { data: prevAny }] = await Promise.all([
-      supabase.from("shifts").select("user_id").eq("date", prevFrom),
-      supabase
-        .from("shifts")
-        .select("user_id")
-        .gte("date", prevFrom)
-        .lte("date", prevTo),
-    ]);
-    const prevIds = Array.from(
-      new Set(
-        [...(prevDay1 ?? []), ...(prevAny ?? [])]
-          .map((r) => r.user_id)
-          .filter(Boolean),
-      ),
-    );
-    if (prevIds.length) {
-      const seeds = prevIds.map((uid) => ({
-        user_id: uid,
-        date: from,
-        shift_type: null,
-      }));
-      const { error: seedErr } = await supabase
-        .from("shifts")
-        .upsert(seeds, { onConflict: "user_id,date" });
-      if (seedErr) return { error: seedErr.message };
-      rosterIds = prevIds.slice();
-    }
-  }
+  // minuly mesiac
+  const [{ data: prevDay1 }, { data: prevAny }] = await Promise.all([
+    supabase.from("shifts").select("user_id").eq("date", prevFrom),
+    supabase
+      .from("shifts")
+      .select("user_id")
+      .gte("date", prevFrom)
+      .lte("date", prevTo),
+  ]);
+
+  const prevIdsSet = new Set(
+    [...(prevDay1 ?? []), ...(prevAny ?? [])]
+      .map((r) => r.user_id)
+      .filter(Boolean),
+  );
+
+  // UNION: vezmi všetkých z aktuálneho mesiaca + všetkých z predchádzajúceho
+  const rosterIdSet = new Set([...currIdsSet, ...prevIdsSet]);
+  const rosterIds = Array.from(rosterIdSet);
 
   if (!rosterIds.length) {
     return {
       error:
         "Roster je prázdny – pridaj záchranárov alebo vlož aspoň jednu požiadavku.",
     };
+  }
+
+  // dosiahneme, aby KAŽDÝ z rosterIds mal seed riadok (1. deň v mesiaci)
+  const missingSeeds = rosterIds
+    .filter((uid) => !currIdsSet.has(uid))
+    .map((uid) => ({ user_id: uid, date: from, shift_type: null }));
+
+  if (missingSeeds.length) {
+    const { error: seedErr } = await supabase
+      .from("shifts")
+      .upsert(missingSeeds, { onConflict: "user_id,date" });
+    if (seedErr) return { error: seedErr.message };
   }
 
   /* ========== 3) Profily (s úväzkom!) a mapy ========== */
@@ -884,7 +884,7 @@ export async function generateShiftsAuto(m) {
     let left = total - assigned;
 
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
@@ -981,7 +981,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1120,7 +1120,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1151,7 +1151,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
@@ -1299,7 +1299,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1334,7 +1334,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
