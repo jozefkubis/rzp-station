@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import AllParamedics from "./AllParamedics";
+import ContractRow from "./ContractRow";
 import RowDays from "./RowDays";
 import RowDaysBottom from "./RowDaysBottom";
 import ShiftStatsRowDay from "./ShiftStatsRowDay";
@@ -17,6 +18,7 @@ export default function ShiftRow({
   onReorderOptimistic,
   roster,
   shiftStats,
+  contract
 }) {
   // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
   const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
@@ -51,6 +53,8 @@ export default function ShiftRow({
       >
         {user.full_name}
       </AllParamedics>
+
+      <ContractRow cellBg={rowBg} rowBg={rowBg}>{contract}</ContractRow>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
         const found = user.shifts.find((s) => s.date === dateStr);

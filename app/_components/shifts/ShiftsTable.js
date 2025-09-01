@@ -40,11 +40,13 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
+  const contract = shifts.map((s) => s.profiles.contract);
+
   const monthLabel =
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `13.5rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+  const colTemplate = `13.5rem 3.3rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -86,10 +88,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -293,6 +295,8 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         >
           <ParamedName>Záchranári</ParamedName>
 
+          <DaysMonth>UV</DaysMonth>
+
           {days.map(({ day, isWeekend, isToday }) => {
             const headBg = isToday
               ? "bg-primary-100 font-semibold"
@@ -339,6 +343,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
               roster={roster}
               shiftStats={rowShiftStats} // ⟵ per-user stats
               normHours={perUserNorm} // ⟵ per-user norma (pre NČ výpočet)
+              contract={contract}
             />
           );
         })}
