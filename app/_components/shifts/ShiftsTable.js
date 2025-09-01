@@ -46,7 +46,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `13.5rem 3.3rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+  const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
   // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -88,10 +88,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
