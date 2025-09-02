@@ -757,67 +757,86 @@ export async function generateShiftsAuto(m) {
   const workdays = countWorkdays(year, month);
   const NORMA_FULL = workdays * 7.5; // 1.0 úväzok
 
-  /* ========== 2) Roster → profily (UNION aktuálny mesiac ∪ minulý mesiac) ========== */
-  const { data: day1Rows } = await supabase
-    .from("shifts")
-    .select("user_id")
-    .eq("date", from);
+  // ========== 2) Roster pre mesiac – prehľadná verzia so Set-mi ==========
 
-  const { data: monthRows } = await supabase
-    .from("shifts")
-    .select("user_id")
-    .gte("date", from)
-    .lte("date", to);
+  async function selectUserIdsInRange(supabase, from, to) {
+    const { data, error } = await supabase
+      .from("shifts")
+      .select("user_id")
+      .gte("date", from)
+      .lte("date", to);
+    if (error) throw error;
+    return (data ?? []).map(r => r.user_id).filter(Boolean);
+  }
 
-  const currIdsSet = new Set(
-    [...(day1Rows ?? []), ...(monthRows ?? [])]
-      .map((r) => r.user_id)
-      .filter(Boolean),
-  );
+  async function selectUserIdsOnDate(supabase, dateStr) {
+    const { data, error } = await supabase
+      .from("shifts")
+      .select("user_id")
+      .eq("date", dateStr);
+    if (error) throw error;
+    return (data ?? []).map(r => r.user_id).filter(Boolean);
+  }
 
-  const [{ data: prevDay1 }, { data: prevAny }] = await Promise.all([
-    supabase.from("shifts").select("user_id").eq("date", prevFrom),
-    supabase.from("shifts").select("user_id").gte("date", prevFrom).lte("date", prevTo),
-  ]);
+  // 1) ID-čka v aktuálnom mesiaci
+  const idsDay1This = new Set(await selectUserIdsOnDate(supabase, from));
+  const idsAnyThis = new Set(await selectUserIdsInRange(supabase, from, to));
+  const currIdsSet = new Set([...idsDay1This, ...idsAnyThis]);
 
-  const prevIdsSet = new Set(
-    [...(prevDay1 ?? []), ...(prevAny ?? [])]
-      .map((r) => r.user_id)
-      .filter(Boolean),
-  );
+  // 2) ID-čka v minulom mesiaci
+  const idsDay1Prev = new Set(await selectUserIdsOnDate(supabase, prevFrom));
+  const idsAnyPrev = new Set(await selectUserIdsInRange(supabase, prevFrom, prevTo));
+  const prevIdsSet = new Set([...idsDay1Prev, ...idsAnyPrev]);
 
-  const rosterIdSet = new Set([...currIdsSet, ...prevIdsSet]);
-  const rosterIds = Array.from(rosterIdSet);
+  // 3) UNION: všetci z tohto ∪ minulého mesiaca
+  const rosterIdsSet = new Set([...currIdsSet, ...prevIdsSet]);
+  const rosterIds = Array.from(rosterIdsSet);
 
-  if (!rosterIds.length) {
+  // 4) Validácia
+  if (rosterIds.length === 0) {
     return { error: "Roster je prázdny – pridaj záchranárov alebo vlož aspoň jednu požiadavku." };
   }
 
-  // seedni 1. deň pre tých, čo ešte nemajú žiadny záznam v aktuálnom mesiaci
-  const missingSeeds = rosterIds
-    .filter((uid) => !currIdsSet.has(uid))
-    .map((uid) => ({ user_id: uid, date: from, shift_type: null }));
+  // 5) Seed 1. dňa pre tých, čo v tomto mesiaci ešte nemajú žiadny riadok
+  const missingSeeds = [];
+  for (const uid of rosterIds) {
+    if (!currIdsSet.has(uid)) {
+      missingSeeds.push({ user_id: uid, date: from, shift_type: null });
+    }
+  }
 
-  if (missingSeeds.length) {
+  if (missingSeeds.length > 0) {
     const { error: seedErr } = await supabase
       .from("shifts")
       .upsert(missingSeeds, { onConflict: "user_id,date" });
     if (seedErr) return { error: seedErr.message };
   }
 
-  /* ========== 3) Profily (s úväzkom!) a mapy ========== */
+  // ========== 3) Profily (s úväzkom!) ==========
+
   const { data: profiles, error: profErr } = await supabase
     .from("profiles")
     .select("id, full_name, order_index, contract")
     .in("id", rosterIds)
     .order("order_index", { ascending: true });
+
   if (profErr) return { error: profErr.message };
   if (!profiles?.length) return { error: "Nepodarilo sa načítať profily pre daný roster." };
 
-  const contractOf = new Map(
-    profiles.map((p) => [p.id, Math.max(0, Number(p.contract ?? 1))]),
-  );
-  const personalNorm = (uid) => NORMA_FULL * (contractOf.get(uid) ?? 1);
+  // Mapujeme: user_id → contract (aspoň 1)
+  const contractOf = new Map();
+  for (const p of profiles) {
+    const contractValue = Number(p.contract ?? 1);
+    const safeValue = contractValue > 0 ? contractValue : 1;
+    contractOf.set(p.id, safeValue);
+  }
+
+  // Funkcia na výpočet normy pre konkrétneho usera
+  const personalNorm = (uid) => {
+    const contract = contractOf.get(uid) ?? 1;
+    return NORMA_FULL * contract;
+  };
+
 
   /* ========== 4) Načítaj mesačné smeny/požiadavky ========== */
   const { data: monthShifts, error: monthErr } = await supabase
