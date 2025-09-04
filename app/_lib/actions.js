@@ -1308,7 +1308,7 @@ export async function validateShifts(m = 0) {
   const labelSK = (t) => (t === "D" ? "Denná" : t === "N" ? "Nočná" : t);
 
   // ==== definuj požadované pokrytie na deň ====
-  const coverage = { D: 2, N: 2 }; // uprav podľa reálnej potreby
+  const coverage = { D: 2, N: 2 }; // uprav podľa potreby
 
   // ==== načítaj všetky služby v mesiaci (iba to, čo treba) ====
   const { data, error } = await supabase
@@ -1322,8 +1322,16 @@ export async function validateShifts(m = 0) {
     return { error: error.message };
   }
 
-  // ==== postav indexy: per-day a per-date->user ====
-  const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
+  // ==== spoločná normalizácia typov (rovnaká ako v generate) ====
+  function norm(t) {
+    if (t == null) return null;
+    const s = String(t).trim().toUpperCase();
+    if (s === "ZD" || s === "VD") return "D";
+    if (s === "ZN" || s === "VN") return "N";
+    return s; // "D","N","RD","PN","X", ...
+  }
+
+  // ==== indexy: per-day a per-date->user ====
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
 
@@ -1336,8 +1344,10 @@ export async function validateShifts(m = 0) {
   for (const row of data ?? []) {
     const d = row.date;
     if (!byDate.has(d)) continue;
-    const t = norm(row.shift_type);
+
+    const t = norm(row.shift_type); // ❗️teraz sa zD/zN zmení na D/N
     const uid = row.user_id;
+
     if (!existType.has(d)) existType.set(d, new Map());
     existType.get(d).set(uid, t || null);
 
@@ -1347,7 +1357,7 @@ export async function validateShifts(m = 0) {
     }
   }
 
-  // ==== helpery na porušenia pravidiel ====
+  // ==== helper na pravidlá (ak budeš chcieť použiť) ====
   const hasNightWithin2Days = (uid, dateStr) => {
     const d1 = prevDateStr(dateStr);
     const d2 = prevDateStr(d1);
@@ -1369,7 +1379,7 @@ export async function validateShifts(m = 0) {
     const countN = rec.N.size;
     const issues = [];
 
-    // Pokrytie – nedostatok/služba navyše
+    // Pokrytie – nedostatok/nadbytok
     for (const type of ["D", "N"]) {
       const have = type === "D" ? countD : countN;
       const need = coverage[type];
