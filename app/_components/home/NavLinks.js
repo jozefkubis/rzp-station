@@ -11,6 +11,7 @@ import {
 import { PiAmbulance } from "react-icons/pi";
 
 import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
+import { HiOutlineChartSquareBar } from "react-icons/hi";
 
 const BLANK_AVATAR =
   "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
@@ -44,6 +45,11 @@ export default async function NavLinks({ searchParams }) {
       href: "/register",
       label: "Registrácia",
       icon: <HiOutlineUserPlus size={28} />,
+    },
+    {
+      href: "/statistics",
+      label: "Štatistiky",
+      icon: <HiOutlineChartSquareBar size={28} />,
     },
     {
       href: "/login",

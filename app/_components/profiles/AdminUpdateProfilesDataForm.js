@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import Button from "@/app/_components/Button";
 import FormInput from "@/app/_components/FormInput";
 import handleSubmitAdminUpdateProfileData from "@/app/_lib/functions/handleSubmitAdminUpdateProfileData";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");
   const [full_name, setFull_name] = useState("");
+  const [bodyNumber, setBodyNumber] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
+  const [psychoCheckDate, setPsychoCheckDate] = useState("");
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
@@ -45,6 +47,19 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
       <div className="">
         <FormInput
+          label="Číslo komory"
+          id="bodyNumber"
+          type="text"
+          placeholder="Číslo komory"
+          name="body_number"
+          onChange={(e) => setBodyNumber(e.target.value)}
+          value={bodyNumber || profile?.body_number || ""}
+          {...(!profile && { required: true })}
+        />
+      </div>
+
+      <div className="">
+        <FormInput
           label="Adresa"
           id="address"
           type="text"
@@ -71,13 +86,26 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
       <div className="">
         <FormInput
-          label="Dátum prehliadky"
+          label="Dátum lekárskej prehliadky"
           id="medCheckDate"
           type="date"
           placeholder="Dátum prehliadky"
           name="medCheckDate"
           onChange={(e) => setMedCheckDate(e.target.value)}
           value={medCheckDate || profile?.medCheckDate || ""}
+          {...(!profile && { required: true })}
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <FormInput
+          label="Dátum psychotesty"
+          id="psychoCheckDate"
+          type="date"
+          placeholder="Dátum psychotesty"
+          name="psycho_check"
+          onChange={(e) => setPsychoCheckDate(e.target.value)}
+          value={psychoCheckDate || profile?.psycho_check || ""}
           {...(!profile && { required: true })}
         />
       </div>

@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { HiOutlineChartSquareBar } from "react-icons/hi";
 import {
   HiOutlineCalendarDays,
   HiOutlineHome,
@@ -45,6 +46,7 @@ export default function Navigation() {
     { name: "Kalendár", href: "/calendar", icon: <HiOutlineCalendarDays size={20} /> },
     { name: "Záchranári", href: "/profiles", icon: <HiOutlineUsers size={20} /> },
     { name: "Registrácia", href: "/register", icon: <HiOutlineUserPlus size={20} /> },
+    { name: "Štatistiky", href: "/statistics", icon: <HiOutlineChartSquareBar size={20} /> },
   ];
 
   return (

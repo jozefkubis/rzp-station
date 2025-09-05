@@ -63,6 +63,7 @@ export default async function Page({ params }) {
   ];
 
   const profileInfo = [
+    { title: "Číslo komory:", value: profile.body_number || "-" },
     { title: "Adresa:", value: profile.address || "-" },
     {
       title: "Dátum narodenia:",
@@ -71,6 +72,10 @@ export default async function Page({ params }) {
     {
       title: "Lekárska prehliadka:",
       value: profile.medCheckDate ? formatDate(profile.medCheckDate) : "-",
+    },
+    {
+      title: "Dátum psychotesty:",
+      value: profile.psycho_check ? formatDate(profile.psycho_check) : "-",
     },
   ];
 
