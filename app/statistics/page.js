@@ -1,4 +1,5 @@
 import Header from "../_components/Header";
+import StatisticsMain from "../_components/statistics/StatisticsMain";
 import getAllShifts, { getAllProfiles } from "../_lib/data-service";
 
 export const metadata = {
@@ -8,8 +9,6 @@ export const metadata = {
 export default async function page() {
 
   const shifts = await getAllShifts();
-  const shiftsAfterSet = new Set(shifts.map((shift) => shift.profiles.full_name));
-  // console.log(shiftsAfterSet);
 
   const profiles = await getAllProfiles()
 
@@ -18,15 +17,7 @@ export default async function page() {
   return (
     <div>
       <Header />
-      <div className="h-screen">
-        <div className="h-full p-[8rem] flex flex-col gap-2">
-          {profiles.map((profile) => (
-            <div key={profile.id} className="text-2xl text-primary-700" >
-              <h1>{profile.full_name}</h1>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StatisticsMain profiles={profiles} shifts={shifts} />
     </div>
   );
 }
