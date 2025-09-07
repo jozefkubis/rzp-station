@@ -11,6 +11,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");
   const [full_name, setFull_name] = useState("");
   const [bodyNumber, setBodyNumber] = useState("");
+  const [contract, setContract] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
@@ -54,6 +55,19 @@ function AdminUpdateProfilesDataForm({ profile }) {
           name="body_number"
           onChange={(e) => setBodyNumber(e.target.value)}
           value={bodyNumber || profile?.body_number || ""}
+          {...(!profile && { required: true })}
+        />
+      </div>
+
+      <div className="">
+        <FormInput
+          label="Úväzok"
+          id="contract"
+          type="text"
+          placeholder="Úväzok"
+          name="contract"
+          onChange={(e) => setContract(e.target.value)}
+          value={contract || profile?.contract || ""}
           {...(!profile && { required: true })}
         />
       </div>

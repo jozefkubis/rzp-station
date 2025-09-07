@@ -12,6 +12,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   const [full_name, setFull_name] = useState("");
   const [username, setUsername] = useState("");
   const [bodyNumber, setBodyNumber] = useState("");
+  const [contract, setContract] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
@@ -69,6 +70,19 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           name="body_number"
           onChange={(e) => setBodyNumber(e.target.value)}
           value={bodyNumber || profiles?.body_number || ""}
+          {...(!profiles && { required: true })}
+        />
+      </div>
+
+      <div className="">
+        <FormInput
+          label="Úväzok"
+          id="contract"
+          type="text"
+          placeholder="Úväzok"
+          name="contract"
+          onChange={(e) => setContract(e.target.value)}
+          value={contract || profiles?.contract || ""}
           {...(!profiles && { required: true })}
         />
       </div>
