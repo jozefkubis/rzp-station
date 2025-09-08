@@ -40,7 +40,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex]; // jedno priame načítanie
 
-  const contract = shifts.map((s) => s.profiles.contract);
+  // const contract = shifts.map((s) => s.profiles.contract);
 
   const monthLabel =
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
@@ -88,10 +88,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
