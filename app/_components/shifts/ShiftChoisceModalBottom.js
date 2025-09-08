@@ -10,6 +10,7 @@ export default function ShiftChoiceModalBottom({
     { t: "xD", h: null },
     { t: "xN", h: null },
     { t: "X", h: null },
+    { t: "0.5", h: 1 },
     { t: "1", h: 1 },
     { t: "1.5", h: 1.5 },
     { t: "2", h: 2 },
