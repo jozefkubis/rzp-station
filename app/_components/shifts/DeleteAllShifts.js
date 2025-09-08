@@ -1,6 +1,7 @@
 "use client";
 
 import { clearMonth } from "@/app/_lib/actions";
+import { getYearMonthFromOffset } from "@/app/_lib/helpers/functions";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Button from "../Button";
@@ -13,28 +14,25 @@ export default function DeleteAllShifts() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const searchParams = useSearchParams();
-  const urlOffset = searchParams.get("m") ?? "0";
-  const offset = Number(urlOffset);
-
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + offset + 1;
-
-  function handleOpenModal() {
-    setIsOpenDeleteModal(true);
-  }
+  const offset = Number(searchParams.get("m") ?? "0");
+  const { year, month } = getYearMonthFromOffset(offset);
 
   async function handleConfirmDelete() {
-    setIsDeleting(true);
-    await clearMonth(year, month);
-    setIsDeleting(false);
-    setIsOpenDeleteModal(false);
+    try {
+      setIsDeleting(true);
+      await clearMonth(year, month);
+    } catch (err) {
+      console.error("clearMonth error:", err);
+    } finally {
+      setIsDeleting(false);
+      setIsOpenDeleteModal(false);
+    }
   }
 
   return (
     <>
-      <div className="">
-        <Button variant="danger" onClick={handleOpenModal}>
+      <div>
+        <Button variant="danger" onClick={() => setIsOpenDeleteModal(true)}>
           Vymazať všetko
         </Button>
       </div>

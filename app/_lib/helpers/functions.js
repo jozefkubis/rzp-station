@@ -1,3 +1,5 @@
+import { addMonths } from "date-fns";
+
 export function formatDate(dateString) {
   if (!dateString) return "?";
   const [year, month, day] = dateString.split("-");
@@ -47,4 +49,12 @@ export function getWeatherIcon(code) {
   if (code === 96 || code === 99) return "⛈️⚡"; // búrka s krúpami
 
   return "❔"; // fallback
+}
+
+
+export function getYearMonthFromOffset(offset) {
+  const intM = Number(offset || 0);
+  const base = new Date();
+  const dt = addMonths(base, intM); // date-fns spoľahlivo posunie mesiac
+  return { year: dt.getFullYear(), month: dt.getMonth() + 1 }; // 1..12
 }
