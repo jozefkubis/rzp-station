@@ -39,7 +39,7 @@ export default function StatisticsMain({ shifts }) {
 
   return (
     <div className="h-screen">
-      <div className="flex h-full flex-col gap-4 p-[4rem]">
+      <div className="flex h-full flex-col gap-4 p-[8rem]">
         <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
           <thead className="bg-gray-100">
             <tr>
