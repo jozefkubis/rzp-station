@@ -1,8 +1,16 @@
 "use client";
 
-export default function StatisticsMain({ shifts }) {
+import { useState } from "react";
+import ArrowBackStatistics from "./ArrowBackStatistics";
+import ArrowForwardStatistics from "./ArrowForwordStatistics";
+import YearHeadStatistics from "./YearHeadStatistics";
 
-  const thisYear = new Date().getFullYear();
+export default function StatisticsMain({ shifts, statsOffset }) {
+  console.log(statsOffset);
+
+  const [y, setY] = useState(statsOffset);
+
+  const thisYear = new Date().getFullYear() + y;
 
   // pripravíme si polia s normalizovanými hodnotami
   const rows = shifts.map((s) => ({
@@ -43,14 +51,22 @@ export default function StatisticsMain({ shifts }) {
     .map(([name, counts]) => ({ name, ...counts }))
     .sort((a, b) => a.name.localeCompare(b.name, "sk"));
 
+  function goToNextYear() {
+    setY(y + 1);
+  }
+
+  function goToPrevYear() {
+    setY(y - 1);
+  }
+
   return (
     <div className="h-screen">
-      <div className="flex h-full flex-col gap-4 p-[8rem]">
-        <div className="py-10">
-          <h1 className="text-center text-4xl font-bold text-primary-700">
-            Štatistiky {thisYear}
-          </h1>
-        </div>
+      <div className="flex h-full flex-col gap-4 px-[8rem] py-[4rem]">
+        <YearHeadStatistics>
+          <ArrowBackStatistics goToPrevYear={goToPrevYear} />
+          Štatistiky {thisYear}
+          <ArrowForwardStatistics goToNextYear={goToNextYear} />
+        </YearHeadStatistics>
         <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
           <thead className="bg-gray-100">
             <tr>
