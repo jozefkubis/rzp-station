@@ -11,8 +11,6 @@ export default async function page({ searchParams }) {
   const statsOffset = Number(y ?? 0);
   console.log(statsOffset);
 
-
-
   const shifts = await getAllShifts();
 
   return (
