@@ -18,7 +18,9 @@ const BLANK_AVATAR =
 
 export default async function NavLinks({ searchParams }) {
   const { m } = await searchParams;
+  const { y } = await searchParams;
   const shiftsOffset = Number(m ?? 0);
+  const statsOffset = Number(y ?? 0);
 
   /* -------- avatar fetch (server → OK) -------- */
   const user = await getUser();
@@ -47,7 +49,7 @@ export default async function NavLinks({ searchParams }) {
       icon: <HiOutlineUserPlus size={28} />,
     },
     {
-      href: "/statistics",
+      href: `/statistics?y=${statsOffset}`,
       label: "Štatistiky",
       icon: <HiOutlineChartSquareBar size={28} />,
     },

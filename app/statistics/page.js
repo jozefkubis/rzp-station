@@ -9,7 +9,6 @@ export const metadata = {
 export default async function page({ searchParams }) {
   const { y } = await searchParams;
   const statsOffset = Number(y ?? 0);
-  console.log(statsOffset);
 
   const shifts = await getAllShifts();
 

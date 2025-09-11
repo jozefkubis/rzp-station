@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ArrowBackStatistics from "./ArrowBackStatistics";
 import ArrowForwardStatistics from "./ArrowForwordStatistics";
 import YearHeadStatistics from "./YearHeadStatistics";
@@ -9,18 +9,8 @@ import YearHeadStatistics from "./YearHeadStatistics";
 export default function StatisticsMain({ shifts, statsOffset }) {
   const router = useRouter();
 
-  // načítaj z sessionStorage ak existuje
-  const [y, setY] = useState(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem("statsOffset");
-      if (stored !== null) return Number(stored);
-    }
-    return Number(statsOffset) || 0;
-  });
+  const [y, setY] = useState(statsOffset || Number(0));
 
-  useEffect(() => {
-    sessionStorage.setItem("statsOffset", String(y));
-  }, [y]);
 
   const thisYear = new Date().getFullYear() + y;
 
@@ -56,15 +46,17 @@ export default function StatisticsMain({ shifts, statsOffset }) {
 
   function goToNextYear() {
     const next = y + 1;
-    setY(next);
+    setY(next);              // update UI hneď
     router.push(`/statistics?y=${next}`);
   }
 
+
   function goToPrevYear() {
     const prev = y - 1;
-    setY(prev);
+    setY(prev);              // update UI hneď
     router.push(`/statistics?y=${prev}`);
   }
+
 
   return (
     <div className="h-screen">

@@ -20,25 +20,37 @@ export default function Navigation() {
 
   /* 1️⃣ aktuálny offset z URL (server‑safe) */
   const urlOffset = searchParams.get("m") ?? "0";
+  const urlStatsOffset = searchParams.get("y") ?? "0";
 
   /* 2️⃣ lokálny stav, ktorý synchronizujeme s URL aj sessionStorage */
   const [dashOffset, setDashOffset] = useState(urlOffset);
+  const [statsOffset, setStatsOffset] = useState(urlStatsOffset);
 
   /* 3️⃣ ak sa URL zmení (napr. v /​shifts), prepíš stav */
   useEffect(() => {
     setDashOffset(urlOffset);
-  }, [urlOffset]);
+    setStatsOffset(urlStatsOffset);
+  }, [urlOffset, urlStatsOffset]);
 
   /* 4️⃣ pri prvej hydratácii skús vytiahnuť hodnotu zo sessionStorage */
   useEffect(() => {
-    const stored = sessionStorage.getItem("dashOffset");
+    const stored = localStorage.getItem("dashOffset");
     if (stored !== null) setDashOffset(stored);
+  }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("statsOffset");
+    if (stored !== null) setStatsOffset(stored);
   }, []);
 
   /* 5️⃣ zakaždým, keď dashOffset zmeníme, ulož ho na neskôr */
   useEffect(() => {
-    sessionStorage.setItem("dashOffset", dashOffset);
+    localStorage.setItem("dashOffset", dashOffset);
   }, [dashOffset]);
+
+  useEffect(() => {
+    localStorage.setItem("statsOffset", statsOffset);
+  }, [statsOffset]);
 
   const navLinks = [
     { name: "Domov", href: `/?m=${dashOffset}`, icon: <HiOutlineHome size={20} /> },
@@ -46,7 +58,7 @@ export default function Navigation() {
     { name: "Kalendár", href: "/calendar", icon: <HiOutlineCalendarDays size={20} /> },
     { name: "Záchranári", href: "/profiles", icon: <HiOutlineUsers size={20} /> },
     { name: "Registrácia", href: "/register", icon: <HiOutlineUserPlus size={20} /> },
-    { name: "Štatistiky", href: "/statistics", icon: <HiOutlineChartSquareBar size={20} /> },
+    { name: "Štatistiky", href: `/statistics?y=${statsOffset}`, icon: <HiOutlineChartSquareBar size={20} /> },
   ];
 
   return (
