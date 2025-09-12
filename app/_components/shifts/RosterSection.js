@@ -8,6 +8,7 @@ import GenerateRoster from "./GenerateRoster";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
+import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
 
 /**
@@ -111,6 +112,10 @@ export default function RosterSection({
         <DeleteOnlyShifts />
         <ValidateButton />
         <DeleteAllShifts />
+      </div>
+
+      <div className="mt-6 flex w-full gap-2 px-8 2xl:px-16">
+        <ShiftsTableLegend />
       </div>
     </div>
   );

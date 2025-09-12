@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import ArrowBackStatistics from "./ArrowBackStatistics";
 import ArrowForwardStatistics from "./ArrowForwordStatistics";
+import { StatisticsLegend } from "./StatisticsLegend";
 import YearHeadStatistics from "./YearHeadStatistics";
 
 export default function StatisticsMain({ shifts, statsOffset }) {
@@ -115,40 +116,44 @@ export default function StatisticsMain({ shifts, statsOffset }) {
             Žiadne štatistiky pre tento rok nie sú k dispozícii
           </div>
         ) : (
-          <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="w-[15rem] border px-4 py-2 text-left">Meno</th>
-                <th className="border px-4 py-2">D</th>
-                <th className="border px-4 py-2">N</th>
-                <th className="border px-4 py-2">Spolu</th>
-                <th className="border px-4 py-2">RD</th>
-                <th className="border px-4 py-2">PN</th>
-                <th className="border px-4 py-2">X</th>
-                <th className="border px-4 py-2">ŠS D</th>
-                <th className="border px-4 py-2">ŠS N</th>
-                <th className="border px-4 py-2">ŠS spolu</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.map((r) => (
-                <tr key={r.name} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2 text-left font-semibold text-primary-700">
-                    {r.name}
-                  </td>
-                  <td className="border px-4 py-2">{r.D}</td>
-                  <td className="border px-4 py-2">{r.N}</td>
-                  <td className="border px-4 py-2">{r.Spolu}</td>
-                  <td className="border px-4 py-2">{r.RD}</td>
-                  <td className="border px-4 py-2">{r.PN}</td>
-                  <td className="border px-4 py-2">{r.X}</td>
-                  <td className="border px-4 py-2">{r["ŠS_D"]}</td>
-                  <td className="border px-4 py-2">{r["ŠS_N"]}</td>
-                  <td className="border px-4 py-2">{r["ŠS"]}</td>
+          <>
+            <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="w-[15rem] border px-4 py-2 text-left">Meno</th>
+                  <th className="border px-4 py-2">D</th>
+                  <th className="border px-4 py-2">N</th>
+                  <th className="border px-4 py-2">Spolu</th>
+                  <th className="border px-4 py-2">RD</th>
+                  <th className="border px-4 py-2">PN</th>
+                  <th className="border px-4 py-2">X</th>
+                  <th className="border px-4 py-2">ŠS D</th>
+                  <th className="border px-4 py-2">ŠS N</th>
+                  <th className="border px-4 py-2">ŠS spolu</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {stats.map((r) => (
+                  <tr key={r.name} className="hover:bg-gray-50">
+                    <td className="border px-4 py-2 text-left font-semibold text-primary-700">
+                      {r.name}
+                    </td>
+                    <td className="border px-4 py-2">{r.D}</td>
+                    <td className="border px-4 py-2">{r.N}</td>
+                    <td className="border px-4 py-2">{r.Spolu}</td>
+                    <td className="border px-4 py-2">{r.RD}</td>
+                    <td className="border px-4 py-2">{r.PN}</td>
+                    <td className="border px-4 py-2">{r.X}</td>
+                    <td className="border px-4 py-2">{r["ŠS_D"]}</td>
+                    <td className="border px-4 py-2">{r["ŠS_N"]}</td>
+                    <td className="border px-4 py-2">{r["ŠS"]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <StatisticsLegend />
+          </>
         )}
       </div>
     </div>
