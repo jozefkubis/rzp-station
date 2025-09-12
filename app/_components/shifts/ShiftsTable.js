@@ -9,6 +9,7 @@ import {
   upsertRequest,
   upsertShift,
 } from "@/app/_lib/actions";
+import { getHolidaySetForMonth } from "@/app/_lib/holidays";
 import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
@@ -36,19 +37,16 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
   const year = date.getFullYear();
   const mIndex = date.getMonth(); // 0-based
-  const month = mIndex + 1; // 1-12 pre tvoju util funkciu
+  const month = mIndex + 1; // 1-12 pre util funkciu
   const days = getDaysArray(year, month);
-  const monthName = MONTHS()[mIndex]; // jedno priame načítanie
-
-  // const contract = shifts.map((s) => s.profiles.contract);
-
+  const monthName = MONTHS()[mIndex];
   const monthLabel =
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
 
   /* ---------- CSS grid template ---------- */
   const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
-  // MARK: OPTIMISTIC UPDATES PRE VLOZENIE A VYMAZANIE ZAZNAMOV
+  // MARK: OPTIMISTIC UPDATES PRE VLOŽENIE A VYMAZANIE ZÁZNAMOV
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
     (current, action) => {
@@ -88,10 +86,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -132,7 +130,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
   const [isPending, startTransition] = useTransition();
 
-  // MARK: HANDELERS
+  // MARK: HANDLERY
   const handleTopSelect = useCallback((userId, dateStr) => {
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
@@ -215,7 +213,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     router.refresh();
   }
 
-  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZAZNAMOV DO ROSTERU
+  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZÁZNAMOV DO ROSTERU
   const roster = Object.values(
     optimisticShifts.reduce((acc, row) => {
       const id = row.user_id;
@@ -225,7 +223,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           full_name: row.profiles.full_name,
           email: row.profiles.email,
           avatar: row.profiles.avatar_url,
-          contract: Number(row.profiles?.contract ?? 1), // ⟵ dôležité
+          contract: Number(row.profiles?.contract ?? 1),
           shifts: [],
           order: row.profiles.order_index,
         };
@@ -241,7 +239,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
     }, {}),
   ).sort((a, b) => a.order - b.order);
 
-  // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZACHRANÁRA
+  // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZÁCHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
     if (act.type === "DELETE") {
       return curr.filter((u) => u.user_id !== act.id);
@@ -266,6 +264,9 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
   // Plná mesačná norma (1.0 úväzok) — pre header
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
+
+  // MARK: ŠTÁTNE SVIATKY — set dátumov pre daný mesiac
+  const holidaySet = getHolidaySetForMonth(year, month);
 
   // MARK: RETURN.........................................................................
   return (
@@ -297,14 +298,23 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
 
           <DaysMonth>UV</DaysMonth>
 
-          {days.map(({ day, isWeekend, isToday }) => {
+          {days.map(({ day, isWeekend, isToday }, idx) => {
+            const yyyy = String(year);
+            const mm = String(month).padStart(2, "0");
+            const dd = String(day).padStart(2, "0");
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+            const isHoliday = holidaySet.has(dateStr);
+
             const headBg = isToday
               ? "bg-primary-100 font-semibold"
-              : isWeekend
-                ? "bg-amber-100"
-                : "bg-white";
+              : isHoliday
+                ? "bg-holiday"
+                : isWeekend
+                  ? "bg-amber-100"
+                  : "bg-white";
+
             return (
-              <DaysMonth key={day} headBg={headBg}>
+              <DaysMonth key={idx} headBg={headBg}>
                 {day}
               </DaysMonth>
             );
@@ -341,9 +351,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
               onBottomSelect={handleBottomSelect}
               rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
               roster={roster}
-              shiftStats={rowShiftStats} // ⟵ per-user stats
-              normHours={perUserNorm} // ⟵ per-user norma (pre NČ výpočet)
+              shiftStats={rowShiftStats}
+              normHours={perUserNorm}
               contract={contract}
+              holidaySet={holidaySet}
             />
           );
         })}

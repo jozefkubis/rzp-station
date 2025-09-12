@@ -8,6 +8,7 @@ const config = {
   theme: {
     extend: {
       colors: {
+        holiday: "#FFF144",
         primary: {
           50: "#E1E8EF",
           100: "#D4DEE7",
@@ -91,7 +92,7 @@ const config = {
         "login-bg": "url('/bg-login.png')",
       },
       screens: {
-        xs: '480px',   // vlastný najmenší breakpoint
+        xs: "480px", // vlastný najmenší breakpoint
       },
       // animation: {
       //   "pulse-gradient": "pulse-gradient 6s ease-in-out infinite",

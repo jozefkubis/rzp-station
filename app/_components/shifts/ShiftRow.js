@@ -18,7 +18,8 @@ export default function ShiftRow({
   onReorderOptimistic,
   roster,
   shiftStats,
-  contract
+  contract,
+  holidaySet,
 }) {
   // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
   const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
@@ -54,19 +55,24 @@ export default function ShiftRow({
         {user.full_name}
       </AllParamedics>
 
-      <ContractRow cellBg={rowBg} rowBg={rowBg}>{contract}</ContractRow>
+      <ContractRow cellBg={rowBg} rowBg={rowBg}>
+        {contract}
+      </ContractRow>
 
       {days.map(({ dateStr, isWeekend, isToday }) => {
         const found = user.shifts.find((s) => s.date === dateStr);
 
         const cellContent = found?.shift_type ?? ""; // horná bunka
         const bottomContent = found?.request_type ?? ""; // spodná bunka
+        const isHoliday = holidaySet.has(dateStr);
 
         const cellBg = isToday
           ? "bg-primary-100 font-semibold"
-          : isWeekend
-            ? "bg-amber-100"
-            : rowBg;
+          : isHoliday
+            ? "bg-holiday"
+            : isWeekend
+              ? "bg-amber-100"
+              : rowBg;
 
         return (
           <div
