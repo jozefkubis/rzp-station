@@ -14,16 +14,23 @@ import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
 import DaysMonth from "./DaysMonth";
+import DeleteAllShifts from "./DeleteAllShifts";
+import DeleteOnlyShifts from "./DeleteOnlyShifts";
+import GenerateRoster from "./GenerateRoster";
+import GenerateShifts from "./GenerateShifts";
 import { getDaysArray, MONTHS, shiftTableStats } from "./helpers_shifts";
+import InsertShiftButton from "./InsertShiftButton";
 import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
+import { ShiftsTableLegend } from "./ShiftsTableLegend";
+import ValidateButton from "./ValidateButton";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
+export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled, profiles, onInsertEmptyShift }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -86,10 +93,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -296,7 +303,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
         >
           <ParamedName>Záchranári</ParamedName>
 
-          <DaysMonth>UV</DaysMonth>
+          <DaysMonth>ÚV</DaysMonth>
 
           {days.map(({ day, isWeekend, isToday }, idx) => {
             const yyyy = String(year);
@@ -358,6 +365,24 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled }) {
             />
           );
         })}
+
+        <div className=" w-[100%] pt-8 pb-6 px-6 flex justify-between gap-2">
+          <div>
+            <ShiftsTableLegend />
+          </div>
+
+          <div className="flex gap-2">
+            <InsertShiftButton
+              profiles={profiles}
+              onInsertEmptyShift={onInsertEmptyShift}
+            />
+            <GenerateRoster />
+            <GenerateShifts />
+            <DeleteOnlyShifts />
+            <ValidateButton />
+            <DeleteAllShifts />
+          </div>
+        </div>
       </MainShiftsTable>
 
       {/* modals */}

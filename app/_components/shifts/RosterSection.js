@@ -2,14 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
-import DeleteAllShifts from "./DeleteAllShifts";
-import DeleteOnlyShifts from "./DeleteOnlyShifts";
-import GenerateRoster from "./GenerateRoster";
-import GenerateShifts from "./GenerateShifts";
-import InsertShiftButton from "./InsertShiftButton";
 import ShiftsTable from "./ShiftsTable";
-import { ShiftsTableLegend } from "./ShiftsTableLegend";
-import ValidateButton from "./ValidateButton";
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
@@ -97,25 +90,10 @@ export default function RosterSection({
             goTo={goTo}
             shiftsOffset={shiftsOptimOffset}
             disabled={isPending}
+            profiles={diffProfiles}
+            onInsertEmptyShift={handleInsertEmptyShift}
           />
         </div>
-      </div>
-
-      {/* 2️⃣ tlačidlá pod tabuľkou – zostaňme pri rovnakom odsadení */}
-      <div className="mt-6 flex max-w-full justify-center gap-2 px-8 2xl:px-36">
-        <InsertShiftButton
-          profiles={diffProfiles}
-          onInsertEmptyShift={handleInsertEmptyShift}
-        />
-        <GenerateRoster />
-        <GenerateShifts />
-        <DeleteOnlyShifts />
-        <ValidateButton />
-        <DeleteAllShifts />
-      </div>
-
-      <div className="mt-6 flex w-full gap-2 px-8 2xl:px-16">
-        <ShiftsTableLegend />
       </div>
     </div>
   );

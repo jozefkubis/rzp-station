@@ -29,8 +29,10 @@ export default function GenerateRoster() {
 
   return (
     isPending ? <ShiftLoader /> :
-      <Button onClick={handleClick} disabled={isPending}>
-        Pridať všetkých záchranárov
-      </Button>
+      <div>
+        <Button onClick={handleClick} disabled={isPending}>
+          Pridať všetkých záchranárov
+        </Button>
+      </div>
   );
 }

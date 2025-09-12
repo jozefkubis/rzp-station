@@ -29,8 +29,10 @@ export default function GenerateShifts() {
 
   return (
     isPending ? <ShiftLoader /> :
-      <Button onClick={handleClick} disabled={isPending}>
-        Generuj služby
-      </Button>
+      <div>
+        <Button onClick={handleClick} disabled={isPending}>
+          Generuj služby
+        </Button>
+      </div>
   )
 }
