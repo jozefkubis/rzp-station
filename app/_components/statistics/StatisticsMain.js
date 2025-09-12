@@ -1,11 +1,5 @@
 "use client";
 
-// Ciele:
-// 1) Počítať D, N, RD, PN, X
-// 2) Počítať smeny na štátne sviatky osobitne za deň (ŠS D) a noc (ŠS N)
-// 3) Zobraziť aj celkový počet odpracovaných smien (Spolu = D + N)
-// Pozn.: typy "DN"/"ND" sa berú ako deň + noc (t.j. pripočítame D aj N)
-
 import { getSlovakHolidaysForYear } from "@/app/_lib/holidays";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -49,17 +43,14 @@ export default function StatisticsMain({ shifts, statsOffset }) {
   // 5) Redukcia na štatistiky (meno -> počítadlá)
   const statsObj = thisYearRows.reduce(
     (acc, { name, type, request, dateFull }) => {
-      // Inicializácia počítadiel pre človeka
       if (!acc[name]) {
         acc[name] = { D: 0, N: 0, RD: 0, PN: 0, X: 0, ŠS_D: 0, ŠS_N: 0 };
       }
 
-      // Pomocné príznaky typu smeny
       const isDay = ["D", "VD", "ZD"].includes(type);
       const isNight = ["N", "VN", "ZN"].includes(type);
-      const isBoth = ["DN", "ND"].includes(type); // berieme ako D + N
+      const isBoth = ["DN", "ND"].includes(type);
 
-      // 5a) D/N počítadlá (DN/ND = +1 do D aj N)
       if (isDay) acc[name].D++;
       if (isNight) acc[name].N++;
       if (isBoth) {
@@ -67,14 +58,11 @@ export default function StatisticsMain({ shifts, statsOffset }) {
         acc[name].N++;
       }
 
-      // 5b) RD/PN
       if (type.startsWith("RD")) acc[name].RD++;
       if (type.startsWith("PN")) acc[name].PN++;
 
-      // 5c) X (z requestov)
       if (["X", "XD", "XN"].includes(request)) acc[name].X++;
 
-      // 5d) Sviatky — len odpracované smeny (deň/noc/obidve)
       const workedHolidays = isDay || isNight || isBoth;
       if (workedHolidays && holidays.has(dateFull)) {
         if (isDay) acc[name]["ŠS_D"]++;
@@ -95,8 +83,8 @@ export default function StatisticsMain({ shifts, statsOffset }) {
     .map(([name, counts]) => ({
       name,
       ...counts,
-      ŠS: counts["ŠS_D"] + counts["ŠS_N"], // celkom sviatkových smien
-      Spolu: counts.D + counts.N, // celkový počet odpracovaných smien
+      ŠS: counts["ŠS_D"] + counts["ŠS_N"],
+      Spolu: counts.D + counts.N,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, "sk"));
 
@@ -122,43 +110,46 @@ export default function StatisticsMain({ shifts, statsOffset }) {
           <ArrowForwardStatistics goToNextYear={goToNextYear} />
         </YearHeadStatistics>
 
-        <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="w-[15rem] border px-4 py-2 text-left">Meno</th>
-              {/* odpracované smeny */}
-              <th className="border px-4 py-2">D</th>
-              <th className="border px-4 py-2">N</th>
-              <th className="border px-4 py-2">Spolu</th>
-              {/* ostatné typy */}
-              <th className="border px-4 py-2">RD</th>
-              <th className="border px-4 py-2">PN</th>
-              <th className="border px-4 py-2">X</th>
-              {/* sviatky */}
-              <th className="border px-4 py-2">ŠS D</th>
-              <th className="border px-4 py-2">ŠS N</th>
-              <th className="border px-4 py-2">ŠS spolu</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stats.map((r) => (
-              <tr key={r.name} className="hover:bg-gray-50">
-                <td className="border px-4 py-2 text-left font-semibold text-primary-700">
-                  {r.name}
-                </td>
-                <td className="border px-4 py-2">{r.D}</td>
-                <td className="border px-4 py-2">{r.N}</td>
-                <td className="border px-4 py-2">{r.Spolu}</td>
-                <td className="border px-4 py-2">{r.RD}</td>
-                <td className="border px-4 py-2">{r.PN}</td>
-                <td className="border px-4 py-2">{r.X}</td>
-                <td className="border px-4 py-2">{r["ŠS_D"]}</td>
-                <td className="border px-4 py-2">{r["ŠS_N"]}</td>
-                <td className="border px-4 py-2">{r["ŠS"]}</td>
+        {stats.length === 0 ? (
+          <div className="flex h-60 items-center justify-center text-xl text-primary-700">
+            Žiadne štatistiky pre tento rok nie sú k dispozícii
+          </div>
+        ) : (
+          <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="w-[15rem] border px-4 py-2 text-left">Meno</th>
+                <th className="border px-4 py-2">D</th>
+                <th className="border px-4 py-2">N</th>
+                <th className="border px-4 py-2">Spolu</th>
+                <th className="border px-4 py-2">RD</th>
+                <th className="border px-4 py-2">PN</th>
+                <th className="border px-4 py-2">X</th>
+                <th className="border px-4 py-2">ŠS D</th>
+                <th className="border px-4 py-2">ŠS N</th>
+                <th className="border px-4 py-2">ŠS spolu</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {stats.map((r) => (
+                <tr key={r.name} className="hover:bg-gray-50">
+                  <td className="border px-4 py-2 text-left font-semibold text-primary-700">
+                    {r.name}
+                  </td>
+                  <td className="border px-4 py-2">{r.D}</td>
+                  <td className="border px-4 py-2">{r.N}</td>
+                  <td className="border px-4 py-2">{r.Spolu}</td>
+                  <td className="border px-4 py-2">{r.RD}</td>
+                  <td className="border px-4 py-2">{r.PN}</td>
+                  <td className="border px-4 py-2">{r.X}</td>
+                  <td className="border px-4 py-2">{r["ŠS_D"]}</td>
+                  <td className="border px-4 py-2">{r["ŠS_N"]}</td>
+                  <td className="border px-4 py-2">{r["ŠS"]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
