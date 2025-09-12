@@ -19,7 +19,7 @@ import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
-import ShiftChoiceModalBottom from "./ShiftChoisceModalBottom";
+import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
 
 /* ─────────────────────────────────────────────────────────────── */
