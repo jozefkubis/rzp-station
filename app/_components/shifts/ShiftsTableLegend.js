@@ -37,7 +37,7 @@ export function ShiftsTableLegend() {
           </li>
           <li className="flex gap-2">
             <div className="h-[1.3rem] w-[1.3rem] bg-holiday"></div> – štátny
-            sviatk
+            sviatok
           </li>
           <li className="flex gap-2">
             <div className="h-[1.3rem] w-[1.3rem] bg-amber-100"></div> – weekend
