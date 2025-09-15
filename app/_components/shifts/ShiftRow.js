@@ -42,7 +42,7 @@ export default function ShiftRow({
 
   return (
     <div
-      className={`grid text-sm ${rowBg} hover:bg-blue-100`}
+      className={`grid text-sm ${rowBg} border-r border-slate-200 hover:bg-blue-100`}
       style={{ gridTemplateColumns: colTemplate }}
     >
       <AllParamedics

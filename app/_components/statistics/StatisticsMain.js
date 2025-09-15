@@ -104,7 +104,7 @@ export default function StatisticsMain({ shifts, statsOffset }) {
   // MARK: RETURN
   return (
     <div className="h-screen">
-      <div className="flex h-full flex-col gap-4 px-[8rem] py-[4rem]">
+      <div className="flex h-full flex-col px-[8rem] py-[4rem]">
         <YearHeadStatistics>
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
           Štatistiky {thisYear}

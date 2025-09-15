@@ -30,7 +30,14 @@ import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
 
 /* ─────────────────────────────────────────────────────────────── */
-export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled, profiles, onInsertEmptyShift }) {
+export default function ShiftsTable({
+  shifts,
+  goTo,
+  shiftsOffset,
+  disabled,
+  profiles,
+  onInsertEmptyShift,
+}) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -93,10 +100,10 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled, prof
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -298,7 +305,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled, prof
 
         {/* hlavička dní */}
         <div
-          className="sticky top-0 z-30 grid"
+          className="sticky top-0 z-30 grid border-r border-t border-slate-200"
           style={{ gridTemplateColumns: colTemplate }}
         >
           <ParamedName>Záchranári</ParamedName>
@@ -366,7 +373,7 @@ export default function ShiftsTable({ shifts, goTo, shiftsOffset, disabled, prof
           );
         })}
 
-        <div className=" w-[100%] pt-8 pb-6 px-6 flex justify-between gap-2">
+        <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">
           <div>
             <ShiftsTableLegend />
           </div>
