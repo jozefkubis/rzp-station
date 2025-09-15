@@ -754,7 +754,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1;d <= daysInMonth;d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -916,7 +916,7 @@ export async function generateShiftsAuto(m) {
 
     // 3) dorovnaj zvyšok tým, čo mali najväčšie zvyšky 'frac'
     raw.sort((a, b) => b.frac - a.frac); // zostupne podľa frac
-    for (let i = 0;i < left;i++) raw[i].floor++;
+    for (let i = 0; i < left; i++) raw[i].floor++;
 
     // výsledok: Map<userId, pocet>
     return new Map(raw.map((r) => [r.id, r.floor]));
@@ -1016,7 +1016,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1;i > 0;i--) {
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1155,7 +1155,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1186,7 +1186,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0;k < need;k++) {
+      for (let k = 0; k < need; k++) {
         const uid =
           // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
@@ -1304,12 +1304,12 @@ export async function validateShifts(m = 0) {
   const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  const prevDateStr = (dateStr) => {
-    const [y, m2, d] = dateStr.split("-").map(Number);
-    const dt = new Date(y, m2 - 1, d);
-    dt.setDate(dt.getDate() - 1);
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
-  };
+  // const prevDateStr = (dateStr) => {
+  //   const [y, m2, d] = dateStr.split("-").map(Number);
+  //   const dt = new Date(y, m2 - 1, d);
+  //   dt.setDate(dt.getDate() - 1);
+  //   return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  // };
 
   const labelSK = (t) => (t === "D" ? "Denná" : t === "N" ? "Nočná" : t);
 
@@ -1341,7 +1341,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1364,21 +1364,21 @@ export async function validateShifts(m = 0) {
   }
 
   // ==== helper na pravidlá (ak budeš chcieť použiť) ====
-  const hasNightWithin2Days = (uid, dateStr) => {
-    const d1 = prevDateStr(dateStr);
-    const d2 = prevDateStr(d1);
-    const m1 = existType.get(d1);
-    const m2 = existType.get(d2);
-    const t1 = m1 ? norm(m1.get(uid)) : null;
-    const t2 = m2 ? norm(m2.get(uid)) : null;
-    return t1 === "N" || t2 === "N";
-  };
+  // const hasNightWithin2Days = (uid, dateStr) => {
+  //   const d1 = prevDateStr(dateStr);
+  //   const d2 = prevDateStr(d1);
+  //   const m1 = existType.get(d1);
+  //   const m2 = existType.get(d2);
+  //   const t1 = m1 ? norm(m1.get(uid)) : null;
+  //   const t2 = m2 ? norm(m2.get(uid)) : null;
+  //   return t1 === "N" || t2 === "N";
+  // };
 
   // ==== validácia po dňoch ====
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
