@@ -1304,22 +1304,15 @@ export async function validateShifts(m = 0) {
   const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  // const prevDateStr = (dateStr) => {
-  //   const [y, m2, d] = dateStr.split("-").map(Number);
-  //   const dt = new Date(y, m2 - 1, d);
-  //   dt.setDate(dt.getDate() - 1);
-  //   return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
-  // };
-
   const labelSK = (t) => (t === "D" ? "Denná" : t === "N" ? "Nočná" : t);
 
-  // ==== definuj požadované pokrytie na deň ====
-  const coverage = { D: 2, N: 2 }; // uprav podľa potreby
+  // ==== požadované pokrytie na deň ====
+  const coverage = { D: 2, N: 2 };
 
-  // ==== načítaj všetky služby v mesiaci (iba to, čo treba) ====
+  // ==== načítaj služby v mesiaci ====
   const { data, error } = await supabase
     .from("shifts")
-    .select("user_id, date, shift_type")
+    .select("user_id, date, shift_type, request_type")
     .gte("date", from)
     .lte("date", to);
 
@@ -1328,18 +1321,26 @@ export async function validateShifts(m = 0) {
     return { error: error.message };
   }
 
-  // ==== spoločná normalizácia typov (rovnaká ako v generate) ====
-  function norm(t) {
+  // ---- normalizácie ----
+  const EXCLUDE_REQ = new Set(["BY", "STR", "TER", "ZA3", "ZA4"]);
+
+  const normShift = (t) => {
     if (t == null) return null;
     const s = String(t).trim().toUpperCase();
-    if (s === "ZD" || s === "VD") return "D";
-    if (s === "ZN" || s === "VN") return "N";
-    return s; // "D","N","RD","PN","X", ...
-  }
+    if (s === "D" || s === "ZD" || s === "VD") return "D";
+    if (s === "N" || s === "ZN" || s === "VN") return "N";
+    return null; // ostatné typy sa do pokrytia nepočítajú
+  };
+
+  const normReq = (r) => {
+    if (r == null) return null;
+    const s = String(r).trim().toUpperCase();
+    return EXCLUDE_REQ.has(s) ? s : null;
+  };
 
   // ==== indexy: per-day a per-date->user ====
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
-  const existType = new Map(); // date -> Map(uid -> "D"|"N"|null)
+  const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
   for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
@@ -1351,28 +1352,21 @@ export async function validateShifts(m = 0) {
     const d = row.date;
     if (!byDate.has(d)) continue;
 
-    const t = norm(row.shift_type); // ❗️teraz sa zD/zN zmení na D/N
+    const shift = normShift(row.shift_type);
+    const req = normReq(row.request_type);
     const uid = row.user_id;
 
-    if (!existType.has(d)) existType.set(d, new Map());
-    existType.get(d).set(uid, t || null);
+    // eviduj, že človek má v daný deň D/N (užitočné pre ďalšie pravidlá)
+    existType.get(d).set(uid, shift || null);
 
-    if (t === "D" || t === "N") {
-      byDate.get(d)[t].add(uid);
+    // >>> HLAVNÁ ZMENA <<<
+    // Do pokrytia (2×D, 2×N) započítaj D/N len vtedy, ak NIE je
+    // prítomná požiadavka z EXCLUDE_REQ (BY, STR, TER, ZA3, ZA4).
+    if ((shift === "D" || shift === "N") && !req) {
+      byDate.get(d)[shift].add(uid);
       byDate.get(d).ANY.add(uid);
     }
   }
-
-  // ==== helper na pravidlá (ak budeš chcieť použiť) ====
-  // const hasNightWithin2Days = (uid, dateStr) => {
-  //   const d1 = prevDateStr(dateStr);
-  //   const d2 = prevDateStr(d1);
-  //   const m1 = existType.get(d1);
-  //   const m2 = existType.get(d2);
-  //   const t1 = m1 ? norm(m1.get(uid)) : null;
-  //   const t2 = m2 ? norm(m2.get(uid)) : null;
-  //   return t1 === "N" || t2 === "N";
-  // };
 
   // ==== validácia po dňoch ====
   const days = [];
@@ -1385,7 +1379,6 @@ export async function validateShifts(m = 0) {
     const countN = rec.N.size;
     const issues = [];
 
-    // Pokrytie – nedostatok/nadbytok
     for (const type of ["D", "N"]) {
       const have = type === "D" ? countD : countN;
       const need = coverage[type];
