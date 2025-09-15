@@ -65,8 +65,19 @@ export default function ShiftRow({
         const cellContent = found?.shift_type ?? ""; // horná bunka
         const bottomContent = found?.request_type ?? ""; // spodná bunka
         const isHoliday = holidaySet.has(dateStr);
+        const rd = found?.shift_type === "RD";
 
-        const cellBg = isToday
+        const cellBg = rd
+          ? "bg-green-500"
+          : isToday
+            ? "bg-primary-100 font-semibold"
+            : isHoliday
+              ? "bg-holiday"
+              : isWeekend
+                ? "bg-amber-100"
+                : rowBg;
+
+        const cellBgBottom = isToday
           ? "bg-primary-100 font-semibold"
           : isHoliday
             ? "bg-holiday"
@@ -91,7 +102,7 @@ export default function ShiftRow({
             {/* spodný rad */}
             <RowDaysBottom
               dateStr={dateStr}
-              cellBg={cellBg}
+              cellBg={cellBgBottom}
               onSelect={(d) => onBottomSelect(user.user_id, d)}
             >
               {bottomContent}
