@@ -127,9 +127,9 @@ export default function StatisticsMain({ shifts, statsOffset }) {
                   <th className="border px-4 py-2">RD</th>
                   <th className="border px-4 py-2">PN</th>
                   <th className="border px-4 py-2">X</th>
-                  <th className="border px-4 py-2">ŠS D</th>
-                  <th className="border px-4 py-2">ŠS N</th>
-                  <th className="border px-4 py-2">ŠS spolu</th>
+                  {/* <th className="border px-4 py-2">ŠS D</th> */}
+                  {/* <th className="border px-4 py-2">ŠS N</th> */}
+                  <th className="border px-4 py-2">ŠS</th>
                 </tr>
               </thead>
               <tbody>
@@ -144,8 +144,8 @@ export default function StatisticsMain({ shifts, statsOffset }) {
                     <td className="border px-4 py-2">{r.RD}</td>
                     <td className="border px-4 py-2">{r.PN}</td>
                     <td className="border px-4 py-2">{r.X}</td>
-                    <td className="border px-4 py-2">{r["ŠS_D"]}</td>
-                    <td className="border px-4 py-2">{r["ŠS_N"]}</td>
+                    {/* <td className="border px-4 py-2">{r["ŠS_D"]}</td> */}
+                    {/* <td className="border px-4 py-2">{r["ŠS_N"]}</td> */}
                     <td className="border px-4 py-2">{r["ŠS"]}</td>
                   </tr>
                 ))}

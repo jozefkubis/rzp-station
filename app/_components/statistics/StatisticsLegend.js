@@ -18,14 +18,14 @@ export function StatisticsLegend() {
         <li>
           <strong>X</strong> – voľno (požiadavka)
         </li>
-        <li>
+        {/* <li>
           <strong>ŠS D</strong> – denná smena počas štátneho sviatku
         </li>
         <li>
           <strong>ŠS N</strong> – nočná smena počas štátneho sviatku
-        </li>
+        </li> */}
         <li>
-          <strong>ŠS spolu</strong> – všetky smeny počas štátnych sviatkov
+          <strong>ŠS</strong> – smeny počas štátnych sviatkov
         </li>
       </ul>
     </div>
