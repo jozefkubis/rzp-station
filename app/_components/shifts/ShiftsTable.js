@@ -258,19 +258,6 @@ export default function ShiftsTable({
       return curr.filter((u) => u.user_id !== act.id);
     }
 
-    if (act.type === "MOVE") {
-      const index = curr.findIndex((u) => u.user_id === act.userId);
-      const newIndex = act.direction === "up" ? index - 1 : index + 1;
-      if (index < 0 || newIndex < 0 || newIndex >= curr.length) return curr;
-
-      const updated = [...curr];
-      const temp = updated[index];
-      updated[index] = updated[newIndex];
-      updated[newIndex] = temp;
-
-      return updated;
-    }
-
     return curr;
   });
 
