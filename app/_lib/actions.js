@@ -398,7 +398,8 @@ export async function getShiftsForMonth({ year, month }) {
     .from("shifts")
     .select("*, profiles!inner (full_name, avatar_url)")
     .gte("date", from)
-    .lte("date", to);
+    .lte("date", to)
+    .order("date", { ascending: true });
 
   if (error) throw error;
   return data;
