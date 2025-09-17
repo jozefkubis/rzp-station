@@ -100,10 +100,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -239,7 +239,6 @@ export default function ShiftsTable({
           avatar: row.profiles.avatar_url,
           contract: Number(row.profiles?.contract ?? 1),
           shifts: [],
-          order: row.profiles.order_index,
         };
       }
       acc[id].shifts.push({
@@ -251,7 +250,7 @@ export default function ShiftsTable({
 
       return acc;
     }, {}),
-  ).sort((a, b) => a.order - b.order);
+  );
 
   // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZÁCHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
@@ -352,13 +351,6 @@ export default function ShiftsTable({
               key={p.user_id}
               user={p}
               onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-              onReorderOptimistic={(act) =>
-                apply({
-                  type: "MOVE",
-                  userId: act.userId,
-                  direction: act.direction,
-                })
-              }
               days={days}
               colTemplate={colTemplate}
               onTopSelect={handleTopSelect}

@@ -1,10 +1,9 @@
 "use client";
 
-import { deleteProfileFromRoster, swapOrder } from "@/app/_lib/actions";
+import { deleteProfileFromRoster } from "@/app/_lib/actions";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import toast from "react-hot-toast";
-import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import ConfirmDelete from "../ConfirmDelete";
 import Modal from "../Modal";
 
@@ -12,7 +11,6 @@ export default function AllParamedics({
   children,
   user,
   onDeleteOptimistic,
-  onReorderOptimistic,
   roster,
   rowBg,
 }) {
@@ -44,37 +42,7 @@ export default function AllParamedics({
     }
   }
 
-  async function handleReorder(dir) {
-    // nájdeme aktuálnu pozíciu a suseda podľa ZOBRAZENÉHO rostra
-    const index = roster.findIndex((u) => u.user_id === user.user_id);
-    if (index === -1) return;
-
-    const neighborIndex = dir === "up" ? index - 1 : index + 1;
-    const neighbor = roster[neighborIndex];
-
-    if (!neighbor) {
-      // na kraji – nič nemeň
-      return;
-    }
-
-    // 1) Optimistické prehodenie v UI
-    startTransition(() =>
-      onReorderOptimistic({ userId: user.user_id, direction: dir }),
-    );
-
-    // 2) Reálne prehodenie na serveri presne s týmto susedom
-    try {
-      const res = await swapOrder({ aId: user.user_id, bId: neighbor.user_id });
-      if (res?.error) {
-        throw new Error(res.error);
-      }
-      router.refresh();
-    } catch (err) {
-      toast.error("Nepodarilo sa zmeniť poradie");
-    }
-  }
-
-  const currentIdx = roster.findIndex((u) => u.user_id === user.user_id);
+  // const currentIdx = roster.findIndex((u) => u.user_id === user.user_id);
 
   return (
     <>
@@ -86,27 +54,8 @@ export default function AllParamedics({
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between hover:scale-105"
           onClick={handleClick}
         >
-          {currentIdx + 1}. {children}
+          {children}
         </button>
-
-        <div className="flex flex-col gap-3 hover:scale-150">
-          <button
-            type="button"
-            disabled={currentIdx <= 0}
-            onClick={() => handleReorder("up")}
-            aria-label="Posunúť hore"
-          >
-            <FaAngleUp className="h-3 w-3 text-primary-500 hover:font-bold hover:text-primary-700" />
-          </button>
-          <button
-            type="button"
-            disabled={currentIdx === -1 || currentIdx >= roster.length - 1}
-            onClick={() => handleReorder("down")}
-            aria-label="Posunúť dole"
-          >
-            <FaAngleDown className="h-3 w-3 text-primary-500 hover:font-bold hover:text-primary-700" />
-          </button>
-        </div>
       </div>
 
       {isOpenDeleteModal && (

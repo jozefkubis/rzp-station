@@ -15,7 +15,6 @@ export default function ShiftRow({
   onBottomSelect,
   rowBg,
   onDeleteOptimistic,
-  onReorderOptimistic,
   roster,
   shiftStats,
   contract,
@@ -48,7 +47,6 @@ export default function ShiftRow({
       <AllParamedics
         user={user}
         onDeleteOptimistic={onDeleteOptimistic}
-        onReorderOptimistic={onReorderOptimistic}
         roster={roster}
         rowBg={rowBg}
       >

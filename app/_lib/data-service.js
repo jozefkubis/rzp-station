@@ -311,7 +311,6 @@ export async function getAllShiftsForProfile(profileId) {
   profiles:profiles!shifts_user_id_fkey (
     id,
     full_name,
-    order_index,
     avatar_url
   )
 `,
@@ -352,7 +351,6 @@ export async function getShiftsForProfileForYear(
   profiles:profiles!shifts_user_id_fkey (
     id,
     full_name,
-    order_index,
     avatar_url
   )
 `,
