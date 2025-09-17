@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteProfileFromRoster, moveArrow } from "@/app/_lib/actions";
+import { deleteProfileFromRoster, swapOrder } from "@/app/_lib/actions";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import toast from "react-hot-toast";
@@ -21,7 +21,6 @@ export default function AllParamedics({
   const router = useRouter();
 
   function handleClick() {
-    // deleteProfileFromRoster(user.user_id);
     setIsOpenDeleteModal(true);
   }
 
@@ -29,6 +28,7 @@ export default function AllParamedics({
     // A) okamžitý optimistický update (riadok zmizne hneď)
     startTransition(() => onDeleteOptimistic(user.user_id));
     setIsDeleting(true);
+
     try {
       // B) skutočný DELETE na serveri
       await deleteProfileFromRoster(user.user_id);
@@ -45,12 +45,29 @@ export default function AllParamedics({
   }
 
   async function handleReorder(dir) {
+    // nájdeme aktuálnu pozíciu a suseda podľa ZOBRAZENÉHO rostra
+    const index = roster.findIndex((u) => u.user_id === user.user_id);
+    if (index === -1) return;
+
+    const neighborIndex = dir === "up" ? index - 1 : index + 1;
+    const neighbor = roster[neighborIndex];
+
+    if (!neighbor) {
+      // na kraji – nič nemeň
+      return;
+    }
+
+    // 1) Optimistické prehodenie v UI
     startTransition(() =>
       onReorderOptimistic({ userId: user.user_id, direction: dir }),
     );
 
+    // 2) Reálne prehodenie na serveri presne s týmto susedom
     try {
-      await moveArrow({ userId: user.user_id, direction: dir });
+      const res = await swapOrder({ aId: user.user_id, bId: neighbor.user_id });
+      if (res?.error) {
+        throw new Error(res.error);
+      }
       router.refresh();
     } catch (err) {
       toast.error("Nepodarilo sa zmeniť poradie");
@@ -75,7 +92,7 @@ export default function AllParamedics({
         <div className="flex flex-col gap-3 hover:scale-150">
           <button
             type="button"
-            disabled={currentIdx === 0}
+            disabled={currentIdx <= 0}
             onClick={() => handleReorder("up")}
             aria-label="Posunúť hore"
           >
@@ -83,7 +100,7 @@ export default function AllParamedics({
           </button>
           <button
             type="button"
-            disabled={currentIdx === roster.length - 1}
+            disabled={currentIdx === -1 || currentIdx >= roster.length - 1}
             onClick={() => handleReorder("down")}
             aria-label="Posunúť dole"
           >

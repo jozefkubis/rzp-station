@@ -569,43 +569,80 @@ export async function deleteProfileFromRoster(userId) {
 }
 
 // MARK: MOVE ARROW
-export async function moveArrow({ userId, direction }) {
+// export async function moveArrow({ userId, direction }) {
+//   const supabase = await createClient();
+
+//   const delta = direction === "up" ? -1 : 1;
+
+//   // 1️⃣ nájdi môj aktuálny index
+//   const { data: me } = await supabase
+//     .from("profiles")
+//     .select("order_index")
+//     .eq("id", userId)
+//     .single();
+
+//   if (!me) throw new Error("Profil nenájdený");
+
+//   const target = me.order_index + delta;
+
+//   // 2️⃣ nájdi človeka, ktorý má target index
+//   const { data: other } = await supabase
+//     .from("profiles")
+//     .select("id")
+//     .eq("order_index", target)
+//     .single();
+
+//   if (!other) return; // sme na kraji tabuľky – nič na swap
+
+//   // 3️⃣ prehoďte si čísla
+//   //    (dva UPDATE-y; pri pár desiatkach ľudí je to OK)
+//   await supabase
+//     .from("profiles")
+//     .update({ order_index: me.order_index })
+//     .eq("id", other.id);
+
+//   await supabase
+//     .from("profiles")
+//     .update({ order_index: target })
+//     .eq("id", userId);
+// }
+
+// MARK: SWAP ORDER (spoľahlivé prehodenie dvoch susedov v rostri)
+export async function swapOrder({ aId, bId }) {
   const supabase = await createClient();
 
-  const delta = direction === "up" ? -1 : 1;
-
-  // 1️⃣ nájdi môj aktuálny index
-  const { data: me } = await supabase
+  // načítaj aktuálne indexy
+  const { data: a, error: ea } = await supabase
     .from("profiles")
     .select("order_index")
-    .eq("id", userId)
+    .eq("id", aId)
+    .single();
+  const { data: b, error: eb } = await supabase
+    .from("profiles")
+    .select("order_index")
+    .eq("id", bId)
     .single();
 
-  if (!me) throw new Error("Profil nenájdený");
+  if (ea || eb || !a || !b) return;
 
-  const target = me.order_index + delta;
-
-  // 2️⃣ nájdi človeka, ktorý má target index
-  const { data: other } = await supabase
+  // prehodenie v JEDNOM SQL (2 riadky naraz) – vyhne sa kolízii unique constraintu
+  const { error } = await supabase
     .from("profiles")
-    .select("id")
-    .eq("order_index", target)
-    .single();
+    .upsert(
+      [
+        { id: aId, order_index: b.order_index },
+        { id: bId, order_index: a.order_index },
+      ],
+      { onConflict: "id" }
+    );
 
-  if (!other) return; // sme na kraji tabuľky – nič na swap
-
-  // 3️⃣ prehoďte si čísla
-  //    (dva UPDATE-y; pri pár desiatkach ľudí je to OK)
-  await supabase
-    .from("profiles")
-    .update({ order_index: me.order_index })
-    .eq("id", other.id);
-
-  await supabase
-    .from("profiles")
-    .update({ order_index: target })
-    .eq("id", userId);
+  if (error) {
+    console.error("swapOrder error", error);
+    return { error: "Nepodarilo sa zmeniť poradie" };
+  }
+  return { success: true };
 }
+
 
 // MARK: UPSERT REQUEST
 export async function upsertRequest(userId, dateStr, reqType, hours) {
@@ -754,7 +791,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -916,7 +953,7 @@ export async function generateShiftsAuto(m) {
 
     // 3) dorovnaj zvyšok tým, čo mali najväčšie zvyšky 'frac'
     raw.sort((a, b) => b.frac - a.frac); // zostupne podľa frac
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     // výsledok: Map<userId, pocet>
     return new Map(raw.map((r) => [r.id, r.floor]));
@@ -1016,7 +1053,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1155,7 +1192,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1186,7 +1223,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
@@ -1342,7 +1379,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1372,7 +1409,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
