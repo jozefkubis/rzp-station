@@ -54,7 +54,7 @@ export default function AllParamedics({
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between hover:scale-105"
           onClick={handleClick}
         >
-          {children}
+          {/* {currentIdx + 1}.*/} {children}
         </button>
       </div>
 
