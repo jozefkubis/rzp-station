@@ -399,11 +399,12 @@ export async function getShiftsForMonth({ year, month }) {
     .from("shifts")
     .select("*, profiles!inner (full_name, avatar_url)")
     .gte("date", from)
+    .lte("date", to)
     .order("inserted_at", { ascending: true }) // ← poradie podľa vloženia
     .order("id", { ascending: true });        // tie-breaker, ak by mali rovnaký čas
 
   if (error) throw error;
-  return data;
+  return data ?? [];
 }
 
 // MARK: UPSER SHIFT

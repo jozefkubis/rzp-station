@@ -58,3 +58,19 @@ export function getYearMonthFromOffset(offset) {
   const dt = addMonths(base, intM); // date-fns spoľahlivo posunie mesiac
   return { year: dt.getFullYear(), month: dt.getMonth() + 1 }; // 1..12
 }
+
+export function buildRosterFromShifts(rows) {
+  const seen = new Set();
+  const roster = [];
+  for (const r of rows || []) {
+    if (!seen.has(r.user_id)) {
+      roster.push({
+        user_id: r.user_id,
+        full_name: r.profiles?.full_name ?? "",
+        avatar_url: r.profiles?.avatar_url ?? null,
+      });
+      seen.add(r.user_id);
+    }
+  }
+  return roster; // presne v poradí pridávania (inserted_at ASC)
+}
