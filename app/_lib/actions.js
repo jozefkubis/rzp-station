@@ -404,7 +404,7 @@ export async function getShiftsForMonth({ year, month }) {
     .order("id", { ascending: true });        // tie-breaker, ak by mali rovnaký čas
 
   if (error) throw error;
-  return data ?? [];
+  return data;
 }
 
 // MARK: UPSER SHIFT

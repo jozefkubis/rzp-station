@@ -132,7 +132,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   );
 
   const psychoCheckLeft = psychoDate
-    ? formatDaysLeft(getDaysUntilNextPsycho(psychoDate))
+    ? formatDaysLeft(getDaysUntilNextMedCheck(psychoDate))
     : "—";
 
   /* -------------------- render -------------------- */

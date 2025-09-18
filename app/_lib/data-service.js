@@ -187,20 +187,40 @@ export async function updateTask(task) {
 // }
 
 // MARK: GET ALL SHIFTS
-export default async function getAllShifts() {
+export default async function getAllShifts({ year, month } = {}) {
   const supabase = await createClient();
 
-  const { data: shifts, error } = await supabase
+  const q = supabase
     .from("shifts")
-    .select("*, profiles!shifts_user_id_fkey(*)");
+    .select(`
+      id,
+      user_id,
+      date,
+      inserted_at,
+      shift_type,
+      request_type,
+      request_hours,
+      profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
+    `)
+    .order("inserted_at", { ascending: true }) // stabilné poradie podľa vloženia
+    .order("id", { ascending: true });         // tie-breaker
 
+  if (year && month) {
+    const pad = (n) => String(n).padStart(2, "0");
+    const from = `${year}-${pad(month)}-01`;
+    const lastDay = new Date(year, month, 0).getDate();
+    const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+    q.gte("date", from).lte("date", to);       // 👈 filter mesiaca
+  }
+
+  const { data, error } = await q;
   if (error) {
     console.error("Supabase error – shifts:", error);
     throw error;
   }
-
-  return shifts;
+  return data ?? [];
 }
+
 
 // MARK: ADD SHIFT
 export async function addShift() {
