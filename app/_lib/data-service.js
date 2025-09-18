@@ -27,14 +27,14 @@ export async function getProfilesData(email) {
     .from("profiles")
     .select("*")
     .eq("email", email)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Chyba pri načítaní profilu:", error);
     return null;
   }
 
-  return profiles;
+  return profiles ?? null;
 }
 
 // MARK: GET PROFILE BY ID
@@ -45,15 +45,17 @@ export async function getProfile(id) {
     .from("profiles")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Chyba pri načítaní profilu:", error);
     return null;
   }
 
-  return profile;
+  // keď profil neexistuje, profile bude = null (a to je OK)
+  return profile ?? null;
 }
+
 
 // MARK: GET AVATAR
 export async function getAvatarUrl(email) {
@@ -63,7 +65,7 @@ export async function getAvatarUrl(email) {
     .from("profiles")
     .select("avatar_url")
     .eq("email", email)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Chyba pri načítaní avatar URL:", error);
@@ -81,7 +83,7 @@ export async function getUsername(email) {
     .from("profiles")
     .select("username")
     .eq("email", email)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Chyba pri načítaní používateľského mena:", error);

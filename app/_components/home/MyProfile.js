@@ -124,13 +124,16 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   }, [shifts, offset]);
 
   /* dni do periodických prehliadok */
+  const medDate = profile?.medCheckDate ?? null;
+  const psychoDate = profile?.psycho_check ?? null;
+
   const medCheckLeft = formatDaysLeft(
-    getDaysUntilNextMedCheck(profile.medCheckDate),
+    getDaysUntilNextMedCheck(medDate) // helper musí zniesť null
   );
-  const psychoCheckLeft =
-    profile.psycho_check != null
-      ? formatDaysLeft(getDaysUntilNextMedCheck(profile.psycho_check))
-      : null;
+
+  const psychoCheckLeft = psychoDate
+    ? formatDaysLeft(getDaysUntilNextPsycho(psychoDate))
+    : "—";
 
   /* -------------------- render -------------------- */
   return (

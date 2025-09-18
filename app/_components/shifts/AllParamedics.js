@@ -42,7 +42,7 @@ export default function AllParamedics({
     }
   }
 
-  // const currentIdx = roster.findIndex((u) => u.user_id === user.user_id);
+  const currentIdx = roster.findIndex((u) => u.user_id === user.user_id);
 
   return (
     <>
@@ -54,7 +54,7 @@ export default function AllParamedics({
           className="sticky left-0 z-20 flex cursor-pointer items-center justify-between hover:scale-105"
           onClick={handleClick}
         >
-          {/* {currentIdx + 1}.*/} {children}
+          {currentIdx + 1}. {children}
         </button>
       </div>
 

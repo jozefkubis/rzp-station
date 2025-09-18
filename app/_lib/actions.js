@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getTask } from "./data-service";
+import { monthKeyFromOffset } from "./date";
 
 // MARK: LOGIN
 export async function login(formData) {
@@ -398,8 +399,8 @@ export async function getShiftsForMonth({ year, month }) {
     .from("shifts")
     .select("*, profiles!inner (full_name, avatar_url)")
     .gte("date", from)
-    .lte("date", to)
-    .order("date", { ascending: true });
+    .order("inserted_at", { ascending: true }) // ← poradie podľa vloženia
+    .order("id", { ascending: true });        // tie-breaker, ak by mali rovnaký čas
 
   if (error) throw error;
   return data;
@@ -787,7 +788,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -948,7 +949,7 @@ export async function generateShiftsAuto(m) {
 
     // 3) dorovnaj zvyšok tým, čo mali najväčšie zvyšky 'frac'
     raw.sort((a, b) => b.frac - a.frac); // zostupne podľa frac
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     // výsledok: Map<userId, pocet>
     return new Map(raw.map((r) => [r.id, r.floor]));
@@ -1048,7 +1049,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1187,7 +1188,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1218,7 +1219,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
@@ -1374,7 +1375,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1404,7 +1405,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
@@ -1453,4 +1454,56 @@ export async function validateShifts(m = 0) {
       totalIssues,
     },
   };
+}
+
+//MARK: GET ROSTER
+export async function getRoster(m = 0) {
+  const supabase = await createClient();
+  const rosterKey = monthKeyFromOffset(m);
+
+  const { data, error } = await supabase
+    .from("roster_members")
+    .select(`
+      user_id,
+      created_at,
+      profiles:profiles!inner ( id, full_name, avatar_url )
+    `)
+    .eq("roster_key", rosterKey)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+
+  return (data || []).map(r => ({
+    user_id: r.user_id,
+    full_name: r.profiles?.full_name ?? "",
+    avatar_url: r.profiles?.avatar_url ?? null,
+  }));
+}
+
+//MARK: ADD PROFILE TO ROSTER
+export async function addProfileToRoster(userId, m = 0) {
+  const supabase = await createClient();
+  const rosterKey = monthKeyFromOffset(m);
+
+  const { error } = await supabase
+    .from("roster_members")
+    .insert([{ roster_key: rosterKey, user_id: userId }], { upsert: true });
+
+  if (error && !/duplicate key/i.test(error.message)) throw error;
+  return { success: true };
+}
+
+//MARK: REMOVE PROFILE FROM ROSTER
+export async function removeProfileFromRoster(userId, m = 0) {
+  const supabase = await createClient();
+  const rosterKey = monthKeyFromOffset(m);
+
+  const { error } = await supabase
+    .from("roster_members")
+    .delete()
+    .eq("roster_key", rosterKey)
+    .eq("user_id", userId);
+
+  if (error) throw error;
+  return { success: true };
 }
