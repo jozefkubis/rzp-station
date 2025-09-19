@@ -127,9 +127,9 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   const medDate = profile?.medCheckDate ?? null;
   const psychoDate = profile?.psycho_check ?? null;
 
-  const medCheckLeft = formatDaysLeft(
-    getDaysUntilNextMedCheck(medDate) // helper musí zniesť null
-  );
+  const medCheckLeft = medDate
+    ? formatDaysLeft(getDaysUntilNextMedCheck(medDate))
+    : "—";
 
   const psychoCheckLeft = psychoDate
     ? formatDaysLeft(getDaysUntilNextMedCheck(psychoDate))
