@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { monthBounds } from "./helpers/functions";
 
 // ✅ Tento súbor je čisto serverový → žiadne toastovanie!
 
@@ -221,6 +222,49 @@ export default async function getAllShifts({ year, month } = {}) {
   return data ?? [];
 }
 
+// MARK: GET ALL SHIFTS FOR MONTH
+export async function getAllShiftsForMonth(m = 0) {
+  const supabase = await createClient();
+
+  // ========== 1) Spoľahlivý výpočet dátumov ==========
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m || 0);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month = month0 + 1; // 1..12
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month)}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+  // ========== 2) Query ==========
+  const q = supabase
+    .from("shifts")
+    .select(`
+      id,
+      user_id,
+      date,
+      inserted_at,
+      shift_type,
+      request_type,
+      request_hours,
+      profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
+    `)
+    .order("inserted_at", { ascending: true })
+    .order("id", { ascending: true })
+    .gte("date", from)
+    .lte("date", to);
+
+  const { data, error } = await q;
+  if (error) {
+    console.error("Supabase error – shifts:", error);
+    throw error;
+  }
+  return data ?? [];
+}
+
+
 
 // MARK: ADD SHIFT
 export async function addShift() {
@@ -394,6 +438,9 @@ export async function getShiftsForProfileForYear(
 
   return shifts ?? [];
 }
+
+
+
 
 // MARK: GET REQUEST_HOURS FOR PROFILE FOR MONTH
 // export async function getRequestHoursForMonth(monthOffset = 0) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteProfileFromRoster } from "@/app/_lib/actions";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { startTransition, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmDelete from "../ConfirmDelete";
@@ -18,6 +18,11 @@ export default function AllParamedics({
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+
+  /* 1️⃣ aktuálny offset z URL (server‑safe) */
+  const urlOffset = searchParams.get("m") ?? "0";
+
   function handleClick() {
     setIsOpenDeleteModal(true);
   }
@@ -29,7 +34,7 @@ export default function AllParamedics({
 
     try {
       // B) skutočný DELETE na serveri
-      await deleteProfileFromRoster(user.user_id);
+      await deleteProfileFromRoster(user.user_id, urlOffset);
 
       // C) spätná väzba pre používateľa
       toast.success(`${user.full_name ?? "Záchranár"} odstránený zo služieb`);

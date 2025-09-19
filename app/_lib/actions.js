@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getTask } from "./data-service";
 import { monthKeyFromOffset } from "./date";
+import { monthBounds } from "./helpers/functions";
 
 // MARK: LOGIN
 export async function login(formData) {
@@ -401,7 +402,7 @@ export async function getShiftsForMonth({ year, month }) {
     .gte("date", from)
     .lte("date", to)
     .order("inserted_at", { ascending: true }) // ← poradie podľa vloženia
-    .order("id", { ascending: true });        // tie-breaker, ak by mali rovnaký čas
+    .order("id", { ascending: true }); // tie-breaker, ak by mali rovnaký čas
 
   if (error) throw error;
   return data;
@@ -553,18 +554,34 @@ export async function insertProfileInToRoster(userId, m = 0) {
 }
 
 // MARK: DELETE PROFILE FROM ROSTER
-export async function deleteProfileFromRoster(userId) {
+export async function deleteProfileFromRoster(userId, m = 0) {
   const supabase = await createClient();
 
+  // ========== 1) Spoľahlivé dátumy ==========
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m || 0);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month = month0 + 1; // 1..12
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month)}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+  // ========== 2) Delete ==========
   const { error } = await supabase
     .from("shifts")
     .delete()
-    .match({ user_id: userId });
+    .eq("user_id", userId)
+    .gte("date", from)
+    .lte("date", to);
 
   if (error) {
-    console.error("Chyba pri mazaní služby:", error);
+    console.error("Chyba pri mazaní služieb:", error);
     return null;
   }
+
   revalidatePath("/", "shifts");
   return { success: true };
 }
@@ -749,35 +766,24 @@ export async function generateRoster(m) {
   return { success: true, inserted: toUpsert.length, date: firstOfMonth };
 }
 
-// MARK: GENERATE SHIFTS AUTO
+// MARK: GENERATE SHIFTS AUTO (len aktuálny mesiac podľa offsetu m)
 export async function generateShiftsAuto(m) {
   const supabase = await createClient();
 
   /* ========== 1) Dátumy ========== */
   const now = new Date();
   const intM = Number(m || 0);
-  const totalM = now.getMonth() + intM; // posun voči aktuálnemu mesiacu
+  const totalM = now.getMonth() + intM;
   const year = now.getFullYear() + Math.floor(totalM / 12);
   const month0 = ((totalM % 12) + 12) % 12; // 0..11
   const month = month0 + 1; // 1..12
 
   const pad = (n) => String(n).padStart(2, "0");
-
-  // aktuálny mesiac
   const from = `${year}-${pad(month)}-01`;
-  const lastDay = new Date(year, month, 0).getDate(); // JS: day=0 → posledný deň predošlého mesiaca
+  const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  // predchádzajúci mesiac
-  const prevDate = new Date(year, month0 - 1, 1);
-  const prevY = prevDate.getFullYear();
-  const prevM0 = prevDate.getMonth(); // 0..11
-  const prevM = prevM0 + 1; // 1..12
-  const prevFrom = `${prevY}-${pad(prevM)}-01`;
-  const prevLastDay = new Date(prevY, prevM, 0).getDate();
-  const prevTo = `${prevY}-${pad(prevM)}-${pad(prevLastDay)}`;
-
-  // helper na posun dňa o -1
+  // helper: včera
   const prevDateStr = (dateStr) => {
     const [y, m2, d] = dateStr.split("-").map(Number);
     const dt = new Date(y, m2 - 1, d);
@@ -798,105 +804,22 @@ export async function generateShiftsAuto(m) {
   const workdays = countWorkdays(year, month);
   const NORMA_FULL = workdays * 7.5; // 1.0 úväzok
 
-  // ========== 2) Roster pre mesiac – prehľadná verzia so Set-mi ==========
-
-  async function selectUserIdsInRange(supabase, from, to) {
-    const { data, error } = await supabase
-      .from("shifts")
-      .select("user_id")
-      .gte("date", from)
-      .lte("date", to);
-    if (error) throw error;
-    return (data ?? []).map((r) => r.user_id).filter(Boolean);
-  }
-
-  async function selectUserIdsOnDate(supabase, dateStr) {
-    const { data, error } = await supabase
-      .from("shifts")
-      .select("user_id")
-      .eq("date", dateStr);
-    if (error) throw error;
-    return (data ?? []).map((r) => r.user_id).filter(Boolean);
-  }
-
-  // 1) ID-čka v aktuálnom mesiaci
-  const idsDay1This = new Set(await selectUserIdsOnDate(supabase, from));
-  const idsAnyThis = new Set(await selectUserIdsInRange(supabase, from, to));
-  const currIdsSet = new Set([...idsDay1This, ...idsAnyThis]);
-
-  // 2) ID-čka v minulom mesiaci
-  const idsDay1Prev = new Set(await selectUserIdsOnDate(supabase, prevFrom));
-  const idsAnyPrev = new Set(
-    await selectUserIdsInRange(supabase, prevFrom, prevTo),
-  );
-  const prevIdsSet = new Set([...idsDay1Prev, ...idsAnyPrev]);
-
-  // 3) UNION: všetci z tohto ∪ minulého mesiaca
-  const rosterIdsSet = new Set([...currIdsSet, ...prevIdsSet]);
-  const rosterIds = Array.from(rosterIdsSet);
-
-  // 4) Validácia
-  if (rosterIds.length === 0) {
-    return {
-      error:
-        "Roster je prázdny – pridaj záchranárov alebo vlož aspoň jednu požiadavku.",
-    };
-  }
-
-  // 5) Seed 1. dňa pre tých, čo v tomto mesiaci ešte nemajú žiadny riadok
-  const missingSeeds = [];
-  for (const uid of rosterIds) {
-    if (!currIdsSet.has(uid)) {
-      missingSeeds.push({ user_id: uid, date: from, shift_type: null });
-    }
-  }
-
-  if (missingSeeds.length > 0) {
-    const { error: seedErr } = await supabase
-      .from("shifts")
-      .upsert(missingSeeds, { onConflict: "user_id,date" });
-    if (seedErr) return { error: seedErr.message };
-  }
-
-  // ========== 3) Profily (s úväzkom!) ==========
-
-  const { data: profiles, error: profErr } = await supabase
-    .from("profiles")
-    .select("id, full_name, contract")
-    .in("id", rosterIds);
-
-  if (profErr) return { error: profErr.message };
-  if (!profiles?.length)
-    return { error: "Nepodarilo sa načítať profily pre daný roster." };
-
-  // Mapujeme: user_id → contract (aspoň 1)
-  const contractOf = new Map();
-  for (const p of profiles) {
-    const contractValue = Number(p.contract ?? 1);
-    const safeValue = contractValue > 0 ? contractValue : 1;
-    contractOf.set(p.id, safeValue);
-  }
-
-  // Funkcia na výpočet normy pre konkrétneho usera
-  const personalNorm = (uid) => {
-    const contract = contractOf.get(uid) ?? 1;
-    return NORMA_FULL * contract;
-  };
-
-  /* ========== 4) Načítaj mesačné smeny/požiadavky ========== */
+  /* ========== 2) Načítaj mesačné smeny/požiadavky ========== */
   const { data: monthShifts, error: monthErr } = await supabase
     .from("shifts")
-    .select("user_id, date, shift_type, request_type") // ak nemáš request_type v shifts, zahoď tento stĺpec
+    .select("user_id, date, shift_type, request_type")
     .gte("date", from)
     .lte("date", to);
   if (monthErr) return { error: monthErr.message };
 
   const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
 
+  // Agregácia mesačných riadkov
   const existType = new Map(); // date -> Map(userId -> "D"|"N"|"RD"|"PN"|"X"|null)
   const reqOnly = new Map(); // date -> Map(userId -> "D"|"N") (z XD/XN)
   const blockReq = new Map(); // date -> Set(userId) pre request_type === "X"
-  const hasRow = new Map(); // `${date}#${uid}`
+  const hasRow = new Map(); // `${date}#${uid}` existuje?
+  const rosterIdsSet = new Set();
 
   for (const row of monthShifts ?? []) {
     const d = row.date;
@@ -904,6 +827,7 @@ export async function generateShiftsAuto(m) {
     const st = norm(row.shift_type);
     const rt = norm(row.request_type);
 
+    rosterIdsSet.add(u);
     if (!existType.has(d)) existType.set(d, new Map());
     existType.get(d).set(u, st || null);
 
@@ -921,42 +845,56 @@ export async function generateShiftsAuto(m) {
     hasRow.set(`${d}#${u}`, true);
   }
 
-  /* ========== 5) Pokrytie a VÁHOVÉ targety podľa úväzku ========== */
-  const coverage = { N: 2, D: 2 }; // ← sem siahaš, keď chceš viac/menej smien denne
-  const totalN = lastDay * coverage.N; // koľko N slotov mesačne
-  const totalD = lastDay * coverage.D; // koľko D slotov mesačne
+  // Roster = iba tí, čo majú v tomto mesiaci aspoň jeden riadok (shift/request)
+  const rosterIds = Array.from(rosterIdsSet);
+  if (rosterIds.length === 0) {
+    return {
+      error:
+        "V tomto mesiaci nie je nikto v rostri. Pridaj aspoň jednu požiadavku/smenu pre daného používateľa.",
+    };
+  }
 
-  // rozdelí 'total' položiek medzi 'people' podľa váhy (getWeight)
+  /* ========== 3) Profily (s úväzkom) ========== */
+  const { data: profiles, error: profErr } = await supabase
+    .from("profiles")
+    .select("id, full_name, contract")
+    .in("id", rosterIds)
+
+  if (profErr) return { error: profErr.message };
+  if (!profiles?.length)
+    return { error: "Nepodarilo sa načítať profily pre daný roster." };
+
+  const contractOf = new Map();
+  for (const p of profiles) {
+    const contractValue = Number(p.contract ?? 1);
+    const safeValue = contractValue > 0 ? contractValue : 1;
+    contractOf.set(p.id, safeValue);
+  }
+  const personalNorm = (uid) => NORMA_FULL * (contractOf.get(uid) ?? 1);
+
+  /* ========== 4) Targety (váhované úväzkom) ========== */
+  const coverage = { N: 2, D: 2 }; // upraviteľné
+  const totalN = lastDay * coverage.N;
+  const totalD = lastDay * coverage.D;
+
   function buildTargetsWeighted(people, total, getWeight) {
     const weights = people.map((p) => Math.max(0, Number(getWeight(p) ?? 0)));
     const sumW = weights.reduce((a, b) => a + b, 0);
-
-    // ak nemáme váhy alebo total=0 → všetkým 0
     if (!sumW || total <= 0) return new Map(people.map((p) => [p.id, 0]));
 
-    // 1) spočítaj “ideálny podiel” (môže byť desatinné číslo)
     const raw = people.map((p, i) => {
-      const share = (total * weights[i]) / sumW; // ideálna časť z 'total'
-      return {
-        id: p.id,
-        floor: Math.floor(share), // základ bez desatinnej časti
-        frac: share - Math.floor(share), // zvyšok (0.. <1)
-      };
+      const share = (total * weights[i]) / sumW;
+      return { id: p.id, floor: Math.floor(share), frac: share % 1 };
     });
 
-    // 2) koľko sme už pridelili cez floor a koľko ešte ostáva
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
-
-    // 3) dorovnaj zvyšok tým, čo mali najväčšie zvyšky 'frac'
-    raw.sort((a, b) => b.frac - a.frac); // zostupne podľa frac
+    raw.sort((a, b) => b.frac - a.frac);
     for (let i = 0;i < left;i++) raw[i].floor++;
 
-    // výsledok: Map<userId, pocet>
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
 
-  // targety podľa úväzku (váha = p.contract, ak chýba tak 1)
   const targetN = buildTargetsWeighted(
     profiles,
     totalN,
@@ -973,7 +911,7 @@ export async function generateShiftsAuto(m) {
     (p) => p.contract ?? 1,
   );
 
-  /* ========== 6) Počítadlá a denné pravidlá ========== */
+  /* ========== 5) Počítadlá a pravidlá ========== */
   const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
   const dnCount = new Map(); // userId -> { D, N, total }
   const hoursCount = new Map(); // userId -> number
@@ -1016,18 +954,14 @@ export async function generateShiftsAuto(m) {
     dayState.set(uid, { lastDate: dateStr, lastType: type, consecSame });
   }
 
-  // tvrdé: 1 alebo 2 dni voľno po N; + legacy: max 2 rovnaké po sebe, D po N včera zakázané
   function violatesDaywise(uid, type, dateStr) {
     const y1 = prevDateStr(dateStr);
-    // const y2 = prevDateStr(y1);
     const getOn = (d) => {
       const m = existType.get(d);
       return norm(m ? m.get(uid) : null);
     };
     const t1 = getOn(y1);
-    // const t2 = getOn(y2);
     if (t1 === "N") return true;
-    // if (t1 === "N" || t2 === "N") return true;
 
     const s = dayState.get(uid) || {
       lastDate: null,
@@ -1039,11 +973,10 @@ export async function generateShiftsAuto(m) {
     const wasYesterday = s.lastDate === prevDateStr(dateStr);
     if (wasYesterday && s.lastType === "N" && type === "D") return true;
     if (wasYesterday && s.lastType === type && s.consecSame >= 2) return true;
-
     return false;
   }
 
-  /* ========== 7) Helpery pre výber kandidáta ========== */
+  /* ========== 6) Helpery pre výber ========== */
   function lcg(seed) {
     let s = seed >>> 0;
     return () => (s = (s * 1664525 + 1013904223) >>> 0) / 0xffffffff;
@@ -1078,18 +1011,16 @@ export async function generateShiftsAuto(m) {
     const cap = (targetTotal.get(uid) || 0) + (allowExceedBy1 ? 1 : 0);
     return (c.total || 0) >= cap;
   };
-
-  function getTypeOn(dateStr, uid) {
+  const getTypeOn = (dateStr, uid) => {
     const m = existType.get(dateStr);
-    if (!m) return null;
-    return m.get(uid) ?? null;
-  }
-  function shiftDaysAgo(dateStr, days) {
+    return m ? (m.get(uid) ?? null) : null;
+  };
+  const shiftDaysAgo = (dateStr, days) => {
     const [y, m, d] = dateStr.split("-").map(Number);
     const dt = new Date(y, m - 1, d);
     dt.setDate(dt.getDate() - days);
     return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
-  }
+  };
   function patternTier(uid, type, dateStr) {
     const y1 = shiftDaysAgo(dateStr, 1);
     const y2 = shiftDaysAgo(dateStr, 2);
@@ -1101,12 +1032,9 @@ export async function generateShiftsAuto(m) {
 
     if (type === "D" && !hadShiftY1 && !hadShiftY2) return 0; // D po 2 voľných
     if (type === "N" && tY1 === "D") return 0; // N po D
-
     if (tY2 === "N") return 2; // 2. deň po N – radšej voľno
-
     if (type === "N" && tY1 === "N") return 4; // fallback penalizácie
     if (type === "D" && tY1 === "D") return 4;
-
     return 1;
   }
 
@@ -1185,7 +1113,7 @@ export async function generateShiftsAuto(m) {
     return pick ?? null;
   }
 
-  /* ========== 8) Generovanie ========== */
+  /* ========== 7) Generovanie ========== */
   const toInsert = [];
   const toUpdate = [];
 
@@ -1217,12 +1145,11 @@ export async function generateShiftsAuto(m) {
       }
     }
 
-    // doplň zvyšné sloty: striktne → striktne(+1) → uvoľnený cyklus → uvoľnený cyklus +12h
+    // doplň zvyšné sloty cez výber kandidátov
     for (const type of ["D", "N"]) {
       const need = remaining[type];
       for (let k = 0;k < need;k++) {
         const uid =
-          // 1) striktne: žiadne D->D, bez prečerpania
           pickCandidate(
             type,
             dateStr,
@@ -1233,7 +1160,6 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
-          // 2) striktne: žiadne D->D, povoliť +1 na targetoch
           pickCandidate(
             type,
             dateStr,
@@ -1244,7 +1170,6 @@ export async function generateShiftsAuto(m) {
             false,
             true,
           ) ||
-          // 3) fallback: povoliť už aj D->D, stále bez hodinového +12
           pickCandidate(
             type,
             dateStr,
@@ -1255,7 +1180,6 @@ export async function generateShiftsAuto(m) {
             false,
             false,
           ) ||
-          // 4) posledný fallback: povoliť aj hodinové +12
           pickCandidate(
             type,
             dateStr,
@@ -1274,16 +1198,13 @@ export async function generateShiftsAuto(m) {
         incCount(uid, type);
         incHours(uid, type);
 
-        // aktualizuj lokálnu mapu, aby ďalšie rozhodnutia brali túto zmenu do úvahy
         if (!existType.has(dateStr)) existType.set(dateStr, new Map());
         existType.get(dateStr).set(uid, type);
 
         const key = `${dateStr}#${uid}`;
         if (hasRow.get(key)) {
-          // už riadok existuje → UPDATE (len ak je teraz null)
           toUpdate.push({ user_id: uid, date: dateStr, shift_type: type });
         } else {
-          // nový riadok → INSERT
           toInsert.push({ user_id: uid, date: dateStr, shift_type: type });
           hasRow.set(key, true);
         }
@@ -1291,7 +1212,7 @@ export async function generateShiftsAuto(m) {
     }
   }
 
-  /* ========== 9) Zápis do DB ========== */
+  /* ========== 8) Zápis do DB ========== */
   if (toInsert.length) {
     const { error: insErr } = await supabase.from("shifts").insert(toInsert);
     if (insErr) {
@@ -1464,17 +1385,19 @@ export async function getRoster(m = 0) {
 
   const { data, error } = await supabase
     .from("roster_members")
-    .select(`
+    .select(
+      `
       user_id,
       created_at,
       profiles:profiles!inner ( id, full_name, avatar_url )
-    `)
+    `,
+    )
     .eq("roster_key", rosterKey)
     .order("created_at", { ascending: true });
 
   if (error) throw error;
 
-  return (data || []).map(r => ({
+  return (data || []).map((r) => ({
     user_id: r.user_id,
     full_name: r.profiles?.full_name ?? "",
     avatar_url: r.profiles?.avatar_url ?? null,
@@ -1507,4 +1430,54 @@ export async function removeProfileFromRoster(userId, m = 0) {
 
   if (error) throw error;
   return { success: true };
+}
+
+//MARK: COPY ROSTER
+export async function copyRosterIfEmpty(targetM = 0) {
+  const supabase = await createClient();
+  const { from, to, prevFrom, prevTo } = monthBounds(targetM);
+  const pad = (n) => String(n).padStart(2, "0");
+
+  // 1) Je cieľový mesiac prázdny?
+  const { data: exists, error: existsErr } = await supabase
+    .from("shifts")
+    .select("id", { count: "exact", head: false })
+    .gte("date", from)
+    .lte("date", to)
+    .limit(1);
+
+  if (existsErr) return { error: existsErr.message };
+  if (exists && exists.length > 0) return { copied: false }; // už niečo je → nič nekopíruj
+
+  // 2) Zober distinct user_id z predchádzajúceho mesiaca
+  const { data: prevRows, error: prevErr } = await supabase
+    .from("shifts")
+    .select("user_id")
+    .gte("date", prevFrom)
+    .lte("date", prevTo);
+
+  if (prevErr) return { error: prevErr.message };
+
+  const ids = Array.from(
+    new Set((prevRows ?? []).map((r) => r.user_id).filter(Boolean)),
+  );
+  if (ids.length === 0)
+    return { copied: false, note: "Predošlý mesiac je prázdny." };
+
+  // 3) Vytvor neutrálne seed riadky iba pre 1. deň
+  const firstDay = from; // YYYY-MM-01
+  const seeds = ids.map((uid) => ({
+    user_id: uid,
+    date: firstDay,
+    shift_type: null, // žiadna smena, len „existencia v mesiaci“
+    // request_type: null   // nič neblokujeme
+  }));
+
+  // idempotentne: ak by niečo existovalo, nevytvárať duplicity
+  const { error: insErr } = await supabase
+    .from("shifts")
+    .upsert(seeds, { onConflict: "user_id,date" });
+
+  if (insErr) return { error: insErr.message };
+  return { copied: true, count: seeds.length };
 }

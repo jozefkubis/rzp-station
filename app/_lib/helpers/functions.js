@@ -74,3 +74,26 @@ export function buildRosterFromShifts(rows) {
   }
   return roster; // presne v poradí pridávania (inserted_at ASC)
 }
+
+export function monthBounds(m = 0) {
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m || 0);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12;       // 0..11
+  const month = month0 + 1;                       // 1..12
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month)}-01`;
+  const lastDay = new Date(year, month, 0).getDate();
+  const to = `${year}-${pad(month)}-${pad(lastDay)}`;
+
+  // prev month
+  const prevDate = new Date(year, month0 - 1, 1);
+  const pY = prevDate.getFullYear();
+  const pM0 = prevDate.getMonth();                // 0..11
+  const pM = pM0 + 1;
+  const prevFrom = `${pY}-${pad(pM)}-01`;
+  const prevLast = new Date(pY, pM, 0).getDate();
+  const prevTo = `${pY}-${pad(pM)}-${pad(prevLast)}`;
+
+  return { year, month, from, to, prevFrom, prevTo };
+}

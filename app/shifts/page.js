@@ -1,6 +1,6 @@
 import Header from "../_components/Header";
 import RosterSection from "../_components/shifts/RosterSection";
-import getAllShifts, { getAllProfiles } from "../_lib/data-service";
+import { getAllProfiles, getAllShiftsForMonth } from "../_lib/data-service";
 
 export const metadata = {
   title: "Služby",
@@ -14,7 +14,7 @@ export default async function page({ searchParams }) {
 
   // MARK: NACITANIE DÁT ...................................................................................
   const [shifts, profiles] = await Promise.all([
-    getAllShifts(),
+    getAllShiftsForMonth(shiftsOffset),
     getAllProfiles(),
   ]);
 
