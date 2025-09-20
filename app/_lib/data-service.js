@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import { monthBounds } from "./helpers/functions";
 
 // ✅ Tento súbor je čisto serverový → žiadne toastovanie!
 
@@ -56,7 +55,6 @@ export async function getProfile(id) {
   // keď profil neexistuje, profile bude = null (a to je OK)
   return profile ?? null;
 }
-
 
 // MARK: GET AVATAR
 export async function getAvatarUrl(email) {
@@ -193,7 +191,8 @@ export default async function getAllShifts({ year, month } = {}) {
 
   const q = supabase
     .from("shifts")
-    .select(`
+    .select(
+      `
       id,
       user_id,
       date,
@@ -202,16 +201,17 @@ export default async function getAllShifts({ year, month } = {}) {
       request_type,
       request_hours,
       profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
-    `)
+    `,
+    )
     .order("inserted_at", { ascending: true }) // stabilné poradie podľa vloženia
-    .order("id", { ascending: true });         // tie-breaker
+    .order("id", { ascending: true }); // tie-breaker
 
   if (year && month) {
     const pad = (n) => String(n).padStart(2, "0");
     const from = `${year}-${pad(month)}-01`;
     const lastDay = new Date(year, month, 0).getDate();
     const to = `${year}-${pad(month)}-${pad(lastDay)}`;
-    q.gte("date", from).lte("date", to);       // 👈 filter mesiaca
+    q.gte("date", from).lte("date", to); // 👈 filter mesiaca
   }
 
   const { data, error } = await q;
@@ -241,7 +241,8 @@ export async function getAllShiftsForMonth(m = 0) {
   // ========== 2) Query ==========
   const q = supabase
     .from("shifts")
-    .select(`
+    .select(
+      `
       id,
       user_id,
       date,
@@ -250,7 +251,8 @@ export async function getAllShiftsForMonth(m = 0) {
       request_type,
       request_hours,
       profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
-    `)
+    `,
+    )
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true })
     .gte("date", from)
@@ -263,8 +265,6 @@ export async function getAllShiftsForMonth(m = 0) {
   }
   return data ?? [];
 }
-
-
 
 // MARK: ADD SHIFT
 export async function addShift() {
@@ -438,9 +438,6 @@ export async function getShiftsForProfileForYear(
 
   return shifts ?? [];
 }
-
-
-
 
 // MARK: GET REQUEST_HOURS FOR PROFILE FOR MONTH
 // export async function getRequestHoursForMonth(monthOffset = 0) {

@@ -795,7 +795,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1;d <= daysInMonth;d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -858,7 +858,7 @@ export async function generateShiftsAuto(m) {
   const { data: profiles, error: profErr } = await supabase
     .from("profiles")
     .select("id, full_name, contract")
-    .in("id", rosterIds)
+    .in("id", rosterIds);
 
   if (profErr) return { error: profErr.message };
   if (!profiles?.length)
@@ -890,7 +890,7 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0;i < left;i++) raw[i].floor++;
+    for (let i = 0; i < left; i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
@@ -983,7 +983,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1;i > 0;i--) {
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1117,7 +1117,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1148,7 +1148,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty cez výber kandidátov
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0;k < need;k++) {
+      for (let k = 0; k < need; k++) {
         const uid =
           pickCandidate(
             type,
@@ -1297,7 +1297,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1327,7 +1327,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
@@ -1436,26 +1436,23 @@ export async function removeProfileFromRoster(userId, m = 0) {
 export async function copyRosterIfEmpty(targetM = 0) {
   const supabase = await createClient();
   const { from, to, prevFrom, prevTo } = monthBounds(targetM);
-  const pad = (n) => String(n).padStart(2, "0");
 
-  // 1) Je cieľový mesiac prázdny?
+  // 1) cieľový mesiac prázdny?
   const { data: exists, error: existsErr } = await supabase
     .from("shifts")
-    .select("id", { count: "exact", head: false })
+    .select("id")
     .gte("date", from)
     .lte("date", to)
     .limit(1);
-
   if (existsErr) return { error: existsErr.message };
-  if (exists && exists.length > 0) return { copied: false }; // už niečo je → nič nekopíruj
+  if (exists && exists.length > 0) return { copied: false };
 
-  // 2) Zober distinct user_id z predchádzajúceho mesiaca
+  // 2) distinct user_id z predchádzajúceho mesiaca
   const { data: prevRows, error: prevErr } = await supabase
     .from("shifts")
     .select("user_id")
     .gte("date", prevFrom)
     .lte("date", prevTo);
-
   if (prevErr) return { error: prevErr.message };
 
   const ids = Array.from(
@@ -1464,20 +1461,26 @@ export async function copyRosterIfEmpty(targetM = 0) {
   if (ids.length === 0)
     return { copied: false, note: "Predošlý mesiac je prázdny." };
 
-  // 3) Vytvor neutrálne seed riadky iba pre 1. deň
+  // 3) Zoradiť podľa mena a až potom seednúť
+  const { data: profs, error: pErr } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .in("id", ids);
+  if (pErr) return { error: pErr.message };
+
+  const sortedIds = (profs ?? []).map((p) => p.id);
+
   const firstDay = from; // YYYY-MM-01
-  const seeds = ids.map((uid) => ({
+  const seeds = sortedIds.map((uid) => ({
     user_id: uid,
     date: firstDay,
-    shift_type: null, // žiadna smena, len „existencia v mesiaci“
-    // request_type: null   // nič neblokujeme
+    shift_type: null,
   }));
 
-  // idempotentne: ak by niečo existovalo, nevytvárať duplicity
   const { error: insErr } = await supabase
     .from("shifts")
     .upsert(seeds, { onConflict: "user_id,date" });
-
   if (insErr) return { error: insErr.message };
+
   return { copied: true, count: seeds.length };
 }
