@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
+import ShiftLoader from "./ShiftLoader";
 import ShiftsTable from "./ShiftsTable";
 
 /**
@@ -93,6 +94,7 @@ export default function RosterSection({
             profiles={diffProfiles}
             onInsertEmptyShift={handleInsertEmptyShift}
           />
+          {isPending && <ShiftLoader />}
         </div>
       </div>
     </div>
