@@ -1,6 +1,6 @@
 "use client";
 
-import { generateRoster } from "@/app/_lib/actions";
+import { copyRosterIfEmpty } from "@/app/_lib/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import Button from "../Button";
@@ -17,7 +17,7 @@ export default function GenerateRoster() {
 
     startTransition(async () => {
       try {
-        const res = await generateRoster(m);
+        const res = await copyRosterIfEmpty(m);
         console.log("Výsledok generateRoster:", res);
       } catch (err) {
         console.error("Chyba pri generovaní služieb:", err);
@@ -27,12 +27,13 @@ export default function GenerateRoster() {
     });
   }
 
-  return (
-    isPending ? <ShiftLoader /> :
-      <div>
-        <Button onClick={handleClick} disabled={isPending}>
-          Pridať všetkých záchranárov
-        </Button>
-      </div>
+  return isPending ? (
+    <ShiftLoader />
+  ) : (
+    <div>
+      <Button onClick={handleClick} disabled={isPending}>
+        Pridať všetkých záchranárov
+      </Button>
+    </div>
   );
 }
