@@ -21,6 +21,7 @@ import { getDaysArray, MONTHS, shiftTableStats } from "./helpers_shifts";
 import InsertShiftButton from "./InsertShiftButton";
 import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
+import NoShifts from "./NoShifts";
 import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
@@ -326,30 +327,34 @@ export default function ShiftsTable({
         </div>
 
         {/* dátové riadky */}
-        {optimisticRoster.map((p, idx) => {
-          // per-user norma podľa úväzku (0.1..1.0)
-          const contract = Number(p.contract ?? 1);
-          const perUserNorm = Math.round(normHours * contract * 10) / 10;
-          const rowShiftStats = shiftTableStats(perUserNorm);
+        {shifts.length === 0 ? (
+          <NoShifts />
+        ) : (
+          optimisticRoster.map((p, idx) => {
+            // per-user norma podľa úväzku (0.1..1.0)
+            const contract = Number(p.contract ?? 1);
+            const perUserNorm = Math.round(normHours * contract * 10) / 10;
+            const rowShiftStats = shiftTableStats(perUserNorm);
 
-          return (
-            <ShiftRow
-              key={p.user_id}
-              user={p}
-              onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-              days={days}
-              colTemplate={colTemplate}
-              onTopSelect={handleTopSelect}
-              onBottomSelect={handleBottomSelect}
-              rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-              roster={roster}
-              shiftStats={rowShiftStats}
-              normHours={perUserNorm}
-              contract={contract}
-              holidaySet={holidaySet}
-            />
-          );
-        })}
+            return (
+              <ShiftRow
+                key={p.user_id}
+                user={p}
+                onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+                days={days}
+                colTemplate={colTemplate}
+                onTopSelect={handleTopSelect}
+                onBottomSelect={handleBottomSelect}
+                rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                roster={roster}
+                shiftStats={rowShiftStats}
+                normHours={perUserNorm}
+                contract={contract}
+                holidaySet={holidaySet}
+              />
+            );
+          })
+        )}
 
         <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">
           <div>
@@ -361,11 +366,14 @@ export default function ShiftsTable({
               profiles={profiles}
               onInsertEmptyShift={onInsertEmptyShift}
             />
-            {/* <GenerateRoster /> */}
-            <GenerateShifts />
-            <DeleteOnlyShifts />
-            <ValidateButton />
-            <DeleteAllShifts />
+            {shifts.length > 0 && (
+              <>
+                <GenerateShifts />
+                <DeleteOnlyShifts />
+                <ValidateButton />
+                <DeleteAllShifts />
+              </>
+            )}
           </div>
         </div>
       </MainShiftsTable>
