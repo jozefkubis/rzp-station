@@ -16,7 +16,6 @@ import ArrowForword from "./ArrowForword";
 import DaysMonth from "./DaysMonth";
 import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
-import GenerateRoster from "./GenerateRoster";
 import GenerateShifts from "./GenerateShifts";
 import { getDaysArray, MONTHS, shiftTableStats } from "./helpers_shifts";
 import InsertShiftButton from "./InsertShiftButton";
@@ -362,7 +361,7 @@ export default function ShiftsTable({
               profiles={profiles}
               onInsertEmptyShift={onInsertEmptyShift}
             />
-            <GenerateRoster />
+            {/* <GenerateRoster /> */}
             <GenerateShifts />
             <DeleteOnlyShifts />
             <ValidateButton />
