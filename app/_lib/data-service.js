@@ -203,6 +203,7 @@ export default async function getAllShifts({ year, month } = {}) {
       profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
     `,
     )
+    .order("order_index", { ascending: true })
     .order("inserted_at", { ascending: true }) // stabilné poradie podľa vloženia
     .order("id", { ascending: true }); // tie-breaker
 
@@ -239,6 +240,7 @@ export async function getAllShiftsForMonth(m = 0) {
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
   // ========== 2) Query ==========
+  // app/_lib/data-service.js:243
   const q = supabase
     .from("shifts")
     .select(
@@ -246,6 +248,7 @@ export async function getAllShiftsForMonth(m = 0) {
       id,
       user_id,
       date,
+      order_index,
       inserted_at,
       shift_type,
       request_type,
@@ -253,6 +256,7 @@ export async function getAllShiftsForMonth(m = 0) {
       profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
     `,
     )
+    .order("order_index", { ascending: true })
     .order("inserted_at", { ascending: true })
     .order("id", { ascending: true })
     .gte("date", from)

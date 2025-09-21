@@ -4,7 +4,6 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getTask } from "./data-service";
-import { monthKeyFromOffset } from "./date";
 import { monthBounds } from "./helpers/functions";
 
 // MARK: LOGIN
@@ -401,6 +400,7 @@ export async function getShiftsForMonth({ year, month }) {
     .select("*, profiles!inner (full_name, avatar_url)")
     .gte("date", from)
     .lte("date", to)
+    .order("order_index", { ascending: true })
     .order("inserted_at", { ascending: true }) // ← poradie podľa vloženia
     .order("id", { ascending: true }); // tie-breaker, ak by mali rovnaký čas
 
@@ -537,12 +537,26 @@ export async function insertProfileInToRoster(userId, m = 0) {
   // 1. deň mesiaca (napr. "2025-08-01")
   const firstOfMonth = ymd(year, month, 1);
 
+  // zisti aktuálny max order_index pre daný mesiac
+  const { data: maxRow, error: maxErr } = await supabase
+    .from("shifts")
+    .select("order_index")
+    .gte("date", firstOfMonth)
+    .lte("date", ymd(year, month, new Date(year, month, 0).getDate())) // posledný deň mesiaca
+    .order("order_index", { ascending: false })
+    .limit(1);
+
+  if (maxErr) throw maxErr;
+
+  const nextIndex = ((maxRow?.[0]?.order_index ?? 0) + 1) | 0;
+
   // vlož seed riadok do shifts
   const { error } = await supabase.from("shifts").upsert(
     {
       user_id: userId,
       date: firstOfMonth,
       shift_type: null,
+      order_index: nextIndex,
     },
     { onConflict: "user_id,date" }, // ak už existuje, nechá sa
   );
@@ -809,7 +823,8 @@ export async function generateShiftsAuto(m) {
     .from("shifts")
     .select("user_id, date, shift_type, request_type")
     .gte("date", from)
-    .lte("date", to);
+    .lte("date", to)
+    .order("order_index", { ascending: true });
   if (monthErr) return { error: monthErr.message };
 
   const norm = (v) => (v == null ? null : String(v).trim().toUpperCase());
@@ -858,7 +873,8 @@ export async function generateShiftsAuto(m) {
   const { data: profiles, error: profErr } = await supabase
     .from("profiles")
     .select("id, full_name, contract")
-    .in("id", rosterIds);
+    .in("id", rosterIds)
+    .order("order_index", { ascending: true });
 
   if (profErr) return { error: profErr.message };
   if (!profiles?.length)
@@ -1228,7 +1244,8 @@ export async function generateShiftsAuto(m) {
         .update({ shift_type: row.shift_type })
         .eq("user_id", row.user_id)
         .eq("date", row.date)
-        .is("shift_type", null); // len null → type (idempotentné)
+        .is("shift_type", null) // len null → type (idempotentné)
+        .order("order_index", { ascending: true });
       if (upErr) {
         console.error("Update shift (null->type) error:", upErr, row);
         return { error: upErr.message };
@@ -1269,7 +1286,8 @@ export async function validateShifts(m = 0) {
     .from("shifts")
     .select("user_id, date, shift_type, request_type")
     .gte("date", from)
-    .lte("date", to);
+    .lte("date", to)
+    .order("order_index", { ascending: true });
 
   if (error) {
     console.error("validateShifts: DB error", error);
@@ -1379,65 +1397,65 @@ export async function validateShifts(m = 0) {
 }
 
 //MARK: GET ROSTER
-export async function getRoster(m = 0) {
-  const supabase = await createClient();
-  const rosterKey = monthKeyFromOffset(m);
+// export async function getRoster(m = 0) {
+//   const supabase = await createClient();
+//   const rosterKey = monthKeyFromOffset(m);
 
-  const { data, error } = await supabase
-    .from("roster_members")
-    .select(
-      `
-      user_id,
-      created_at,
-      profiles:profiles!inner ( id, full_name, avatar_url )
-    `,
-    )
-    .eq("roster_key", rosterKey)
-    .order("created_at", { ascending: true });
+//   const { data, error } = await supabase
+//     .from("roster_members")
+//     .select(
+//       `
+//       user_id,
+//       created_at,
+//       profiles:profiles!inner ( id, full_name, avatar_url )
+//     `,
+//     )
+//     .eq("roster_key", rosterKey)
+//     .order("created_at", { ascending: true });
 
-  if (error) throw error;
+//   if (error) throw error;
 
-  return (data || []).map((r) => ({
-    user_id: r.user_id,
-    full_name: r.profiles?.full_name ?? "",
-    avatar_url: r.profiles?.avatar_url ?? null,
-  }));
-}
+//   return (data || []).map((r) => ({
+//     user_id: r.user_id,
+//     full_name: r.profiles?.full_name ?? "",
+//     avatar_url: r.profiles?.avatar_url ?? null,
+//   }));
+// }
 
 //MARK: ADD PROFILE TO ROSTER
-export async function addProfileToRoster(userId, m = 0) {
-  const supabase = await createClient();
-  const rosterKey = monthKeyFromOffset(m);
+// export async function addProfileToRoster(userId, m = 0) {
+//   const supabase = await createClient();
+//   const rosterKey = monthKeyFromOffset(m);
 
-  const { error } = await supabase
-    .from("roster_members")
-    .insert([{ roster_key: rosterKey, user_id: userId }], { upsert: true });
+//   const { error } = await supabase
+//     .from("roster_members")
+//     .insert([{ roster_key: rosterKey, user_id: userId }], { upsert: true });
 
-  if (error && !/duplicate key/i.test(error.message)) throw error;
-  return { success: true };
-}
+//   if (error && !/duplicate key/i.test(error.message)) throw error;
+//   return { success: true };
+// }
 
 //MARK: REMOVE PROFILE FROM ROSTER
-export async function removeProfileFromRoster(userId, m = 0) {
-  const supabase = await createClient();
-  const rosterKey = monthKeyFromOffset(m);
+// export async function removeProfileFromRoster(userId, m = 0) {
+//   const supabase = await createClient();
+//   const rosterKey = monthKeyFromOffset(m);
 
-  const { error } = await supabase
-    .from("roster_members")
-    .delete()
-    .eq("roster_key", rosterKey)
-    .eq("user_id", userId);
+//   const { error } = await supabase
+//     .from("roster_members")
+//     .delete()
+//     .eq("roster_key", rosterKey)
+//     .eq("user_id", userId);
 
-  if (error) throw error;
-  return { success: true };
-}
+//   if (error) throw error;
+//   return { success: true };
+// }
 
 //MARK: COPY ROSTER
 export async function copyRosterIfEmpty(targetM = 0) {
   const supabase = await createClient();
   const { from, to, prevFrom, prevTo } = monthBounds(targetM);
 
-  // 1) cieľový mesiac prázdny?
+  // 1) ak v cieľovom mesiaci niečo je, skonči
   const { data: exists, error: existsErr } = await supabase
     .from("shifts")
     .select("id")
@@ -1445,41 +1463,48 @@ export async function copyRosterIfEmpty(targetM = 0) {
     .lte("date", to)
     .limit(1);
   if (existsErr) return { error: existsErr.message };
-  if (exists && exists.length > 0) return { copied: false };
+  if (exists?.length) return { copied: false };
 
-  // 2) distinct user_id z predchádzajúceho mesiaca
+  // 2) vytiahni user_id + order_index z predchádzajúceho mesiaca
   const { data: prevRows, error: prevErr } = await supabase
     .from("shifts")
-    .select("user_id")
+    .select("user_id, order_index")
     .gte("date", prevFrom)
-    .lte("date", prevTo);
+    .lte("date", prevTo)
+    .order("order_index", { ascending: true });
   if (prevErr) return { error: prevErr.message };
 
-  const ids = Array.from(
-    new Set((prevRows ?? []).map((r) => r.user_id).filter(Boolean)),
-  );
-  if (ids.length === 0)
-    return { copied: false, note: "Predošlý mesiac je prázdny." };
+  // 3) pre každého usera vezmi minimálny (teda “hlavný”) order_index v tom mesiaci
+  const byUser = new Map(); // user_id -> order_index
+  (prevRows ?? []).forEach((r) => {
+    if (!r?.user_id) return;
+    const idx = r.order_index ?? 999; // fallback na koniec
+    if (!byUser.has(r.user_id) || idx < byUser.get(r.user_id)) {
+      byUser.set(r.user_id, idx);
+    }
+  });
 
-  // 3) Zoradiť podľa mena a až potom seednúť
-  const { data: profs, error: pErr } = await supabase
-    .from("profiles")
-    .select("id, full_name")
-    .in("id", ids);
-  if (pErr) return { error: pErr.message };
+  if (!byUser.size) {
+    return { copied: false, note: "Predošlý mesiac nemá žiadne smeny." };
+  }
 
-  const sortedIds = (profs ?? []).map((p) => p.id);
+  // 4) zoradiť podľa order_index a pripraviť seed riadky (1. deň cieľového mesiaca)
+  const firstDay = from; // "YYYY-MM-01"
+  const entries = Array.from(byUser.entries()) // [user_id, order_index]
+    .sort((a, b) => (a[1] ?? 999) - (b[1] ?? 999));
 
-  const firstDay = from; // YYYY-MM-01
-  const seeds = sortedIds.map((uid) => ({
+  const seeds = entries.map(([uid, idx]) => ({
     user_id: uid,
     date: firstDay,
-    shift_type: null,
+    order_index: idx ?? 999,
+    shift_type: null, // zmeň na `type` ak tak máš stĺpec
   }));
 
+  // 5) upsert (unikát: user_id + date)
   const { error: insErr } = await supabase
     .from("shifts")
-    .upsert(seeds, { onConflict: "user_id,date" });
+    .upsert(seeds, { onConflict: "user_id,date" })
+    .order("order_index", { ascending: true });
   if (insErr) return { error: insErr.message };
 
   return { copied: true, count: seeds.length };

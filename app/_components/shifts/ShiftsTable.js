@@ -100,10 +100,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -234,10 +234,11 @@ export default function ShiftsTable({
       if (!acc[id]) {
         acc[id] = {
           user_id: id,
-          full_name: row.profiles.full_name,
-          email: row.profiles.email,
-          avatar: row.profiles.avatar_url,
+          full_name: row.profiles?.full_name ?? "(bez mena)",
+          email: row.profiles?.email ?? "(bez e-mailu)",
+          avatar: row.profiles?.avatar_url,
           contract: Number(row.profiles?.contract ?? 1),
+          order_index: row.order_index ?? 999, // pridáme poradie
           shifts: [],
         };
       }
@@ -247,10 +248,9 @@ export default function ShiftsTable({
         request_type: row.request_type,
         request_hours: row.request_hours,
       });
-
       return acc;
     }, {}),
-  );
+  ).sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)); // zoradenie podľa order_index
 
   // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZÁCHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
