@@ -6,6 +6,7 @@ import ImageUploader from "@/app/_components/profiles/ImageUploader";
 import handleSubmitUploadProfileData from "@/app/_lib/functions/handleSubmitUploadProfileData";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import FormSelect from "../FormSelect";
 
 function InsertUpdateProfilesDataForm({ profiles }) {
   const [error, setError] = useState("");
@@ -19,6 +20,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   const [psychoCheckDate, setPsychoCheckDate] = useState("");
   const [phone, setPhone] = useState("");
   const [avatar, setAvatar] = useState(null);
+  const [position, setPosition] = useState("");
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -83,6 +85,19 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           name="contract"
           onChange={(e) => setContract(e.target.value)}
           value={contract || profiles?.contract || ""}
+          {...(!profiles && { required: true })}
+        />
+      </div>
+
+      <div>
+        <FormSelect
+          label="Pozícia"
+          id="position"
+          name="position"
+          options={["ZZ", "VZ", "V"]}
+          placeholder={profiles?.position || "— Vyber pozíciu —"}
+          value={position ?? profiles?.position ?? ""}
+          onChange={setPosition}
           {...(!profiles && { required: true })}
         />
       </div>
@@ -158,7 +173,11 @@ function InsertUpdateProfilesDataForm({ profiles }) {
       </div>
 
       <div className="flex justify-end p-5">
-        <Button data-cy="admin-update-profile-button" variant="primary" size="large">
+        <Button
+          data-cy="admin-update-profile-button"
+          variant="primary"
+          size="large"
+        >
           Aktualizovať profil
         </Button>
       </div>

@@ -6,6 +6,7 @@ import handleSubmitAdminUpdateProfileData from "@/app/_lib/functions/handleSubmi
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import FormSelect from "../FormSelect";
 
 function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");
@@ -17,6 +18,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
   const [medCheckDate, setMedCheckDate] = useState("");
   const [psychoCheckDate, setPsychoCheckDate] = useState("");
   const [phone, setPhone] = useState("");
+  const [position, setPosition] = useState("");
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -31,7 +33,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
     <form
       data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
-      className="rounded-lg flex flex-col justify-center h-screen w-1/2 mx-auto"
+      className="mx-auto flex h-screen w-1/2 flex-col justify-center rounded-lg"
     >
       <div className="">
         <FormInput
@@ -68,6 +70,19 @@ function AdminUpdateProfilesDataForm({ profile }) {
           name="contract"
           onChange={(e) => setContract(e.target.value)}
           value={contract || profile?.contract || ""}
+          {...(!profile && { required: true })}
+        />
+      </div>
+
+      <div>
+        <FormSelect
+          label="Pozícia"
+          id="position"
+          name="position"
+          options={["ZZ", "VZ", "V"]}
+          placeholder={profile?.position || "— Vyber pozíciu —"}
+          value={position ?? profile?.position ?? ""}
+          onChange={setPosition}
           {...(!profile && { required: true })}
         />
       </div>
@@ -138,16 +153,12 @@ function AdminUpdateProfilesDataForm({ profile }) {
         />
       </div>
 
-      <FormInput
-        id="id"
-        type="hidden"
-        name="id"
-        value={profile?.id || ""}
-      />
+      <FormInput id="id" type="hidden" name="id" value={profile?.id || ""} />
 
-      <div className="flex flex-col justify-center items-end gap-8">
-
-        <Button data-cy="admin-update-profile-button" size="medium">Aktualizovať profil</Button>
+      <div className="flex flex-col items-end justify-center gap-8">
+        <Button data-cy="admin-update-profile-button" size="medium">
+          Aktualizovať profil
+        </Button>
 
         <div>
           <Link
@@ -160,7 +171,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
         </div>
       </div>
     </form>
-  )
+  );
 }
 
-export default AdminUpdateProfilesDataForm
+export default AdminUpdateProfilesDataForm;

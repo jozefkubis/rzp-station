@@ -146,6 +146,7 @@ export async function InsertUpdateProfilesData(formData) {
     medCheckDate: formData.get("medCheckDate"),
     psycho_check: formData.get("psycho_check"),
     phone: formData.get("phone"),
+    position: formData.get("position"),
   };
 
   // 🎯 Zistíme, ktoré polia sa skutočne zmenili
@@ -276,6 +277,7 @@ export async function AdminUpdateProfilesData(formData) {
     medCheckDate: formData.get("medCheckDate"),
     psycho_check: formData.get("psycho_check"),
     phone: formData.get("phone"),
+    position: formData.get("position"),
   };
 
   // 🎯 Zistíme, ktoré polia sa skutočne zmenili
