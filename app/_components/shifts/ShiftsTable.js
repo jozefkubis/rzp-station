@@ -100,10 +100,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -238,6 +238,7 @@ export default function ShiftsTable({
           email: row.profiles?.email ?? "(bez e-mailu)",
           avatar: row.profiles?.avatar_url,
           contract: Number(row.profiles?.contract ?? 1),
+          position: row.profiles?.position,
           order_index: row.order_index ?? 999, // pridáme poradie
           shifts: [],
         };
@@ -267,6 +268,8 @@ export default function ShiftsTable({
 
   // MARK: ŠTÁTNE SVIATKY — set dátumov pre daný mesiac
   const holidaySet = getHolidaySetForMonth(year, month);
+
+
 
   // MARK: RETURN.........................................................................
   return (
@@ -332,6 +335,7 @@ export default function ShiftsTable({
         ) : (
           optimisticRoster.map((p, idx) => {
             // per-user norma podľa úväzku (0.1..1.0)
+            const position = String(p.position ?? "");
             const contract = Number(p.contract ?? 1);
             const perUserNorm = Math.round(normHours * contract * 10) / 10;
             const rowShiftStats = shiftTableStats(perUserNorm);
@@ -350,6 +354,7 @@ export default function ShiftsTable({
                 shiftStats={rowShiftStats}
                 normHours={perUserNorm}
                 contract={contract}
+                position={position}
                 holidaySet={holidaySet}
               />
             );

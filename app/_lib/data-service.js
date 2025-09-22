@@ -253,7 +253,7 @@ export async function getAllShiftsForMonth(m = 0) {
       shift_type,
       request_type,
       request_hours,
-      profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
+      profiles:profiles!shifts_user_id_fkey ( id, full_name, position, avatar_url )
     `,
     )
     .order("order_index", { ascending: true })

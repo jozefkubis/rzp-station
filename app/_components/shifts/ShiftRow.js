@@ -18,6 +18,7 @@ export default function ShiftRow({
   roster,
   shiftStats,
   contract,
+  position,
   holidaySet,
 }) {
   // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
@@ -39,6 +40,8 @@ export default function ShiftRow({
     [monthShifts, shiftStats],
   );
 
+  const lowerCasePosition = position.toLowerCase();
+
   return (
     <div
       className={`grid text-sm ${rowBg} border-r border-slate-200 hover:bg-blue-100`}
@@ -49,6 +52,7 @@ export default function ShiftRow({
         onDeleteOptimistic={onDeleteOptimistic}
         roster={roster}
         rowBg={rowBg}
+        position={lowerCasePosition}
       >
         {user.full_name}
       </AllParamedics>

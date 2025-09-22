@@ -12,6 +12,7 @@ export default function AllParamedics({
   user,
   onDeleteOptimistic,
   roster,
+  position,
   rowBg,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
@@ -61,6 +62,7 @@ export default function AllParamedics({
         >
           {currentIdx + 1}. {children}
         </button>
+        <span className="text-sm">{position}</span>
       </div>
 
       {isOpenDeleteModal && (
