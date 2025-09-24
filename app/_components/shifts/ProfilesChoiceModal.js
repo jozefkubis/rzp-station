@@ -23,10 +23,10 @@ export default function ProfilesChoiceModal({
         : current,
   );
 
-  async function handleClick(id, full_name) {
+  async function handleClick(id, full_name, position) {
     startTransition(() => {
       applyRemove({ type: "REMOVE", id });
-      onInsertEmptyShift({ userId: id, full_name });
+      onInsertEmptyShift({ userId: id, full_name, position });
     });
 
     setIsProfilesModalOpen(false);
@@ -45,14 +45,14 @@ export default function ProfilesChoiceModal({
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {optimisticProfiles.length ? (
-        optimisticProfiles.map(({ id, full_name }) => (
+        optimisticProfiles.map(({ id, full_name, position }) => (
           <Button
             key={id}
             variant="secondary"
             size="small"
             onClick={() => handleClick(id, full_name)}
           >
-            {full_name || "Neznámy záchranár"}
+            {full_name ? `${full_name} - ${position}` : "Neznámy záchranár"}
           </Button>
         ))
       ) : (

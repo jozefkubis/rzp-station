@@ -24,7 +24,7 @@ export default async function page({ searchParams }) {
   // 2. Filter pre profily bez služby a map pre vytvorenie pola
   const diffProfiles = profiles
     .filter((p) => !shiftUserIdSet.has(p.id))
-    .map(({ id, full_name }) => ({ id, full_name }));
+    .map(({ id, full_name, position }) => ({ id, full_name, position }));
 
   return (
     <div className="pb-10">
