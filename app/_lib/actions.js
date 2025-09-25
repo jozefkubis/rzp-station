@@ -812,7 +812,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -872,10 +872,10 @@ export async function generateShiftsAuto(m) {
     };
   }
 
-  /* ========== 3) Profily (s úväzkom) ========== */
+  /* ========== 3) Profily (s úväzkom + pozíciou) ========== */
   const { data: profiles, error: profErr } = await supabase
     .from("profiles")
-    .select("id, full_name, contract")
+    .select("id, full_name, contract, position")
     .in("id", rosterIds)
     .order("order_index", { ascending: true });
 
@@ -883,11 +883,21 @@ export async function generateShiftsAuto(m) {
   if (!profiles?.length)
     return { error: "Nepodarilo sa načítať profily pre daný roster." };
 
+  // (mini) normalizácia úväzku a pozície
+  const parseContract = (val) => {
+    const num = parseFloat(String(val ?? 1).replace(",", "."));
+    return Number.isFinite(num) && num > 0 ? num : 1;
+  };
+  const normalizePos = (val) => {
+    const p = String(val ?? "").trim().toLowerCase();
+    return p === "zz" || p === "vz" || p === "v" ? p : "vz";
+  };
+
   const contractOf = new Map();
+  const positionOf = new Map();
   for (const p of profiles) {
-    const contractValue = Number(p.contract ?? 1);
-    const safeValue = contractValue > 0 ? contractValue : 1;
-    contractOf.set(p.id, safeValue);
+    contractOf.set(p.id, parseContract(p.contract));
+    positionOf.set(p.id, normalizePos(p.position));
   }
   const personalNorm = (uid) => NORMA_FULL * (contractOf.get(uid) ?? 1);
 
@@ -909,26 +919,14 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
 
-  const targetN = buildTargetsWeighted(
-    profiles,
-    totalN,
-    (p) => p.contract ?? 1,
-  );
-  const targetD = buildTargetsWeighted(
-    profiles,
-    totalD,
-    (p) => p.contract ?? 1,
-  );
-  const targetTotal = buildTargetsWeighted(
-    profiles,
-    totalN + totalD,
-    (p) => p.contract ?? 1,
-  );
+  const targetN = buildTargetsWeighted(profiles, totalN, (p) => parseContract(p.contract));
+  const targetD = buildTargetsWeighted(profiles, totalD, (p) => parseContract(p.contract));
+  const targetTotal = buildTargetsWeighted(profiles, totalN + totalD, (p) => parseContract(p.contract));
 
   /* ========== 5) Počítadlá a pravidlá ========== */
   const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
@@ -995,6 +993,14 @@ export async function generateShiftsAuto(m) {
     return false;
   }
 
+  /* ===== pozície – kompatibilita párov ===== */
+  function canPair(posA, posB) {
+    // zakázané len (zz,zz) a (v,v); vz je univerzál
+    if ((posA === "zz" && posB === "zz") || (posA === "v" && posB === "v"))
+      return false;
+    return true;
+  }
+
   /* ========== 6) Helpery pre výber ========== */
   function lcg(seed) {
     let s = seed >>> 0;
@@ -1002,7 +1008,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1066,6 +1072,7 @@ export async function generateShiftsAuto(m) {
     allowExceedBy1 = false,
     allowExceedHoursBy12 = false,
     strictCycle = true,
+    assignedPartnersOfType = new Set(), // <-- NOVÉ: partneri už priradení na daný typ dnes
   ) {
     const existMap = existType.get(dateStr) || new Map();
     const onlyMap = reqOnly.get(dateStr) || new Map();
@@ -1096,14 +1103,20 @@ export async function generateShiftsAuto(m) {
       if (overTotalCap(uid, allowExceedBy1)) continue;
       if (overHoursCap(uid, allowExceedHoursBy12)) continue;
 
+      // --- NOVÉ: skontroluj kompatibilitu pozícií s už priradenými na daný typ ---
+      const posU = positionOf.get(uid) || "vz";
+      let ok = true;
+      for (const partnerId of assignedPartnersOfType) {
+        const posP = positionOf.get(partnerId) || "vz";
+        if (!canPair(posU, posP)) { ok = false; break; }
+      }
+      if (!ok) continue;
+
       base.push(uid);
     }
     if (!base.length) return null;
 
-    const withTier = base.map((uid) => ({
-      uid,
-      tier: patternTier(uid, type, dateStr),
-    }));
+    const withTier = base.map((uid) => ({ uid, tier: patternTier(uid, type, dateStr) }));
     const bestTier = Math.min(...withTier.map((x) => x.tier));
     let pool = withTier.filter((x) => x.tier === bestTier).map((x) => x.uid);
 
@@ -1125,10 +1138,7 @@ export async function generateShiftsAuto(m) {
     const maxHDef = Math.max(...poolWithDef.map((x) => x.hDef));
     poolWithDef = poolWithDef.filter((x) => x.hDef === maxHDef);
 
-    const pick = shuffle(
-      poolWithDef.map((x) => x.uid),
-      rnd,
-    )[0];
+    const pick = shuffle(poolWithDef.map((x) => x.uid), rnd)[0];
     return pick ?? null;
   }
 
@@ -1136,7 +1146,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1144,6 +1154,7 @@ export async function generateShiftsAuto(m) {
     const existMap = existType.get(dateStr) || new Map();
     const blockSet = blockReq.get(dateStr) || new Set();
     const assignedToday = new Set();
+    const assignedByType = { D: new Set(), N: new Set() }; // <-- NOVÉ
     const remaining = { N: coverage.N, D: coverage.D };
 
     // zarátať existujúce (aj hodiny) + blok z X
@@ -1155,6 +1166,7 @@ export async function generateShiftsAuto(m) {
       if (st === "D" || st === "N") {
         if (remaining[st] > 0) remaining[st] -= 1;
         assignedToday.add(uid);
+        assignedByType[st].add(uid); // <-- NOVÉ: eviduj partnera na type
         pushDayState(uid, st, dateStr);
         incCount(uid, st);
         incHours(uid, st);
@@ -1164,55 +1176,20 @@ export async function generateShiftsAuto(m) {
       }
     }
 
-    // doplň zvyšné sloty cez výber kandidátov
+    // doplň zvyšné sloty cez výber kandidátov (rešpektuje páry)
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
-          pickCandidate(
-            type,
-            dateStr,
-            dayProfiles,
-            assignedToday,
-            rnd,
-            false,
-            false,
-            true,
-          ) ||
-          pickCandidate(
-            type,
-            dateStr,
-            dayProfiles,
-            assignedToday,
-            rnd,
-            true,
-            false,
-            true,
-          ) ||
-          pickCandidate(
-            type,
-            dateStr,
-            dayProfiles,
-            assignedToday,
-            rnd,
-            true,
-            false,
-            false,
-          ) ||
-          pickCandidate(
-            type,
-            dateStr,
-            dayProfiles,
-            assignedToday,
-            rnd,
-            true,
-            true,
-            false,
-          );
+          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, false, false, true, assignedByType[type]) ||
+          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, false, true, assignedByType[type]) ||
+          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, false, false, assignedByType[type]) ||
+          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, true, false, assignedByType[type]);
 
         if (!uid) continue;
 
         assignedToday.add(uid);
+        assignedByType[type].add(uid); // <-- NOVÉ
         pushDayState(uid, type, dateStr);
         incCount(uid, type);
         incHours(uid, type);
@@ -1263,6 +1240,7 @@ export async function generateShiftsAuto(m) {
     range: { from, to },
   };
 }
+
 
 // MARK: VALIDATE SHIFTS (pokrytie dňa + základné porušenia pravidiel)
 export async function validateShifts(m = 0) {
@@ -1318,7 +1296,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1348,7 +1326,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;

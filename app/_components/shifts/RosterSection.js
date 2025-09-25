@@ -40,6 +40,7 @@ export default function RosterSection({
             profiles: {
               full_name: act.full_name,
               position: act.position,
+              contract: act.contract,
             },
           },
         ];
@@ -49,7 +50,7 @@ export default function RosterSection({
   );
 
   /* 🟡 2) callback, ktorý odovzdáme InsertShiftButtonu */
-  function handleInsertEmptyShift({ userId, full_name, position }) {
+  function handleInsertEmptyShift({ userId, full_name, position, contract }) {
     const firstOfMonth = new Date(
       new Date().getFullYear(),
       new Date().getMonth(),
@@ -64,6 +65,7 @@ export default function RosterSection({
       full_name,
       date: firstOfMonth,
       position,
+      contract,
     });
   }
 
