@@ -851,13 +851,13 @@ export async function generateShiftsAuto(m) {
 
     if (rt === "XD") {
       if (!reqOnly.has(d)) reqOnly.set(d, new Map());
-      reqOnly.get(d).set(u, "N");
+      reqOnly.get(d).set(u, "N"); // zákaz D → dnes smie len N
     } else if (rt === "XN") {
       if (!reqOnly.has(d)) reqOnly.set(d, new Map());
-      reqOnly.get(d).set(u, "D");
+      reqOnly.get(d).set(u, "D"); // zákaz N → dnes smie len D
     } else if (rt === "X") {
       if (!blockReq.has(d)) blockReq.set(d, new Set());
-      blockReq.get(d).add(u);
+      blockReq.get(d).add(u);     // zákaz celého dňa
     }
 
     hasRow.set(`${d}#${u}`, true);
@@ -927,6 +927,24 @@ export async function generateShiftsAuto(m) {
   const targetN = buildTargetsWeighted(profiles, totalN, (p) => parseContract(p.contract));
   const targetD = buildTargetsWeighted(profiles, totalD, (p) => parseContract(p.contract));
   const targetTotal = buildTargetsWeighted(profiles, totalN + totalD, (p) => parseContract(p.contract));
+
+  // ==== Garancia: každý má aspoň 1 službu (D alebo N) ====
+  {
+    for (const p of profiles) {
+      const id = p.id;
+      const d0 = targetD.get(id) || 0;
+      const n0 = targetN.get(id) || 0;
+      if ((d0 + n0) < 1) {
+        // pridáme jednu službu na typ, kde je celkovo väčšia potreba
+        if (totalD >= totalN) {
+          targetD.set(id, d0 + 1);
+        } else {
+          targetN.set(id, n0 + 1);
+        }
+        targetTotal.set(id, 1);
+      }
+    }
+  }
 
   /* ========== 5) Počítadlá a pravidlá ========== */
   const dayState = new Map(); // userId -> { lastDate, lastType, consecSame }
@@ -1046,6 +1064,8 @@ export async function generateShiftsAuto(m) {
     dt.setDate(dt.getDate() - days);
     return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
   };
+
+  // === UPRAVENÉ: žiadna penalizácia za N→N, NN je OK (max 2 rovnaké ostáva pravidlom) ===
   function patternTier(uid, type, dateStr) {
     const y1 = shiftDaysAgo(dateStr, 1);
     const y2 = shiftDaysAgo(dateStr, 2);
@@ -1056,10 +1076,15 @@ export async function generateShiftsAuto(m) {
     const hadShiftY2 = tY2 === "D" || tY2 === "N";
 
     if (type === "D" && !hadShiftY1 && !hadShiftY2) return 0; // D po 2 voľných
-    if (type === "N" && tY1 === "D") return 0; // N po D
-    if (tY2 === "N") return 2; // 2. deň po N – radšej voľno
-    if (type === "N" && tY1 === "N") return 4; // fallback penalizácie
+    if (type === "N" && tY1 === "D") return 0;                 // N po D
+
+    // zrušené: penalizácie za N po N (aj 2. deň po N)
+    // if (tY2 === "N") return 2;
+    // if (type === "N" && tY1 === "N") return 4;
+
+    // ponecháme jemné brzdenie pri D→D
     if (type === "D" && tY1 === "D") return 4;
+
     return 1;
   }
 
@@ -1072,7 +1097,7 @@ export async function generateShiftsAuto(m) {
     allowExceedBy1 = false,
     allowExceedHoursBy12 = false,
     strictCycle = true,
-    assignedPartnersOfType = new Set(), // <-- NOVÉ: partneri už priradení na daný typ dnes
+    assignedPartnersOfType = new Set(), // partneri už priradení na daný typ dnes
   ) {
     const existMap = existType.get(dateStr) || new Map();
     const onlyMap = reqOnly.get(dateStr) || new Map();
@@ -1095,6 +1120,7 @@ export async function generateShiftsAuto(m) {
         if (tY1 === "D" && type === "D") continue;
       }
 
+      // xD/xN: len zákaz opačného typu (žiadna priorita)
       const only = onlyMap.get(uid);
       if (only && only !== type) continue;
 
@@ -1103,7 +1129,7 @@ export async function generateShiftsAuto(m) {
       if (overTotalCap(uid, allowExceedBy1)) continue;
       if (overHoursCap(uid, allowExceedHoursBy12)) continue;
 
-      // --- NOVÉ: skontroluj kompatibilitu pozícií s už priradenými na daný typ ---
+      // kompatibilita pozícií s už priradenými na tento typ
       const posU = positionOf.get(uid) || "vz";
       let ok = true;
       for (const partnerId of assignedPartnersOfType) {
@@ -1154,7 +1180,7 @@ export async function generateShiftsAuto(m) {
     const existMap = existType.get(dateStr) || new Map();
     const blockSet = blockReq.get(dateStr) || new Set();
     const assignedToday = new Set();
-    const assignedByType = { D: new Set(), N: new Set() }; // <-- NOVÉ
+    const assignedByType = { D: new Set(), N: new Set() };
     const remaining = { N: coverage.N, D: coverage.D };
 
     // zarátať existujúce (aj hodiny) + blok z X
@@ -1166,7 +1192,7 @@ export async function generateShiftsAuto(m) {
       if (st === "D" || st === "N") {
         if (remaining[st] > 0) remaining[st] -= 1;
         assignedToday.add(uid);
-        assignedByType[st].add(uid); // <-- NOVÉ: eviduj partnera na type
+        assignedByType[st].add(uid);
         pushDayState(uid, st, dateStr);
         incCount(uid, st);
         incHours(uid, st);
@@ -1189,7 +1215,7 @@ export async function generateShiftsAuto(m) {
         if (!uid) continue;
 
         assignedToday.add(uid);
-        assignedByType[type].add(uid); // <-- NOVÉ
+        assignedByType[type].add(uid);
         pushDayState(uid, type, dateStr);
         incCount(uid, type);
         incHours(uid, type);
