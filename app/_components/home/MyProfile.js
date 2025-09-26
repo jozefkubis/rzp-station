@@ -159,7 +159,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           title="Služby mesiac"
           color="green"
           icon={<TbCalendarStats />}
-          value={`${calculated.totalShiftCount} / ${calculated.totalHours.toFixed(1)} h.`}
+          value={`${calculated.totalShiftCount} / ${calculated.totalHours > 0 ? calculated.totalHours.toFixed(1) : 0} h.`}
         />
         <Stat
           title="Denné služby"
@@ -177,13 +177,13 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           title="Dovolenka"
           color="orange"
           icon={<TbPlaneDeparture />}
-          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours.toFixed(1)} h.`}
+          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours > 0 ? calculated.holidayHours.toFixed(1) : 0} h.`}
         />
         <Stat
           title="PN"
           color="purple"
           icon={<TbBed />}
-          value={`${calculated.sickShiftCount} / ${calculated.sickHours.toFixed(1)} h.`}
+          value={`${calculated.sickShiftCount} / ${calculated.sickHours > 0 ? calculated.sickHours.toFixed(1) : 0} h.`}
         />
         <Stat
           title="Nadčas"
