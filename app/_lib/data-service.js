@@ -443,6 +443,24 @@ export async function getShiftsForProfileForYear(
   return shifts ?? [];
 }
 
+// MARK: GET CONTRACT
+export async function getContract() {
+  const supabase = await createClient();
+
+  const { data: contract, error } = await supabase
+    .from("profiles")
+    .select("contract")
+    .single();
+
+  if (error) {
+    console.error("Supabase error – contract:", error);
+    throw error;
+  }
+
+  return contract;
+}
+
+
 // MARK: GET REQUEST_HOURS FOR PROFILE FOR MONTH
 // export async function getRequestHoursForMonth(monthOffset = 0) {
 //   const supabase = await createClient();

@@ -24,9 +24,6 @@ export default function ShiftRow({
   // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
   const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
 
-  console.log(contract);
-
-
   // ❷ Smeny iba pre aktuálny mesiac
   const monthShifts = useMemo(
     () => user.shifts.filter((s) => monthDates.has(s.date)),

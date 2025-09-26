@@ -47,6 +47,7 @@ const formatDaysLeft = (v) => (v < 0 ? `- ${Math.abs(v)} dní` : `+ ${v} dní`);
 /* -------------------------------------------------------------------------- */
 
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
+  const contract = profile?.contract ?? 1;
   /* uložíme offset do sessionStorage (na zapamätanie medzi reloadmi) */
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -78,7 +79,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     const weekdaysCount = getDaysArray(yearTarget, monthTarget).filter(
       (d) => !d.isWeekend,
     ).length;
-    const normHours = weekdaysCount * 7.5;
+    const normHours = weekdaysCount * 7.5 * contract;
 
     /* počty služieb podľa typu */
     const counts = countShiftsByType(shiftsForMonth);
@@ -88,6 +89,10 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     const holidayShiftCount = counts.RD;
     const sickShiftCount = counts.PN;
 
+    const HOURS_PER_DN = 12;
+    const HOURS_PER_RD = 7.5 * contract;
+    const HOURS_PER_PN = 7.5 * contract;
+
     /* hodiny z číselných požiadaviek (spodný riadok) */
     const extraHours = shiftsForMonth.reduce((sum, s) => {
       const n = Number(s.request_hours);
@@ -95,11 +100,12 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     }, 0);
 
     /* sumarizácia hodín */
-    const totalShiftCount = dayShiftCount + nightShiftCount;
-    const holidayHours = hoursForShifts(holidayShiftCount, 7.5);
-    const sickHours = hoursForShifts(sickShiftCount, 7.5);
+    const totalShiftCount = dayShiftCount + nightShiftCount; // len D+N
+    const holidayHours = holidayShiftCount * HOURS_PER_RD;
+    const sickHours = sickShiftCount * HOURS_PER_PN;
     const totalHours =
-      hoursForShifts(totalShiftCount) + holidayHours + sickHours + extraHours;
+      totalShiftCount * HOURS_PER_DN + holidayHours + sickHours + extraHours;
+
     const overtimeHours = totalHours - normHours;
 
     /* lokalizovaný nadpis mesiaca */
@@ -118,7 +124,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
         totalHours,
         overtimeHours,
         sickHours,
-        sickShiftCount
+        sickShiftCount,
       },
     };
   }, [shifts, offset]);
@@ -135,7 +141,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     ? formatDaysLeft(getDaysUntilNextMedCheck(psychoDate))
     : "—";
 
-  /* -------------------- render -------------------- */
+  // MARK: RETURN
   return (
     <div>
       {/* navigácia medzi mesiacmi */}
@@ -153,7 +159,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           title="Služby mesiac"
           color="green"
           icon={<TbCalendarStats />}
-          value={`${calculated.totalShiftCount} / ${calculated.totalHours} h.`}
+          value={`${calculated.totalShiftCount} / ${calculated.totalHours.toFixed(1)} h.`}
         />
         <Stat
           title="Denné služby"
@@ -171,19 +177,19 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           title="Dovolenka"
           color="orange"
           icon={<TbPlaneDeparture />}
-          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours} h.`}
+          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours.toFixed(1)} h.`}
         />
         <Stat
           title="PN"
           color="purple"
           icon={<TbBed />}
-          value={`${calculated.sickShiftCount} / ${calculated.sickHours} h.`}
+          value={`${calculated.sickShiftCount} / ${calculated.sickHours.toFixed(1)} h.`}
         />
         <Stat
           title="Nadčas"
           color="green"
           icon={<TbClockPlus />}
-          value={`${calculated.overtimeHours} h.`}
+          value={`${calculated.overtimeHours.toFixed(1)} h.`}
         />
         <Stat
           title="Lek. prehliadka"

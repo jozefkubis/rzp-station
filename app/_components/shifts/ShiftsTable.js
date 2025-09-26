@@ -336,7 +336,7 @@ export default function ShiftsTable({
             const position = String(p.position ?? "");
             const contract = Number(p.contract ?? 1);
             const perUserNorm = Math.round(normHours * contract * 10) / 10;
-            const rowShiftStats = shiftTableStats(perUserNorm);
+            const rowShiftStats = shiftTableStats(perUserNorm, contract);
 
             return (
               <ShiftRow

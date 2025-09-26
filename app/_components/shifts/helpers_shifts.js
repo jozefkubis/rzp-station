@@ -69,6 +69,8 @@ function toNumber(value) {
    KONŠTANTY PRE ŠTATISTIKU
    ────────────────────────────────────────────────────────── */
 
+
+
 // Trvanie smien v hodinách
 export const HOURS = {
   D: 12,
@@ -121,14 +123,25 @@ function reqHours(s) {
 /* ──────────────────────────────────────────────────────────
    Definícia stĺpcov tabuľky (štatistika)
    ────────────────────────────────────────────────────────── */
-export function shiftTableStats(normHours) {
+export function shiftTableStats(normHours, contract) {
+
+  const HOURS_CONTRACT = Object.fromEntries(
+    Object.entries(HOURS).map(([key, value]) =>
+      (key === "RD" || key === "PN")
+        ? [key, value * contract]
+        : [key, value]
+    )
+  );
+
   return [
     {
       key: "totalHours",
       label: "SH",
       calc: (shifts) => {
         const raw = shifts.reduce(
-          (sum, s) => sum + (HOURS[s.shift_type] || 0),
+
+
+          (sum, s) => sum + (HOURS_CONTRACT[s.shift_type] || 0),
           0,
         );
         return clampNearZero(round1(raw));
@@ -160,7 +173,7 @@ export function shiftTableStats(normHours) {
       label: "NČ",
       calc: (shifts) => {
         const regular = shifts.reduce(
-          (sum, s) => sum + (HOURS[s.shift_type] || 0),
+          (sum, s) => sum + (HOURS_CONTRACT[s.shift_type] || 0),
           0,
         );
         const extra = shifts.reduce((sum, s) => sum + reqHours(s), 0);
