@@ -965,7 +965,7 @@ export async function generateShiftsAuto(m) {
   const incHours = (uid, type) => {
     const prev = getHours(uid);
     if (type === "D" || type === "N") hoursCount.set(uid, prev + 12);
-    else if (type === "RD") hoursCount.set(uid, prev + 7.5);
+    else if (type === "RD") hoursCount.set(uid, prev + 7.5 * (contractOf.get(uid) ?? 1));
   };
 
   const remainingHours = (uid) => personalNorm(uid) - getHours(uid);
@@ -1266,7 +1266,6 @@ export async function generateShiftsAuto(m) {
     range: { from, to },
   };
 }
-
 
 // MARK: VALIDATE SHIFTS (pokrytie dňa + základné porušenia pravidiel)
 export async function validateShifts(m = 0) {
