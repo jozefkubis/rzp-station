@@ -1,4 +1,9 @@
+"use client";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useMemo } from "react";
+
 import AllParamedics from "./AllParamedics";
 import ContractRow from "./ContractRow";
 import RowDays from "./RowDays";
@@ -6,7 +11,7 @@ import RowDaysBottom from "./RowDaysBottom";
 import ShiftStatsRowDay from "./ShiftStatsRowDay";
 import { fmtHours } from "./helpers_shifts";
 
-// ShiftRow.jsx
+// ShiftRow.jsx – DnD integrované (useSortable + handle)
 export default function ShiftRow({
   user,
   days,
@@ -21,6 +26,22 @@ export default function ShiftRow({
   position,
   holidaySet,
 }) {
+  // === DnD: pripravenie sortable itemu
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: user.user_id });
+
+  const dragStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : undefined,
+  };
+
   // ❶ Set všetkých dátumov v aktuálnom mesiaci (rýchly lookup)
   const monthDates = useMemo(() => new Set(days.map((d) => d.dateStr)), [days]);
 
@@ -44,9 +65,12 @@ export default function ShiftRow({
 
   return (
     <div
+      ref={setNodeRef}
+      style={dragStyle}
       className={`grid text-sm ${rowBg} border-r border-slate-200 hover:bg-blue-100`}
-      style={{ gridTemplateColumns: colTemplate }}
+      style={{ ...dragStyle, gridTemplateColumns: colTemplate }}
     >
+      {/* ❶ Ľavý stĺpec – pridali sme "úchytku" (⋮⋮) s attributes/listeners */}
       <AllParamedics
         user={user}
         onDeleteOptimistic={onDeleteOptimistic}
@@ -54,6 +78,15 @@ export default function ShiftRow({
         rowBg={rowBg}
         position={lowerCasePosition}
       >
+        <span
+          {...attributes}
+          {...listeners}
+          className="mr-2 inline-flex h-5 w-5 cursor-grab select-none items-center justify-center rounded text-slate-400 hover:text-slate-600"
+          title="Presuň riadok"
+          aria-label="Presuň riadok"
+        >
+          ⋮⋮
+        </span>
         {user.full_name}
       </AllParamedics>
 

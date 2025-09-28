@@ -1,7 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useOptimistic, useState, useTransition } from "react";
+import {
+  useCallback,
+  useMemo,
+  useOptimistic,
+  useState,
+  useTransition,
+} from "react";
+// DnD Krok 2: budeme potrebovať aj useEffect
+import { useEffect } from "react";
 
 import {
   clearRequest,
@@ -28,6 +36,21 @@ import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
+
+// === DND: imports (Krok 1) ===
+import { updateMonthOrderIndex } from "@/app/_lib/actions"; // server funkcia na uloženie poradia
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -100,10 +123,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -269,6 +292,53 @@ export default function ShiftsTable({
   // MARK: ŠTÁTNE SVIATKY — set dátumov pre daný mesiac
   const holidaySet = getHolidaySetForMonth(year, month);
 
+  // === DND: nastavenie senzorov a handler (Krok 2) ===
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+  );
+
+  // lokálne poradie riadkov pre optimistické presuny
+  const [rows, setRows] = useState(optimisticRoster);
+
+  // Sync len pri zmene SÚPISU (pridanie/odobratie usera), ignorujeme zmenu poradia,
+  // aby sme si neprepisovali lokálne ťahanie.
+  const membershipKey = useMemo(
+    () => [...new Set(optimisticRoster.map((u) => u.user_id))].sort().join("|"),
+    [optimisticRoster],
+  );
+
+  useEffect(() => {
+    setRows(optimisticRoster);
+  }, [membershipKey]);
+
+  const rowIds = rows.map((u) => u.user_id);
+
+  async function handleDragEnd(event) {
+    const { active, over } = event || {};
+    if (!over || active?.id === over?.id) return;
+
+    const oldIndex = rows.findIndex((r) => r.user_id === active.id);
+    const newIndex = rows.findIndex((r) => r.user_id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    // 1) lokálne prehodenie poradia (optimisticky)
+    const next = arrayMove(rows, oldIndex, newIndex);
+    setRows(next);
+
+    // 2) uloženie do DB pre aktuálny mesiac (offset = shiftsOffset)
+    try {
+      await updateMonthOrderIndex(
+        shiftsOffset,
+        next.map((m, idx) => ({ user_id: m.user_id, order_index: idx })),
+      );
+      // router.refresh(); // voliteľné
+    } catch (e) {
+      console.error(e);
+      // rollback (voliteľné)
+      setRows(rows);
+    }
+  }
+
   // MARK: RETURN.........................................................................
   return (
     <>
@@ -331,32 +401,43 @@ export default function ShiftsTable({
         {shifts.length === 0 ? (
           <NoShifts />
         ) : (
-          optimisticRoster.map((p, idx) => {
-            // per-user norma podľa úväzku (0.1..1.0)
-            const position = String(p.position ?? "");
-            const contract = Number(p.contract ?? 1);
-            const perUserNorm = Math.round(normHours * contract * 10) / 10;
-            const rowShiftStats = shiftTableStats(perUserNorm, contract);
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={rowIds}
+              strategy={verticalListSortingStrategy}
+            >
+              {rows.map((p, idx) => {
+                // per-user norma podľa úväzku (0.1..1.0)
+                const position = String(p.position ?? "");
+                const contract = Number(p.contract ?? 1);
+                const perUserNorm = Math.round(normHours * contract * 10) / 10;
+                const rowShiftStats = shiftTableStats(perUserNorm, contract);
 
-            return (
-              <ShiftRow
-                key={p.user_id}
-                user={p}
-                onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
-                days={days}
-                colTemplate={colTemplate}
-                onTopSelect={handleTopSelect}
-                onBottomSelect={handleBottomSelect}
-                rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
-                roster={roster}
-                shiftStats={rowShiftStats}
-                normHours={perUserNorm}
-                contract={contract}
-                position={position}
-                holidaySet={holidaySet}
-              />
-            );
-          })
+                return (
+                  <ShiftRow
+                    key={p.user_id}
+                    user={p}
+                    onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
+                    days={days}
+                    colTemplate={colTemplate}
+                    onTopSelect={handleTopSelect}
+                    onBottomSelect={handleBottomSelect}
+                    rowBg={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                    roster={rows}
+                    shiftStats={rowShiftStats}
+                    normHours={perUserNorm}
+                    contract={contract}
+                    position={position}
+                    holidaySet={holidaySet}
+                  />
+                );
+              })}
+            </SortableContext>
+          </DndContext>
         )}
 
         <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">

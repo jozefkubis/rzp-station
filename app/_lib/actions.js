@@ -812,7 +812,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1;d <= daysInMonth;d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -857,7 +857,7 @@ export async function generateShiftsAuto(m) {
       reqOnly.get(d).set(u, "D"); // zákaz N → dnes smie len D
     } else if (rt === "X") {
       if (!blockReq.has(d)) blockReq.set(d, new Set());
-      blockReq.get(d).add(u);     // zákaz celého dňa
+      blockReq.get(d).add(u); // zákaz celého dňa
     }
 
     hasRow.set(`${d}#${u}`, true);
@@ -889,7 +889,9 @@ export async function generateShiftsAuto(m) {
     return Number.isFinite(num) && num > 0 ? num : 1;
   };
   const normalizePos = (val) => {
-    const p = String(val ?? "").trim().toLowerCase();
+    const p = String(val ?? "")
+      .trim()
+      .toLowerCase();
     return p === "zz" || p === "vz" || p === "v" ? p : "vz";
   };
 
@@ -919,14 +921,20 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0;i < left;i++) raw[i].floor++;
+    for (let i = 0; i < left; i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
 
-  const targetN = buildTargetsWeighted(profiles, totalN, (p) => parseContract(p.contract));
-  const targetD = buildTargetsWeighted(profiles, totalD, (p) => parseContract(p.contract));
-  const targetTotal = buildTargetsWeighted(profiles, totalN + totalD, (p) => parseContract(p.contract));
+  const targetN = buildTargetsWeighted(profiles, totalN, (p) =>
+    parseContract(p.contract),
+  );
+  const targetD = buildTargetsWeighted(profiles, totalD, (p) =>
+    parseContract(p.contract),
+  );
+  const targetTotal = buildTargetsWeighted(profiles, totalN + totalD, (p) =>
+    parseContract(p.contract),
+  );
 
   // ==== Garancia: každý má aspoň 1 službu (D alebo N) ====
   {
@@ -934,7 +942,7 @@ export async function generateShiftsAuto(m) {
       const id = p.id;
       const d0 = targetD.get(id) || 0;
       const n0 = targetN.get(id) || 0;
-      if ((d0 + n0) < 1) {
+      if (d0 + n0 < 1) {
         // pridáme jednu službu na typ, kde je celkovo väčšia potreba
         if (totalD >= totalN) {
           targetD.set(id, d0 + 1);
@@ -965,7 +973,8 @@ export async function generateShiftsAuto(m) {
   const incHours = (uid, type) => {
     const prev = getHours(uid);
     if (type === "D" || type === "N") hoursCount.set(uid, prev + 12);
-    else if (type === "RD") hoursCount.set(uid, prev + 7.5 * (contractOf.get(uid) ?? 1));
+    else if (type === "RD")
+      hoursCount.set(uid, prev + 7.5 * (contractOf.get(uid) ?? 1));
   };
 
   const remainingHours = (uid) => personalNorm(uid) - getHours(uid);
@@ -1026,7 +1035,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1;i > 0;i--) {
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1076,7 +1085,7 @@ export async function generateShiftsAuto(m) {
     const hadShiftY2 = tY2 === "D" || tY2 === "N";
 
     if (type === "D" && !hadShiftY1 && !hadShiftY2) return 0; // D po 2 voľných
-    if (type === "N" && tY1 === "D") return 0;                 // N po D
+    if (type === "N" && tY1 === "D") return 0; // N po D
 
     // zrušené: penalizácie za N po N (aj 2. deň po N)
     // if (tY2 === "N") return 2;
@@ -1134,7 +1143,10 @@ export async function generateShiftsAuto(m) {
       let ok = true;
       for (const partnerId of assignedPartnersOfType) {
         const posP = positionOf.get(partnerId) || "vz";
-        if (!canPair(posU, posP)) { ok = false; break; }
+        if (!canPair(posU, posP)) {
+          ok = false;
+          break;
+        }
       }
       if (!ok) continue;
 
@@ -1142,7 +1154,10 @@ export async function generateShiftsAuto(m) {
     }
     if (!base.length) return null;
 
-    const withTier = base.map((uid) => ({ uid, tier: patternTier(uid, type, dateStr) }));
+    const withTier = base.map((uid) => ({
+      uid,
+      tier: patternTier(uid, type, dateStr),
+    }));
     const bestTier = Math.min(...withTier.map((x) => x.tier));
     let pool = withTier.filter((x) => x.tier === bestTier).map((x) => x.uid);
 
@@ -1164,7 +1179,10 @@ export async function generateShiftsAuto(m) {
     const maxHDef = Math.max(...poolWithDef.map((x) => x.hDef));
     poolWithDef = poolWithDef.filter((x) => x.hDef === maxHDef);
 
-    const pick = shuffle(poolWithDef.map((x) => x.uid), rnd)[0];
+    const pick = shuffle(
+      poolWithDef.map((x) => x.uid),
+      rnd,
+    )[0];
     return pick ?? null;
   }
 
@@ -1172,7 +1190,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1205,12 +1223,52 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty cez výber kandidátov (rešpektuje páry)
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0;k < need;k++) {
+      for (let k = 0; k < need; k++) {
         const uid =
-          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, false, false, true, assignedByType[type]) ||
-          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, false, true, assignedByType[type]) ||
-          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, false, false, assignedByType[type]) ||
-          pickCandidate(type, dateStr, dayProfiles, assignedToday, rnd, true, true, false, assignedByType[type]);
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            false,
+            false,
+            true,
+            assignedByType[type],
+          ) ||
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
+            false,
+            true,
+            assignedByType[type],
+          ) ||
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
+            false,
+            false,
+            assignedByType[type],
+          ) ||
+          pickCandidate(
+            type,
+            dateStr,
+            dayProfiles,
+            assignedToday,
+            rnd,
+            true,
+            true,
+            false,
+            assignedByType[type],
+          );
 
         if (!uid) continue;
 
@@ -1321,7 +1379,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1351,7 +1409,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
@@ -1514,4 +1572,34 @@ export async function copyRosterIfEmpty(targetM = 0) {
   if (insErr) return { error: insErr.message };
 
   return { copied: true, count: seeds.length };
+}
+
+// MARK: UPDATE MONTH ORDER INDEX
+export async function updateMonthOrderIndex(m, updates) {
+  if (!updates?.length) return;
+
+  // 1. vypočítaj od–do mesiaca
+  const now = new Date();
+  const totalM = now.getMonth() + Number(m);
+  const year = now.getFullYear() + Math.floor(totalM / 12);
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month1 = month0 + 1; // 1..12
+  const pad = (n) => String(n).padStart(2, "0");
+  const from = `${year}-${pad(month1)}-01`;
+  const lastDay = new Date(year, month1, 0).getDate();
+  const to = `${year}-${pad(month1)}-${pad(lastDay)}`;
+
+  // 2. update do DB
+  const supabase = await createClient();
+
+  for (const { user_id, order_index } of updates) {
+    const { error } = await supabase
+      .from("shifts")
+      .update({ order_index })
+      .gte("date", from)
+      .lte("date", to)
+      .eq("user_id", user_id);
+
+    if (error) throw error;
+  }
 }
