@@ -411,16 +411,19 @@ export default function ShiftsTable({
               strategy={verticalListSortingStrategy}
             >
               {rows.map((p, idx) => {
-                // per-user norma podľa úväzku (0.1..1.0)
-                const position = String(p.position ?? "");
-                const contract = Number(p.contract ?? 1);
+                // vezmeme ČERSTVÉ dáta (smienky) z optimisticRoster, poradie z `rows`
+                const fresh =
+                  optimisticRoster.find((u) => u.user_id === p.user_id) || p;
+
+                const position = String(fresh.position ?? "");
+                const contract = Number(fresh.contract ?? 1);
                 const perUserNorm = Math.round(normHours * contract * 10) / 10;
                 const rowShiftStats = shiftTableStats(perUserNorm, contract);
 
                 return (
                   <ShiftRow
                     key={p.user_id}
-                    user={p}
+                    user={fresh} // ← teraz má ShiftRow vždy aktuálne shifts
                     onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
                     days={days}
                     colTemplate={colTemplate}
