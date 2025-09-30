@@ -3,13 +3,12 @@
 import { useRouter } from "next/navigation";
 import {
   useCallback,
+  useEffect,
   useMemo,
   useOptimistic,
   useState,
   useTransition,
 } from "react";
-// DnD Krok 2: budeme potrebovať aj useEffect
-import { useEffect } from "react";
 
 import {
   clearRequest,
@@ -37,8 +36,7 @@ import ShiftRow from "./ShiftRow";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
 
-// === DND: imports (Krok 1) ===
-import { updateMonthOrderIndex } from "@/app/_lib/actions"; // server funkcia na uloženie poradia
+import { updateMonthOrderIndex } from "@/app/_lib/actions";
 import {
   closestCenter,
   DndContext,
@@ -51,7 +49,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -60,7 +58,7 @@ export default function ShiftsTable({
   shiftsOffset,
   disabled,
   profiles,
-  onInsertEmptyShift, // server action na vloženie nového záchranára (seed)
+  onInsertEmptyShift,
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
@@ -70,12 +68,12 @@ export default function ShiftsTable({
   const [isBottomModalOpen, setIsBottomModalOpen] = useState(false);
 
   /* ---------- dátumové údaje ---------- */
-  const base = new Date(); // dnes
+  const base = new Date();
   const date = new Date(base.getFullYear(), base.getMonth() + shiftsOffset, 1);
 
   const year = date.getFullYear();
   const mIndex = date.getMonth(); // 0-based
-  const month = mIndex + 1; // 1-12 pre util funkciu
+  const month = mIndex + 1; // 1-12
   const monthKey = `${year}-${String(month).padStart(2, "0")}`;
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex];
@@ -86,7 +84,7 @@ export default function ShiftsTable({
   /* ---------- CSS grid template ---------- */
   const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
-  // MARK: OPTIMISTIC UPDATES PRE VLOŽENIE A VYMAZANIE ZÁZNAMOV (+ ADD_USER)
+  // MARK: OPTIMISTIC – hlavný reducer pre shifts
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
     (current, action) => {
@@ -117,11 +115,15 @@ export default function ShiftsTable({
         return [...current, seed];
       }
 
+      if (action.type === "REMOVE_SEED") {
+        const { user_id, date } = action;
+        return current.filter((s) => !(s.user_id === user_id && s.date === date));
+      }
+
       if (action.type === "UPSERT") {
         const exists = current.find(
           (s) => s.user_id === action.userId && s.date === action.date,
         );
-
         if (exists) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
@@ -129,7 +131,6 @@ export default function ShiftsTable({
               : s,
           );
         }
-
         return [
           ...current,
           {
@@ -148,7 +149,6 @@ export default function ShiftsTable({
         const exists = current.find(
           (s) => s.user_id === action.userId && s.date === action.date,
         );
-
         if (exists) {
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
@@ -160,7 +160,6 @@ export default function ShiftsTable({
               : s,
           );
         }
-
         return [
           ...current,
           {
@@ -191,21 +190,13 @@ export default function ShiftsTable({
         );
       }
 
-      if (action.type === "PATCH_AFTER_INSERT") {
-        // voliteľné: po úspešnej server insert môžeš zrušiť __pending alebo doplniť order_index
-        const { user_id, date, patch } = action;
-        return current.map((s) =>
-          s.user_id === user_id && s.date === date ? { ...s, ...patch } : s,
-        );
-      }
-
       return current;
     },
   );
 
   const [isPending, startTransition] = useTransition();
 
-  // MARK: HANDLERY
+  // MARK: HANDLERY PICK/DELETE
   const handleTopSelect = useCallback((userId, dateStr) => {
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
@@ -230,7 +221,6 @@ export default function ShiftsTable({
 
     setIsModalOpen(false);
     await upsertShift(selected.userId, selected.dateStr, type);
-    // router.refresh(); // netreba pre single update
   }
 
   async function handlePickBottom(type, hours) {
@@ -253,7 +243,6 @@ export default function ShiftsTable({
       type,
       hours,
     );
-    // router.refresh();
   }
 
   async function handleDeleteTop() {
@@ -269,7 +258,6 @@ export default function ShiftsTable({
 
     setIsModalOpen(false);
     await clearShift(selected.userId, selected.dateStr);
-    // router.refresh();
   }
 
   async function handleDeleteBottom() {
@@ -285,10 +273,9 @@ export default function ShiftsTable({
 
     setIsBottomModalOpen(false);
     await clearRequest(bottomSelected.userId, bottomSelected.dateStr);
-    // router.refresh();
   }
 
-  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZÁZNAMOV DO ROSTERU (len aktuálny mesiac)
+  // MARK: ROSTER – len aktuálny mesiac
   const monthDatesSet = useMemo(
     () => new Set(days.map((d) => d.dateStr)),
     [days],
@@ -297,7 +284,7 @@ export default function ShiftsTable({
   const roster = useMemo(() => {
     const map = new Map();
     for (const row of optimisticShifts) {
-      if (!monthDatesSet.has(row.date)) continue; // ignoruj iné mesiace
+      if (!monthDatesSet.has(row.date)) continue;
       const id = row.user_id;
       const oi = row.order_index ?? 999;
       if (!map.has(id)) {
@@ -328,7 +315,7 @@ export default function ShiftsTable({
     );
   }, [optimisticShifts, monthDatesSet]);
 
-  // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZÁCHRANÁRA
+  // MARK: malý reducer pre roster (len DELETE)
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
     if (act.type === "DELETE") {
       return curr.filter((u) => u.user_id !== act.id);
@@ -336,23 +323,18 @@ export default function ShiftsTable({
     return curr;
   });
 
-  // Plná mesačná norma (1.0 úväzok) — pre header
+  // MARK: SVIATKY, NORMY
   const weekdays = days.filter(({ isWeekend }) => !isWeekend).length;
   const normHours = weekdays * 7.5;
-
-  // MARK: ŠTÁTNE SVIATKY — set dátumov pre daný mesiac
   const holidaySet = getHolidaySetForMonth(year, month);
 
-  // === DND: nastavenie senzorov a handler (Krok 2) ===
+  // MARK: DnD
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
   );
 
-  // lokálne poradie riadkov pre optimistické presuny
   const [rows, setRows] = useState(optimisticRoster);
 
-  // Sync len pri zmene SÚPISU (pridanie/odobratie usera), ignorujeme zmenu poradia,
-  // aby sme si neprepisovali lokálne ťahanie.
   const membershipKey = useMemo(
     () => [...new Set(optimisticRoster.map((u) => u.user_id))].sort().join("|"),
     [optimisticRoster],
@@ -363,7 +345,6 @@ export default function ShiftsTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthKey, membershipKey]);
 
-  // Namespace DnD item IDs per month to isolate months
   const itemIds = rows.map((u) => `${monthKey}:${u.user_id}`);
 
   async function handleDragEnd(event) {
@@ -376,30 +357,27 @@ export default function ShiftsTable({
     const newIndex = rows.findIndex((r) => r.user_id === overUserId);
     if (oldIndex < 0 || newIndex < 0) return;
 
-    // 1) lokálne prehodenie poradia (optimisticky)
+    // optimistic move
     const next = arrayMove(rows, oldIndex, newIndex);
     setRows(next);
 
-    // 2) uloženie do DB pre aktuálny mesiac (offset = shiftsOffset)
     try {
       await updateMonthOrderIndex(
         shiftsOffset,
         next.map((m, idx) => ({ user_id: m.user_id, order_index: idx + 1 })),
       );
-      // router.refresh(); // voliteľné
     } catch (e) {
       console.error(e);
-      // presný rollback
       setRows((prev) => arrayMove(prev, newIndex, oldIndex));
       toast.error("Nepodarilo sa uložiť poradie");
     }
   }
 
-  // === NOVÉ: handler na rýchle pridanie záchranára (optimistic ADD) ===
+  // MARK: optimistic ADD handler
   async function handleInsertEmptyShift(newUser) {
     const nextIndex = (rows?.length ?? 0) + 1;
 
-    // optimistic add (ako doteraz)
+    // optimistic add
     applyOptimistic({
       type: "ADD_USER",
       user: {
@@ -440,6 +418,7 @@ export default function ShiftsTable({
       await onInsertEmptyShift(newUser);
     } catch (e) {
       console.error(e);
+      // rollback
       setRows((prev) => prev.filter((r) => r.user_id !== newUser.id));
       applyOptimistic({
         type: "REMOVE_SEED",
@@ -449,12 +428,10 @@ export default function ShiftsTable({
     }
   }
 
-
-  // MARK: RETURN.........................................................................
+  // MARK: RENDER
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
-        {/* nadpis mesiaca */}
         <MonthYearHead>
           <ArrowBack
             goTo={goTo}
@@ -471,13 +448,11 @@ export default function ShiftsTable({
           />
         </MonthYearHead>
 
-        {/* hlavička dní */}
         <div
           className="sticky top-0 z-30 grid border-r border-t border-slate-200"
           style={{ gridTemplateColumns: colTemplate }}
         >
           <ParamedName>Záchranári</ParamedName>
-
           <DaysMonth>ÚV</DaysMonth>
 
           {days.map(({ day, isWeekend, isToday }, idx) => {
@@ -502,13 +477,11 @@ export default function ShiftsTable({
             );
           })}
 
-          {/* statické hlavičky štatistík */}
           {shiftTableStats(0).map((col) => (
             <DaysMonth key={col.key}>{col.label}</DaysMonth>
           ))}
         </div>
 
-        {/* dátové riadky */}
         {shifts.length === 0 ? (
           <NoShifts />
         ) : (
@@ -523,7 +496,6 @@ export default function ShiftsTable({
               strategy={verticalListSortingStrategy}
             >
               {rows.map((p, idx) => {
-                // vezmeme ČERSTVÉ dáta (smienky) z optimisticRoster, poradie z `rows`
                 const fresh =
                   optimisticRoster.find((u) => u.user_id === p.user_id) || p;
 
@@ -535,7 +507,7 @@ export default function ShiftsTable({
                 return (
                   <ShiftRow
                     key={`${monthKey}:${p.user_id}`}
-                    user={fresh} // ← teraz má ShiftRow vždy aktuálne shifts
+                    user={fresh}
                     onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
                     days={days}
                     colTemplate={colTemplate}
@@ -564,7 +536,7 @@ export default function ShiftsTable({
           <div className="flex gap-2">
             <InsertShiftButton
               profiles={profiles}
-              onInsertEmptyShift={handleInsertEmptyShift} // ← použijeme náš optimistic handler
+              onInsertEmptyShift={handleInsertEmptyShift}
             />
             {shifts.length > 0 && (
               <>
