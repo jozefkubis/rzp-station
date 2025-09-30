@@ -25,6 +25,7 @@ export default function ShiftRow({
   contract,
   position,
   holidaySet,
+  monthKey,
 }) {
   // === DnD: pripravenie sortable itemu
   const {
@@ -34,7 +35,7 @@ export default function ShiftRow({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: user.user_id });
+  } = useSortable({ id: `${monthKey}:${user.user_id}` });
 
   const dragStyle = {
     transform: CSS.Transform.toString(transform),

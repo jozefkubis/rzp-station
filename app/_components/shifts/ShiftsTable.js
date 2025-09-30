@@ -75,6 +75,7 @@ export default function ShiftsTable({
   const year = date.getFullYear();
   const mIndex = date.getMonth(); // 0-based
   const month = mIndex + 1; // 1-12 pre util funkciu
+  const monthKey = `${year}-${String(month).padStart(2, "0")}`;
   const days = getDaysArray(year, month);
   const monthName = MONTHS()[mIndex];
   const monthLabel =
@@ -123,10 +124,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -309,16 +310,19 @@ export default function ShiftsTable({
 
   useEffect(() => {
     setRows(optimisticRoster);
-  }, [membershipKey]);
+  }, [membershipKey, monthKey]);
 
-  const rowIds = rows.map((u) => u.user_id);
+  // Namespace DnD item IDs per month to isolate months
+  const itemIds = rows.map((u) => `${monthKey}:${u.user_id}`);
 
   async function handleDragEnd(event) {
     const { active, over } = event || {};
     if (!over || active?.id === over?.id) return;
 
-    const oldIndex = rows.findIndex((r) => r.user_id === active.id);
-    const newIndex = rows.findIndex((r) => r.user_id === over.id);
+    const activeUserId = String(active.id).split(":").pop();
+    const overUserId = String(over.id).split(":").pop();
+    const oldIndex = rows.findIndex((r) => r.user_id === activeUserId);
+    const newIndex = rows.findIndex((r) => r.user_id === overUserId);
     if (oldIndex < 0 || newIndex < 0) return;
 
     // 1) lokálne prehodenie poradia (optimisticky)
@@ -329,7 +333,7 @@ export default function ShiftsTable({
     try {
       await updateMonthOrderIndex(
         shiftsOffset,
-        next.map((m, idx) => ({ user_id: m.user_id, order_index: idx })),
+        next.map((m, idx) => ({ user_id: m.user_id, order_index: idx + 1 })),
       );
       // router.refresh(); // voliteľné
     } catch (e) {
@@ -402,12 +406,13 @@ export default function ShiftsTable({
           <NoShifts />
         ) : (
           <DndContext
+            key={monthKey}
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={rowIds}
+              items={itemIds}
               strategy={verticalListSortingStrategy}
             >
               {rows.map((p, idx) => {
@@ -422,7 +427,7 @@ export default function ShiftsTable({
 
                 return (
                   <ShiftRow
-                    key={p.user_id}
+                    key={`${monthKey}:${p.user_id}`}
                     user={fresh} // ← teraz má ShiftRow vždy aktuálne shifts
                     onDeleteOptimistic={(id) => apply({ type: "DELETE", id })}
                     days={days}
@@ -436,6 +441,7 @@ export default function ShiftsTable({
                     contract={contract}
                     position={position}
                     holidaySet={holidaySet}
+                    monthKey={monthKey}
                   />
                 );
               })}
