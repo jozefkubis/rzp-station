@@ -812,7 +812,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -921,7 +921,7 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
@@ -1035,7 +1035,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1190,7 +1190,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1223,7 +1223,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty cez výber kandidátov (rešpektuje páry)
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           pickCandidate(
             type,
@@ -1379,7 +1379,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1409,7 +1409,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
@@ -1517,7 +1517,7 @@ export async function validateShifts(m = 0) {
 //MARK: COPY ROSTER
 export async function copyRosterIfEmpty(targetM = 0) {
   const supabase = await createClient();
-  const { from, to, prevFrom, prevTo } = monthBounds(targetM);
+  const { from, to, prevFrom, prevTo } = monthBounds(Number(targetM));
 
   // 1) ak v cieľovom mesiaci niečo je, skonči
   const { data: exists, error: existsErr } = await supabase
@@ -1568,7 +1568,6 @@ export async function copyRosterIfEmpty(targetM = 0) {
   const { error: insErr } = await supabase
     .from("shifts")
     .upsert(seeds, { onConflict: "user_id,date" })
-    .order("order_index", { ascending: true });
   if (insErr) return { error: insErr.message };
 
   return { copied: true, count: seeds.length };
@@ -1577,20 +1576,8 @@ export async function copyRosterIfEmpty(targetM = 0) {
 // MARK: UPDATE MONTH ORDER INDEX
 export async function updateMonthOrderIndex(m, updates) {
   if (!updates?.length) return;
-
-  // 1. vypočítaj od–do mesiaca
-  const now = new Date();
-  const totalM = now.getMonth() + Number(m);
-  const year = now.getFullYear() + Math.floor(totalM / 12);
-  const month0 = ((totalM % 12) + 12) % 12; // 0..11
-  const month1 = month0 + 1; // 1..12
-  const pad = (n) => String(n).padStart(2, "0");
-  const from = `${year}-${pad(month1)}-01`;
-  const lastDay = new Date(year, month1, 0).getDate();
-  const to = `${year}-${pad(month1)}-${pad(lastDay)}`;
-
-  // 2. update do DB
   const supabase = await createClient();
+  const { from, to } = monthBounds(Number(m)); // jednotný zdroj pravdy
 
   for (const { user_id, order_index } of updates) {
     const { error } = await supabase
@@ -1599,7 +1586,6 @@ export async function updateMonthOrderIndex(m, updates) {
       .gte("date", from)
       .lte("date", to)
       .eq("user_id", user_id);
-
     if (error) throw error;
   }
 }

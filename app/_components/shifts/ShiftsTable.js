@@ -51,6 +51,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import toast from "react-hot-toast";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -59,7 +60,7 @@ export default function ShiftsTable({
   shiftsOffset,
   disabled,
   profiles,
-  onInsertEmptyShift,
+  onInsertEmptyShift, // server action na vloženie nového záchranára (seed)
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
@@ -80,14 +81,42 @@ export default function ShiftsTable({
   const monthName = MONTHS()[mIndex];
   const monthLabel =
     monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+  const firstDayStr = `${year}-${String(month).padStart(2, "0")}-01`;
 
   /* ---------- CSS grid template ---------- */
   const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
 
-  // MARK: OPTIMISTIC UPDATES PRE VLOŽENIE A VYMAZANIE ZÁZNAMOV
+  // MARK: OPTIMISTIC UPDATES PRE VLOŽENIE A VYMAZANIE ZÁZNAMOV (+ ADD_USER)
   const [optimisticShifts, applyOptimistic] = useOptimistic(
     shifts,
     (current, action) => {
+      if (action.type === "ADD_USER") {
+        const { user, firstDay, orderIndex } = action;
+        const exists = current.some(
+          (s) => s.user_id === user.user_id && s.date === firstDay,
+        );
+        if (exists) return current;
+
+        const seed = {
+          id: `tmp-${crypto.randomUUID()}`,
+          user_id: user.user_id,
+          date: firstDay,
+          shift_type: null,
+          request_type: null,
+          request_hours: null,
+          order_index: orderIndex ?? 999,
+          profiles: {
+            full_name: user.full_name ?? "(bez mena)",
+            email: user.email ?? "",
+            avatar_url: user.avatar_url ?? null,
+            contract: Number(user.contract ?? 1),
+            position: user.position ?? "",
+          },
+          __pending: true,
+        };
+        return [...current, seed];
+      }
+
       if (action.type === "UPSERT") {
         const exists = current.find(
           (s) => s.user_id === action.userId && s.date === action.date,
@@ -162,6 +191,14 @@ export default function ShiftsTable({
         );
       }
 
+      if (action.type === "PATCH_AFTER_INSERT") {
+        // voliteľné: po úspešnej server insert môžeš zrušiť __pending alebo doplniť order_index
+        const { user_id, date, patch } = action;
+        return current.map((s) =>
+          s.user_id === user_id && s.date === date ? { ...s, ...patch } : s,
+        );
+      }
+
       return current;
     },
   );
@@ -193,7 +230,7 @@ export default function ShiftsTable({
 
     setIsModalOpen(false);
     await upsertShift(selected.userId, selected.dateStr, type);
-    router.refresh();
+    // router.refresh(); // netreba pre single update
   }
 
   async function handlePickBottom(type, hours) {
@@ -216,7 +253,7 @@ export default function ShiftsTable({
       type,
       hours,
     );
-    router.refresh();
+    // router.refresh();
   }
 
   async function handleDeleteTop() {
@@ -232,7 +269,7 @@ export default function ShiftsTable({
 
     setIsModalOpen(false);
     await clearShift(selected.userId, selected.dateStr);
-    router.refresh();
+    // router.refresh();
   }
 
   async function handleDeleteBottom() {
@@ -248,41 +285,54 @@ export default function ShiftsTable({
 
     setIsBottomModalOpen(false);
     await clearRequest(bottomSelected.userId, bottomSelected.dateStr);
-    router.refresh();
+    // router.refresh();
   }
 
-  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZÁZNAMOV DO ROSTERU
-  const roster = Object.values(
-    optimisticShifts.reduce((acc, row) => {
+  // MARK: OPTIMISTIC ROSTER - ZOSKUPENIE ZÁZNAMOV DO ROSTERU (len aktuálny mesiac)
+  const monthDatesSet = useMemo(
+    () => new Set(days.map((d) => d.dateStr)),
+    [days],
+  );
+
+  const roster = useMemo(() => {
+    const map = new Map();
+    for (const row of optimisticShifts) {
+      if (!monthDatesSet.has(row.date)) continue; // ignoruj iné mesiace
       const id = row.user_id;
-      if (!acc[id]) {
-        acc[id] = {
+      const oi = row.order_index ?? 999;
+      if (!map.has(id)) {
+        map.set(id, {
           user_id: id,
           full_name: row.profiles?.full_name ?? "(bez mena)",
           email: row.profiles?.email ?? "(bez e-mailu)",
           avatar: row.profiles?.avatar_url,
           contract: Number(row.profiles?.contract ?? 1),
           position: row.profiles?.position,
-          order_index: row.order_index ?? 999, // pridáme poradie
+          order_index: oi,
+          __pending: row.__pending ?? false,
           shifts: [],
-        };
+        });
+      } else {
+        const v = map.get(id);
+        if (oi < (v.order_index ?? 999)) v.order_index = oi;
       }
-      acc[id].shifts.push({
+      map.get(id).shifts.push({
         date: row.date,
         shift_type: row.shift_type,
         request_type: row.request_type,
         request_hours: row.request_hours,
       });
-      return acc;
-    }, {}),
-  ).sort((a, b) => (a.order_index ?? 999) - (b.order_index ?? 999)); // zoradenie podľa order_index
+    }
+    return Array.from(map.values()).sort(
+      (a, b) => (a.order_index ?? 999) - (b.order_index ?? 999),
+    );
+  }, [optimisticShifts, monthDatesSet]);
 
   // MARK: OPTIMISTIC PRE VYMAZANIE A POSUNUTIE ZÁCHRANÁRA
   const [optimisticRoster, apply] = useOptimistic(roster, (curr, act) => {
     if (act.type === "DELETE") {
       return curr.filter((u) => u.user_id !== act.id);
     }
-
     return curr;
   });
 
@@ -310,7 +360,8 @@ export default function ShiftsTable({
 
   useEffect(() => {
     setRows(optimisticRoster);
-  }, [membershipKey, monthKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monthKey, membershipKey]);
 
   // Namespace DnD item IDs per month to isolate months
   const itemIds = rows.map((u) => `${monthKey}:${u.user_id}`);
@@ -338,10 +389,66 @@ export default function ShiftsTable({
       // router.refresh(); // voliteľné
     } catch (e) {
       console.error(e);
-      // rollback (voliteľné)
-      setRows(rows);
+      // presný rollback
+      setRows((prev) => arrayMove(prev, newIndex, oldIndex));
+      toast.error("Nepodarilo sa uložiť poradie");
     }
   }
+
+  // === NOVÉ: handler na rýchle pridanie záchranára (optimistic ADD) ===
+  async function handleInsertEmptyShift(newUser) {
+    const nextIndex = (rows?.length ?? 0) + 1;
+
+    // optimistic add (ako doteraz)
+    applyOptimistic({
+      type: "ADD_USER",
+      user: {
+        user_id: newUser.id,
+        full_name: newUser.full_name,
+        email: newUser.email,
+        avatar_url: newUser.avatar_url,
+        contract: newUser.contract,
+        position: newUser.position,
+      },
+      firstDay: firstDayStr,
+      orderIndex: nextIndex,
+    });
+
+    setRows((prev) => [
+      ...prev,
+      {
+        user_id: newUser.id,
+        full_name: newUser.full_name ?? "(bez mena)",
+        email: newUser.email ?? "",
+        avatar: newUser.avatar_url ?? null,
+        contract: Number(newUser.contract ?? 1),
+        position: newUser.position ?? "",
+        order_index: nextIndex,
+        __pending: true,
+        shifts: [
+          {
+            date: firstDayStr,
+            shift_type: null,
+            request_type: null,
+            request_hours: null,
+          },
+        ],
+      },
+    ]);
+
+    try {
+      await onInsertEmptyShift(newUser);
+    } catch (e) {
+      console.error(e);
+      setRows((prev) => prev.filter((r) => r.user_id !== newUser.id));
+      applyOptimistic({
+        type: "REMOVE_SEED",
+        user_id: newUser.id,
+        date: firstDayStr,
+      });
+    }
+  }
+
 
   // MARK: RETURN.........................................................................
   return (
@@ -457,7 +564,7 @@ export default function ShiftsTable({
           <div className="flex gap-2">
             <InsertShiftButton
               profiles={profiles}
-              onInsertEmptyShift={onInsertEmptyShift}
+              onInsertEmptyShift={handleInsertEmptyShift} // ← použijeme náš optimistic handler
             />
             {shifts.length > 0 && (
               <>
