@@ -1,6 +1,11 @@
 import Header from "../_components/Header";
 import RosterSection from "../_components/shifts/RosterSection";
-import { getAllProfiles, getAllShiftsForMonth } from "../_lib/data-service";
+import {
+  getAllProfiles,
+  getAllShiftsForMonth,
+  getStatus,
+  getUser,
+} from "../_lib/data-service";
 
 export const metadata = {
   title: "Služby",
@@ -13,9 +18,11 @@ export default async function page({ searchParams }) {
   // console.log(m);
 
   // MARK: NACITANIE DÁT ...................................................................................
-  const [shifts, profiles] = await Promise.all([
+  const user = await getUser();
+  const [shifts, profiles, status] = await Promise.all([
     getAllShiftsForMonth(shiftsOffset),
     getAllProfiles(),
+    getStatus(user.email),
   ]);
 
   // 1. Množiny pre rýchlejšie vyhľadávanie
@@ -42,6 +49,7 @@ export default async function page({ searchParams }) {
             initialShifts={shifts}
             diffProfiles={diffProfiles}
             initialShiftsOffset={shiftsOffset}
+            status={status}
           />
         </div>
       )}

@@ -59,6 +59,7 @@ export default function ShiftsTable({
   disabled,
   profiles,
   onInsertEmptyShift,
+  status,
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
@@ -117,7 +118,9 @@ export default function ShiftsTable({
 
       if (action.type === "REMOVE_SEED") {
         const { user_id, date } = action;
-        return current.filter((s) => !(s.user_id === user_id && s.date === date));
+        return current.filter(
+          (s) => !(s.user_id === user_id && s.date === date),
+        );
       }
 
       if (action.type === "UPSERT") {
@@ -153,10 +156,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -198,6 +201,7 @@ export default function ShiftsTable({
 
   // MARK: HANDLERY PICK/DELETE
   const handleTopSelect = useCallback((userId, dateStr) => {
+    if (status !== "admin") return;
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
   }, []);
@@ -533,20 +537,22 @@ export default function ShiftsTable({
             <ShiftsTableLegend />
           </div>
 
-          <div className="flex gap-2">
-            <InsertShiftButton
-              profiles={profiles}
-              onInsertEmptyShift={handleInsertEmptyShift}
-            />
-            {shifts.length > 0 && (
-              <>
-                <GenerateShifts />
-                <DeleteOnlyShifts />
-                <ValidateButton />
-                <DeleteAllShifts />
-              </>
-            )}
-          </div>
+          {status === "admin" && (
+            <div className="flex gap-2">
+              <InsertShiftButton
+                profiles={profiles}
+                onInsertEmptyShift={handleInsertEmptyShift}
+              />
+              {shifts.length > 0 && (
+                <>
+                  <GenerateShifts />
+                  <DeleteOnlyShifts />
+                  <ValidateButton />
+                  <DeleteAllShifts />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </MainShiftsTable>
 
