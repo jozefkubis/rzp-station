@@ -8,40 +8,33 @@ import ArrowForwardStatistics from "./ArrowForwordStatistics";
 import { StatisticsLegend } from "./StatisticsLegend";
 import YearHeadStatistics from "./YearHeadStatistics";
 
-export default function StatisticsMain({ shifts, statsOffset }) {
+export default function StatisticsMain({ shifts, statsOffset, status }) {
   const router = useRouter();
 
-  // 1) Výber roka podľa offsetu (y)
+  // 1) Výber roka podľa offsetu
   const [y, setY] = useState(statsOffset || 0);
   const thisYear = new Date().getFullYear() + y;
 
-  // 2) Set dátumov sviatkov pre daný rok (YYYY-MM-DD)
-  const holidays = useMemo(
-    () => new Set(getSlovakHolidaysForYear(thisYear)),
-    [thisYear],
-  );
+  // 2) Sviatky
+  const holidays = useMemo(() => {
+    return new Set(getSlovakHolidaysForYear(thisYear));
+  }, [thisYear]);
 
-  // 3) Normalizácia vstupu (shifts -> riadky určené na výpočty)
-  const rows = useMemo(
-    () =>
-      shifts.map((s) => ({
-        name: s.profiles.full_name,
-        type: String(s.shift_type || "")
-          .toUpperCase()
-          .trim(), // D, N, DN, RD, PN, ...
-        request: String(s.request_type || "")
-          .toUpperCase()
-          .trim(), // X, XD, XN, ...
-        dateFull: s.date.slice(0, 10), // YYYY-MM-DD
-        year: s.date.slice(0, 4),
-      })),
-    [shifts],
-  );
+  // 3) Normalizácia vstupu
+  const rows = useMemo(() => {
+    return shifts.map((s) => ({
+      name: s.profiles.full_name,
+      type: (s.shift_type || "").toUpperCase(),
+      request: (s.request_type || "").toUpperCase(),
+      dateFull: s.date.slice(0, 10),
+      year: s.date.slice(0, 4),
+    }));
+  }, [shifts]);
 
-  // 4) Filtrovanie len na aktuálny rok
+  // 4) Len tento rok
   const thisYearRows = rows.filter((r) => r.year === String(thisYear));
 
-  // 5) Redukcia na štatistiky (meno -> počítadlá)
+  // 5) Redukcia na štatistiky
   const statsObj = thisYearRows.reduce(
     (acc, { name, type, request, dateFull }) => {
       if (!acc[name]) {
@@ -61,16 +54,15 @@ export default function StatisticsMain({ shifts, statsOffset }) {
 
       if (type.startsWith("RD")) acc[name].RD++;
       if (type.startsWith("PN")) acc[name].PN++;
-
       if (["X", "XD", "XN"].includes(request)) acc[name].X++;
 
       const workedHolidays = isDay || isNight || isBoth;
       if (workedHolidays && holidays.has(dateFull)) {
-        if (isDay) acc[name]["ŠS_D"]++;
-        if (isNight) acc[name]["ŠS_N"]++;
+        if (isDay) acc[name].ŠS_D++;
+        if (isNight) acc[name].ŠS_N++;
         if (isBoth) {
-          acc[name]["ŠS_D"]++;
-          acc[name]["ŠS_N"]++;
+          acc[name].ŠS_D++;
+          acc[name].ŠS_N++;
         }
       }
 
@@ -79,17 +71,17 @@ export default function StatisticsMain({ shifts, statsOffset }) {
     {},
   );
 
-  // 6) Premapovanie do poľa a odvodené metriky
+  // 6) Pole štatistík
   const stats = Object.entries(statsObj)
     .map(([name, counts]) => ({
       name,
       ...counts,
-      ŠS: counts["ŠS_D"] + counts["ŠS_N"],
+      ŠS: counts.ŠS_D + counts.ŠS_N,
       Spolu: counts.D + counts.N,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, "sk"));
 
-  // 7) Navigácia medzi rokmi (URL + okamžitý UI update)
+  // 7) Navigácia
   function goToNextYear() {
     const next = y + 1;
     setY(next);
@@ -101,7 +93,6 @@ export default function StatisticsMain({ shifts, statsOffset }) {
     router.push(`/statistics?y=${prev}`);
   }
 
-  // MARK: RETURN
   return (
     <div className="h-screen">
       <div className="flex h-full flex-col px-[8rem] py-[4rem]">
@@ -127,28 +118,32 @@ export default function StatisticsMain({ shifts, statsOffset }) {
                   <th className="border px-4 py-2">RD</th>
                   <th className="border px-4 py-2">PN</th>
                   <th className="border px-4 py-2">X</th>
-                  {/* <th className="border px-4 py-2">ŠS D</th> */}
-                  {/* <th className="border px-4 py-2">ŠS N</th> */}
                   <th className="border px-4 py-2">ŠS</th>
                 </tr>
               </thead>
               <tbody>
-                {stats.map((r) => (
-                  <tr key={r.name} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2 text-left font-semibold text-primary-700">
-                      {r.name}
+                {status === "admin" ? (
+                  stats.map((r) => (
+                    <tr key={r.name} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2 text-left font-semibold text-primary-700">
+                        {r.name}
+                      </td>
+                      <td className="border px-4 py-2">{r.D}</td>
+                      <td className="border px-4 py-2">{r.N}</td>
+                      <td className="border px-4 py-2">{r.Spolu}</td>
+                      <td className="border px-4 py-2">{r.RD}</td>
+                      <td className="border px-4 py-2">{r.PN}</td>
+                      <td className="border px-4 py-2">{r.X}</td>
+                      <td className="border px-4 py-2">{r.ŠS}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-lg text-red-600">
+                      Do tejto zložky nemáš prístup!
                     </td>
-                    <td className="border px-4 py-2">{r.D}</td>
-                    <td className="border px-4 py-2">{r.N}</td>
-                    <td className="border px-4 py-2">{r.Spolu}</td>
-                    <td className="border px-4 py-2">{r.RD}</td>
-                    <td className="border px-4 py-2">{r.PN}</td>
-                    <td className="border px-4 py-2">{r.X}</td>
-                    {/* <td className="border px-4 py-2">{r["ŠS_D"]}</td> */}
-                    {/* <td className="border px-4 py-2">{r["ŠS_N"]}</td> */}
-                    <td className="border px-4 py-2">{r["ŠS"]}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 

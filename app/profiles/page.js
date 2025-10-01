@@ -1,6 +1,6 @@
 import Header from "../_components/Header";
 import UserProfiles from "../_components/profiles/UserProfiles";
-import { getAllProfiles } from "../_lib/data-service";
+import { getAllProfiles, getStatus, getUser } from "../_lib/data-service";
 
 export const metadata = {
   title: "Profily",
@@ -8,9 +8,10 @@ export const metadata = {
 
 export default async function Page() {
   const profiles = await getAllProfiles();
+  const user = await getUser();
+  const status = await getStatus(user.email);
 
   if (!profiles || profiles.length === 0) {
-
     return (
       <div className="flex h-screen items-center justify-center text-xl text-gray-500">
         Žiadne profily nenájdené alebo chyba načítania.
@@ -21,7 +22,7 @@ export default async function Page() {
   return (
     <div data-cy="profiles-page">
       <Header />
-      <UserProfiles profiles={profiles} />
+      <UserProfiles profiles={profiles} status={status} />
     </div>
   );
 }

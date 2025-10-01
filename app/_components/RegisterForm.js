@@ -1,13 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration";
-import FormInput from "./FormInput";
 import toast from "react-hot-toast";
+import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration";
 import Button from "./Button";
+import FormInput from "./FormInput";
 
-export default function RegisterForm() {
+export default function RegisterForm({ status }) {
   const [error, setError] = useState("");
   const logo = "/logo.png";
 
@@ -16,7 +15,7 @@ export default function RegisterForm() {
   }, [error]);
 
   async function handleSubmit(e) {
-    handleSubmitRegistration(e, { setError });
+    handleSubmitRegistration(e, { setError, status });
   }
 
   return (
@@ -37,6 +36,7 @@ export default function RegisterForm() {
           type="email"
           placeholder="example@email.com"
           name="email"
+          disabled={status !== "admin"}
           required
         />
       </div>
@@ -48,6 +48,7 @@ export default function RegisterForm() {
           type="password"
           placeholder="min. 6 znakov"
           name="password"
+          disabled={status !== "admin"}
           required
         />
       </div>
@@ -59,6 +60,7 @@ export default function RegisterForm() {
           type="password"
           placeholder="Potvrdenie hesla"
           name="re_password"
+          disabled={status !== "admin"}
           required
         />
       </div>

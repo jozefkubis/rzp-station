@@ -92,6 +92,24 @@ export async function getUsername(email) {
   return profile?.username || null;
 }
 
+// MARK: GET STATUS
+export async function getStatus(email) {
+  const supabase = await createClient();
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("status")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Chyba pri načítaní statusu:", error);
+    return null;
+  }
+
+  return profile?.status || null;
+}
+
 // MARK: GET ALL PROFILES
 export async function getAllProfiles() {
   const supabase = await createClient();
@@ -459,7 +477,6 @@ export async function getContract() {
 
   return contract;
 }
-
 
 // MARK: GET REQUEST_HOURS FOR PROFILE FOR MONTH
 // export async function getRequestHoursForMonth(monthOffset = 0) {
