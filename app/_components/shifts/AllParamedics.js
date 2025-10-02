@@ -75,6 +75,7 @@ export default function AllParamedics({
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
             disabled={isDeleting}
+            user={user}
           /> : <WarningNotice />}
         </Modal>
       )}
