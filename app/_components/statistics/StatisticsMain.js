@@ -140,7 +140,7 @@ export default function StatisticsMain({ shifts, statsOffset, status }) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="py-10 text-lg text-red-600">
+                    <td colSpan={8} className="py-10 text-lg">
                       <WarningNotice />
                     </td>
                   </tr>
