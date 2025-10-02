@@ -156,10 +156,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -525,6 +525,7 @@ export default function ShiftsTable({
                     position={position}
                     holidaySet={holidaySet}
                     monthKey={monthKey}
+                    status={status}
                   />
                 );
               })}

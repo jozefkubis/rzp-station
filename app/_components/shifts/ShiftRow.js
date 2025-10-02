@@ -26,6 +26,7 @@ export default function ShiftRow({
   position,
   holidaySet,
   monthKey,
+  status,
 }) {
   // === DnD: pripravenie sortable itemu
   const {
@@ -77,8 +78,9 @@ export default function ShiftRow({
         roster={roster}
         rowBg={rowBg}
         position={lowerCasePosition}
+        status={status}
       >
-        <span
+        {status === "admin" && <span
           {...attributes}
           {...listeners}
           className="mr-2 inline-flex h-5 w-5 cursor-grab select-none items-center justify-center rounded text-slate-400 hover:text-slate-600"
@@ -86,7 +88,7 @@ export default function ShiftRow({
           aria-label="Presuň riadok"
         >
           ⋮⋮
-        </span>
+        </span>}
         {user.full_name}
       </AllParamedics>
 

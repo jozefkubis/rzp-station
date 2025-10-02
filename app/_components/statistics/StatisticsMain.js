@@ -3,6 +3,7 @@
 import { getSlovakHolidaysForYear } from "@/app/_lib/holidays";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import WarningNotice from "../WarningNotice";
 import ArrowBackStatistics from "./ArrowBackStatistics";
 import ArrowForwardStatistics from "./ArrowForwordStatistics";
 import { StatisticsLegend } from "./StatisticsLegend";
@@ -103,7 +104,7 @@ export default function StatisticsMain({ shifts, statsOffset, status }) {
         </YearHeadStatistics>
 
         {stats.length === 0 ? (
-          <div className="flex h-60 items-center justify-center text-xl text-primary-700">
+          <div className="flex h-60 items-center justify-center text-3xl text-primary-700">
             Žiadne štatistiky pre tento rok nie sú k dispozícii
           </div>
         ) : (
@@ -140,7 +141,7 @@ export default function StatisticsMain({ shifts, statsOffset, status }) {
                 ) : (
                   <tr>
                     <td colSpan={8} className="py-10 text-lg text-red-600">
-                      Do tejto zložky nemáš prístup!
+                      <WarningNotice />
                     </td>
                   </tr>
                 )}

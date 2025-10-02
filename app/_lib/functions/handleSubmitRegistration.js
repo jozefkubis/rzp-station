@@ -3,14 +3,14 @@ import { signup } from "../actions";
 
 export default async function handleSubmitRegistration(
   e,
-  { setError, status },
+  { setError, status, setIsOpenModal },
 ) {
   e.preventDefault();
 
   const formData = new FormData(e.currentTarget);
   const response = await signup(formData);
 
-  if (status !== "admin") toast.error("Do vybranej zložky nemáš prístup!");
+  if (status !== "admin") setIsOpenModal(true);
 
   if (response?.error) {
     setError(response.error);

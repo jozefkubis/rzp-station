@@ -6,6 +6,7 @@ import { startTransition, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmDelete from "../ConfirmDelete";
 import Modal from "../Modal";
+import WarningNotice from "../WarningNotice";
 
 export default function AllParamedics({
   children,
@@ -14,6 +15,7 @@ export default function AllParamedics({
   roster,
   position,
   rowBg,
+  status
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -30,6 +32,7 @@ export default function AllParamedics({
 
   async function handleConfirmDelete() {
     // A) okamžitý optimistický update (riadok zmizne hneď)
+
     startTransition(() => onDeleteOptimistic(user.user_id));
     setIsDeleting(true);
 
@@ -67,12 +70,12 @@ export default function AllParamedics({
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
-          <ConfirmDelete
+          {status === "admin" ? <ConfirmDelete
             resourceName="Zachranára"
             onConfirm={handleConfirmDelete}
             onClose={() => setIsOpenDeleteModal(false)}
             disabled={isDeleting}
-          />
+          /> : <WarningNotice />}
         </Modal>
       )}
     </>
