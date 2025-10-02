@@ -1,5 +1,5 @@
-import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { IoCloseOutline } from "react-icons/io5";
 
 export default function Modal({ children, onClose }) {
@@ -25,7 +25,7 @@ export default function Modal({ children, onClose }) {
       {/* Modal Container */}
       <div
         role="dialog"
-        className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-10 shadow-lg transition-all duration-500 w-1/2 max-w-2xl"
+        className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-10 shadow-lg transition-all duration-500 w-1/2 max-w-2xl motion-scale-in-[0.5] motion-translate-x-in-[-72%] motion-translate-y-in-[79%] motion-opacity-in-[0%] motion-rotate-in-[-10deg] motion-blur-in-[5px] motion-duration-[0.35s] motion-duration-[0.53s]/scale motion-duration-[0.53s]/translate motion-duration-[0.70s]/rotate"
       >
         {/* Close Button */}
         <button
