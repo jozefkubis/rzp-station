@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import Button from "./Button";
 import Heading from "./Heading";
+import SpinnerMini from "./SpinnerMini";
 
 function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
   const [isPending, startTransition] = useTransition();
@@ -38,11 +39,19 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
         </Button>
 
         {user && <Button variant="primary" size="medium" onClick={handleMoveToProfile}>
-          {isPending ? "Smerujem" : "Prejsť na profil"}
+          {isPending ? (
+            <>
+              Smerujem <span>{" "}<SpinnerMini /></span>
+            </>
+          ) : "Prejsť na profil"}
         </Button>}
 
         <Button variant="danger" disabled={disabled} onClick={onConfirm}>
-          {disabled ? "Mažem..." : "Vymazať"}
+          {disabled ? (
+            <>
+              Mažem <span>{" "}<SpinnerMini /></span>
+            </>
+          ) : "Vymazať"}
         </Button>
 
       </div>
