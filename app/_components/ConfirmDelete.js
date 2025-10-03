@@ -7,6 +7,7 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
   const router = useRouter();
 
   function handleMoveToProfile() {
+    if (!user) return
     router.push(`/profiles/${user.user_id}`);
   }
 
@@ -31,9 +32,9 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
           Zrušiť
         </Button>
 
-        <Button variant="primary" size="medium" onClick={handleMoveToProfile}>
+        {user && <Button variant="primary" size="medium" onClick={handleMoveToProfile}>
           Prejsť na profil
-        </Button>
+        </Button>}
 
         <Button variant="danger" disabled={disabled} onClick={onConfirm}>
           {disabled ? "Mažem..." : "Vymazať"}
