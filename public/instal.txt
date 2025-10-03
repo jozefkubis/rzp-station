@@ -17,6 +17,7 @@ npm install cypress --save-dev
 npm install --save-dev eslint
 npm install --save-dev eslint-plugin-cypress
 npm i @dnd-kit/core @dnd-kit/sortable @dnd-kit/modifiers
+npm i -d tailwindcss-motion
 
 
 settings.json v vscode:

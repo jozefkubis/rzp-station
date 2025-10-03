@@ -1,14 +1,19 @@
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import Button from "./Button";
 import Heading from "./Heading";
 
 function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
-
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+
 
   function handleMoveToProfile() {
     if (!user) return
-    router.push(`/profiles/${user.user_id}`);
+    startTransition(() => {
+      router.push(`/profiles/${user.user_id}`);
+    })
   }
 
   return (
@@ -33,7 +38,7 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
         </Button>
 
         {user && <Button variant="primary" size="medium" onClick={handleMoveToProfile}>
-          Prejsť na profil
+          {isPending ? "Smerujem" : "Prejsť na profil"}
         </Button>}
 
         <Button variant="danger" disabled={disabled} onClick={onConfirm}>
