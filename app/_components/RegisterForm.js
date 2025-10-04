@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import handleSubmitRegistration from "../_lib/functions/handleSubmitRegistration";
 import Button from "./Button";
 import FormInput from "./FormInput";
 import Modal from "./Modal";
+import SpinnerMini from "./SpinnerMini";
 import WarningNotice from "./WarningNotice";
 
 export default function RegisterForm({ status }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [error, setError] = useState("");
+  const [isPending, startTransition] = useTransition();
   const logo = "/logo.png";
 
   useEffect(() => {
@@ -18,7 +20,10 @@ export default function RegisterForm({ status }) {
   }, [error]);
 
   async function handleSubmit(e) {
-    handleSubmitRegistration(e, { setError, status, setIsOpenModal });
+    e.preventDefault();
+    startTransition(() => {
+      handleSubmitRegistration(e, { setError, status, setIsOpenModal });
+    });
   }
 
   return (
@@ -70,7 +75,17 @@ export default function RegisterForm({ status }) {
 
         <div className="flex justify-end p-5">
           <Button data-cy="register-button" variant="primary" size="large">
-            Registrovať
+            {isPending ? (
+              <>
+                Registrujem{" "}
+                <span>
+                  {" "}
+                  <SpinnerMini />
+                </span>
+              </>
+            ) : (
+              "Registrovať"
+            )}
           </Button>
         </div>
       </form>
