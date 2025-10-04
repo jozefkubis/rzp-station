@@ -4,9 +4,10 @@ import Button from "@/app/_components/Button";
 import FormInput from "@/app/_components/FormInput";
 import ImageUploader from "@/app/_components/profiles/ImageUploader";
 import handleSubmitUploadProfileData from "@/app/_lib/functions/handleSubmitUploadProfileData";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import FormSelect from "../FormSelect";
+import SpinnerMini from "../SpinnerMini";
 
 function InsertUpdateProfilesDataForm({ profiles }) {
   const [error, setError] = useState("");
@@ -21,6 +22,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   const [phone, setPhone] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [position, setPosition] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -28,7 +30,9 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleSubmitUploadProfileData(e, { setError, avatar });
+    startTransition(() => {
+      handleSubmitUploadProfileData(e, { setError, avatar });
+    });
   }
 
   return (
@@ -178,7 +182,17 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           variant="primary"
           size="large"
         >
-          Aktualizovať profil
+          {isPending ? (
+            <>
+              Aktualizujem{" "}
+              <span>
+                {" "}
+                <SpinnerMini />
+              </span>
+            </>
+          ) : (
+            "Aktualizovať profil"
+          )}
         </Button>
       </div>
     </form>

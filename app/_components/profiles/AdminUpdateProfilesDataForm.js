@@ -4,9 +4,10 @@ import Button from "@/app/_components/Button";
 import FormInput from "@/app/_components/FormInput";
 import handleSubmitAdminUpdateProfileData from "@/app/_lib/functions/handleSubmitAdminUpdateProfileData";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import FormSelect from "../FormSelect";
+import SpinnerMini from "../SpinnerMini";
 
 function AdminUpdateProfilesDataForm({ profile }) {
   const [error, setError] = useState("");
@@ -19,6 +20,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
   const [psychoCheckDate, setPsychoCheckDate] = useState("");
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -26,7 +28,9 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleSubmitAdminUpdateProfileData(e, { setError });
+    startTransition(() => {
+      handleSubmitAdminUpdateProfileData(e, { setError });
+    });
   }
 
   return (
@@ -157,7 +161,17 @@ function AdminUpdateProfilesDataForm({ profile }) {
 
       <div className="flex flex-col items-end justify-center gap-8">
         <Button data-cy="admin-update-profile-button" size="medium">
-          Aktualizovať profil
+          {isPending ? (
+            <>
+              Aktualizujem{" "}
+              <span>
+                {" "}
+                <SpinnerMini />
+              </span>
+            </>
+          ) : (
+            "Aktualizovať profil"
+          )}
         </Button>
 
         <div>
