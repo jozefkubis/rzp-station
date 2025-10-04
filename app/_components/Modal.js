@@ -25,15 +25,15 @@ export default function Modal({ children, onClose }) {
       {/* Modal Container */}
       <div
         role="dialog"
-        className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-10 shadow-lg transition-all duration-500 w-1/2 max-w-2xl motion-scale-in-[0.5] motion-translate-x-in-[-72%] motion-translate-y-in-[79%] motion-opacity-in-[0%] motion-rotate-in-[-10deg] motion-blur-in-[5px] motion-duration-[0.25s] motion-duration-[0.33s]/scale motion-duration-[0.33s]/translate motion-duration-[0.40s]/rotate"
+        className="fixed left-1/2 top-1/2 z-50 w-1/2 max-w-2xl -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-10 shadow-lg transition-all duration-500"
       >
         {/* Close Button */}
         <button
-          className="absolute right-1 top-1 p-2 transition-all duration-200 hover:bg-gray-200 rounded-full"
+          className="absolute right-1 top-1 rounded-full p-2 transition-all duration-200 hover:bg-gray-200"
           onClick={onClose}
           aria-label="Zatvoriť modal"
         >
-          <IoCloseOutline className="text-primary-200 h-6 w-6" />
+          <IoCloseOutline className="h-6 w-6 text-primary-200" />
         </button>
         <div>{children}</div>
       </div>
