@@ -1,5 +1,5 @@
-import Button from "@/app/_components/Button";
 import DeleteProfileButton from "@/app/_components/profiles/DeleteProfileButton";
+import ProfileIdButton from "@/app/_components/profiles/ProfileIdButton";
 import ProfileIdContactInfo from "@/app/_components/profiles/ProfileIdContactInfo";
 import ProfileIdInfo from "@/app/_components/profiles/ProfileIdInfo";
 import ProfileImage from "@/app/_components/profiles/ProfileImage";
@@ -29,12 +29,7 @@ export default async function Page({ params }) {
     return (
       <div className="flex flex-col items-end gap-8 pt-12">
         <div className="flex gap-2">
-          <Link
-            data-cy="admin-edit-profile-button"
-            href={`/profiles/${profile.id}/edit`}
-          >
-            <Button>Upraviť profil</Button>
-          </Link>
+          <ProfileIdButton profile={profile} />
           <DeleteProfileButton profileId={profile.id} />
         </div>
         <Link
