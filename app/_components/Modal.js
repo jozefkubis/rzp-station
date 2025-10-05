@@ -18,23 +18,24 @@ export default function Modal({ children, onClose }) {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 z-50 bg-primary-400 bg-opacity-50 backdrop-blur-sm transition-all duration-500"
+        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       ></div>
 
       {/* Modal Container */}
       <div
         role="dialog"
-        className="fixed left-1/2 top-1/2 z-50 w-1/2 max-w-2xl -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-10 shadow-lg transition-all duration-500"
+        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 md:p-10"
       >
         {/* Close Button */}
         <button
-          className="absolute right-1 top-1 rounded-full p-2 transition-all duration-200 hover:bg-gray-200"
+          className="absolute right-3 top-3 rounded-full p-2 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
           onClick={onClose}
           aria-label="Zatvoriť modal"
         >
-          <IoCloseOutline className="h-6 w-6 text-primary-200" />
+          <IoCloseOutline className="h-6 w-6" />
         </button>
+
         <div>{children}</div>
       </div>
     </>,
