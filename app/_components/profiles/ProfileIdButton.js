@@ -16,16 +16,14 @@ export default function ProfileIdButton({ profile }) {
   }
 
   return (
-    <Button onClick={handleClick}>
-      {" "}
+    <Button onClick={handleClick} disabled={isPending}>
       {isPending ? (
-        <>
-          Smerujem{" "}
+        <div className="inline-flex items-center gap-2">
+          Smerujem
           <span>
-            {" "}
             <SpinnerMini />
           </span>
-        </>
+        </div>
       ) : (
         "Upraviť profil"
       )}

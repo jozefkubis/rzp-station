@@ -225,10 +225,6 @@ export async function updateUser(formData) {
     return { error: "Heslá sa nezhodujú." };
   }
 
-  if (newPassword === re_newPassword) {
-    return { error: "Nové heslo sa nesmie zhodovať so starým heslom." };
-  }
-
   const { data: result, error } = await supabase.auth.updateUser({
     password: newPassword,
   });

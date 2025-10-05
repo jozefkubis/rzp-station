@@ -181,15 +181,15 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           data-cy="admin-update-profile-button"
           variant="primary"
           size="large"
+          disabled={isPending}
         >
           {isPending ? (
-            <>
-              Aktualizujem{" "}
+            <div className="inline-flex items-center gap-2">
+              Aktualizujem
               <span>
-                {" "}
                 <SpinnerMini />
               </span>
-            </>
+            </div>
           ) : (
             "Aktualizovať profil"
           )}

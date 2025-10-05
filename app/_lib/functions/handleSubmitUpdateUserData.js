@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { updateUser } from "../actions";
 
 export default async function handleSubmitUpdateUserData(e, { setError }) {
@@ -8,6 +9,7 @@ export default async function handleSubmitUpdateUserData(e, { setError }) {
 
   if (response?.error) {
     setError(response.error);
+    toast.error(response.error);
     return;
   }
 

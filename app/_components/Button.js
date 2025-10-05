@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import SpinnerMini from "./SpinnerMini";
 
@@ -10,7 +11,8 @@ const buttonSizes = {
 };
 
 const buttonVariants = {
-  primary: "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
+  primary:
+    "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondary:
     "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondaryShiftRD:
@@ -19,7 +21,8 @@ const buttonVariants = {
     "text-gray-600 bg-red-300 border border-red-300 hover:bg-red-200 hover:border-red-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   tertiary:
     "text-gray-600 bg-[#FFF144] border border-gray-300 hover:bg-[#FFD01C] active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
-  danger: "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
+  danger:
+    "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
 };
 
 export default function Button({
@@ -30,13 +33,14 @@ export default function Button({
   ...props
 }) {
   const { pending } = useFormStatus();
+  const [isPending] = useTransition();
 
   // Spinner len ak ide o SUBMIT v pending stave
   const showPending = pending && type === "submit";
 
   return (
     <button
-      disabled={showPending}
+      disabled={showPending || isPending}
       type={type}
       className={`rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
       {...props}

@@ -160,15 +160,18 @@ function AdminUpdateProfilesDataForm({ profile }) {
       <FormInput id="id" type="hidden" name="id" value={profile?.id || ""} />
 
       <div className="flex flex-col items-end justify-center gap-8">
-        <Button data-cy="admin-update-profile-button" size="medium">
+        <Button
+          data-cy="admin-update-profile-button"
+          size="medium"
+          disabled={isPending}
+        >
           {isPending ? (
-            <>
-              Aktualizujem{" "}
+            <div className="inline-flex items-center gap-2">
+              Aktualizujem
               <span>
-                {" "}
                 <SpinnerMini />
               </span>
-            </>
+            </div>
           ) : (
             "Aktualizovať profil"
           )}

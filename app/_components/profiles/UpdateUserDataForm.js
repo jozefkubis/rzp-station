@@ -61,15 +61,14 @@ function UpdateUserDataForm({ user }) {
       </div>
 
       <div className="flex w-full justify-end py-10">
-        <Button variant="primary" size="large">
+        <Button variant="primary" size="large" disabled={isPending}>
           {isPending ? (
-            <>
-              Aktualizujem{" "}
+            <div className="inline-flex items-center gap-2">
+              Aktualizujem
               <span>
-                {" "}
                 <SpinnerMini />
               </span>
-            </>
+            </div>
           ) : (
             "Aktualizovať heslo"
           )}

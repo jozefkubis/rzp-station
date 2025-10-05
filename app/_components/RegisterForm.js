@@ -74,15 +74,19 @@ export default function RegisterForm({ status }) {
         </div>
 
         <div className="flex justify-end p-5">
-          <Button data-cy="register-button" variant="primary" size="large">
+          <Button
+            data-cy="register-button"
+            variant="primary"
+            size="large"
+            disabled={isPending}
+          >
             {isPending ? (
-              <>
-                Registrujem{" "}
+              <div className="inline-flex items-center gap-2">
+                Registrujem
                 <span>
-                  {" "}
                   <SpinnerMini />
                 </span>
-              </>
+              </div>
             ) : (
               "Registrovať"
             )}
