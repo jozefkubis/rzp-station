@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import FormSelect from "../FormSelect";
 import SpinnerMini from "../SpinnerMini";
 
-function AdminUpdateProfilesDataForm({ profile }) {
+function AdminUpdateProfilesDataForm({ profile, userId }) {
   const [error, setError] = useState("");
   const [full_name, setFull_name] = useState("");
   const [bodyNumber, setBodyNumber] = useState("");
@@ -21,6 +21,7 @@ function AdminUpdateProfilesDataForm({ profile }) {
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -32,6 +33,8 @@ function AdminUpdateProfilesDataForm({ profile }) {
       handleSubmitAdminUpdateProfileData(e, { setError });
     });
   }
+
+  const isUser = userId === profile?.id;
 
   return (
     <form
@@ -78,13 +81,28 @@ function AdminUpdateProfilesDataForm({ profile }) {
         />
       </div>
 
+      {!isUser && (
+        <div>
+          <FormSelect
+            label="Status"
+            id="status"
+            name="status"
+            options={["admin", "operátor"]} // žiadne "-" medzi options
+            placeholder="— Povoľ administrátora —"
+            value={status ?? profile?.status ?? ""}
+            onChange={setStatus}
+            {...(!profile && { required: true })}
+          />
+        </div>
+      )}
+
       <div>
         <FormSelect
           label="Pozícia"
           id="position"
           name="position"
           options={["ZZ", "VZ", "V"]}
-          placeholder={profile?.position || "— Vyber pozíciu —"}
+          placeholder="— Vyber pozíciu —"
           value={position ?? profile?.position ?? ""}
           onChange={setPosition}
           {...(!profile && { required: true })}

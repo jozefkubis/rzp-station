@@ -278,6 +278,7 @@ export async function AdminUpdateProfilesData(formData) {
     psycho_check: formData.get("psycho_check"),
     phone: formData.get("phone"),
     position: formData.get("position"),
+    status: formData.get("status"),
   };
 
   // 🎯 Zistíme, ktoré polia sa skutočne zmenili
