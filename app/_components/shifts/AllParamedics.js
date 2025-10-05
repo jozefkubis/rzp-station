@@ -15,7 +15,7 @@ export default function AllParamedics({
   roster,
   position,
   rowBg,
-  status
+  admin,
 }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -70,13 +70,17 @@ export default function AllParamedics({
 
       {isOpenDeleteModal && (
         <Modal onClose={() => setIsOpenDeleteModal(false)}>
-          {status === "admin" ? <ConfirmDelete
-            resourceName="Zachranára"
-            onConfirm={handleConfirmDelete}
-            onClose={() => setIsOpenDeleteModal(false)}
-            disabled={isDeleting}
-            user={user}
-          /> : <WarningNotice />}
+          {admin === "ÁNO" ? (
+            <ConfirmDelete
+              resourceName="Zachranára"
+              onConfirm={handleConfirmDelete}
+              onClose={() => setIsOpenDeleteModal(false)}
+              disabled={isDeleting}
+              user={user}
+            />
+          ) : (
+            <WarningNotice />
+          )}
         </Modal>
       )}
     </>

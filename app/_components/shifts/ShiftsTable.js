@@ -59,7 +59,7 @@ export default function ShiftsTable({
   disabled,
   profiles,
   onInsertEmptyShift,
-  status,
+  admin,
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const router = useRouter();
@@ -156,10 +156,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -201,7 +201,7 @@ export default function ShiftsTable({
 
   // MARK: HANDLERY PICK/DELETE
   const handleTopSelect = useCallback((userId, dateStr) => {
-    if (status !== "admin") return;
+    if (admin !== "ÁNO") return;
     setSelected({ userId, dateStr });
     setIsModalOpen(true);
   }, []);
@@ -525,7 +525,7 @@ export default function ShiftsTable({
                     position={position}
                     holidaySet={holidaySet}
                     monthKey={monthKey}
-                    status={status}
+                    admin={admin}
                   />
                 );
               })}
@@ -538,7 +538,7 @@ export default function ShiftsTable({
             <ShiftsTableLegend />
           </div>
 
-          {status === "admin" && (
+          {admin === "admin" && (
             <div className="flex gap-2">
               <InsertShiftButton
                 profiles={profiles}

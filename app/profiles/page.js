@@ -1,6 +1,6 @@
 import Header from "../_components/Header";
 import UserProfiles from "../_components/profiles/UserProfiles";
-import { getAllProfiles, getStatus, getUser } from "../_lib/data-service";
+import { getAdmin, getAllProfiles, getUser } from "../_lib/data-service";
 
 export const metadata = {
   title: "Profily",
@@ -9,7 +9,7 @@ export const metadata = {
 export default async function Page() {
   const profiles = await getAllProfiles();
   const user = await getUser();
-  const status = await getStatus(user.email);
+  const admin = await getAdmin(user.email);
 
   if (!profiles || profiles.length === 0) {
     return (
@@ -22,7 +22,7 @@ export default async function Page() {
   return (
     <div data-cy="profiles-page">
       <Header />
-      <UserProfiles profiles={profiles} status={status} />
+      <UserProfiles profiles={profiles} admin={admin} />
     </div>
   );
 }

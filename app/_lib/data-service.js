@@ -93,12 +93,12 @@ export async function getUsername(email) {
 }
 
 // MARK: GET STATUS
-export async function getStatus(email) {
+export async function getAdmin(email) {
   const supabase = await createClient();
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("status")
+    .select("admin")
     .eq("email", email)
     .maybeSingle();
 
