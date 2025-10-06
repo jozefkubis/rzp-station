@@ -92,7 +92,7 @@ export async function getUsername(email) {
   return profile?.username || null;
 }
 
-// MARK: GET STATUS
+// MARK: GET ADMIN
 export async function getAdmin(email) {
   const supabase = await createClient();
 
@@ -103,11 +103,11 @@ export async function getAdmin(email) {
     .maybeSingle();
 
   if (error) {
-    console.error("Chyba pri načítaní statusu:", error);
+    console.error("Chyba pri načítaní admina:", error);
     return null;
   }
 
-  return profile?.status || null;
+  return profile?.admin || null;
 }
 
 // MARK: GET ALL PROFILES

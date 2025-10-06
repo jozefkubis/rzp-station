@@ -60,7 +60,7 @@ export default async function Page({ params }) {
   const profileInfo = [
     { title: "Číslo komory:", value: profile.body_number || "-" },
     { title: "Úväzok:", value: profile.contract || "-" },
-    { title: "Admin:", value: profile.admin || "-" },
+    { title: "Admin:", value: profile.admin || "NIE" },
     { title: "Pozícia:", value: profile.position || "-" },
     { title: "Adresa:", value: profile.address || "-" },
     {

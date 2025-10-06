@@ -1,6 +1,6 @@
 import Header from "../_components/Header";
 import StatisticsMain from "../_components/statistics/StatisticsMain";
-import getAllShifts, { getStatus, getUser } from "../_lib/data-service";
+import getAllShifts, { getAdmin, getUser } from "../_lib/data-service";
 
 export const metadata = {
   title: "Štatistiky",
@@ -12,7 +12,7 @@ export default async function page({ searchParams }) {
 
   const shifts = await getAllShifts();
   const user = await getUser();
-  const status = await getStatus(user.email);
+  const admin = await getAdmin(user.email);
 
   return (
     <div>
@@ -20,7 +20,7 @@ export default async function page({ searchParams }) {
       <StatisticsMain
         shifts={shifts}
         statsOffset={statsOffset}
-        status={status}
+        admin={admin}
       />
     </div>
   );

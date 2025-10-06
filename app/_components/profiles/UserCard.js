@@ -6,12 +6,12 @@ import { useState } from "react";
 import Modal from "../Modal";
 import WarningNotice from "../WarningNotice";
 
-export default function UserCard({ profile, status }) {
+export default function UserCard({ profile, admin }) {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
 
   const handleClick = () => {
-    if (status !== "admin") {
+    if (admin !== "ÁNO") {
       // toast.error("Do vybranej zložky nemáš prístup!");
       setOpenModal(true);
     } else {

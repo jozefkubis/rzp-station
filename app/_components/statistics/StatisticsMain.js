@@ -9,7 +9,7 @@ import ArrowForwardStatistics from "./ArrowForwordStatistics";
 import { StatisticsLegend } from "./StatisticsLegend";
 import YearHeadStatistics from "./YearHeadStatistics";
 
-export default function StatisticsMain({ shifts, statsOffset, status }) {
+export default function StatisticsMain({ shifts, statsOffset, admin }) {
   const router = useRouter();
 
   // 1) Výber roka podľa offsetu
@@ -123,7 +123,7 @@ export default function StatisticsMain({ shifts, statsOffset, status }) {
                 </tr>
               </thead>
               <tbody>
-                {status === "admin" ? (
+                {admin === "ÁNO" ? (
                   stats.map((r) => (
                     <tr key={r.name} className="hover:bg-gray-50">
                       <td className="border px-4 py-2 text-left font-semibold text-primary-700">

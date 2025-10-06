@@ -3,14 +3,14 @@ import { signup } from "../actions";
 
 export default async function handleSubmitRegistration(
   e,
-  { setError, status, setIsOpenModal },
+  { setError, admin, setIsOpenModal },
 ) {
   e.preventDefault();
 
   const formData = new FormData(e.currentTarget);
   const response = await signup(formData);
 
-  if (status !== "admin") setIsOpenModal(true);
+  if (admin !== "ÁNO") setIsOpenModal(true);
 
   if (response?.error) {
     setError(response.error);

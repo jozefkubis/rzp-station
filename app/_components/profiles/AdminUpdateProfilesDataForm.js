@@ -21,7 +21,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [admin, setAdmin] = useState("NIE");
+  const [admin, setAdmin] = useState("");
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -84,9 +84,9 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
       {!isUser && (
         <div>
           <FormSelect
-            label="Status"
-            id="status"
-            name="status"
+            label="Administrátor"
+            id="admin"
+            name="admin"
             options={["ÁNO", "NIE"]} // žiadne "-" medzi options
             placeholder="— Povoľ administrátora —"
             value={admin ?? profile?.admin ?? ""}

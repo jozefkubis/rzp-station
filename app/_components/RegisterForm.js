@@ -9,20 +9,20 @@ import Modal from "./Modal";
 import SpinnerMini from "./SpinnerMini";
 import WarningNotice from "./WarningNotice";
 
-export default function RegisterForm({ status }) {
+export default function RegisterForm({ admin }) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const logo = "/logo.png";
 
   useEffect(() => {
-    if (status === "admin" && error) toast.error(error);
+    if (admin === "ÁNO" && error) toast.error(error);
   }, [error]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     startTransition(() => {
-      handleSubmitRegistration(e, { setError, status, setIsOpenModal });
+      handleSubmitRegistration(e, { setError, admin, setIsOpenModal });
     });
   }
 
@@ -44,8 +44,8 @@ export default function RegisterForm({ status }) {
             type="email"
             placeholder="example@email.com"
             name="email"
-            required={status === "admin"}
-            disabled={status !== "admin"}
+            required={admin === "ÁNO"}
+            disabled={admin !== "ÁNO"}
           />
         </div>
 
@@ -56,8 +56,8 @@ export default function RegisterForm({ status }) {
             type="password"
             placeholder="min. 6 znakov"
             name="password"
-            required={status === "admin"}
-            disabled={status !== "admin"}
+            required={admin === "ÁNO"}
+            disabled={admin !== "ÁNO"}
           />
         </div>
 
@@ -68,8 +68,8 @@ export default function RegisterForm({ status }) {
             type="password"
             placeholder="Potvrdenie hesla"
             name="re_password"
-            required={status === "admin"}
-            disabled={status !== "admin"}
+            required={admin === "ÁNO"}
+            disabled={admin !== "ÁNO"}
           />
         </div>
 

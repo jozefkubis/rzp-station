@@ -16,7 +16,7 @@ export default function RosterSection({
   initialShifts,
   diffProfiles,
   initialShiftsOffset,
-  status,
+  admin,
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -98,7 +98,7 @@ export default function RosterSection({
             disabled={isPending}
             profiles={diffProfiles}
             onInsertEmptyShift={handleInsertEmptyShift}
-            status={status}
+            admin={admin}
           />
           {isPending && <ShiftLoader />}
         </div>
