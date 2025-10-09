@@ -77,7 +77,7 @@ export default function RegisterForm({ admin }) {
           <Button
             data-cy="register-button"
             variant="primary"
-            size="large"
+            size="medium"
             disabled={isPending}
           >
             {isPending ? (

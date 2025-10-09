@@ -1,8 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
-import { useFormStatus } from "react-dom";
-import SpinnerMini from "./SpinnerMini";
 
 const buttonSizes = {
   small: "text-xs px-3 py-1 uppercase font-semibold",
@@ -32,20 +29,16 @@ export default function Button({
   type, // default = button
   ...props
 }) {
-  const { pending } = useFormStatus();
-  const [isPending] = useTransition();
 
   // Spinner len ak ide o SUBMIT v pending stave
-  const showPending = pending && type === "submit";
 
   return (
     <button
-      disabled={showPending || isPending}
       type={type}
       className={`rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
       {...props}
     >
-      {showPending ? <SpinnerMini /> : children}
+      {children}
     </button>
   );
 }

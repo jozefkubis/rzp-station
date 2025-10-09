@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import FormTaskInput from "@/app/_components/calendar/FormTaskInput";
 import Button from "@/app/_components/Button";
-import toast from "react-hot-toast";
-import handleSubmitUpdateTaskForm from "@/app/_lib/functions/handleSubmitUpdateTaskForm";
 import DeleteTaskButton from "@/app/_components/calendar/DeleteTaskButton";
+import FormTaskInput from "@/app/_components/calendar/FormTaskInput";
 import ToggleSwitch from "@/app/_components/calendar/ToggleSwitch";
+import handleSubmitUpdateTaskForm from "@/app/_lib/functions/handleSubmitUpdateTaskForm";
+import { useEffect, useState, useTransition } from "react";
+import toast from "react-hot-toast";
+import SpinnerMini from "../SpinnerMini";
 
 export default function UpdateTaskForm({ onClose, refresh, task }) {
     const toDateStr = (d) =>
@@ -23,7 +24,10 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
     const [note, setNote] = useState(task.note ?? "");
     const [title, setTitle] = useState(task.title);
     const [error, setError] = useState("");
-    const [isAllDay, setIsAllDay] = useState(task.isAllDay ?? task.allDay ?? false);
+    const [isAllDay, setIsAllDay] = useState(
+        task.isAllDay ?? task.allDay ?? false,
+    );
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         if (error) toast.error(error);
@@ -41,12 +45,17 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
     }, [isAllDay, task.end, task.start]);
 
     async function handleSubmit(e) {
-        await handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
+        startTransition(async () => {
+            await handleSubmitUpdateTaskForm(e, { setError, onClose, refresh });
+        });
     }
 
-
     return (
-        <form data-cy="update-task-form" onSubmit={handleSubmit} className="space-y-5">
+        <form
+            data-cy="update-task-form"
+            onSubmit={handleSubmit}
+            className="space-y-5"
+        >
             <input type="hidden" name="id" value={task.id} />
 
             {/* Názov */}
@@ -133,8 +142,23 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
             {/* Tlačidlá */}
             <div className="flex justify-end gap-2">
                 <DeleteTaskButton task={task} onClose={onClose} refresh={refresh} />
-                <Button data-cy="update-task-submit" variant="primary" size="medium" type="submit">
-                    Aktualizovať
+                <Button
+                    data-cy="update-task-submit"
+                    variant="primary"
+                    size="medium"
+                    type="submit"
+                    disabled={isPending}
+                >
+                    {isPending ? (
+                        <div className="inline-flex items-center gap-2">
+                            Aktualizujem
+                            <span>
+                                <SpinnerMini />
+                            </span>
+                        </div>
+                    ) : (
+                        "Aktualizovať"
+                    )}
                 </Button>
             </div>
         </form>

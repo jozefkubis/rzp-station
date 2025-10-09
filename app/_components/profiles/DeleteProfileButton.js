@@ -1,12 +1,12 @@
 "use client";
 
 // import { RiDeleteBinLine } from "react-icons/ri";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import Modal from "@/app/_components/Modal";
-import ConfirmDelete from "@/app/_components/ConfirmDelete";
 import Button from "@/app/_components/Button";
+import ConfirmDelete from "@/app/_components/ConfirmDelete";
+import Modal from "@/app/_components/Modal";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function DeleteProfileButton({ profileId }) {
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);

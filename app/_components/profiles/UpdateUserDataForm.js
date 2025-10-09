@@ -61,7 +61,7 @@ function UpdateUserDataForm({ user }) {
       </div>
 
       <div className="flex w-full justify-end py-10">
-        <Button variant="primary" size="large" disabled={isPending}>
+        <Button variant="primary" size="medium" disabled={isPending}>
           {isPending ? (
             <div className="inline-flex items-center gap-2">
               Aktualizujem

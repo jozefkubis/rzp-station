@@ -1,10 +1,10 @@
 "use client";
 
-import { useTransition } from "react";
-import toast from "react-hot-toast";
-import { deleteTask } from "@/app/_lib/actions";
 import Button from "@/app/_components/Button";
 import SpinnerMini from "@/app/_components/SpinnerMini";
+import { deleteTask } from "@/app/_lib/actions";
+import { useTransition } from "react";
+import toast from "react-hot-toast";
 
 export default function DeleteTaskButton({ task, onClose, refresh }) {
 
@@ -33,7 +33,16 @@ export default function DeleteTaskButton({ task, onClose, refresh }) {
             disabled={isPending}
             type="button"
         >
-            {isPending ? <SpinnerMini /> : "Vymazať"}
+            {isPending ? (
+                <div className="inline-flex items-center gap-2">
+                    Mažem
+                    <span>
+                        <SpinnerMini />
+                    </span>
+                </div>
+            ) : (
+                "Vymazať"
+            )}
         </Button>
     );
 }

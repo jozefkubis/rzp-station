@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import FormTaskInput from "@/app/_components/calendar/FormTaskInput";
 import Button from "@/app/_components/Button";
-import toast from "react-hot-toast";
-import handleSubmitNewTask from "@/app/_lib/functions/handleSubmitNewTask";
+import FormTaskInput from "@/app/_components/calendar/FormTaskInput";
 import ToggleSwitch from "@/app/_components/calendar/ToggleSwitch";
+import handleSubmitNewTask from "@/app/_lib/functions/handleSubmitNewTask";
+import { useEffect, useState, useTransition } from "react";
+import toast from "react-hot-toast";
+import SpinnerMini from "../SpinnerMini";
 
 export default function NewTaskForm({ onClose, refresh, slot }) {
     const [dateFrom, setDateFrom] = useState("");
@@ -16,6 +17,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [isAllDay, setIsAllDay] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         if (error) toast.error(error);
@@ -43,14 +45,15 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
 
     const todayStr = new Date().toISOString().slice(0, 10);
 
-
     async function handleSubmit(e) {
         e.preventDefault();
-        handleSubmitNewTask(e, {
-            setError,
-            onClose,
-            refresh,
-        });
+        startTransition(async () => {
+            await handleSubmitNewTask(e, {
+                setError,
+                onClose,
+                refresh,
+            });
+        })
     }
 
     return (
@@ -141,8 +144,23 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
 
             {/* Tlačidlo */}
             <div className="flex justify-end">
-                <Button data-cy="new-task-submit" variant="primary" size="medium" type="submit">
-                    Pridať
+                <Button
+                    data-cy="new-task-submit"
+                    variant="primary"
+                    size="medium"
+                    type="submit"
+                    disabled={isPending}
+                >
+                    {isPending ? (
+                        <div className="inline-flex items-center gap-2">
+                            Pridávam
+                            <span>
+                                <SpinnerMini />
+                            </span>
+                        </div>
+                    ) : (
+                        "Pridať"
+                    )}
                 </Button>
             </div>
         </form>
