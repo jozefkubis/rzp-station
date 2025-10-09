@@ -2,8 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
+import DeleteAllShifts from "./DeleteAllShifts";
+import DeleteOnlyShifts from "./DeleteOnlyShifts";
+import GenerateShifts from "./GenerateShifts";
+import InsertShiftButton from "./InsertShiftButton";
 import ShiftLoader from "./ShiftLoader";
 import ShiftsTable from "./ShiftsTable";
+import { ShiftsTableLegend } from "./ShiftsTableLegend";
+import ValidateButton from "./ValidateButton";
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
@@ -90,17 +96,43 @@ export default function RosterSection({
     <div className="flex w-[100%] flex-col">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
-        <div className="max-w-full overflow-x-auto">
-          <ShiftsTable
-            shifts={optimShifts}
-            goTo={goTo}
-            shiftsOffset={shiftsOptimOffset}
-            disabled={isPending}
-            profiles={diffProfiles}
-            onInsertEmptyShift={handleInsertEmptyShift}
-            admin={admin}
-          />
-          {isPending && <ShiftLoader />}
+        <div className="flex flex-col">
+
+          <div className="max-w-full overflow-x-auto">
+            <ShiftsTable
+              shifts={optimShifts}
+              goTo={goTo}
+              shiftsOffset={shiftsOptimOffset}
+              disabled={isPending}
+              profiles={diffProfiles}
+              onInsertEmptyShift={handleInsertEmptyShift}
+              admin={admin}
+            />
+            {isPending && <ShiftLoader />}
+          </div>
+
+          <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">
+            <div>
+              <ShiftsTableLegend />
+            </div>
+
+            {admin === "ÁNO" && (
+              <div className="flex gap-2">
+                <InsertShiftButton
+                  profiles={diffProfiles}
+                  onInsertEmptyShift={handleInsertEmptyShift}
+                />
+                {initialShifts.length > 0 && (
+                  <>
+                    <GenerateShifts />
+                    <DeleteOnlyShifts />
+                    <ValidateButton />
+                    <DeleteAllShifts />
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

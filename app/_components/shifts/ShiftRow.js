@@ -124,6 +124,8 @@ export default function ShiftRow({
               ? "bg-amber-100"
               : rowBg;
 
+
+        // MARK: REDNER
         return (
           <div
             key={`${user.user_id}-${dateStr}`}

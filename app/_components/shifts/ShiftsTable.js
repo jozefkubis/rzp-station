@@ -21,11 +21,7 @@ import Modal from "../Modal";
 import ArrowBack from "./ArrowBack";
 import ArrowForword from "./ArrowForword";
 import DaysMonth from "./DaysMonth";
-import DeleteAllShifts from "./DeleteAllShifts";
-import DeleteOnlyShifts from "./DeleteOnlyShifts";
-import GenerateShifts from "./GenerateShifts";
 import { getDaysArray, MONTHS, shiftTableStats } from "./helpers_shifts";
-import InsertShiftButton from "./InsertShiftButton";
 import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import NoShifts from "./NoShifts";
@@ -33,8 +29,6 @@ import ParamedName from "./ParamedName";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
-import { ShiftsTableLegend } from "./ShiftsTableLegend";
-import ValidateButton from "./ValidateButton";
 
 import { updateMonthOrderIndex } from "@/app/_lib/actions";
 import {
@@ -532,29 +526,6 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
-
-        <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">
-          <div>
-            <ShiftsTableLegend />
-          </div>
-
-          {admin === "ÁNO" && (
-            <div className="flex gap-2">
-              <InsertShiftButton
-                profiles={profiles}
-                onInsertEmptyShift={handleInsertEmptyShift}
-              />
-              {shifts.length > 0 && (
-                <>
-                  <GenerateShifts />
-                  <DeleteOnlyShifts />
-                  <ValidateButton />
-                  <DeleteAllShifts />
-                </>
-              )}
-            </div>
-          )}
-        </div>
       </MainShiftsTable>
 
       {/* modals */}
