@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -51,12 +50,10 @@ export default function ShiftsTable({
   goTo,
   shiftsOffset,
   disabled,
-  profiles,
   onInsertEmptyShift,
   admin,
 }) {
   /* ---------- lokálne UI stavy ---------- */
-  const router = useRouter();
   const [selected, setSelected] = useState(null); // { userId, dateStr }
   const [bottomSelected, setBottomSelected] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

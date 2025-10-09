@@ -104,7 +104,6 @@ export default function RosterSection({
               goTo={goTo}
               shiftsOffset={shiftsOptimOffset}
               disabled={isPending}
-              profiles={diffProfiles}
               onInsertEmptyShift={handleInsertEmptyShift}
               admin={admin}
             />
