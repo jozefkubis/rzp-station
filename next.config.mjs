@@ -17,14 +17,13 @@ function makeCSP(isDev) {
   ];
 
   if (isDev) {
-    // DEV: react-refresh + inline skripty + ws/localhost
     base.push(
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:",
       "connect-src 'self' http://localhost:3000 ws://localhost:3000 https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.open-meteo.com"
     );
   } else {
-    // PROD: prísne bez eval/inline
-    base.push("script-src 'self'");
+    // >>> TU JE ZMENA – povolené 'unsafe-inline' pre produkciu
+    base.push("script-src 'self' 'unsafe-inline'");
   }
 
   return base.join("; ");
@@ -46,11 +45,9 @@ const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "10mb" },
   },
-
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders(isDev) }];
   },
-
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -60,18 +57,8 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/avatars/**",
       },
-      {
-        protocol: "https",
-        hostname: "randomuser.me",
-        port: "",
-        pathname: "/api/portraits/**",
-      },
-      {
-        protocol: "https",
-        hostname: "upload.wikimedia.org",
-        port: "",
-        pathname: "/**",
-      },
+      { protocol: "https", hostname: "randomuser.me", port: "", pathname: "/api/portraits/**" },
+      { protocol: "https", hostname: "upload.wikimedia.org", port: "", pathname: "/**" },
     ],
     minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],
