@@ -10,9 +10,10 @@ import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { Calendar as BigCalendar, Views } from "react-big-calendar";
+import WarningNotice from "../WarningNotice";
 import Modal from "/app/_components/Modal";
 
-export default function Calendar() {
+export default function Calendar({ admin }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState(Views.MONTH);
@@ -119,6 +120,8 @@ export default function Calendar() {
     };
   }
 
+  // MARK: RENDER....................................................
+
   return (
     <div
       data-cy="calendar-page"
@@ -191,30 +194,35 @@ export default function Calendar() {
               setSelectedEvent(null);
             }}
           >
-            {selectedEvent ? (
-              <UpdateTaskForm
-                task={selectedEvent}
-                onClose={() => {
-                  setIsOpenModal(false);
-                  setSelectedEvent(null);
-                  setDraftSlot(null);
-                }}
-                refresh={fetchEvents}
-              />
+            {admin === "ANO" ? (
+              selectedEvent ? (
+                <UpdateTaskForm
+                  task={selectedEvent}
+                  onClose={() => {
+                    setIsOpenModal(false);
+                    setSelectedEvent(null);
+                    setDraftSlot(null);
+                  }}
+                  refresh={fetchEvents}
+                />
+              ) : (
+                <NewTaskForm
+                  slot={draftSlot}
+                  onClose={() => {
+                    setIsOpenModal(false);
+                    setSelectedEvent(null);
+                    setDraftSlot(null);
+                  }}
+                  refresh={fetchEvents}
+                />
+              )
             ) : (
-              <NewTaskForm
-                slot={draftSlot}
-                onClose={() => {
-                  setIsOpenModal(false);
-                  setSelectedEvent(null);
-                  setDraftSlot(null);
-                }}
-                refresh={fetchEvents}
-              />
+              <WarningNotice />
             )}
           </Modal>
         </div>
       )}
+
     </div>
   );
 }
