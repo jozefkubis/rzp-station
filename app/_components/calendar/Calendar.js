@@ -194,7 +194,7 @@ export default function Calendar({ admin }) {
               setSelectedEvent(null);
             }}
           >
-            {admin === "ANO" ? (
+            {admin === "ÁNO" ? (
               selectedEvent ? (
                 <UpdateTaskForm
                   task={selectedEvent}
