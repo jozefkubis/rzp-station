@@ -67,6 +67,7 @@ export default async function Page({ searchParams }) {
   const taskTitleForTmrw = taskForTmrw.map((task) => task.title);
   //......................................................................................................
 
+  // MARK: RENDER .......................................................................................
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
