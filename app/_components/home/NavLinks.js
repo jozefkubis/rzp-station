@@ -61,7 +61,7 @@ export default async function NavLinks({ searchParams }) {
   return (
     <>
       {/* DESKTOP NAV */}
-      <nav className="hidden w-full gap-4 md:flex md:w-full md:px-6 lg:flex-col">
+      <nav className="hidden flex-col gap-4 md:flex">
         {/* Avatar */}
         <Link href="/settings/profile" aria-label="Profil">
           <div className="relative size-14 overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
