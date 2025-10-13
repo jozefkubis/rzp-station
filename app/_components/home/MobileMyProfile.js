@@ -1,13 +1,12 @@
 "use client";
 
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { getDaysArray } from "../shifts/helpers_shifts";
-import MobileMyProfile from "./MobileMyProfile";
 
 import ArrowBackDashboard from "./ArrowBackDashboard";
 import ArrowForwDashboard from "./ArrowForwDashboard";
-import Stat from "./Stat";
+import MobileStat from "./MobileStat";
 
 import {
   TbBed,
@@ -19,7 +18,6 @@ import {
   TbStethoscope,
   TbSun,
 } from "react-icons/tb";
-import Modal from "../Modal";
 
 /* ---------- HELPERS mimo komponentu ---------- */
 // počty služieb podľa typu
@@ -49,8 +47,6 @@ const formatDaysLeft = (v) => (v < 0 ? `- ${Math.abs(v)} dní` : `+ ${v} dní`);
 /* -------------------------------------------------------------------------- */
 
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const contract = profile?.contract ?? 1;
   /* uložíme offset do sessionStorage (na zapamätanie medzi reloadmi) */
   useEffect(() => {
@@ -147,61 +143,62 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
 
   // MARK: RETURN
   return (
-    <div>
+    <div className="md:hidden">
       {/* navigácia medzi mesiacmi */}
-      <div className="hidden w-full items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700 md:flex">
+      <div className="flex w-full items-center justify-center gap-6 px-8 py-4 font-semibold text-primary-700">
         <div className="flex min-w-60 justify-between">
           <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
           <h3 className="text-lg">{monthLabel}</h3>
           <ArrowForwDashboard offset={offset} goTo={goTo} disabled={disabled} />
         </div>
       </div>
+
       {/* kachličky so štatistikou */}
-      <section className="hidden w-full grid-cols-2 gap-4 rounded-2xl bg-white p-6 shadow-sm sm:grid-cols-3 md:grid lg:grid lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
-        <Stat
+      <section className="flex w-full flex-col gap-2">
+        <MobileStat
           title="Služby mesiac"
           color="green"
           icon={<TbCalendarStats />}
           value={`${calculated.totalShiftCount} / ${calculated.totalHours > 0 ? calculated.totalHours.toFixed(1) : 0} h.`}
         />
-        <Stat
+        <MobileStat
           title="Denné služby"
           color="yellow"
           icon={<TbSun />}
           value={`${calculated.dayShiftCount} / ${hoursForShifts(calculated.dayShiftCount)} h.`}
         />
-        <Stat
+        <MobileStat
           title="Nočné služby"
           color="slate"
           icon={<TbMoonStars />}
           value={`${calculated.nightShiftCount} / ${hoursForShifts(calculated.nightShiftCount)} h.`}
         />
-        <Stat
+        <MobileStat
           title="Dovolenka"
           color="orange"
           icon={<TbPlaneDeparture />}
           value={`${calculated.holidayShiftCount} / ${calculated.holidayHours > 0 ? calculated.holidayHours.toFixed(1) : 0} h.`}
         />
-        <Stat
+        <MobileStat
           title="PN"
           color="purple"
           icon={<TbBed />}
           value={`${calculated.sickShiftCount} / ${calculated.sickHours > 0 ? calculated.sickHours.toFixed(1) : 0} h.`}
         />
-        <Stat
+        <MobileStat
           title="Nadčas"
           color="green"
           icon={<TbClockPlus />}
           value={`${calculated.overtimeHours.toFixed(1)} h.`}
         />
-        <Stat
+        <MobileStat
           title="Lek. prehliadka"
           color="blue"
           icon={<TbStethoscope />}
           value={medCheckLeft}
         />
         {psychoCheckLeft != null && (
-          <Stat
+          <MobileStat
             title="Psychotesty"
             color="pink"
             icon={<TbBrain />}
@@ -209,26 +206,6 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           />
         )}
       </section>
-      <button
-        type="button"
-        onClick={setIsModalOpen}
-        className="border-2-primary-700 flex w-full items-center justify-center rounded-lg border p-3 shadow-lg active:scale-95 md:hidden"
-      >
-        <h1 className="p-6 text-3xl font-semibold text-primary-700">
-          Osobné štatistiky
-        </h1>
-      </button>
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <MobileMyProfile
-            shifts={shifts}
-            profile={profile}
-            offset={offset}
-            goTo={goTo}
-            disabled={disabled}
-          />
-        </Modal>
-      )}
     </div>
   );
 }
