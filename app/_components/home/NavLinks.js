@@ -25,18 +25,43 @@ export default async function NavLinks({ searchParams }) {
   const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
   const links = [
-    { href: `/shifts?m=${shiftsOffset}`, label: "Služby", icon: <PiAmbulance size={28} /> },
-    { href: "/calendar", label: "Kalendár", icon: <HiOutlineCalendarDays size={28} /> },
-    { href: "/profiles", label: "Záchranári", icon: <HiOutlineUsers size={28} /> },
-    { href: "/register", label: "Registrácia", icon: <HiOutlineUserPlus size={28} /> },
-    { href: `/statistics?y=${statsOffset}`, label: "Štatistiky", icon: <HiOutlineChartSquareBar size={28} /> },
-    { href: "/login", label: "Logout", icon: <HiArrowRightOnRectangle size={28} /> },
+    {
+      href: `/shifts?m=${shiftsOffset}`,
+      label: "Služby",
+      icon: <PiAmbulance size={28} />,
+    },
+    {
+      href: "/calendar",
+      label: "Kalendár",
+      icon: <HiOutlineCalendarDays size={28} />,
+    },
+    {
+      href: "/profiles",
+      label: "Záchranári",
+      icon: <HiOutlineUsers size={28} />,
+    },
+    {
+      href: "/register",
+      label: "Registrácia",
+      icon: <HiOutlineUserPlus size={28} />,
+    },
+    {
+      href: `/statistics?y=${statsOffset}`,
+      label: "Štatistiky",
+      icon: <HiOutlineChartSquareBar size={28} />,
+    },
+    {
+      href: "/login",
+      label: "Logout",
+      icon: <HiArrowRightOnRectangle size={28} />,
+    },
   ];
 
+  // MARK: RENDER .......................................................................................
   return (
     <>
       {/* DESKTOP NAV */}
-      <nav className="hidden flex-col gap-4 md:flex">
+      <nav className="hidden w-full gap-4 md:flex md:w-full md:px-6 lg:flex-col">
         {/* Avatar */}
         <Link href="/settings/profile" aria-label="Profil">
           <div className="relative size-14 overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">

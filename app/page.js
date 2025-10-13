@@ -43,10 +43,12 @@ export default async function Page({ searchParams }) {
       N: new Set(["N", "zN", "vN"]),
     };
 
-    return list
-      .filter((s) => ALIASES[baseType].has(s.shift_type))
-      // predtým: .map((s) => s.profiles.full_name)
-      .map((s) => s?.profiles?.full_name ?? "—");
+    return (
+      list
+        .filter((s) => ALIASES[baseType].has(s.shift_type))
+        // predtým: .map((s) => s.profiles.full_name)
+        .map((s) => s?.profiles?.full_name ?? "—")
+    );
   }
 
   const dayToday = namesByType(todayShifts, "D");
