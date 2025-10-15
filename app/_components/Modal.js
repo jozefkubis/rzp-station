@@ -5,13 +5,18 @@ import { IoCloseOutline } from "react-icons/io5";
 export default function Modal({ children, onClose }) {
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    // 🔧 zamknutie scrollu na pozadí
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = prevOverflow; // vrátiť pôvodný stav
+    };
   }, [onClose]);
 
   return createPortal(
@@ -20,12 +25,13 @@ export default function Modal({ children, onClose }) {
       <div
         className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
-      ></div>
+      />
 
       {/* Modal Container */}
       <div
         role="dialog"
-        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 md:p-10"
+        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 md:p-10
+        max-h-[100dvh] overflow-y-auto"  // ⬅️ jediné potrebné utility pre scroll
       >
         {/* Close Button */}
         <button
@@ -39,6 +45,6 @@ export default function Modal({ children, onClose }) {
         <div>{children}</div>
       </div>
     </>,
-    document.body,
+    document.body
   );
 }
