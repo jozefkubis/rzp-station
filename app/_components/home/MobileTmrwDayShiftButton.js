@@ -13,7 +13,7 @@ export default function MobileTmrwDayShiftButton({ dayData, dateString, label })
             <button
                 type="button"
                 onClick={() => setIsModalOpen(true)} // správny handler
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-300 bg-white px-4 py-3 shadow-sm ring-1 ring-primary-200 active:scale-95"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-300 bg-white px-4 py-3 shadow-lg ring-1 ring-primary-200 active:scale-95"
             >
                 <HiOutlineSun className="text-xl text-primary-600" />
                 <span className="text-base font-semibold text-primary-700 tracking-wide">

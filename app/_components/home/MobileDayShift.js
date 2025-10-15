@@ -19,7 +19,7 @@ export default function MobileTodayDayShift({
             {/* Nadpis alebo dátum */}
             {label && (
                 <h5 className="mb-1 text-xs font-semibold uppercase tracking-wide text-primary-600">
-                    {label}: {localDate}
+                    {label}: {localDate} 06:00 - 18:00
                 </h5>
             )}
 

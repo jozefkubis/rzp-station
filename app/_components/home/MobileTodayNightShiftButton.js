@@ -18,7 +18,7 @@ export default function MobileTodayNightShiftButton({
             <button
                 type="button"
                 onClick={() => setIsModalOpen(true)} // správne otvára modál
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-400 bg-primary-50 px-4 py-3 shadow-sm ring-1 ring-primary-200 active:scale-95"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-400 bg-primary-50 px-4 py-3 shadow-lg ring-1 ring-primary-200 active:scale-95"
             >
                 <HiOutlineMoon className="text-xl text-primary-700" />
                 <span className="text-base font-semibold text-primary-800 tracking-wide">

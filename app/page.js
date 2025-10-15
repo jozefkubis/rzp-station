@@ -1,4 +1,5 @@
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import MobileMainTaskButton from "./_components/home/MobileMainTaskButton";
 import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButton";
 import MobileTmrwNightShiftButton from "./_components/home/MobileTmrwNightShiftButton";
 import MobileTodayDayShiftButton from "./_components/home/MobileTodayDayShiftButton";
@@ -84,7 +85,7 @@ export default async function Page({ searchParams }) {
       </aside>
 
       {/* DASHBOARD GRID */}
-      <main className="flex flex-1 flex-col gap-8 overflow-y-auto p-6">
+      <main className="flex flex-1 flex-col lg:gap-8 gap-4 overflow-y-auto p-6">
         {/* Karta: Počasie */}
         <WeatherCard />
 
@@ -123,6 +124,8 @@ export default async function Page({ searchParams }) {
         <MobileTmrwDayShiftButton dayData={dayTomorrow} dateString={tmrwDateStr} label="Zajtra" />
 
         <MobileTmrwNightShiftButton nightData={nightTomorrow} dateString={tmrwDateStr} label="Zajtra" />
+
+        <MobileMainTaskButton dayData={dayToday} dayTmrw={dayTomorrow} dateString={dateStr} tmrwDateStr={tmrwDateStr} labelTmrw="Zajtra" tasks={taskTitleForToday} labelToday="Dnes" tmrwTasks={taskTitleForTmrw} />
       </main>
     </div>
   );

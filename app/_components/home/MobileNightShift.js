@@ -19,7 +19,7 @@ export default function MobileNightShift({
             {/* Nadpis alebo dátum */}
             {label && (
                 <h5 className="mb-1 text-xs font-semibold uppercase tracking-wide text-primary-600">
-                    {label}: {localDate}
+                    {label}: {localDate} 18:00 - 06:00
                 </h5>
             )}
 
