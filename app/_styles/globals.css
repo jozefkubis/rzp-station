@@ -8,6 +8,15 @@
   padding: 0;
 }
 
+html {
+  scrollbar-gutter: stable;
+  -webkit-scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  -webkit-scrollbar-width: thin;
+  scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
+  -webkit-scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
+}
+
 @layer components {
   .spinner {
     margin: 3.2rem auto 1.6rem;
