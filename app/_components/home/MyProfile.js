@@ -18,7 +18,6 @@ import {
   TbStethoscope,
   TbSun,
 } from "react-icons/tb";
-import MobileMyProfileButton from "./MobileMyProfileButton";
 
 /* ---------- HELPERS mimo komponentu ---------- */
 // počty služieb podľa typu
@@ -208,8 +207,6 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           />
         )}
       </section>
-
-      <MobileMyProfileButton shifts={shifts} profile={profile} offset={offset} goTo={goTo} disabled={disabled} />
     </div>
   );
 }

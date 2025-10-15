@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 
+import MobileMyProfileButton from "./MobileMyProfileButton";
 import MyProfile from "./MyProfile";
 
 export default function MyProfileWrapper({ profile, shifts, initialOffset }) {
@@ -36,6 +37,8 @@ export default function MyProfileWrapper({ profile, shifts, initialOffset }) {
         goTo={goTo}
         disabled={isPending}
       />
+
+      <MobileMyProfileButton shifts={shifts} profile={profile} offset={optimOffset} goTo={goTo} disabled={isPending} />
     </>
   );
 }
