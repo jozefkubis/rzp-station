@@ -60,7 +60,7 @@ export default function WeatherCard() {
   const icon = getWeatherIcon(today.code);
 
   return (
-    <div className="flex w-full items-center justify-end gap-2 rounded-2xl px-8">
+    <div className="md:flex hidden w-full items-center justify-end gap-2 rounded-2xl px-8">
       <div className="flex items-center justify-center gap-4 rounded-2xl bg-gradient-to-tr from-blue-300 to-blue-600 p-4 text-white shadow-md">
         <div className="text-4xl">{icon}</div>
         {/* Dnes */}

@@ -3,7 +3,6 @@
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
 import { useEffect, useMemo, useState } from "react";
 import { getDaysArray } from "../shifts/helpers_shifts";
-import MobileMyProfile from "./MobileMyProfile";
 
 import ArrowBackDashboard from "./ArrowBackDashboard";
 import ArrowForwDashboard from "./ArrowForwDashboard";
@@ -19,7 +18,7 @@ import {
   TbStethoscope,
   TbSun,
 } from "react-icons/tb";
-import Modal from "../Modal";
+import MobileMyProfileButton from "./MobileMyProfileButton";
 
 /* ---------- HELPERS mimo komponentu ---------- */
 // počty služieb podľa typu
@@ -209,26 +208,8 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           />
         )}
       </section>
-      <button
-        type="button"
-        onClick={setIsModalOpen}
-        className="border-2-primary-700 flex w-full items-center justify-center rounded-lg border p-3 shadow-lg active:scale-95 md:hidden"
-      >
-        <h1 className="p-6 text-3xl font-semibold text-primary-700">
-          Osobné štatistiky
-        </h1>
-      </button>
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <MobileMyProfile
-            shifts={shifts}
-            profile={profile}
-            offset={offset}
-            goTo={goTo}
-            disabled={disabled}
-          />
-        </Modal>
-      )}
+
+      <MobileMyProfileButton shifts={shifts} profile={profile} offset={offset} goTo={goTo} disabled={disabled} />
     </div>
   );
 }

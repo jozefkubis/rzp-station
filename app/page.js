@@ -1,4 +1,8 @@
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButton";
+import MobileTmrwNightShiftButton from "./_components/home/MobileTmrwNightShiftButton";
+import MobileTodayDayShiftButton from "./_components/home/MobileTodayDayShiftButton";
+import MobileTodayNightShiftButton from "./_components/home/MobileTodayNightShiftButton";
 import MyProfileWrapper from "./_components/home/MyProfileWrapper";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
@@ -92,7 +96,7 @@ export default async function Page({ searchParams }) {
         />
 
         {/* Karty: Kalendáre */}
-        <section className="grid w-full gap-6 md:grid-cols-2">
+        <section className="md:grid hidden w-full gap-6 md:grid-cols-2">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}
@@ -111,6 +115,14 @@ export default async function Page({ searchParams }) {
             tasks={taskTitleForTmrw}
           />
         </section>
+
+        <MobileTodayDayShiftButton dayData={dayToday} dateString={dateStr} label="Dnes" />
+
+        <MobileTodayNightShiftButton nightData={nightToday} dateString={dateStr} label="Dnes" />
+
+        <MobileTmrwDayShiftButton dayData={dayTomorrow} dateString={tmrwDateStr} label="Zajtra" />
+
+        <MobileTmrwNightShiftButton nightData={nightTomorrow} dateString={tmrwDateStr} label="Zajtra" />
       </main>
     </div>
   );
