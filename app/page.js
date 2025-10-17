@@ -88,36 +88,38 @@ export default async function Page({ searchParams }) {
       </aside>
 
       {/* DASHBOARD GRID */}
-      <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-6 lg:gap-8">
+      <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-6 lg:gap-4">
         {/* Karta: Počasie */}
         <WeatherCard />
 
-        {/* Karta: Môj profil */}
-        <MyProfileWrapper
-          profile={profile}
-          shifts={shifts}
-          initialOffset={offset}
-        />
-
-        {/* Karty: Kalendáre */}
-        <section className="hidden w-full gap-6 md:grid md:grid-cols-2">
-          <ShiftCalendar
-            label="Dnes"
-            dateString={formatDate(dateStr)}
-            dayData={dayToday}
-            nightData={nightToday}
-            line={line}
-            tasks={taskTitleForToday}
+        <section className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 lg:gap-8">
+          {/* Karta: Môj profil */}
+          <MyProfileWrapper
+            profile={profile}
+            shifts={shifts}
+            initialOffset={offset}
           />
 
-          <ShiftCalendar
-            label="Zajtra"
-            dateString={formatDate(tmrwDateStr)}
-            dayData={dayTomorrow}
-            nightData={nightTomorrow}
-            line={line}
-            tasks={taskTitleForTmrw}
-          />
+          {/* Karty: Kalendáre */}
+          <div className="hidden w-full md:grid md:grid-cols-2 md:gap-6">
+            <ShiftCalendar
+              label="Dnes"
+              dateString={formatDate(dateStr)}
+              dayData={dayToday}
+              nightData={nightToday}
+              line={line}
+              tasks={taskTitleForToday}
+            />
+
+            <ShiftCalendar
+              label="Zajtra"
+              dateString={formatDate(tmrwDateStr)}
+              dayData={dayTomorrow}
+              nightData={nightTomorrow}
+              line={line}
+              tasks={taskTitleForTmrw}
+            />
+          </div>
         </section>
 
         <MobileTodayDayShiftButton
