@@ -139,7 +139,7 @@ export default async function Page({ searchParams }) {
         <MobileTodayNightShiftButton
           nightData={nightToday}
           dateString={dateStr}
-          // label="Dnes"
+          label="Dnes"
         />
         {/* </div> */}
 

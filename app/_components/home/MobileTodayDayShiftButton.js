@@ -19,7 +19,7 @@ export default function MobileTodayDayShiftButton({
         onClick={() => setIsModalOpen(true)} // správny handler
         className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-300 bg-white px-4 py-5 shadow-lg ring-1 ring-primary-200 active:scale-95"
       >
-        <HiOutlineSun className="text-xl text-primary-600" />
+        <HiOutlineSun className="text-2xl text-primary-600" />
         <span className="text-base font-semibold tracking-wide text-primary-700">
           {label} denná služba
         </span>
