@@ -9,6 +9,7 @@ import MyProfileWrapper from "./_components/home/MyProfileWrapper";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
+import RenderOnMdUp from "./_components/RenderOnMdUp";
 import {
   getProfile,
   getShiftForToday,
@@ -86,21 +87,26 @@ export default async function Page({ searchParams }) {
         </ul>
         <div className=""></div>
       </aside>
-
       {/* DASHBOARD GRID */}
-      <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-6 lg:gap-8">
-        {/* Karta: Počasie */}
-        <WeatherCard />
+      <main className="grid grid-cols-2 gap-4 overflow-y-auto p-6 lg:gap-8">
+        {/* Počasie: renderuj až od md a nech vždy span-2 */}
+        <RenderOnMdUp>
+          <div className="col-span-2">
+            <WeatherCard />
+          </div>
+        </RenderOnMdUp>
 
-        {/* Karta: Môj profil */}
-        <MyProfileWrapper
-          profile={profile}
-          shifts={shifts}
-          initialOffset={offset}
-        />
+        {/* Môj profil: na mobile aj desktop span-2 (aby neprelamoval karty) */}
+        <div className="col-span-2">
+          <MyProfileWrapper
+            profile={profile}
+            shifts={shifts}
+            initialOffset={offset}
+          />
+        </div>
 
-        {/* Karty: Kalendáre */}
-        <section className="hidden w-full gap-6 md:grid md:grid-cols-2">
+        {/* Kalendáre: len od md a nech sú v dvoch stĺpcoch, kontajner span-2 */}
+        <section className="col-span-2 hidden md:grid md:grid-cols-2 md:gap-6">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}
@@ -120,40 +126,52 @@ export default async function Page({ searchParams }) {
           />
         </section>
 
+        {/* Mobilné tlačidlá: nech sú čisté 2-stĺpcové kartičky */}
+        {/* <div className="col-span-1 aspect-[7/4]"> */}
         <MobileTodayDayShiftButton
           dayData={dayToday}
           dateString={dateStr}
           label="Dnes"
         />
+        {/* </div> */}
 
+        {/* <div className="col-span-1 aspect-[7/4]"> */}
         <MobileTodayNightShiftButton
           nightData={nightToday}
           dateString={dateStr}
-          label="Dnes"
+          // label="Dnes"
         />
+        {/* </div> */}
 
+        {/* <div className="col-span-1 aspect-[7/4]"> */}
         <MobileTmrwDayShiftButton
           dayData={dayTomorrow}
           dateString={tmrwDateStr}
           label="Zajtra"
         />
+        {/* </div> */}
 
+        {/* <div className="col-span-1 aspect-[7/4]"> */}
         <MobileTmrwNightShiftButton
           nightData={nightTomorrow}
           dateString={tmrwDateStr}
           label="Zajtra"
         />
+        {/* </div> */}
 
-        <MobileMainTaskButton
-          dayData={dayToday}
-          dayTmrw={dayTomorrow}
-          dateString={dateStr}
-          tmrwDateStr={tmrwDateStr}
-          labelTmrw="Zajtra"
-          tasks={taskTitleForToday}
-          labelToday="Dnes"
-          tmrwTasks={taskTitleForTmrw}
-        />
+        {/* Hlavné úlohy: na šírku */}
+        <div className="col-span-2">
+          <MobileMainTaskButton
+            dayData={dayToday}
+            dayTmrw={dayTomorrow}
+            dateString={dateStr}
+            tmrwDateStr={tmrwDateStr}
+            labelTmrw="Zajtra"
+            tasks={taskTitleForToday}
+            labelToday="Dnes"
+            tmrwTasks={taskTitleForTmrw}
+          />
+        </div>
       </main>
     </div>
   );
