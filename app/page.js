@@ -78,7 +78,7 @@ export default async function Page({ searchParams }) {
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
-      <aside className="bg-primary-700 py-8 lg:sticky lg:top-0 lg:w-16">
+      <aside className="bg-primary-700 lg:py-8 py-4 lg:sticky lg:top-0 lg:w-16">
         <ul className="flex gap-5 lg:flex-col lg:items-center">
           <NavLinks searchParams={searchParams} />
         </ul>

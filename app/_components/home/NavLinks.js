@@ -12,7 +12,6 @@ import {
 import { PiAmbulance } from "react-icons/pi";
 
 import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
-import MobileWeatherCard from "./MobileWeatherCard";
 
 const BLANK_AVATAR =
   "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
@@ -92,9 +91,6 @@ export default async function NavLinks({ searchParams }) {
 
       {/* MOBILE NAV */}
       <div className="md:hidden">
-        <div className="fixed top-1 right-2">
-          <MobileWeatherCard />
-        </div>
         <MobileNav>
           {links.map(({ href, label, icon }) => (
             <li key={href}>
