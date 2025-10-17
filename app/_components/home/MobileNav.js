@@ -29,24 +29,26 @@ export default function MobileNav({ children }) {
         aria-label="Menu"
         aria-expanded={open}
         aria-controls="mobile-menu"
-        className="inline-flex items-center justify-center rounded-xl p-2 text-primary-200 hover:bg-primary-700/30 focus:outline-none focus:ring-2 focus:ring-primary-300 md:hidden"
+        className="inline-flex items-center justify-center rounded-xl py-2 text-primary-200 hover:bg-primary-700/30 focus:outline-none focus:ring-2 focus:ring-primary-300 md:hidden"
       >
         <RxHamburgerMenu size={28} />
       </button>
 
       {/* OVERLAY + PANEL */}
       <div
-        className={`fixed inset-0 z-50 bg-black/40 transition-opacity ${open
-          ? "pointer-events-auto opacity-100"
-          : "pointer-events-none opacity-0"
-          }`}
+        className={`fixed inset-0 z-50 bg-black/40 transition-opacity ${
+          open
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+        }`}
         onClick={() => setOpen(false)}
       />
 
       <aside
         id="mobile-menu"
-        className={`max-h-[100dvh] overflow-y-auto fixed left-0 top-0 z-50 h-full w-72 transform bg-primary-700 p-6 shadow-xl transition-transform ${open ? "translate-x-0" : "-translate-x-full"
-          } md:hidden`}
+        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-72 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:hidden`}
         aria-modal="true"
         role="dialog"
       >

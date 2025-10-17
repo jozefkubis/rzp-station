@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 const LAT = 49.0889; // 49° 05′ 20″ N
 const LON = 18.6372; // 18° 38′ 14″ E
 
-export default function WeatherCard() {
+export default function MobileWeatherCard() {
   const [data, setData] = useState(null); // { today, tomorrow, week }
   const [error, setError] = useState(null);
 
@@ -70,8 +70,11 @@ export default function WeatherCard() {
   }
 
   return (
-    <div className="hidden items-center justify-end gap-2 rounded-2xl md:flex md:px-8">
-      <button onClick={handleClick} className="">
+    <>
+      <button
+        onClick={handleClick}
+        className="flex w-full items-center justify-end gap-2 rounded-2xl md:hidden md:px-8"
+      >
         <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-4">
           <div className="text-2xl md:text-4xl">{icon}</div>
           <div className="text-md font-medium md:text-lg">
@@ -98,6 +101,6 @@ export default function WeatherCard() {
           }
 
         </div > */}
-    </div>
+    </>
   );
 }

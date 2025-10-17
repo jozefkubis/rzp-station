@@ -4,6 +4,7 @@ import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButto
 import MobileTmrwNightShiftButton from "./_components/home/MobileTmrwNightShiftButton";
 import MobileTodayDayShiftButton from "./_components/home/MobileTodayDayShiftButton";
 import MobileTodayNightShiftButton from "./_components/home/MobileTodayNightShiftButton";
+import MobileWeatherCard from "./_components/home/MobileWeatherCard";
 import MyProfileWrapper from "./_components/home/MyProfileWrapper";
 import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
@@ -78,14 +79,16 @@ export default async function Page({ searchParams }) {
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
-      <aside className="bg-primary-700 lg:py-8 py-4 lg:sticky lg:top-0 lg:w-16">
-        <ul className="flex gap-5 lg:flex-col lg:items-center">
+      <aside className="bg-gray-50 py-4 md:bg-primary-700 lg:sticky lg:top-0 lg:w-16 lg:py-8">
+        <ul className="flex gap-5 px-6 lg:flex-col lg:items-center">
           <NavLinks searchParams={searchParams} />
+          <MobileWeatherCard />
         </ul>
+        <div className=""></div>
       </aside>
 
       {/* DASHBOARD GRID */}
-      <main className="flex flex-1 flex-col lg:gap-8 gap-4 overflow-y-auto p-6">
+      <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-6 lg:gap-8">
         {/* Karta: Počasie */}
         <WeatherCard />
 
@@ -97,7 +100,7 @@ export default async function Page({ searchParams }) {
         />
 
         {/* Karty: Kalendáre */}
-        <section className="md:grid hidden w-full gap-6 md:grid-cols-2">
+        <section className="hidden w-full gap-6 md:grid md:grid-cols-2">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}
@@ -117,15 +120,40 @@ export default async function Page({ searchParams }) {
           />
         </section>
 
-        <MobileTodayDayShiftButton dayData={dayToday} dateString={dateStr} label="Dnes" />
+        <MobileTodayDayShiftButton
+          dayData={dayToday}
+          dateString={dateStr}
+          label="Dnes"
+        />
 
-        <MobileTodayNightShiftButton nightData={nightToday} dateString={dateStr} label="Dnes" />
+        <MobileTodayNightShiftButton
+          nightData={nightToday}
+          dateString={dateStr}
+          label="Dnes"
+        />
 
-        <MobileTmrwDayShiftButton dayData={dayTomorrow} dateString={tmrwDateStr} label="Zajtra" />
+        <MobileTmrwDayShiftButton
+          dayData={dayTomorrow}
+          dateString={tmrwDateStr}
+          label="Zajtra"
+        />
 
-        <MobileTmrwNightShiftButton nightData={nightTomorrow} dateString={tmrwDateStr} label="Zajtra" />
+        <MobileTmrwNightShiftButton
+          nightData={nightTomorrow}
+          dateString={tmrwDateStr}
+          label="Zajtra"
+        />
 
-        <MobileMainTaskButton dayData={dayToday} dayTmrw={dayTomorrow} dateString={dateStr} tmrwDateStr={tmrwDateStr} labelTmrw="Zajtra" tasks={taskTitleForToday} labelToday="Dnes" tmrwTasks={taskTitleForTmrw} />
+        <MobileMainTaskButton
+          dayData={dayToday}
+          dayTmrw={dayTomorrow}
+          dateString={dateStr}
+          tmrwDateStr={tmrwDateStr}
+          labelTmrw="Zajtra"
+          tasks={taskTitleForToday}
+          labelToday="Dnes"
+          tmrwTasks={taskTitleForTmrw}
+        />
       </main>
     </div>
   );
