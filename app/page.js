@@ -88,7 +88,7 @@ export default async function Page({ searchParams }) {
         <div className=""></div>
       </aside>
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-2 gap-4 overflow-y-auto p-6 lg:gap-8">
+      <main className="grid grid-cols-2 items-center gap-4 overflow-y-auto p-6 lg:gap-8">
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
           <div className="col-span-2">
@@ -97,7 +97,7 @@ export default async function Page({ searchParams }) {
         </RenderOnMdUp>
 
         {/* Môj profil: na mobile aj desktop span-2 (aby neprelamoval karty) */}
-        <div className="col-span-2">
+        <div className="col-span-1 md:col-span-2">
           <MyProfileWrapper
             profile={profile}
             shifts={shifts}
@@ -127,6 +127,20 @@ export default async function Page({ searchParams }) {
         </section>
 
         {/* Mobilné tlačidlá: nech sú čisté 2-stĺpcové kartičky */}
+        {/* Hlavné úlohy: na šírku */}
+        <div className="col-span-1">
+          <MobileMainTaskButton
+            dayData={dayToday}
+            dayTmrw={dayTomorrow}
+            dateString={dateStr}
+            tmrwDateStr={tmrwDateStr}
+            labelTmrw="Zajtra"
+            tasks={taskTitleForToday}
+            labelToday="Dnes"
+            tmrwTasks={taskTitleForTmrw}
+          />
+        </div>
+
         {/* <div className="col-span-1 aspect-[7/4]"> */}
         <MobileTodayDayShiftButton
           dayData={dayToday}
@@ -158,20 +172,6 @@ export default async function Page({ searchParams }) {
           label="Zajtra"
         />
         {/* </div> */}
-
-        {/* Hlavné úlohy: na šírku */}
-        <div className="col-span-2">
-          <MobileMainTaskButton
-            dayData={dayToday}
-            dayTmrw={dayTomorrow}
-            dateString={dateStr}
-            tmrwDateStr={tmrwDateStr}
-            labelTmrw="Zajtra"
-            tasks={taskTitleForToday}
-            labelToday="Dnes"
-            tmrwTasks={taskTitleForTmrw}
-          />
-        </div>
       </main>
     </div>
   );

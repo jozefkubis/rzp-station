@@ -38,7 +38,13 @@ export default function MyProfileWrapper({ profile, shifts, initialOffset }) {
         disabled={isPending}
       />
 
-      <MobileMyProfileButton shifts={shifts} profile={profile} offset={optimOffset} goTo={goTo} disabled={isPending} />
+      <MobileMyProfileButton
+        shifts={shifts}
+        profile={profile}
+        offset={optimOffset}
+        goTo={goTo}
+        disabled={isPending}
+      />
     </>
   );
 }
