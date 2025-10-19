@@ -33,7 +33,7 @@ export default function MobileMainTaskButton({
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <div className="divide-y">
+          <div className="mt-6 space-y-3 py-2">
             <MobileMainTaskToday
               dayData={dayData}
               dateString={dateString}
