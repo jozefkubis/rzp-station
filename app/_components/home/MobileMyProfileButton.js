@@ -15,14 +15,14 @@ export default function MobileMyProfileButton({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="md:hidden">
+    <div className="aspect-square auto-rows-[1fr] md:hidden">
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-300 bg-white px-4 py-3 shadow-sm ring-1 ring-primary-200 active:scale-95"
+        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border border-primary-300 bg-white px-4 py-3 shadow-sm ring-1 ring-primary-200 active:scale-95"
       >
-        <HiOutlineChartBar className="text-xl text-primary-600" />
-        <span className="text-base font-semibold tracking-wide text-primary-700">
+        <HiOutlineChartBar className="text-3xl text-primary-600" />
+        <span className="text-sm font-semibold tracking-wide text-primary-700">
           Osobné štatistiky
         </span>
       </button>

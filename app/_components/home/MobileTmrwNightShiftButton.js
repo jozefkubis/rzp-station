@@ -14,14 +14,14 @@ export default function MobileTmrwNightShiftButton({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="md:hidden">
+    <div className="aspect-square auto-rows-[1fr] md:hidden">
       <button
         type="button"
         onClick={() => setIsModalOpen(true)} // správne otvára modál
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-primary-400 bg-primary-50 px-4 py-3 shadow-lg ring-1 ring-primary-200 active:scale-95"
+        className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-xl border border-primary-400 bg-primary-50 px-4 py-3 shadow-lg ring-1 ring-primary-200 active:scale-95"
       >
-        <HiOutlineMoon className="text-2xl text-primary-700" />
-        <span className="text-base font-semibold tracking-wide text-primary-800">
+        <HiOutlineMoon className="text-4xl text-primary-700" />
+        <span className="text-sm font-semibold tracking-wide text-primary-800">
           {label} nočná služba
         </span>
       </button>

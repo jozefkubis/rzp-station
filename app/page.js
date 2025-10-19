@@ -128,7 +128,7 @@ export default async function Page({ searchParams }) {
 
         {/* Mobilné tlačidlá: nech sú čisté 2-stĺpcové kartičky */}
         {/* Hlavné úlohy: na šírku */}
-        <div className="col-span-1">
+        <div className="aspect-7/4 col-span-1 auto-rows-[1fr]">
           <MobileMainTaskButton
             dayData={dayToday}
             dayTmrw={dayTomorrow}
