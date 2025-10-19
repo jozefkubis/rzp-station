@@ -71,17 +71,19 @@ export default function MobileWeatherCard() {
 
   return (
     <>
-      <button
-        onClick={handleClick}
-        className="flex w-full items-center justify-end gap-2 rounded-2xl md:hidden md:px-8"
-      >
-        <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-4">
-          <div className="text-2xl md:text-4xl">{icon}</div>
-          <div className="text-md font-medium md:text-lg">
-            {todayTempMax} °C / {todayTempMin} °C
+      <div className="flex w-full justify-end">
+        <button
+          onClick={handleClick}
+          className="flex items-center justify-center gap-2 rounded-2xl md:hidden md:px-8"
+        >
+          <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-4">
+            <div className="text-2xl md:text-4xl">{icon}</div>
+            <div className="text-md font-medium md:text-lg">
+              {todayTempMax} °C / {todayTempMin} °C
+            </div>
           </div>
-        </div>
-      </button>
+        </button>
+      </div>
 
       {/* Týždeň */}
       {/* <div className="space-y-2 p-4 py-6 text-sm text-gray-600" >
