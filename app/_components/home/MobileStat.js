@@ -25,7 +25,7 @@ export default function MobileStat({ icon, title, value, color = "blue" }) {
   const { from, to, text } = COLOR_STYLES[color] ?? COLOR_STYLES.blue;
 
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-gradient-to-br from-white to-slate-50 px-5 py-3 shadow-[0_2px_10px_rgba(0,0,0,0.03)] ring-1 ring-slate-100 transition-all duration-200 active:scale-[0.98]">
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-gradient-to-br from-white to-slate-50 px-5 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.03)] ring-1 ring-slate-100 transition-all duration-200 active:scale-[0.98]">
       {/* Ikona */}
       <div
         className={`bg-gradient-to-br ${from} ${to} flex aspect-square h-11 w-11 items-center justify-center rounded-xl shadow-inner`}

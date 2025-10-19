@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { HiOutlineSun } from "react-icons/hi2"; // ikona pre dennú službu
-import Modal from "../Modal";
+import MobileModal from "../MobileModal";
 import MobileDayShift from "./MobileDayShift";
 
 export default function MobileTodayDayShiftButton({
@@ -26,13 +26,13 @@ export default function MobileTodayDayShiftButton({
       </button>
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <MobileModal onClose={() => setIsModalOpen(false)}>
           <MobileDayShift
             dayData={dayData}
             dateString={dateString}
             label={label}
           />
-        </Modal>
+        </MobileModal>
       )}
     </div>
   );

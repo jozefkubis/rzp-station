@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { HiOutlineCalendarDays } from "react-icons/hi2";
-import Modal from "../Modal";
+import MobileModal from "../MobileModal";
 import MobileMainTaskTmrw from "./MobileMainTaskTmrw";
 import MobileMainTaskToday from "./MobileMainTaskToday";
 
@@ -32,8 +32,8 @@ export default function MobileMainTaskButton({
       </button>
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <div className="mt-6 space-y-3 py-2">
+        <MobileModal onClose={() => setIsModalOpen(false)}>
+          <div className="space-y-3">
             <MobileMainTaskToday
               dayData={dayData}
               dateString={dateString}
@@ -47,7 +47,7 @@ export default function MobileMainTaskButton({
               tasks={tmrwTasks}
             />
           </div>
-        </Modal>
+        </MobileModal>
       )}
     </div>
   );

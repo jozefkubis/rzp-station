@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { HiOutlineChartBar } from "react-icons/hi2"; // 📊 ikona pre štatistiky
-import Modal from "../Modal";
+import MobileModal from "../MobileModal";
 import MobileMyProfile from "./MobileMyProfile";
 
 export default function MobileMyProfileButton({
@@ -28,7 +28,7 @@ export default function MobileMyProfileButton({
       </button>
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <MobileModal onClose={() => setIsModalOpen(false)}>
           <MobileMyProfile
             shifts={shifts}
             profile={profile}
@@ -36,7 +36,7 @@ export default function MobileMyProfileButton({
             goTo={goTo}
             disabled={disabled}
           />
-        </Modal>
+        </MobileModal>
       )}
     </div>
   );

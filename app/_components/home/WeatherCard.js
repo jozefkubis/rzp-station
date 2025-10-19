@@ -50,8 +50,8 @@ export default function WeatherCard() {
   if (error) return <div className="p-4 text-red-600">Chyba: {error}</div>;
   if (!data)
     return (
-      <div className="text-md mr-10 self-end p-4 font-bold italic text-primary-300">
-        Načítavam počasie…
+      <div className="text-md flex w-full items-center justify-end gap-4 font-bold italic text-primary-300">
+        <span className="flex items-center pr-8">Načítavam počasie…</span>
       </div>
     );
 

@@ -88,7 +88,7 @@ export default async function Page({ searchParams }) {
         <div className=""></div>
       </aside>
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-2 items-center gap-2 overflow-y-auto p-8 md:p-6 lg:gap-8">
+      <main className="grid grid-cols-2 items-center md:items-end gap-2 overflow-y-auto p-8 md:p-6 lg:gap-8">
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
           <div className="col-span-2">

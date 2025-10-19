@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { HiOutlineMoon } from "react-icons/hi2"; // 🌙 ikona pre nočnú službu
-import Modal from "../Modal";
+import MobileModal from "../MobileModal";
 import MobileNightShift from "./MobileNightShift";
 
 export default function MobileTodayNightShiftButton({
@@ -27,14 +27,14 @@ export default function MobileTodayNightShiftButton({
       </button>
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <MobileModal onClose={() => setIsModalOpen(false)}>
           <MobileNightShift
             dayData={dayData}
             nightData={nightData}
             dateString={dateString}
             label={label}
           />
-        </Modal>
+        </MobileModal>
       )}
     </div>
   );

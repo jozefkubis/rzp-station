@@ -143,7 +143,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
     ? formatDaysLeft(getDaysUntilNextMedCheck(psychoDate))
     : "—";
 
-  // MARK: RETURN
+  // MARK: RENDER......................................................................
   return (
     <div>
       {/* navigácia medzi mesiacmi */}
