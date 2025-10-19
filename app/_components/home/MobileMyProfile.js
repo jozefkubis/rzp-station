@@ -145,7 +145,7 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   return (
     <div className="md:hidden">
       {/* navigácia medzi mesiacmi */}
-      <div className="flex w-full items-center justify-center gap-6 px-8 pb-4 pt-0 font-semibold text-white">
+      <div className="flex w-full items-center justify-center gap-6 px-8 pb-4 pt-1 font-semibold text-white">
         <div className="flex min-w-60 justify-between">
           <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
           <h3 className="text-lg">{monthLabel}</h3>
