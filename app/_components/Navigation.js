@@ -12,6 +12,7 @@ import {
   HiOutlineUsers,
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
+import { RxHamburgerMenu } from "react-icons/rx";
 import LogOutButton from "./LogOutButton";
 
 export default function Navigation() {
@@ -63,7 +64,7 @@ export default function Navigation() {
 
   return (
     <nav data-cy="navigation">
-      <ul className="flex gap-1 px-10 py-1">
+      <ul className="hidden md:flex gap-1 px-10 py-1">
         {navLinks.map(({ name, href, icon }) => {
           const isActive = pathname === href.split("?")[0];
           return (
@@ -89,8 +90,32 @@ export default function Navigation() {
           );
         })}
 
+
         <LogOutButton />
       </ul>
+
+      {/* MOBILE NAV */}
+      <div className="md:hidden">
+        {/* HAMBURGER tlačidlo */}
+        <button
+          // onClick={() => setOpen((v) => !v)}
+          aria-label="Menu"
+          // aria-expanded={open}
+          aria-controls="mobile-menu"
+          className="inline-flex items-center justify-center rounded-xl py-2 text-primary-200 hover:bg-primary-700/30 focus:outline-none focus:ring-2 focus:ring-primary-300 md:hidden"
+        >
+          <RxHamburgerMenu size={28} />
+        </button>
+
+        {/* OVERLAY + PANEL */}
+        {/* <div
+          className={`fixed inset-0 z-50 bg-black/40 transition-opacity ${open
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+            }`}
+          onClick={() => setOpen(false)}
+        /> */}
+      </div>
     </nav>
   );
 }
