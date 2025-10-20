@@ -47,7 +47,7 @@ export default function MobileNav({ children }) {
         id="mobile-menu"
         role="dialog"
         aria-modal="true"
-        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-72 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ease-out ${
+        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
         } md:hidden`}
       >

@@ -106,7 +106,7 @@ export default function MobileHeaderNav() {
       {/* PANEL MENU */}
       <aside
         id="mobile-menu"
-        className={`fixed left-0 top-0 z-50 h-full w-72 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ${
+        className={`fixed left-0 top-0 z-50 h-full w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ${
           open ? "translate-x-0" : "-translate-x-full"
         } md:hidden`}
       >
