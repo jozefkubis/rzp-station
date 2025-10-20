@@ -110,7 +110,7 @@ export default function MobileHeaderNav() {
           <button
             onClick={() => setOpen(false)}
             aria-label="Zavrieť menu"
-            className="rounded-lg p-1 text-primary-200 hover:bg-primary-700/30"
+            className="rounded-lg p-1 text-primary-200 focus-visible:ring-2 focus-visible:ring-primary-300"
           >
             <IoClose size={28} />
           </button>
