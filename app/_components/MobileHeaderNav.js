@@ -8,6 +8,7 @@ import {
   HiArrowRightOnRectangle,
   HiOutlineCalendarDays,
   HiOutlineHome,
+  HiOutlineUserCircle,
   HiOutlineUserPlus,
   HiOutlineUsers,
 } from "react-icons/hi2";
@@ -26,6 +27,11 @@ export default function MobileHeaderNav() {
   // 2️⃣ Generovanie odkazov cez useMemo
   const navLinks = useMemo(
     () => [
+      {
+        href: "/settings/profile",
+        label: "Môj profil",
+        icon: <HiOutlineUserCircle size={28} />,
+      },
       {
         label: "Domov",
         href: `/?m=${dashOffset}`,

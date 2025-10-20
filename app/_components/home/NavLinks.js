@@ -6,6 +6,7 @@ import { HiOutlineChartSquareBar } from "react-icons/hi";
 import {
   HiArrowRightOnRectangle,
   HiOutlineCalendarDays,
+  HiOutlineUserCircle,
   HiOutlineUserPlus,
   HiOutlineUsers,
 } from "react-icons/hi2";
@@ -25,6 +26,11 @@ export default async function NavLinks({ searchParams }) {
   const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
   const links = [
+    {
+      href: "/settings/profile",
+      label: "Môj profil",
+      icon: <HiOutlineUserCircle size={28} />,
+    },
     {
       href: `/shifts?m=${shiftsOffset}`,
       label: "Služby",
