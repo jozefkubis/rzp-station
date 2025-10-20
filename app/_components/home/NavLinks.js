@@ -97,7 +97,7 @@ export default async function NavLinks({ searchParams }) {
               <Link
                 href={href}
                 aria-label={label}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary-50 hover:bg-primary-700/40"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary-50"
               >
                 {icon}
                 <span className="text-base font-medium">{label}</span>

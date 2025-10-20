@@ -24,7 +24,7 @@ export default function MyButtons({
     }
 
     return (
-        <div className="flex flex-col gap-2 z-50">
+        <div className="flex flex-col gap-2 md:z-50">
             <TooltipProvider delayDuration={100}>
                 <Tooltip>
                     <TooltipTrigger asChild>

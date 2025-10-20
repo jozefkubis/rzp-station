@@ -7,7 +7,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 export default function MobileNav({ children }) {
   const [open, setOpen] = useState(false);
 
-  // Zavrie menu na Escape a zamkne scroll
+  // Zavrie menu na Escape + lock scrollu (bez ďalších helperov)
   useEffect(() => {
     function onKey(e) {
       if (e.key === "Escape") setOpen(false);
@@ -20,54 +20,51 @@ export default function MobileNav({ children }) {
     };
   }, [open]);
 
-  // MARK: RENDER .......................................................................................
   return (
     <>
-      {/* HAMBURGER tlačidlo */}
+      {/* HAMBURGER */}
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Menu"
         aria-expanded={open}
         aria-controls="mobile-menu"
-        className="inline-flex items-center justify-center rounded-xl py-2 text-primary-200 hover:bg-primary-700/30 focus:outline-none focus:ring-2 focus:ring-primary-300 md:hidden"
+        className="md:hidden inline-flex items-center justify-center rounded-xl p-2 text-primary-200 outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
       >
         <RxHamburgerMenu size={28} />
       </button>
 
-      {/* OVERLAY + PANEL */}
+      {/* OVERLAY */}
       <div
-        className={`fixed inset-0 z-50 bg-black/40 transition-opacity ${
-          open
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
         onClick={() => setOpen(false)}
+        aria-hidden={!open}
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-200 ease-out ${open ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
       />
 
+      {/* PANEL */}
       <aside
         id="mobile-menu"
-        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-72 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:hidden`}
-        aria-modal="true"
         role="dialog"
+        aria-modal="true"
+        className={`md:hidden fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-72 overflow-y-auto bg-primary-700 p-6 shadow-xl transform transition-transform duration-200 ease-out ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
-        {/* Header v mobile menu */}
+        {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <span className="text-lg font-semibold text-primary-50">Menu</span>
           <button
             onClick={() => setOpen(false)}
             aria-label="Zavrieť menu"
-            className="rounded-lg p-1 text-primary-200 hover:bg-primary-700/30"
+            className="rounded-lg p-2 text-primary-200 hover:bg-primary-700/30 focus-visible:ring-2 focus-visible:ring-primary-300"
           >
-            <IoClose size={28} />
+            <IoClose size={24} />
           </button>
         </div>
 
-        {/* Vložené odkazy (NavLinks) */}
+        {/* Odkazy */}
         <ul
           onClick={() => setOpen(false)} // klik na link zatvára menu
-          className="flex flex-col gap-4 overflow-y-auto"
+          className="flex flex-col gap-3 overflow-y-auto"
         >
           {children}
         </ul>
