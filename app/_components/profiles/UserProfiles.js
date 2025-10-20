@@ -4,10 +4,10 @@ import UserCard from "@/app/_components/profiles/UserCard";
 
 export default function UserProfiles({ profiles, admin }) {
   return (
-    <main data-cy="profiles" className="w-full px-20 pb-20">
+    <main data-cy="profiles" className="w-full px-8 pb-20 md:px-20">
       <h1
         data-cy="profiles-title"
-        className="p-10 text-center text-2xl font-bold text-primary-700"
+        className="pb-3 text-center text-lg font-bold text-primary-700 md:p-10 md:text-2xl"
       >
         Zoznam stanice RZP
       </h1>
