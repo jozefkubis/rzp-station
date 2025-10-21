@@ -78,16 +78,16 @@ export default async function Page({ params }) {
   ];
 
   return (
-    <main className="flex min-h-screen bg-white p-10">
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-14 text-lg sm:grid-cols-2">
+    <main className="flex min-h-screen bg-white px-4 md:p-10">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 md:px-14 text-sm md:text-lg sm:grid-cols-2">
         {/* Ľavý stĺpec – avatar + kontakty */}
-        <div className="flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
+        <div className="hidden md:flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
           <ProfileImage profile={profile} blankAvatar={blankAvatar} />
           <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
         </div>
 
         {/* Pravý stĺpec – adresa a dátumy + akcie */}
-        <div className="ml-6 flex flex-col justify-center text-primary-700">
+        <div className="md:ml-6 flex flex-col justify-center text-primary-700">
           <ProfileIdInfo profileInfo={profileInfo} />
           {profileActions(profile)}
         </div>

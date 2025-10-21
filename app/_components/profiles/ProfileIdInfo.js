@@ -4,7 +4,7 @@ function ProfileIdInfo({ profileInfo }) {
             {profileInfo.map(({ title, value }) => (
                 <div
                     key={title}
-                    className="flex justify-between border-t border-gray-200 p-3 px-6"
+                    className="flex justify-between border-t border-gray-200 p-3 px-2 md:px-6"
                 >
                     <h2 className="font-semibold">{title}</h2>
                     <p>{value}</p>
