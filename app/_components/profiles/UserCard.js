@@ -88,7 +88,7 @@ export default function UserCard({ profile, admin }) {
 
           <p
             data-cy="user-card-email"
-            className="max-w-[22ch] truncate text-xs text-gray-500 md:max-w-[28ch] md:text-sm"
+            className="truncate text-xs text-gray-500 md:max-w-[28ch] md:text-sm"
             title={profile?.email || ""}
           >
             {profile?.email}
