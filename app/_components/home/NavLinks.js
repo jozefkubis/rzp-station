@@ -6,9 +6,8 @@ import { HiOutlineChartSquareBar } from "react-icons/hi";
 import {
   HiArrowRightOnRectangle,
   HiOutlineCalendarDays,
-  HiOutlineUserCircle,
   HiOutlineUserPlus,
-  HiOutlineUsers,
+  HiOutlineUsers
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
 
@@ -26,11 +25,6 @@ export default async function NavLinks({ searchParams }) {
   const avatarUrl = user?.email ? await getAvatarUrl(user.email) : BLANK_AVATAR;
 
   const links = [
-    {
-      href: "/settings/profile",
-      label: "Môj profil",
-      icon: <HiOutlineUserCircle size={28} />,
-    },
     {
       href: `/shifts?m=${shiftsOffset}`,
       label: "Služby",
@@ -97,20 +91,7 @@ export default async function NavLinks({ searchParams }) {
 
       {/* MOBILE NAV */}
       <div className="md:hidden">
-        <MobileNav>
-          {links.map(({ href, label, icon }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                aria-label={label}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-primary-50"
-              >
-                {icon}
-                <span className="text-base font-medium">{label}</span>
-              </Link>
-            </li>
-          ))}
-        </MobileNav>
+        <MobileNav shiftsOffset={shiftsOffset} statsOffset={statsOffset} />
       </div>
     </>
   );

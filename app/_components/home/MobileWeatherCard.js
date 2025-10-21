@@ -50,7 +50,7 @@ export default function MobileWeatherCard() {
   if (error) return <div className="p-4 text-red-600">Chyba: {error}</div>;
   if (!data)
     return (
-      <div className="text-sm flex w-full items-center justify-end gap-4 font-bold italic text-primary-300">
+      <div className="md:hidden text-sm flex w-full items-center justify-end gap-4 font-bold italic text-primary-300">
         <span className="flex items-center">Načítavam počasie…</span>
       </div>
     );
