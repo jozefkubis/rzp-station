@@ -12,7 +12,7 @@ export default function UserCard({ profile, admin }) {
 
   const handleClick = () => {
     if (admin !== "ÁNO") setOpenModal(true);
-    else router.push(`/profiles/${profile.id}`);
+    else if (profile?.id) router.push(`/profiles/${profile.id}`);
   };
 
   const handleKeyDown = (e) => {
@@ -22,8 +22,16 @@ export default function UserCard({ profile, admin }) {
     }
   };
 
-  const blankAvatar =
-    "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";
+  const SUPABASE_HOST = "https://kjfjavkvgocatxssthrv.supabase.co";
+  const AVATAR_BASE = `${SUPABASE_HOST}/storage/v1/object/public/avatars/`;
+  const blankAvatar = `${AVATAR_BASE}1744906899450-avatar.png`;
+
+  const resolveAvatar = (url) => {
+    if (!url) return blankAvatar;
+    if (!/^https?:\/\//i.test(url))
+      return `${AVATAR_BASE}${url.replace(/^\/+/, "")}`;
+    return url;
+  };
 
   return (
     <>
@@ -58,7 +66,7 @@ export default function UserCard({ profile, admin }) {
           ].join(" ")}
         >
           <Image
-            src={profile?.avatar_url || blankAvatar}
+            src={resolveAvatar(profile?.avatar_url)}
             alt={profile?.full_name ? `Avatar ${profile.full_name}` : "Avatar"}
             fill
             loading="lazy"
