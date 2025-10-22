@@ -13,7 +13,9 @@ export default async function Page() {
   return (
     <div data-cy="register-page">
       <Header />
-      <RegisterForm admin={admin} />
+      <div className="md:flex md:items-center md:h-screen overflow-auto w-full">
+        <RegisterForm admin={admin} />
+      </div>
     </div>
   );
 }
