@@ -8,7 +8,7 @@ export default function FormInput({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-1 items-center md:border-t md:border-gray-200 px-2 md:px-4 py-3">
       <div>
         {label && (
-          <label htmlFor={id} className="text-sm md:text-md font-semibold md:font-bold text-primary-700 flex">
+          <label htmlFor={id} className="text-sm md:text-md font-bold text-primary-700 flex">
             {label}
           </label>
         )}
