@@ -22,9 +22,9 @@ export default async function page() {
     return (
         <div>
             <Header />
-            <div data-cy="settings-profile-page" className="max-h-screen">
+            <div data-cy="settings-profile-page" className="max-h-screen-md flex flex-col">
                 <SideBar navLinks={navLinks} />
-                <div className="pl-[13rem] flex justify-center">
+                <div className="md:pl-[13rem] flex justify-center md:h-screen max-h-screen-md overflow-auto">
                     <InsertUpdateProfilesDataForm profiles={profiles} />
                 </div>
             </div>
