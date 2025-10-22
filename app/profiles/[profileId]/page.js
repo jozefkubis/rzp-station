@@ -35,7 +35,7 @@ export default async function Page({ params }) {
         <Link
           data-cy="admin-back-to-profiles-button"
           href="/profiles"
-          className="font-semibold text-primary-700 hover:underline"
+          className="font-semibold text-primary-700 hover:underline text-sm"
         >
           ← Späť na zoznam
         </Link>

@@ -199,7 +199,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
           <Link
             data-cy="admin-back-to-profile-button"
             href={`/profiles/${profile.id}`}
-            className="font-semibold text-primary-700 hover:underline"
+            className="font-semibold text-primary-700 hover:underline text-sm"
           >
             ← Späť na profil
           </Link>
