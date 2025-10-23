@@ -10,6 +10,9 @@ export function StatisticsLegend() {
           <strong>N</strong> – nočná smena
         </li>
         <li>
+          <strong>SP</strong> – spolu
+        </li>
+        <li>
           <strong>RD</strong> – riadna dovolenka
         </li>
         <li>

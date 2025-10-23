@@ -95,8 +95,8 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
   }
 
   return (
-    <div className="h-screen">
-      <div className="flex h-full flex-col px-[8rem] py-[4rem]">
+    <div className="max-h-screen-md md:h-screen">
+      <div className="flex h-full flex-col px-3 pb-8 md:px-[8rem] md:py-[4rem]">
         <YearHeadStatistics>
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
           Štatistiky {thisYear}
@@ -111,31 +111,36 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
           <>
             <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
               <thead className="bg-gray-100">
-                <tr>
-                  <th className="w-[15rem] border px-4 py-2 text-left">Meno</th>
-                  <th className="border px-4 py-2">D</th>
-                  <th className="border px-4 py-2">N</th>
-                  <th className="border px-4 py-2">Spolu</th>
-                  <th className="border px-4 py-2">RD</th>
-                  <th className="border px-4 py-2">PN</th>
-                  <th className="border px-4 py-2">X</th>
-                  <th className="border px-4 py-2">ŠS</th>
+                <tr className="text-xs md:text-lg">
+                  <th className="w-[7.5rem] border px-2 py-2 text-left md:w-[15rem]">
+                    Meno
+                  </th>
+                  <th className="border py-2 md:px-4">D</th>
+                  <th className="border py-2 md:px-4">N</th>
+                  <th className="border py-2 md:px-4">SP</th>
+                  <th className="border py-2 md:px-4">RD</th>
+                  <th className="border py-2 md:px-4">PN</th>
+                  <th className="border py-2 md:px-4">X</th>
+                  <th className="border py-2 md:px-4">ŠS</th>
                 </tr>
               </thead>
               <tbody>
                 {admin === "ÁNO" ? (
                   stats.map((r) => (
-                    <tr key={r.name} className="hover:bg-gray-50">
-                      <td className="border px-4 py-2 text-left font-semibold text-primary-700">
+                    <tr
+                      key={r.name}
+                      className="text-xs hover:bg-gray-50 md:text-lg"
+                    >
+                      <td className="border px-2 py-2 text-left font-semibold text-primary-700">
                         {r.name}
                       </td>
-                      <td className="border px-4 py-2">{r.D}</td>
-                      <td className="border px-4 py-2">{r.N}</td>
-                      <td className="border px-4 py-2">{r.Spolu}</td>
-                      <td className="border px-4 py-2">{r.RD}</td>
-                      <td className="border px-4 py-2">{r.PN}</td>
-                      <td className="border px-4 py-2">{r.X}</td>
-                      <td className="border px-4 py-2">{r.ŠS}</td>
+                      <td className="border py-2 md:px-4">{r.D}</td>
+                      <td className="border py-2 md:px-4">{r.N}</td>
+                      <td className="border py-2 md:px-4">{r.Spolu}</td>
+                      <td className="border py-2 md:px-4">{r.RD}</td>
+                      <td className="border py-2 md:px-4">{r.PN}</td>
+                      <td className="border py-2 md:px-4">{r.X}</td>
+                      <td className="border py-2 md:px-4">{r.ŠS}</td>
                     </tr>
                   ))
                 ) : (
