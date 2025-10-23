@@ -95,9 +95,10 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
   }
 
   return (
-    <div className="max-h-screen-md md:h-screen">
-      <div className="flex h-full flex-col px-3 pb-8 md:px-[8rem] md:py-[4rem]">
-        <YearHeadStatistics>
+    <div className="max-h-screeen-md h-[100dvh] md:h-screen">
+      <div className="flex h-full flex-col overflow-auto px-3 md:overflow-hidden md:px-[8rem] md:py-[4rem] md:pb-24">
+        {/* Sticky header pre mobile, pôvodné farby od md */}
+        <YearHeadStatistics className="sticky top-0 z-20 -mx-3 bg-primary-900 px-3 py-2 text-white md:static md:-mx-0 md:bg-transparent md:px-0 md:text-primary-700">
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
           Štatistiky {thisYear}
           <ArrowForwardStatistics goToNextYear={goToNextYear} />
@@ -109,51 +110,117 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
           </div>
         ) : (
           <>
-            <table className="w-full table-fixed border-collapse border border-gray-300 text-center">
-              <thead className="bg-gray-100">
-                <tr className="text-xs md:text-lg">
-                  <th className="w-[7.5rem] border px-2 py-2 text-left md:w-[15rem]">
-                    Meno
-                  </th>
-                  <th className="border py-2 md:px-4">D</th>
-                  <th className="border py-2 md:px-4">N</th>
-                  <th className="border py-2 md:px-4">SP</th>
-                  <th className="border py-2 md:px-4">RD</th>
-                  <th className="border py-2 md:px-4">PN</th>
-                  <th className="border py-2 md:px-4">X</th>
-                  <th className="border py-2 md:px-4">ŠS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {admin === "ÁNO" ? (
-                  stats.map((r) => (
-                    <tr
-                      key={r.name}
-                      className="text-xs hover:bg-gray-50 md:text-lg"
-                    >
-                      <td className="border px-2 py-2 text-left font-semibold text-primary-700">
-                        {r.name}
-                      </td>
-                      <td className="border py-2 md:px-4">{r.D}</td>
-                      <td className="border py-2 md:px-4">{r.N}</td>
-                      <td className="border py-2 md:px-4">{r.Spolu}</td>
-                      <td className="border py-2 md:px-4">{r.RD}</td>
-                      <td className="border py-2 md:px-4">{r.PN}</td>
-                      <td className="border py-2 md:px-4">{r.X}</td>
-                      <td className="border py-2 md:px-4">{r.ŠS}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className="py-10 text-lg">
-                      <WarningNotice />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            {/* --- MOBIL: karty --- */}
+            {admin === "ÁNO" ? (
+              <div className="my-3 space-y-3 md:hidden">
+                {stats.map((r) => (
+                  <div
+                    key={r.name}
+                    className="rounded-xl bg-primary-900 p-3 text-white shadow-sm ring-1 ring-primary-800/60"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="truncate font-semibold">{r.name}</div>
+                      {/* Spolu v badge vpravo */}
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs font-semibold">
+                        Spolu: {r.Spolu}
+                      </span>
+                    </div>
 
-            <StatisticsLegend />
+                    {/* Riadok štítkov s číslami */}
+                    <div className="mt-2 grid grid-cols-4 gap-2 text-center">
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        D: <b>{r.D}</b>
+                      </span>
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        N: <b>{r.N}</b>
+                      </span>
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        RD: <b>{r.RD}</b>
+                      </span>
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        PN: <b>{r.PN}</b>
+                      </span>
+                    </div>
+
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        X: <b>{r.X}</b>
+                      </span>
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        ŠS: <b>{r.ŠS}</b>
+                      </span>
+                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                        Y: <b>{r?.Y ?? 0}</b>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Legenda ako collapsible na mobile */}
+                <details className="rounded-lg bg-primary-900 p-3 text-white ring-1 ring-primary-800/60">
+                  <summary className="cursor-pointer select-none font-semibold">
+                    Legenda
+                  </summary>
+                  <div className="mt-2 opacity-90">
+                    <StatisticsLegend />
+                  </div>
+                </details>
+              </div>
+            ) : (
+              <div className="mt-6 md:hidden">
+                <WarningNotice />
+              </div>
+            )}
+
+            {/* --- DESKTOP/MD+: tabuľka + legenda --- */}
+            <div className="hidden md:block">
+              <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <table className="w-full min-w-[56rem] table-fixed border-collapse text-center">
+                  <thead className="bg-gray-100">
+                    <tr className="text-sm md:text-base">
+                      <th className="w-[13rem] border px-3 py-3 text-left">
+                        Meno
+                      </th>
+                      <th className="border px-4 py-3">D</th>
+                      <th className="border px-4 py-3">N</th>
+                      <th className="border px-4 py-3">SP</th>
+                      <th className="border px-4 py-3">RD</th>
+                      <th className="border px-4 py-3">PN</th>
+                      <th className="border px-4 py-3">X</th>
+                      <th className="border px-4 py-3">ŠS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {admin === "ÁNO" ? (
+                      stats.map((r) => (
+                        <tr key={r.name} className="hover:bg-gray-50">
+                          <td className="border px-3 py-3 text-left font-semibold text-primary-700">
+                            {r.name}
+                          </td>
+                          <td className="border px-4 py-3">{r.D}</td>
+                          <td className="border px-4 py-3">{r.N}</td>
+                          <td className="border px-4 py-3">{r.Spolu}</td>
+                          <td className="border px-4 py-3">{r.RD}</td>
+                          <td className="border px-4 py-3">{r.PN}</td>
+                          <td className="border px-4 py-3">{r.X}</td>
+                          <td className="border px-4 py-3">{r.ŠS}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={8} className="py-10 text-lg">
+                          <WarningNotice />
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4">
+                <StatisticsLegend />
+              </div>
+            </div>
           </>
         )}
       </div>
