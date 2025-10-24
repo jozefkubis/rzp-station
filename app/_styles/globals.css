@@ -142,9 +142,9 @@ th.rbc-header {
   padding: 2px 6px !important;
   border-radius: 10px !important;
   width: 95% !important;
-  background-color: rgb(37, 99, 235) !important;
+  /* background-color: rgb(37, 99, 235) !important;
   color: white !important;
-  border-left: 8px solid rgb(15, 15, 222) !important;
+  border-left: 8px solid rgb(15, 15, 222) !important; */
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
