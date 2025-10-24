@@ -22,8 +22,9 @@ export default function MyButtons({
     console.log("ADD"); // len na debug – môžeš zmazať
   }
 
+  // MARK: RENDER.............................................................................
   return (
-    <div className="flex flex-col gap-2 md:z-10">
+    <div className="hidden md:flex flex-col gap-2 md:z-10">
       <TooltipProvider delayDuration={100}>
         <Tooltip>
           <TooltipTrigger asChild>
