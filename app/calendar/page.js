@@ -13,7 +13,7 @@ export default async function page() {
   return (
     <div>
       <Header />
-      <main className="h-screen w-full py-2 md:py-7 md:px-10">
+      <main className="h-full w-full pt-2 md:h-screen md:px-10 md:py-7">
         <Calendar admin={admin} />
       </main>
     </div>

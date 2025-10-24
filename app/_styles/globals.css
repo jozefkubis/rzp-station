@@ -8,13 +8,15 @@
   padding: 0;
 }
 
-html {
-  scrollbar-gutter: stable;
-  -webkit-scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  -webkit-scrollbar-width: thin;
-  scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
-  -webkit-scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
+@media (min-width: 1024px) {
+  html {
+    scrollbar-gutter: stable;
+    -webkit-scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    -webkit-scrollbar-width: thin;
+    scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
+    -webkit-scrollbar-color: theme("colors.primary.200") theme("colors.gray.50");
+  }
 }
 
 @layer components {
@@ -45,7 +47,7 @@ html {
   }
 }
 
-/* For data picker */
+/* ===== DayPicker (ak ho používaš vedľa RBC) ===================== */
 .rdp {
   --rdp-cell-size: 32px !important;
   --rdp-accent-color: theme("colors.accent.500") !important;
@@ -53,98 +55,166 @@ html {
   margin: 0 !important;
 }
 
+/* ===== React Big Calendar – BASE (desktop↑) ===================== */
+
+/* Toolbar – „pill“ štýl + jemný tieň */
+.rbc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px !important;
+  align-items: center;
+}
 .rbc-toolbar-label {
-  font-size: 1.2rem !important;
+  font-size: 1.125rem !important; /* 18px */
   font-weight: 600 !important;
   color: theme("colors.primary.700") !important;
 }
-
 .rbc-btn-group {
+  display: inline-flex;
+  gap: 4px !important;
   background-color: theme("colors.gray.50") !important;
-  border: 1px-gray-100 !important;
+  border: 1px solid theme("colors.gray.100") !important; /* FIX */
+  border-radius: 9999px !important;
+  padding: 4px !important;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08) !important;
 }
-
-button.rbc-active {
-  background-color: theme("colors.primary.50") !important;
-  box-shadow: none !important;
-  border-width: 1px !important;
-  border-color: theme("colors.primary.200") !important;
+.rbc-btn-group button {
+  border-radius: 9999px !important;
+  padding: 6px 10px !important;
+  font-weight: 600 !important;
+  color: theme("colors.primary.700") !important;
+  background: white !important;
+  border: 1px solid transparent !important;
 }
-
 .rbc-btn-group button:hover {
   background-color: theme("colors.primary.50") !important;
-  box-shadow: none !important;
-  border-width: 1px !important;
   border-color: theme("colors.primary.200") !important;
 }
-
+button.rbc-active {
+  background-color: theme("colors.primary.100") !important;
+  border-color: theme("colors.primary.300") !important;
+}
 .rbc-btn-group button:active {
-  scale: 0.95 !important;
+  transform: scale(0.97);
 }
 
+/* Hlavičky dní (radšej svetlé a pevná hranica) */
 .rbc-header {
   background-color: theme("colors.gray.50") !important;
   color: theme("colors.primary.700") !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid theme("colors.primary.200") !important;
 }
-
-div.rbc-day-bg.rbc-off-range-bg {
-  background-color: theme("colors.gray.100") !important;
-}
-
-div.rbc-day-bg.rbc-today {
-  background-color: theme("colors.primary.100") !important;
-  /* border: 2px solid theme("colors.primary.500") !important; */
-}
-
-.rbc-event {
-  font-size: 0.8rem !important;
-  margin: 2px !important;
-  padding-left: 8px !important;
-  width: 95% !important;
-}
-
 th.rbc-header {
   border-width: 1px !important;
   border-color: theme("colors.primary.200") !important;
 }
 
-.rbc-agenda-time-cell {
-  border-width: 1px !important;
-  border-color: theme("colors.primary.200") !important;
+/* Pozadia dní */
+.rbc-day-bg.rbc-off-range-bg {
+  background-color: theme("colors.gray.100") !important;
+}
+.rbc-day-bg.rbc-today {
+  background-color: theme("colors.primary.50") !important;
+  outline: 2px solid theme("colors.primary.300") !important;
+  outline-offset: -2px !important;
 }
 
+/* Čísla dní – nech sú čitateľné, ale nie gigantické */
+.rbc-date-cell > button.rbc-button-link {
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: theme("colors.primary.700") !important;
+  padding: 2px 6px !important;
+  border-radius: 8px !important;
+}
+
+/* Mesačný grid – výška riadkov (desktop) */
+.rbc-calendar .rbc-month-view .rbc-month-row {
+  min-height: 64px !important; /* dolaď 56–72px */
+}
+
+/* Eventy – zaoblené, kompakt, jemný akcent */
+.rbc-event {
+  font-size: 0.8rem !important;
+  line-height: 1.1 !important;
+  margin: 2px !important;
+  padding: 2px 6px !important;
+  border-radius: 10px !important;
+  width: 95% !important;
+  background-color: rgb(37, 99, 235) !important;
+  color: white !important;
+  border-left: 8px solid rgb(15, 15, 222) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Agenda – hranice */
+.rbc-agenda-time-cell,
+.rbc-agenda-event-cell,
 .rbc-agenda-table {
   border-width: 1px !important;
   border-color: theme("colors.primary.200") !important;
 }
 
-.rbc-agenda-event-cell {
-  border-width: 1px !important;
-  border-color: theme("colors.primary.200") !important;
+/* Week/Day – scroll v ráme */
+.rbc-time-content {
+  overflow: auto !important;
 }
 
+/* ===== Mobil (≤ 640px) ========================================== */
 @media (max-width: 640px) {
-  /* div.rbc-calendar {
-  } */
-
-  div.rbc-header {
-    font-size: 0.8rem !important;
-    color: theme("colors.primary.600") !important;
-    font-weight: 700 !important;
+  /* Toolbar – stĺpcovo, label center */
+  .rbc-toolbar {
+    gap: 6px !important;
+    row-gap: 10px !important;
+    justify-content: center !important;
   }
-
-  button.rbc-button-link {
-    font-size: 0.8rem !important;
+  .rbc-toolbar-label {
+    order: -1;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem !important;
     color: theme("colors.primary.600") !important;
     font-weight: 600 !important;
   }
-
-  div.rbc-day-bg {
+  .rbc-btn-group {
+    padding: 3px !important;
+    gap: 4px !important;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 0.06) !important;
+  }
+  .rbc-btn-group button {
+    padding: 4px 8px !important;
     font-size: 0.8rem !important;
-    border: none !important;
   }
 
-  .rbc-month-view.rbc-month-row {
-    height: 20px !important;
+  /* Hlavička kalendára kompaktnejšia */
+  .rbc-header {
+    padding: 4px 0 !important;
+    font-size: 0.75rem !important;
+    color: theme("colors.primary.600") !important;
+  }
+
+  /* Čísla dní menšie */
+  .rbc-date-cell > button.rbc-button-link {
+    font-size: 0.8rem !important;
+    padding: 0 4px !important;
+  }
+
+  /* Mesačný grid – menšie riadky na mobile */
+  .rbc-calendar .rbc-month-view .rbc-month-row {
+    min-height: 38px !important; /* 34–42 sweet spot */
+  }
+
+  /* Menej paddingu v bunkách a eventoch */
+  .rbc-row-segment {
+    padding: 1px 2px !important;
+  }
+  .rbc-event {
+    font-size: 0.72rem !important;
+    padding: 0 4px !important;
+    margin: 1px !important;
+    border-radius: 8px !important;
   }
 }
