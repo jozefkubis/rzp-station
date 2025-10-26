@@ -116,7 +116,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                 {stats.map((r) => (
                   <div
                     key={r.name}
-                    className="rounded-xl bg-primary-900 p-3 text-white shadow-sm ring-1 ring-primary-800/60"
+                    className="rounded-xl bg-white p-3 text-primary-600 shadow-lg border border-primary-100/60"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="truncate font-semibold">{r.name}</div>
@@ -128,28 +128,28 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
 
                     {/* Riadok štítkov s číslami */}
                     <div className="mt-2 grid grid-cols-4 gap-2 text-center">
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         D: <b>{r.D}</b>
                       </span>
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         N: <b>{r.N}</b>
                       </span>
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         RD: <b>{r.RD}</b>
                       </span>
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         PN: <b>{r.PN}</b>
                       </span>
                     </div>
 
                     <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         X: <b>{r.X}</b>
                       </span>
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         ŠS: <b>{r.ŠS}</b>
                       </span>
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         Y: <b>{r?.Y ?? 0}</b>
                       </span>
                     </div>
@@ -157,7 +157,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                 ))}
 
                 {/* Legenda ako collapsible na mobile */}
-                <details className="rounded-lg bg-primary-900 p-3 text-white ring-1 ring-primary-800/60">
+                <details className="rounded-lg bg-white shadow-lg p-3 text-primary-600  border border-primary-100/60">
                   <summary className="cursor-pointer select-none font-semibold">
                     Legenda
                   </summary>
