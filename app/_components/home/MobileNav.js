@@ -117,7 +117,7 @@ export default function MobileNav({ shiftsOffset, statsOffset }) {
           className="flex flex-col gap-3 overflow-y-auto"
         >
           {links.map(({ href, label, icon }) => (
-            <li key={href}>
+            <li key={href} className="active:scale-95">
               <Link
                 href={href}
                 aria-label={label}

@@ -14,7 +14,7 @@ export default function SideBar({ navLinks }) {
         flex justify-center
         md:fixed md:left-0 md:top-0 md:h-screen md:w-[13rem]
         md:border-r md:border-primary-200 py-2 md:pt-[10rem]
-        bg-primary-900 text-white
+        text-primary-600
         md:bg-transparent md:text-primary-700
         transition-colors duration-300
       "
@@ -32,8 +32,10 @@ export default function SideBar({ navLinks }) {
                   "rounded-md p-3 transition-all duration-300 ease-in-out",
                   "active:scale-95",
                   "md:hover:bg-primary-50 md:active:scale-95",
+                  "border border-primary-100/70",
+                  "shadow-lg",
                   {
-                    "bg-primary-800 md:bg-primary-50 md:text-primary-700": isActive,
+                    "bg-primary-800 text-white md:bg-primary-50 md:text-primary-700 border border-primary-800/70 shadow-lg": isActive,
                   }
                 )}
               >
