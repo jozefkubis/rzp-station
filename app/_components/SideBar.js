@@ -19,7 +19,7 @@ export default function SideBar({ navLinks }) {
         transition-colors duration-300
       "
     >
-      <div className="w-full px-2">
+      <div className="w-full md:px-2 px-6">
         <ul className="text-md font-semibold space-y-2">
           {navLinks.map(({ href, name, icon }) => {
             const isActive = pathname === href;
@@ -33,9 +33,9 @@ export default function SideBar({ navLinks }) {
                   "active:scale-95",
                   "md:hover:bg-primary-50 md:active:scale-95",
                   "border border-primary-100/70",
-                  "shadow-lg",
+                  "shadow-lg md:shadow-sm",
                   {
-                    "bg-primary-800 text-white md:bg-primary-50 md:text-primary-700 border border-primary-800/70 shadow-lg": isActive,
+                    "bg-primary-800 text-white md:bg-primary-50 md:text-primary-700 border md:border-none border-primary-800/70 md:shadow-sm shadow-lg": isActive,
                   }
                 )}
               >
