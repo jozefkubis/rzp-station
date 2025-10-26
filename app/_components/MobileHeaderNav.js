@@ -28,14 +28,14 @@ export default function MobileHeaderNav() {
   const navLinks = useMemo(
     () => [
       {
-        href: "/settings/profile",
-        label: "Môj profil",
-        icon: <HiOutlineUserCircle size={28} />,
-      },
-      {
         label: "Domov",
         href: `/?m=${dashOffset}`,
         icon: <HiOutlineHome size={26} />,
+      },
+      {
+        href: "/settings/profile",
+        label: "Môj profil",
+        icon: <HiOutlineUserCircle size={28} />,
       },
       {
         label: "Služby",
@@ -98,17 +98,15 @@ export default function MobileHeaderNav() {
       {/* OVERLAY */}
       <div
         onClick={() => setOpen(false)}
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-200 ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-200 ${open ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
       />
 
       {/* PANEL MENU */}
       <aside
         id="mobile-menu"
-        className={`fixed left-0 top-0 z-50 h-full w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:hidden`}
+        className={`fixed left-0 top-0 z-50 h-full w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:hidden`}
       >
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
