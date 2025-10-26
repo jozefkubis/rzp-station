@@ -57,7 +57,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
     }
 
     return (
-        <form data-cy="new-task-form" onSubmit={handleSubmit} className="space-y-5">
+        <form data-cy="new-task-form" onSubmit={handleSubmit} className="md:space-y-5 space-y-2">
             {/* Názov udalosti */}
             <FormTaskInput
                 label="Názov udalosti"

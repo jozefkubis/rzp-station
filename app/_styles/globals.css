@@ -85,6 +85,8 @@
   color: theme("colors.primary.700") !important;
   background: white !important;
   border: 1px solid transparent !important;
+  margin-left: 2px !important;
+  margin-right: 2px !important;
 }
 .rbc-btn-group button:hover {
   background-color: theme("colors.primary.50") !important;
@@ -118,6 +120,10 @@ th.rbc-header {
   background-color: theme("colors.primary.50") !important;
   outline: 2px solid theme("colors.primary.300") !important;
   outline-offset: -2px !important;
+}
+
+.rbc-day-bg:hover {
+  cursor: pointer !important;
 }
 
 /* Čísla dní – nech sú čitateľné, ale nie gigantické */
@@ -166,6 +172,9 @@ th.rbc-header {
 /* ===== Mobil (≤ 640px) ========================================== */
 @media (max-width: 640px) {
   /* Toolbar – stĺpcovo, label center */
+  /* .rbc-calendar {
+    height: 100% !important;
+  } */
   .rbc-toolbar {
     gap: 6px !important;
     row-gap: 10px !important;
@@ -187,6 +196,8 @@ th.rbc-header {
   .rbc-btn-group button {
     padding: 4px 8px !important;
     font-size: 0.8rem !important;
+    margin-left: 2px !important;
+    margin-right: 2px !important;
   }
 
   /* Hlavička kalendára kompaktnejšia */

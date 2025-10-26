@@ -54,7 +54,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
         <form
             data-cy="update-task-form"
             onSubmit={handleSubmit}
-            className="space-y-5"
+            className="md:space-y-5 space-y-2"
         >
             <input type="hidden" name="id" value={task.id} />
 

@@ -125,7 +125,7 @@ export default function Calendar({ admin }) {
   return (
     <div
       data-cy="calendar-page"
-      className="grid h-[90dvh] w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2"
+      className="grid h-full w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2"
     >
       <MyButtons
         setSelectedEvent={setSelectedEvent}

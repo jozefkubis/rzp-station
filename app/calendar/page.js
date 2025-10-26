@@ -11,9 +11,9 @@ export default async function page() {
   const admin = await getAdmin(user.email);
 
   return (
-    <div>
+    <div className="h-screen">
       <Header />
-      <main className="h-full w-full pt-2 md:h-screen md:px-10 md:py-7">
+      <main className="w-full h-[90%] md:px-10 md:py-7">
         <Calendar admin={admin} />
       </main>
     </div>
