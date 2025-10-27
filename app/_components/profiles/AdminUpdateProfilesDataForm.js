@@ -40,7 +40,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
     <form
       data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
-      className="mx-auto flex max-h-screen-md overflow-auto w-full md:w-1/2 flex-col justify-center rounded-lg px-6 md:px-4 py-8"
+      className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 md:w-1/2 md:px-4"
     >
       <div className="">
         <FormInput
@@ -88,7 +88,8 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
             id="admin"
             name="admin"
             options={["ÁNO", "NIE"]} // žiadne "-" medzi options
-            placeholder="— Povoľ administrátora —"
+            placeholder={profile?.admin || "— Povoľ administrátora—"}
+            // placeholder="— Povoľ administrátora —"
             value={admin ?? profile?.admin ?? ""}
             onChange={setAdmin}
             {...(!profile && { required: true })}
@@ -102,7 +103,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
           id="position"
           name="position"
           options={["ZZ", "VZ", "V"]}
-          placeholder="— Vyber pozíciu —"
+          placeholder={profile?.position || "— Vyber pozíciu —"}
           value={position ?? profile?.position ?? ""}
           onChange={setPosition}
           {...(!profile && { required: true })}
@@ -199,7 +200,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
           <Link
             data-cy="admin-back-to-profile-button"
             href={`/profiles/${profile.id}`}
-            className="font-semibold text-primary-700 hover:underline text-sm"
+            className="text-sm font-semibold text-primary-700 hover:underline"
           >
             ← Späť na profil
           </Link>
