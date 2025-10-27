@@ -105,7 +105,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
         </YearHeadStatistics>
 
         {stats.length === 0 ? (
-          <div className="flex h-60 items-center justify-center text-3xl text-primary-700">
+          <div className="flex h-60 items-center justify-center text-center text-base text-primary-700 md:text-3xl">
             Žiadne štatistiky pre tento rok nie sú k dispozícii
           </div>
         ) : (
@@ -116,7 +116,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                 {stats.map((r) => (
                   <div
                     key={r.name}
-                    className="rounded-xl bg-white p-3 text-primary-600 shadow-lg border border-primary-100/60"
+                    className="rounded-xl border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="truncate font-semibold">{r.name}</div>
@@ -157,7 +157,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                 ))}
 
                 {/* Legenda ako collapsible na mobile */}
-                <details className="rounded-lg bg-white shadow-lg p-3 text-primary-600  border border-primary-100/60">
+                <details className="rounded-lg border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg">
                   <summary className="cursor-pointer select-none font-semibold">
                     Legenda
                   </summary>
