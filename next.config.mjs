@@ -19,7 +19,7 @@ function makeCSP(isDev) {
   if (isDev) {
     base.push(
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:",
-      "connect-src 'self' http://localhost:3000 ws://localhost:3000 https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.open-meteo.com"
+      "connect-src 'self' http://localhost:3000 ws://localhost:3000 https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.open-meteo.com",
     );
   } else {
     // >>> TU JE ZMENA – povolené 'unsafe-inline' pre produkciu
@@ -30,11 +30,17 @@ function makeCSP(isDev) {
 }
 
 const securityHeaders = (isDev) => [
-  { key: "Strict-Transport-Security", value: "max-age=15552000; includeSubDomains" },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=15552000; includeSubDomains",
+  },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   { key: "Content-Security-Policy", value: makeCSP(isDev) },
 ];
@@ -49,16 +55,32 @@ const nextConfig = {
     return [{ source: "/(.*)", headers: securityHeaders(isDev) }];
   },
   images: {
-    unoptimized: true,
+    unoptimized: true, // OK, môže zostať
     remotePatterns: [
+      // Supabase Storage – PUBLIC objekty
       {
         protocol: "https",
         hostname: "kjfjavkvgocatxssthrv.supabase.co",
-        port: "",
-        pathname: "/storage/v1/object/public/avatars/**",
+        pathname: "/storage/v1/object/public/**",
       },
-      { protocol: "https", hostname: "randomuser.me", port: "", pathname: "/api/portraits/**" },
-      { protocol: "https", hostname: "upload.wikimedia.org", port: "", pathname: "/**" },
+      // Supabase Storage – SIGNED (privátne objekty)
+      {
+        protocol: "https",
+        hostname: "kjfjavkvgocatxssthrv.supabase.co",
+        pathname: "/storage/v1/object/sign/**",
+      },
+
+      // tvoje ďalšie zdroje
+      {
+        protocol: "https",
+        hostname: "randomuser.me",
+        pathname: "/api/portraits/**",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/**",
+      },
     ],
     minimumCacheTTL: 60,
     formats: ["image/avif", "image/webp"],

@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { HiOutlineUser } from "react-icons/hi";
 
-
 export default async function UserHeaderInfo() {
   const supabase = await createClient();
 
@@ -13,11 +12,14 @@ export default async function UserHeaderInfo() {
 
   const user = await getUser();
   const email = user?.email;
-  const avatarUrl = await getAvatarUrl(email);
-  const username = await getUsername(email);
+
+  const [avatarUrl, username] = await Promise.all([
+    getAvatarUrl(email),
+    getUsername(email),
+  ]);
 
   return (
-    <div className="hidden md:flex items-center gap-3">
+    <div className="hidden items-center gap-3 md:flex">
       {/* Avatar Link */}
       <Link href="/settings/profile">
         <div className="relative h-[55px] w-[55px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
@@ -34,7 +36,8 @@ export default async function UserHeaderInfo() {
       <div>
         <Link href="/settings/profile">
           <div className="flex items-center gap-2 rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
-            <HiOutlineUser size={20} />{username || email}
+            <HiOutlineUser size={20} />
+            {username || email}
           </div>
         </Link>
       </div>

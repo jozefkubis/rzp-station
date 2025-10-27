@@ -5,8 +5,6 @@ export const dynamic = "force-dynamic"; // Ak treba
 
 export default async function Page({ params }) {
   const { profileId } = await params;
-  const user = await getUser();
-  const userId = user?.id;
 
   if (!profileId) {
     return (
@@ -16,7 +14,8 @@ export default async function Page({ params }) {
     );
   }
 
-  const profile = await getProfile(profileId);
+  const [user, profile] = await Promise.all([getUser(), getProfile(profileId)]);
+  const userId = user?.id;
 
   if (!profile) {
     return (
@@ -27,7 +26,7 @@ export default async function Page({ params }) {
   }
 
   return (
-    <div className="md:flex md:items-center md:h-screen overflow-auto w-full">
+    <div className="w-full overflow-auto md:flex md:h-screen md:items-center">
       <AdminUpdateProfilesDataForm profile={profile} userId={userId} />
     </div>
   );
