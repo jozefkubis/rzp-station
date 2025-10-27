@@ -11,12 +11,12 @@ export default function FormSelect({
   disabled = false,
 }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-1 items-center md:border-t md:border-gray-200 px-2 md:px-4 py-3">
+    <div className="grid grid-cols-1 items-center gap-1 px-2 py-3 md:grid-cols-2 md:border-t md:border-gray-200 md:px-4">
       <div>
         {label && (
           <label
             htmlFor={id}
-            className="text-sm md:text-md flex font-bold text-primary-700"
+            className="md:text-md flex text-sm font-bold text-primary-700"
           >
             {label}
           </label>
@@ -31,13 +31,11 @@ export default function FormSelect({
           onChange={(e) => onChange?.(e.target.value)}
           required={required}
           disabled={disabled}
-          className={`text-sm md:text-md w-full rounded-md border bg-gray-50 px-4 py-2 font-semibold text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${className}`}
+          className={`md:text-md w-full min-w-full appearance-none rounded-md border bg-gray-50 px-4 py-2 text-sm font-semibold text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${className}`}
         >
-          {/* prázdna voľba - validná len ak value === "" */}
           <option value="" disabled>
             {placeholder}
           </option>
-
           {options.map((opt) => (
             <option key={opt} value={opt}>
               {opt}
