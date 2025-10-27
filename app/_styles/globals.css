@@ -73,7 +73,7 @@
   display: inline-flex;
   gap: 4px !important;
   background-color: theme("colors.gray.50") !important;
-  border: 1px solid theme("colors.gray.100") !important; /* FIX */
+  border: 1px solid theme("colors.gray.100") !important;
   border-radius: 9999px !important;
   padding: 4px !important;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.08) !important;
@@ -100,12 +100,13 @@ button.rbc-active {
   transform: scale(0.97);
 }
 
-/* Hlavičky dní (radšej svetlé a pevná hranica) */
+/* Hlavičky dní */
 .rbc-header {
   background-color: theme("colors.gray.50") !important;
   color: theme("colors.primary.700") !important;
   font-weight: 700 !important;
-  border-bottom: 1px solid theme("colors.primary.200") !important;
+  /* text-align: center !important; */
+  border-bottom: none !important;
 }
 th.rbc-header {
   border-width: 1px !important;
@@ -121,12 +122,11 @@ th.rbc-header {
   outline: 2px solid theme("colors.primary.300") !important;
   outline-offset: -2px !important;
 }
-
 .rbc-day-bg:hover {
   cursor: pointer !important;
 }
 
-/* Čísla dní – nech sú čitateľné, ale nie gigantické */
+/* Čísla dní */
 .rbc-date-cell > button.rbc-button-link {
   font-size: 0.9rem !important;
   font-weight: 600 !important;
@@ -137,31 +137,20 @@ th.rbc-header {
 
 /* Mesačný grid – výška riadkov (desktop) */
 .rbc-calendar .rbc-month-view .rbc-month-row {
-  min-height: 64px !important; /* dolaď 56–72px */
+  min-height: 64px !important;
 }
 
-/* Eventy – zaoblené, kompakt, jemný akcent */
+/* Eventy – grid/week/day default (nie agenda) */
 .rbc-event {
   font-size: 0.8rem !important;
   line-height: 1.1 !important;
   margin: 2px !important;
   padding: 2px 6px !important;
   border-radius: 10px !important;
-  width: 95% !important;
-  /* background-color: rgb(37, 99, 235) !important;
-  color: white !important;
-  border-left: 8px solid rgb(15, 15, 222) !important; */
+  width: 95% !important; /* nech je vo vnútri bunky */
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-}
-
-/* Agenda – hranice */
-.rbc-agenda-time-cell,
-.rbc-agenda-event-cell,
-.rbc-agenda-table {
-  border-width: 1px !important;
-  border-color: theme("colors.primary.200") !important;
 }
 
 /* Week/Day – scroll v ráme */
@@ -169,12 +158,40 @@ th.rbc-header {
   overflow: auto !important;
 }
 
+/* ===== Agenda (Prehľad) – FIX kraje, zuby, šírky, padding ======= */
+.rbc-agenda-view .rbc-agenda-table {
+  width: 100% !important;
+  table-layout: fixed !important; /* stabilné šírky stĺpcov */
+  border-collapse: collapse !important; /* bez medzier medzi bunkami */
+  border: 1px solid theme("colors.primary.200") !important;
+}
+.rbc-agenda-view .rbc-agenda-table th,
+.rbc-agenda-view .rbc-agenda-table td {
+  border: 1px solid theme("colors.primary.200") !important;
+  padding: 10px 12px !important;
+  vertical-align: top !important;
+  background-clip: padding-box !important;
+}
+.rbc-agenda-view .rbc-agenda-table th {
+  background: theme("colors.gray.50") !important;
+  color: theme("colors.primary.700") !important;
+  font-weight: 700 !important;
+}
+.rbc-agenda-view .rbc-agenda-date-cell,
+.rbc-agenda-view .rbc-agenda-time-cell {
+  width: 9rem !important; /* ~144px desktop */
+  white-space: nowrap !important;
+}
+/* V Agende nech event nezužujeme na 95% */
+.rbc-agenda-view .rbc-agenda-event-cell .rbc-event {
+  width: 100% !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+}
+
 /* ===== Mobil (≤ 640px) ========================================== */
 @media (max-width: 640px) {
   /* Toolbar – stĺpcovo, label center */
-  /* .rbc-calendar {
-    height: 100% !important;
-  } */
   .rbc-toolbar {
     gap: 6px !important;
     row-gap: 10px !important;
@@ -202,9 +219,11 @@ th.rbc-header {
 
   /* Hlavička kalendára kompaktnejšia */
   .rbc-header {
-    padding: 4px 0 !important;
+    padding: 4px 10px !important;
     font-size: 0.75rem !important;
     color: theme("colors.primary.600") !important;
+    /* text-align: center !important; */
+    border-bottom: none !important;
   }
 
   /* Čísla dní menšie */
@@ -215,7 +234,7 @@ th.rbc-header {
 
   /* Mesačný grid – menšie riadky na mobile */
   .rbc-calendar .rbc-month-view .rbc-month-row {
-    min-height: 38px !important; /* 34–42 sweet spot */
+    min-height: 38px !important;
   }
 
   /* Menej paddingu v bunkách a eventoch */
@@ -228,4 +247,39 @@ th.rbc-header {
     margin: 1px !important;
     border-radius: 8px !important;
   }
+  .rbc-label {
+    font-size: 0.8rem !important;
+  }
+
+  /* Gutter šírka (ak používaš time-grid) */
+  .rbc-label.rbc-time-header-gutter {
+    width: 40.38px !important;
+    min-width: 40.38px !important;
+    max-width: 40.38px !important;
+  }
+
+  /* Agenda – užšie prvé 2 stĺpce, kompaktné paddingy */
+  .rbc-agenda-view .rbc-agenda-date-cell,
+  .rbc-agenda-view .rbc-agenda-time-cell {
+    width: 6.5rem !important; /* ~104px mobil */
+  }
+  .rbc-agenda-view .rbc-agenda-table th,
+  .rbc-agenda-view .rbc-agenda-table td {
+    padding: 8px 10px !important;
+  }
+}
+
+/* Agenda: event nech je čistý, nič čo by trčalo doľava */
+.rbc-agenda-view .rbc-agenda-event-cell .rbc-event {
+  width: 100% !important;
+  margin: 0 !important;
+  border-left: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Globálne – pomáha zarovnať „kraje“ v celom UI */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

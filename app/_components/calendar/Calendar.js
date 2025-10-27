@@ -86,32 +86,43 @@ export default function Calendar({ admin }) {
     showMore: (total) => `+ ďalších ${total}`,
   };
 
-  function eventPropGetter(event) {
-    if (event.title.includes("!")) {
-      return {
-        style: {
-          backgroundColor: "#F21905", // tailwind red-400
-          border: "none",
-          color: "white",
-        },
-      };
-    } else if (event.isHoliday) {
-      return {
-        style: {
+  const eventPropGetter = useCallback(
+    (event) => {
+      // urgentné
+      if (event.title.includes("!")) {
+        return {
+          style: {
+            backgroundColor: "#F21905",
+            border: "none",
+            color: "white",
+          },
+        };
+      }
+
+      // sviatky
+      if (event.isHoliday) {
+        const base = {
           backgroundColor: "#FFF144",
           border: "none",
           color: "#525759",
           fontSize: "0.75rem",
-          fontWeight: "350",
-          margin: "1px",
-          borderLeft: "12px solid #FFD01C",
+          fontWeight: 500,
           display: showHoliday ? "none" : "",
-          // pointerEvents: "none",
-        },
-      };
-    }
-    return {};
-  }
+        };
+
+        // ⚠️ len mimo Agenda pridaj ľavý pruh + margin
+        if (view !== Views.AGENDA) {
+          base.margin = "1px";
+          base.borderLeft = "12px solid #FFD01C";
+        }
+
+        return { style: base };
+      }
+
+      return {};
+    },
+    [view, showHoliday],
+  );
 
   function dayPropGetter(date) {
     const isWeekend = [0, 6].includes(date.getDay()); // nedeľa=0, sobota=6
