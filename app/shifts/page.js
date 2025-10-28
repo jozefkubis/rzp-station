@@ -44,7 +44,7 @@ export default async function page({ searchParams }) {
         </div>
       ) : (
         /* RosterSection zobraz aj pri prázdnych shifts */
-        <div className="flex justify-center px-8">
+        <div className="flex justify-center md:px-8">
           <RosterSection
             initialShifts={shifts}
             diffProfiles={diffProfiles}
