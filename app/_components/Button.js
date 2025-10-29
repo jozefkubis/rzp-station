@@ -2,8 +2,8 @@
 
 
 const buttonSizes = {
-  small: "text-xs px-3 py-1 uppercase font-semibold",
-  medium: "text-sm px-4 py-2 font-medium",
+  small: "text-[0.7rem] md:text-xs px-3 py-1 uppercase font-semibold",
+  medium: "text-[0.7rem] md:text-sm px-2 md:px-4 py-1 md:py-2 font-medium",
   large: "text-base px-6 py-3 font-medium",
 };
 
@@ -11,7 +11,7 @@ const buttonVariants = {
   primary:
     "text-white bg-blue-600 hover:bg-blue-700 active:scale-95  w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondary:
-    "text-gray-600 bg-gray-100 border border-gray-300 hover:bg-gray-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
+    "text-gray-600 bg-gray-100 border md:border-gray-300 border-gray-200 hover:bg-gray-200 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondaryShiftRD:
     "text-gray-600 bg-green-500 border border-geen-500 hover:bg-green-300 hover:border-green-300 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   secondaryShiftX:

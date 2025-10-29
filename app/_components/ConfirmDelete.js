@@ -16,14 +16,14 @@ function ConfirmDelete({ resourceName, onConfirm, disabled, onClose, user }) {
   }
 
   return (
-    <section className="flex w-[30rem] flex-col gap-5">
+    <section className="flex w-full md:w-[30rem] flex-col gap-5">
       <Heading type="h3">Vymazať {resourceName}</Heading>
-      <p className="mb-5 text-gray-500">
+      <p className="mb-5 text-gray-500 text-sm md:text-base">
         Ste si istý, že chcete vymazať &nbsp;
-        <span className="font-semibold text-red-600">{resourceName}</span>?
+        <span className="font-semibold text-red-600 text-sm md:text-base">{resourceName}</span>?
       </p>
 
-      <div className="flex justify-end gap-5">
+      <div className="flex justify-end gap-2 md:gap-5">
         <Button
           size="medium"
           variant="secondary"

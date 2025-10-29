@@ -35,7 +35,7 @@ export default function Modal({ children, onClose }) {
       >
         {/* Close Button */}
         <button
-          className="absolute right-3 top-3 rounded-full p-2 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
+          className="hidden md:absolute right-3 top-3 rounded-full p-2 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
           onClick={onClose}
           aria-label="Zatvoriť modal"
         >

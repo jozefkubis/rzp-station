@@ -72,7 +72,7 @@ export default function ValidateButton() {
             {isOpenModal && (
                 <Modal onClose={() => setIsOpenModal(false)}>
                     <div className="space-y-4">
-                        <h2 className="text-lg text-primary-700 font-semibold">
+                        <h2 className="text-base md:text-lg text-primary-700 font-semibold">
                             Výsledok kontroly ({monthLabel} {year})
                         </h2>
 
@@ -85,13 +85,13 @@ export default function ValidateButton() {
 
                         {!isValidating && result?.ok && (
                             <div className="space-y-2">
-                                <p className="text-sm text-gray-600 text-[1.1rem]">
+                                <p className="text-xs text-gray-600 md:text-sm">
                                     Rozsah: {isoToSk(result.range.from)} → {isoToSk(result.range.to)} • Chyby:{" "}
                                     {result.summary.totalIssues}
                                 </p>
 
                                 <div className="max-h-[50vh] text-primary-700 overflow-y-auto border rounded">
-                                    <table className="w-full text-[1.2rem]">
+                                    <table className="w-full text-sm md:text-[1.2rem]">
                                         <thead className="bg-gray-50 sticky top-0">
                                             <tr>
                                                 <th className="border px-2 py-1 text-left">Dátum</th>
