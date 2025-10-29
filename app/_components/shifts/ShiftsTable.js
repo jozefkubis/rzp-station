@@ -44,6 +44,19 @@ import {
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
 
+function useMedia(query) {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setMatches(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [query]);
+  return matches;
+}
+
+
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
   shifts,
@@ -74,7 +87,19 @@ export default function ShiftsTable({
   const firstDayStr = `${year}-${String(month).padStart(2, "0")}-01`;
 
   /* ---------- CSS grid template ---------- */
-  const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+  const isMd = useMedia("(min-width: 768px)");
+  // const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+  // const colTemplate = `12rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
+
+  const colTemplate = useMemo(() => {
+    if (isMd) {
+      // desktop: pôvodné rozloženie
+      return `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+    }
+    // mobil: len Meno + dni (menšie bunky)
+    return `12rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
+  }, [isMd, days.length]);
+
 
   // MARK: OPTIMISTIC – hlavný reducer pre shifts
   const [optimisticShifts, applyOptimistic] = useOptimistic(

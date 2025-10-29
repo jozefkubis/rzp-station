@@ -56,7 +56,7 @@ export default function AllParamedics({
   return (
     <>
       <div
-        className={`sticky left-0 flex items-center justify-between border-b border-l border-slate-200 px-2 py-1 text-[1rem] hover:bg-blue-100 ${rowBg}`}
+        className={`sticky left-0 flex items-center justify-between border-b border-l border-slate-200 px-2 py-1 text-[0.8rem] md:text-[1rem] hover:bg-blue-100 ${rowBg}`}
       >
         <button
           type="button"
@@ -65,7 +65,7 @@ export default function AllParamedics({
         >
           {currentIdx + 1}. {children}
         </button>
-        <span className="text-sm">{position}</span>
+        <span className="text-xs md:text-sm">{position}</span>
       </div>
 
       {isOpenDeleteModal && (

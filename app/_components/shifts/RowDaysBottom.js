@@ -3,7 +3,7 @@ export default function RowDaysBottom({ children, cellBg, onSelect, dateStr }) {
     <button
       type="button"
       onClick={() => onSelect(dateStr)}
-      className={`flex h-7 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${cellBg} border-b border-slate-200`}
+      className={`text-[0.7rem] md:text-[0.9rem] flex h-5 md:h-7 cursor-pointer items-center justify-center border-l border-slate-200 hover:bg-blue-100 ${cellBg} border-b border-slate-200`}
     >
       {children}
     </button>
