@@ -38,7 +38,7 @@ export default function DeleteProfileButton({ profileId }) {
 
   return (
     <>
-      <Button variant="danger" onClick={handleOpenModal}>
+      <Button variant="danger" onClick={handleOpenModal} size="large">
         {/* <RiDeleteBinLine size={15} /> */}
         Vymazať užívateľa
       </Button>

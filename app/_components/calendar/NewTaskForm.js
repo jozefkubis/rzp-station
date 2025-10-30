@@ -147,7 +147,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
                 <Button
                     data-cy="new-task-submit"
                     variant="primary"
-                    size="medium"
+                    size="large"
                     type="submit"
                     disabled={isPending}
                 >

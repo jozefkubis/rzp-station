@@ -180,7 +180,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
         <Button
           data-cy="admin-update-profile-button"
           variant="primary"
-          size="medium"
+          size="large"
           disabled={isPending}
         >
           {isPending ? (

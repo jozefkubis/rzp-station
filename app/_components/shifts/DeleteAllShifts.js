@@ -32,7 +32,7 @@ export default function DeleteAllShifts() {
   return (
     <>
       <div>
-        <Button variant="danger" onClick={() => setIsOpenDeleteModal(true)}>
+        <Button variant="danger" onClick={() => setIsOpenDeleteModal(true)} size="large">
           Vymazať všetko
         </Button>
       </div>

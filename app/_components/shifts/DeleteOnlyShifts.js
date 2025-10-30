@@ -32,7 +32,7 @@ export default function DeleteOnlyShifts() {
   return (
     <>
       <div>
-        <Button onClick={() => setIsOpenDeleteModal(true)}>
+        <Button onClick={() => setIsOpenDeleteModal(true)} size="large">
           Vymazať služby
         </Button>
       </div>

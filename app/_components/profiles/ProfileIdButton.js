@@ -16,7 +16,7 @@ export default function ProfileIdButton({ profile }) {
   }
 
   return (
-    <Button onClick={handleClick} disabled={isPending}>
+    <Button onClick={handleClick} disabled={isPending} size="large">
       {isPending ? (
         <div className="inline-flex items-center gap-2">
           Smerujem

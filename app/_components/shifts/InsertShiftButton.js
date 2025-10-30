@@ -16,7 +16,7 @@ export default function InsertShiftButton({ profiles, onInsertEmptyShift }) {
       <div>
         <Button
           variant="primary"
-          size="medium"
+          size="large"
           onClick={handleProfilesModalOpen}
           disabled={profiles.length === 0}
         >

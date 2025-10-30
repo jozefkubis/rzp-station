@@ -181,7 +181,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
       <div className="flex flex-col items-end justify-center gap-8">
         <Button
           data-cy="admin-update-profile-button"
-          size="medium"
+          size="large"
           disabled={isPending}
         >
           {isPending ? (

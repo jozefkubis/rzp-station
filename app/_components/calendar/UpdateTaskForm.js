@@ -145,7 +145,7 @@ export default function UpdateTaskForm({ onClose, refresh, task }) {
                 <Button
                     data-cy="update-task-submit"
                     variant="primary"
-                    size="medium"
+                    size="large"
                     type="submit"
                     disabled={isPending}
                 >

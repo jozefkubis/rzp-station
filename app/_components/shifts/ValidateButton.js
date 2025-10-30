@@ -64,7 +64,7 @@ export default function ValidateButton() {
     return (
         <>
             <div>
-                <Button variant="secondary" onClick={handleOpenModal}>
+                <Button variant="secondary" onClick={handleOpenModal} size="large">
                     Skontrolovať pokrytie
                 </Button>
             </div>

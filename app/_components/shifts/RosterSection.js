@@ -126,7 +126,7 @@ export default function RosterSection({
             {isPending && <ShiftLoader />}
           </div>
 
-          <div className="flex w-[100%] justify-between gap-2 pb-6 pt-8">
+          <div className="flex w-full px-3 justify-between gap-2 pb-6 pt-8">
             <div>
               <ShiftsTableLegend />
             </div>
@@ -196,7 +196,7 @@ export default function RosterSection({
 
       {/* fixnutý admin toolbar naspodku (len ak si admin) */}
       {admin === "ÁNO" && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/95 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-white/95 px-3 py-4 backdrop-blur supports-[backdrop-filter]:bg-white/80">
           <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap">
             <InsertShiftButton
               size="sm"
