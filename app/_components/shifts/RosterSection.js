@@ -6,6 +6,7 @@ import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
+import MobileMonthYearHead from "./MobileMonthYearHead";
 import ShiftLoader from "./ShiftLoader";
 import ShiftsTable from "./ShiftsTable";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
@@ -91,7 +92,6 @@ export default function RosterSection({
     router.push(`/shifts?m=${offset}`);
   }
 
-
   function useIsMdUp() {
     const [isMdUp, setIsMdUp] = useState(false);
     useEffect(() => {
@@ -105,7 +105,6 @@ export default function RosterSection({
   }
 
   const isMdUp = useIsMdUp();
-
 
   // MARK: RETURNT .......................................................................................
   return isMdUp ? (
@@ -126,7 +125,7 @@ export default function RosterSection({
             {isPending && <ShiftLoader />}
           </div>
 
-          <div className="flex w-full px-3 justify-between gap-2 pb-6 pt-8">
+          <div className="flex w-full justify-between gap-2 px-3 pb-6 pt-8">
             <div>
               <ShiftsTableLegend />
             </div>
@@ -157,13 +156,18 @@ export default function RosterSection({
       {/* rezerva pre bottom toolbar */}
       <div className="mx-auto w-full pb-24">
         <div className="px-4">
+          <MobileMonthYearHead
+            shiftsOffset={shiftsOptimOffset}
+            goTo={goTo}
+            disabled={isPending}
+          />
           <div className="flex flex-col gap-4">
             {/* full-bleed horizontálny scroll s jemným náznakom */}
             <div className="relative -mx-4">
               <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-white to-transparent" />
               <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-white to-transparent" />
 
-              <div className="max-w-full overflow-x-auto snap-x snap-mandatory">
+              <div className="max-w-full snap-x snap-mandatory overflow-x-auto">
                 <div className="min-w-max snap-start">
                   <ShiftsTable
                     shifts={optimShifts}
@@ -181,7 +185,7 @@ export default function RosterSection({
 
             {/* Legenda v collapsible, aby nezaberala miesto */}
             <div className="w-full">
-              <details className="rounded-xl border shadow-md bg-white p-3">
+              <details className="rounded-xl border bg-white p-3 shadow-md">
                 <summary className="cursor-pointer select-none text-sm font-semibold text-primary-700">
                   Legenda
                 </summary>
