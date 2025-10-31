@@ -85,7 +85,7 @@ export default function ShiftRow({
           <span
             {...attributes}
             {...listeners}
-            className="mr-2 inline-flex h-5 w-5 cursor-grab select-none items-center justify-center rounded text-slate-400 hover:text-slate-600"
+            className="mr-2 hidden h-5 w-5 cursor-grab select-none items-center justify-center rounded text-slate-400 hover:text-slate-600 md:inline-flex"
             title="Presuň riadok"
             aria-label="Presuň riadok"
           >

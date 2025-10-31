@@ -56,7 +56,6 @@ function useMedia(query) {
   return matches;
 }
 
-
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
   shifts,
@@ -97,9 +96,8 @@ export default function ShiftsTable({
       return `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
     }
     // mobil: len Meno + dni (menšie bunky)
-    return `12rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
+    return `10.3rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
   }, [isMd, days.length]);
-
 
   // MARK: OPTIMISTIC – hlavný reducer pre shifts
   const [optimisticShifts, applyOptimistic] = useOptimistic(
@@ -172,10 +170,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
