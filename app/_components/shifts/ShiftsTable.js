@@ -64,6 +64,7 @@ export default function ShiftsTable({
   disabled,
   onInsertEmptyShift,
   admin,
+  user,
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -170,10 +171,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -221,6 +222,7 @@ export default function ShiftsTable({
   }, []);
 
   const handleBottomSelect = useCallback((userId, dateStr) => {
+    if (admin !== "ÁNO" && user.id !== userId) return;
     setBottomSelected({ userId, dateStr });
     setIsBottomModalOpen(true);
   }, []);

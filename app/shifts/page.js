@@ -50,6 +50,7 @@ export default async function page({ searchParams }) {
             diffProfiles={diffProfiles}
             initialShiftsOffset={shiftsOffset}
             admin={admin}
+            user={user}
           />
         </div>
       )}
