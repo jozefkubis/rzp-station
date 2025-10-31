@@ -65,11 +65,12 @@ export default function ShiftRow({
 
   const lowerCasePosition = position.toLowerCase();
 
+  // MARK: REDNER
   return (
     <div
       ref={setNodeRef}
       style={{ ...dragStyle, ...{ gridTemplateColumns: colTemplate } }}
-      className={`grid text-xs md:text-sm ${rowBg} border-r border-slate-200 hover:bg-blue-100 h-10 md:h-14`}
+      className={`grid text-xs md:text-sm ${rowBg} h-10 border-r border-slate-200 hover:bg-blue-100 md:h-14`}
     >
       {/* ❶ Ľavý stĺpec – pridali sme "úchytku" (⋮⋮) s attributes/listeners */}
       <AllParamedics
@@ -124,8 +125,6 @@ export default function ShiftRow({
               ? "bg-amber-100"
               : rowBg;
 
-
-        // MARK: REDNER
         return (
           <div
             key={`${user.user_id}-${dateStr}`}
