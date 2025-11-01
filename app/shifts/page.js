@@ -1,4 +1,5 @@
 import Header from "../_components/Header";
+import MobileRosterSection from "../_components/shifts/MobileRosterSection";
 import RosterSection from "../_components/shifts/RosterSection";
 import {
   getAdmin,
@@ -44,15 +45,26 @@ export default async function page({ searchParams }) {
         </div>
       ) : (
         /* RosterSection zobraz aj pri prázdnych shifts */
-        <div className="flex justify-center md:px-8">
-          <RosterSection
-            initialShifts={shifts}
-            diffProfiles={diffProfiles}
-            initialShiftsOffset={shiftsOffset}
-            admin={admin}
-            user={user}
-          />
-        </div>
+        <>
+          <div className="hidden md:flex justify-center md:px-8">
+            <RosterSection
+              initialShifts={shifts}
+              diffProfiles={diffProfiles}
+              initialShiftsOffset={shiftsOffset}
+              admin={admin}
+              user={user}
+            />
+          </div>
+          <div className="md:hidden flex justify-center md:px-8">
+            <MobileRosterSection
+              initialShifts={shifts}
+              diffProfiles={diffProfiles}
+              initialShiftsOffset={shiftsOffset}
+              admin={admin}
+              user={user}
+            />
+          </div>
+        </>
       )}
     </div>
   );
