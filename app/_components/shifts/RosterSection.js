@@ -1,7 +1,8 @@
 "use client";
 
+import useMedia from "@/app/_lib/hooks/useMedia";
 import { useRouter } from "next/navigation";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
@@ -18,7 +19,7 @@ import ValidateButton from "./ValidateButton";
  *   - initialShifts  : pole shiftov získané na serveri
  *   - diffProfiles   : voľní záchranári (pole { id, full_name })
  *   - initialShiftsOffset: offset pre pagináciu
- */
+*/
 export default function RosterSection({
   initialShifts,
   diffProfiles,
@@ -28,6 +29,8 @@ export default function RosterSection({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  const isMd = useMedia();
 
   /* 🟡 1) useOptimistic nad SHIFTAMI (tabuľka) */
   const [optimShifts, applyShifts] = useOptimistic(
@@ -93,22 +96,8 @@ export default function RosterSection({
     router.push(`/shifts?m=${offset}`);
   }
 
-  function useIsMdUp() {
-    const [isMdUp, setIsMdUp] = useState(false);
-    useEffect(() => {
-      const mql = window.matchMedia("(min-width: 768px)");
-      const update = () => setIsMdUp(mql.matches);
-      update();
-      mql.addEventListener?.("change", update);
-      return () => mql.removeEventListener?.("change", update);
-    }, []);
-    return isMdUp;
-  }
-
-  const isMdUp = useIsMdUp();
-
-  // MARK: RETURNT .......................................................................................
-  return isMdUp ? (
+  // MARK: RENDER .......................................................................................
+  return isMd ? (
     // ===== DESKTOP (tvoj pôvodný layout bezzmeny) =====
     <div className="flex w-full flex-col">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
