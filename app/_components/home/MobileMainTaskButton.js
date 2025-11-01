@@ -23,10 +23,10 @@ export default function MobileMainTaskButton({
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="group flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-primary-100/70 bg-gradient-to-br from-white to-primary-100 shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200/60 active:scale-95 active:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
+        className="group flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-br from-white to-orange-100 shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-orange-200/60 active:scale-95 active:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
       >
-        <HiOutlineCalendarDays className="text-4xl text-primary-600 transition-transform duration-200 group-active:scale-95" />
-        <span className="px-2 text-sm font-semibold tracking-wide text-primary-700">
+        <HiOutlineCalendarDays className="text-4xl text-orange-600 transition-transform duration-200 group-active:scale-95" />
+        <span className="px-2 text-sm font-semibold tracking-wide text-orange-700">
           Kalendár
         </span>
       </button>

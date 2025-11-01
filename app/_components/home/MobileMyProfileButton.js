@@ -19,10 +19,10 @@ export default function MobileMyProfileButton({
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
-        className="group flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-primary-100/70 bg-gradient-to-br from-white to-primary-100 shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200/60 active:scale-95 active:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
+        className="group flex h-full w-full flex-col items-center justify-center gap-2 rounded-2xl border border-green-200/70 bg-gradient-to-br from-white to-green-100 shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-green-200/60 active:scale-95 active:shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
       >
-        <HiOutlineChartBar className="text-3xl text-primary-600 transition-transform duration-200 group-active:scale-95" />
-        <span className="px-2 text-sm font-semibold tracking-wide text-primary-700">
+        <HiOutlineChartBar className="text-3xl text-green-600 transition-transform duration-200 group-active:scale-95" />
+        <span className="px-2 text-sm font-semibold tracking-wide text-green-700">
           Osobné štatistiky
         </span>
       </button>
