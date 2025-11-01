@@ -188,7 +188,7 @@ export default function RosterSection({
 
             {/* Legenda v collapsible, aby nezaberala miesto */}
             <div className="w-full">
-              <details className="rounded-xl border bg-white p-3 shadow-md">
+              <details className="bg-white p-3">
                 <summary className="cursor-pointer select-none text-sm font-semibold text-primary-700">
                   Legenda
                 </summary>
