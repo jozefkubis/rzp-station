@@ -1,12 +1,20 @@
-import Spinner from "../Spinner"
+"use client";
+
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import Spinner from "../Spinner";
 
 export default function ShiftLoader() {
-    return (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300">
-            <div className="flex justify-center items-center h-screen w-full">
-                <Spinner />
-            </div>
-        </div>
-    )
-}
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
 
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm">
+      <div className="flex h-dvh w-dvw items-center justify-center">
+        <Spinner />
+      </div>
+    </div>,
+    document.body,
+  );
+}
