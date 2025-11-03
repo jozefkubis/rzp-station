@@ -87,6 +87,7 @@ const config = {
           900: "#26170D",
           950: "#130C07",
         },
+        logo: "#32FEFF",
       },
       backgroundImage: {
         "login-bg": "url('/bg-login.png')",

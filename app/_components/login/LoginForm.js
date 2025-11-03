@@ -12,10 +12,11 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const logo = "/bg-logo-lightblue.png";
   const logoMobile = "/bg-logo-orange.png";
+  const logoFilter = "/bg-logo-filter.png";
 
   const isMd = useMedia();
 
-  const logoSrc = isMd ? logo : logoMobile;
+  const logoSrc = isMd ? logoFilter : logoFilter;
 
   useEffect(() => {
     if (error) toast.error(error);
