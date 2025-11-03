@@ -20,7 +20,7 @@ export default function BirthdayCard({ profiles = [] }) {
   return (
     <section
       aria-live="polite"
-      className="flex w-full justify-center px-3 sm:px-4 md:px-6"
+      className="flex w-full justify-center px-2 pb-2 md:px-6"
     >
       <div className="flex w-full flex-col gap-2 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-100 to-pink-50 px-4 py-3 text-pink-700 shadow-lg ring-1 ring-pink-200/70 sm:px-5 sm:py-4 md:w-auto md:flex-row md:items-center md:gap-4 md:px-6 md:py-5">
         {/* Ikona/emoji – jemne živé, ale bez custom CSS */}
