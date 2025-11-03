@@ -127,7 +127,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                     </div>
 
                     {/* Riadok štítkov s číslami */}
-                    <div className="mt-2 grid grid-cols-4 gap-2 text-center">
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
                       <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         D: <b>{r.D}</b>
                       </span>
@@ -137,20 +137,17 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                       <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         RD: <b>{r.RD}</b>
                       </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        PN: <b>{r.PN}</b>
-                      </span>
                     </div>
 
                     <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                        PN: <b>{r.PN}</b>
+                      </span>
                       <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         X: <b>{r.X}</b>
                       </span>
                       <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                         ŠS: <b>{r.ŠS}</b>
-                      </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        Y: <b>{r?.Y ?? 0}</b>
                       </span>
                     </div>
                   </div>
