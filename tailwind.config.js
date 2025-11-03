@@ -90,6 +90,7 @@ const config = {
       },
       backgroundImage: {
         "login-bg": "url('/bg-login.png')",
+        "login-mobile-bg": "url('/bg-login-mobile.png')",
       },
       screens: {
         xs: "480px", // vlastný najmenší breakpoint
@@ -105,7 +106,7 @@ const config = {
       // },
     },
   },
-  plugins: [require('tailwindcss-motion')],
+  plugins: [require("tailwindcss-motion")],
 };
 
 export default config;
