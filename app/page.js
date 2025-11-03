@@ -1,4 +1,5 @@
 import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import BirthdayCard from "./_components/home/BirthdayCard";
 import MobileMainTaskButton from "./_components/home/MobileMainTaskButton";
 import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButton";
 import MobileTmrwNightShiftButton from "./_components/home/MobileTmrwNightShiftButton";
@@ -11,6 +12,7 @@ import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
 import RenderOnMdUp from "./_components/RenderOnMdUp";
 import {
+  getAllProfiles,
   getProfile,
   getShiftForToday,
   getShiftForTomorrow,
@@ -29,9 +31,10 @@ export default async function Page({ searchParams }) {
   // MARK: NACITANIE DÁT ...................................................................................
   const user = await getUser();
   // Načítanie dát paralelne
-  const [profile, shifts] = await Promise.all([
+  const [profile, shifts, profiles] = await Promise.all([
     getProfile(user.id),
     getShiftsForProfileForYear(user.id),
+    getAllProfiles(),
   ]);
 
   // MARK: SHIFTS...........................................................................................
@@ -85,14 +88,24 @@ export default async function Page({ searchParams }) {
           <NavLinks searchParams={searchParams} />
           <MobileWeatherCard />
         </ul>
-        <div className=""></div>
       </aside>
+      <div className="mt-4 px-7 md:hidden">
+        <BirthdayCard profiles={profiles} />
+      </div>
+      {/* <div className=""></div> */}
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-[9rem_9rem] md:grid-cols-2 justify-center items-center md:items-end gap-2 overflow-y-auto p-8 md:p-6 lg:gap-8">
+      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto p-8 md:grid-cols-2 md:items-end md:p-6 lg:gap-8">
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
           <div className="col-span-2">
-            <WeatherCard />
+            <div className="flex justify-between">
+              <div className="w-ful flex items-end">
+                <BirthdayCard profiles={profiles} />
+              </div>
+              <div className="flex w-full items-end justify-end">
+                <WeatherCard />
+              </div>
+            </div>
           </div>
         </RenderOnMdUp>
 
