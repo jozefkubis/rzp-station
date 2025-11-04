@@ -91,21 +91,21 @@ export default async function Page({ searchParams }) {
       </aside>
       {/* <div className=""></div> */}
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto p-8 md:grid-cols-2 md:items-end md:p-6 lg:gap-8">
+      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-2 md:grid-cols-2 md:items-end md:p-6 lg:gap-8">
         <div className="col-span-2 md:hidden">
           <BirthdayCard profiles={profiles} />
         </div>
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
-          <div className="col-span-2">
-            <div className="flex justify-between">
-              <div className="w-ful flex items-end">
-                <BirthdayCard profiles={profiles} />
-              </div>
-              <div className="flex w-full items-end justify-end">
-                <WeatherCard />
-              </div>
+          <div className="col-span-2 flex justify-between w-full">
+            {/* <div className="flex justify-between"> */}
+            <div className="w-ful flex items-end justify-start">
+              <BirthdayCard profiles={profiles} />
             </div>
+            <div className="flex w-full items-end justify-end">
+              <WeatherCard />
+            </div>
+            {/* </div> */}
           </div>
         </RenderOnMdUp>
 

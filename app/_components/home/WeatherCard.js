@@ -70,7 +70,7 @@ export default function WeatherCard() {
   }
 
   return (
-    <div className="hidden items-center justify-end gap-2 rounded-2xl md:flex md:px-8">
+    <div className="hidden items-center justify-end gap-2 rounded-2xl md:flex md:px-8 w-full">
       <button onClick={handleClick} className="">
         <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-4">
           <div className="text-2xl md:text-4xl">{icon}</div>
