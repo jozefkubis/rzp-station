@@ -1,4 +1,18 @@
 import { addMonths } from "date-fns";
+import {
+  Cloud,
+  CloudDrizzle,
+  CloudFog,
+  CloudHail,
+  CloudLightning,
+  CloudLightningRain,
+  CloudOff,
+  CloudRain,
+  CloudSnow,
+  CloudSun,
+  CloudSunRain,
+  Sun,
+} from "lucide-react";
 
 export function formatDate(dateString) {
   if (!dateString) return "?";
@@ -32,25 +46,24 @@ export function getDaysUntilNextMedCheck(medCheckDateStr) {
 }
 
 export function getWeatherIcon(code) {
-  // https://open-meteo.com/en/docs#weathervariables
-  if (code === 0) return "☀️"; // jasno
-  if (code === 1 || code === 2) return "⛅"; // polooblačno
-  if (code === 3) return "☁️"; // zamračené
+  if (code === 0) return <Sun className="text-yellow-400" />; // jasno
+  if (code === 1 || code === 2) return <CloudSun className="text-yellow-300" />; // polooblačno
+  if (code === 3) return <Cloud className="text-white" />; // zamračené
 
-  if (code === 45 || code === 48) return "🌫️"; // hmla
-  if (code === 51 || code === 53 || code === 55) return "🌦️"; // mrholenie
-  if (code === 61 || code === 63) return "🌧️"; // dážď mierny
-  if (code === 65 || code === 82) return "⛈️"; // lejak
-  if (code === 66 || code === 67) return "🌧️❄️"; // mrznúci dážď
-  if (code === 71 || code === 73) return "🌨️"; // sneženie
-  if (code === 75 || code === 77) return "❄️"; // silné sneženie
-  if (code === 80 || code === 81) return "🌦️"; // prehánky
-  if (code === 95) return "⛈️"; // búrka
-  if (code === 96 || code === 99) return "⛈️⚡"; // búrka s krúpami
+  if (code === 45 || code === 48) return <CloudFog className="text-white" />; // hmla
+  if (code === 51 || code === 53 || code === 55) return <CloudDrizzle className="text-white" />; // mrholenie
+  if (code === 61 || code === 63) return <CloudRain className="text-white" />; // dážď
+  if (code === 65 || code === 82) return <CloudLightningRain className="text-white" />; // lejak
+  if (code === 66 || code === 67) return <CloudHail className="text-white" />; // mrznúci dážď
+  if (code === 71 || code === 73) return <CloudSnow className="text-white" />; // sneženie
+  if (code === 75 || code === 77) return <CloudSnow className="text-white" />; // silné sneženie
+  if (code === 80 || code === 81) return <CloudSunRain className="text-white" />; // prehánky
+  if (code === 95) return <CloudLightning className="text-yellow-500" />; // búrka
+  if (code === 96 || code === 99)
+    return <CloudLightningRain className="text-yellow-600" />; // búrka s krúpami
 
-  return "❔"; // fallback
+  return <CloudOff className="text-white" />; // fallback
 }
-
 
 export function getYearMonthFromOffset(offset) {
   const intM = Number(offset || 0);
