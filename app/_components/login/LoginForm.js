@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 
 export default function LoginForm() {
   const [error, setError] = useState("");
-  const logo = "/bg-logo-lightblue.png";
-  const logoMobile = "/bg-logo-orange.png";
+  // const logo = "/bg-logo-lightblue.png";
+  // const logoMobile = "/bg-logo-orange.png";
   const logoFilter = "/bg-logo-filter.png";
 
   const isMd = useMedia();

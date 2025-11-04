@@ -15,7 +15,7 @@ export default function LoginFormInput({
 
             <input
                 id={id}
-                className={`text-lg w-full rounded-md border px-5 py-3 text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${rest.disabled ? "bg-primary-50" : "bg-gray-50 font-semibold"
+                className={`text-lg shadow-xl w-full rounded-md border px-5 py-3 text-primary-700 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-300 ${rest.disabled ? "bg-primary-50" : "bg-gray-50 font-semibold"
                     } ${className}`}
                 {...rest}
             />
