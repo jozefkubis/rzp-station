@@ -5,14 +5,16 @@ import {
   CloudFog,
   CloudHail,
   CloudLightning,
-  CloudLightningRain,
   CloudOff,
   CloudRain,
+  CloudRainWind,
   CloudSnow,
   CloudSun,
   CloudSunRain,
-  Sun,
+  Snowflake,
+  Sun
 } from "lucide-react";
+
 
 export function formatDate(dateString) {
   if (!dateString) return "?";
@@ -46,24 +48,26 @@ export function getDaysUntilNextMedCheck(medCheckDateStr) {
 }
 
 export function getWeatherIcon(code) {
-  if (code === 0) return <Sun className="text-yellow-400" />; // jasno
-  if (code === 1 || code === 2) return <CloudSun className="text-yellow-300" />; // polooblačno
-  if (code === 3) return <Cloud className="text-white" />; // zamračené
+  const iconClass = "text-white h-7 w-7"; // jednotný štýl
 
-  if (code === 45 || code === 48) return <CloudFog className="text-white" />; // hmla
-  if (code === 51 || code === 53 || code === 55) return <CloudDrizzle className="text-white" />; // mrholenie
-  if (code === 61 || code === 63) return <CloudRain className="text-white" />; // dážď
-  if (code === 65 || code === 82) return <CloudLightningRain className="text-white" />; // lejak
-  if (code === 66 || code === 67) return <CloudHail className="text-white" />; // mrznúci dážď
-  if (code === 71 || code === 73) return <CloudSnow className="text-white" />; // sneženie
-  if (code === 75 || code === 77) return <CloudSnow className="text-white" />; // silné sneženie
-  if (code === 80 || code === 81) return <CloudSunRain className="text-white" />; // prehánky
-  if (code === 95) return <CloudLightning className="text-yellow-500" />; // búrka
-  if (code === 96 || code === 99)
-    return <CloudLightningRain className="text-yellow-600" />; // búrka s krúpami
+  if (code === 0) return <Sun className={iconClass} />; // jasno
+  if (code === 1 || code === 2) return <CloudSun className={iconClass} />; // polooblačno
+  if (code === 3) return <Cloud className={iconClass} />; // zamračené
 
-  return <CloudOff className="text-white" />; // fallback
+  if (code === 45 || code === 48) return <CloudFog className={iconClass} />; // hmla
+  if (code === 51 || code === 53 || code === 55) return <CloudDrizzle className={iconClass} />; // mrholenie
+  if (code === 61 || code === 63) return <CloudRain className={iconClass} />; // dážď
+  if (code === 65 || code === 82) return <CloudRainWind className={iconClass} />; // lejak
+  if (code === 66 || code === 67) return <CloudHail className={iconClass} />; // mrznúci dážď
+  if (code === 71 || code === 73) return <Snowflake className={iconClass} />; // sneženie
+  if (code === 75 || code === 77) return <CloudSnow className={iconClass} />; // silné sneženie
+  if (code === 80 || code === 81) return <CloudSunRain className={iconClass} />; // prehánky
+  if (code === 95) return <CloudLightning className={iconClass} />; // búrka
+  if (code === 96 || code === 99) return <CloudLightning className={iconClass} />; // búrka s krúpami
+
+  return <CloudOff className={iconClass} />; // fallback
 }
+
 
 export function getYearMonthFromOffset(offset) {
   const intM = Number(offset || 0);
