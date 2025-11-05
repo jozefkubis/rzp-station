@@ -45,6 +45,7 @@ export default function BirthdayCard({ profiles = [] }) {
     }
   }
 
+
   // Prehľad mesiaca – nech je zoradený podľa dňa
   monthList.sort((a, b) => a.dayNum - b.dayNum);
 
