@@ -145,6 +145,7 @@ export async function InsertUpdateProfilesData(formData) {
     dateOfBirth: formData.get("dateOfBirth"),
     medCheckDate: formData.get("medCheckDate"),
     psycho_check: formData.get("psycho_check"),
+    medEligibility: formData.get("medEligibility"),
     phone: formData.get("phone"),
     position: formData.get("position"),
   };
@@ -276,6 +277,7 @@ export async function AdminUpdateProfilesData(formData) {
     dateOfBirth: formData.get("dateOfBirth"),
     medCheckDate: formData.get("medCheckDate"),
     psycho_check: formData.get("psycho_check"),
+    medEligibility: formData.get("medEligibility"),
     phone: formData.get("phone"),
     position: formData.get("position"),
     admin: formData.get("admin"),
@@ -813,7 +815,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+    for (let d = 1;d <= daysInMonth;d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -922,7 +924,7 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0; i < left; i++) raw[i].floor++;
+    for (let i = 0;i < left;i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
@@ -1036,7 +1038,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
+    for (let i = a.length - 1;i > 0;i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1191,7 +1193,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1224,7 +1226,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty cez výber kandidátov (rešpektuje páry)
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0; k < need; k++) {
+      for (let k = 0;k < need;k++) {
         const uid =
           pickCandidate(
             type,
@@ -1380,7 +1382,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1410,7 +1412,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1; day <= lastDay; day++) {
+  for (let day = 1;day <= lastDay;day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;

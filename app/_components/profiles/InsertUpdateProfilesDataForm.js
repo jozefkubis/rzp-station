@@ -22,6 +22,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
   const [phone, setPhone] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [position, setPosition] = useState("");
+  const [eligibility, setEligibility] = useState("");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -154,6 +155,19 @@ function InsertUpdateProfilesDataForm({ profiles }) {
           name="psycho_check"
           onChange={(e) => setPsychoCheckDate(e.target.value)}
           value={psychoCheckDate || profiles?.psycho_check || ""}
+          {...(!profiles && { required: true })}
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <FormInput
+          label="Dátum spôsobilosť"
+          id="medEligibility"
+          type="date"
+          placeholder="Dátum spôsobilosť"
+          name="medEligibility"
+          onChange={(e) => setEligibility(e.target.value)}
+          value={eligibility || profiles?.medEligibility || ""}
           {...(!profiles && { required: true })}
         />
       </div>

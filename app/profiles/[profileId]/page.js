@@ -75,6 +75,10 @@ export default async function Page({ params }) {
       title: "Dátum psychotesty:",
       value: profile.psycho_check ? formatDate(profile.psycho_check) : "-",
     },
+    {
+      title: "Dátum spôsobilosť:",
+      value: profile.medEligibility ? formatDate(profile.medEligibility) : "-",
+    },
   ];
 
   return (

@@ -18,6 +18,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [medCheckDate, setMedCheckDate] = useState("");
   const [psychoCheckDate, setPsychoCheckDate] = useState("");
+  const [eligibility, setEligibility] = useState("");
   const [phone, setPhone] = useState("");
   const [position, setPosition] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -158,6 +159,19 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
           name="psycho_check"
           onChange={(e) => setPsychoCheckDate(e.target.value)}
           value={psychoCheckDate || profile?.psycho_check || ""}
+          {...(!profile && { required: true })}
+        />
+      </div>
+
+      <div className="flex flex-col">
+        <FormInput
+          label="Dátum spôsobilosť"
+          id="medEligibility"
+          type="date"
+          placeholder="Dátum spôsobilosť"
+          name="medEligibility"
+          onChange={(e) => setEligibility(e.target.value)}
+          value={eligibility || profile?.medEligibility || ""}
           {...(!profile && { required: true })}
         />
       </div>

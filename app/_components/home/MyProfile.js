@@ -1,7 +1,7 @@
 "use client";
 
 import { getDaysUntilNextMedCheck } from "@/app/_lib/helpers/functions";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { getDaysArray } from "../shifts/helpers_shifts";
 
 import ArrowBackDashboard from "./ArrowBackDashboard";
@@ -40,14 +40,22 @@ function countShiftsByType(shifts) {
 const hoursForShifts = (count, perShift = 12) => count * perShift;
 
 // formát +- dni do prehliadky
-const formatDaysLeft = (v) => (v < 0 ? `- ${Math.abs(v)} dní` : `+ ${v} dní`);
+const formatDaysLeft = (v) => {
+  if (v == null) return <span>—</span>;
+  if (v < 0)
+    return <span className="text-red-600 font-semibold">- {Math.abs(v)} dní</span>;
+  if (v <= 30)
+    return <span className="text-amber-600 font-semibold">{v} dní</span>;
+  return <span className="text-green-600">{v} dní</span>;
+};
+
 
 /* -------------------------------------------------------------------------- */
 /*                                KOMPONENT                                   */
 /* -------------------------------------------------------------------------- */
 
 export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const contract = profile?.contract ?? 1;
   /* uložíme offset do sessionStorage (na zapamätanie medzi reloadmi) */
