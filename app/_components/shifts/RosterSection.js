@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
@@ -92,17 +92,17 @@ export default function RosterSection({
     router.push(`/shifts?m=${offset}`);
   }
 
-  function useIsMdUp() {
-    const [isMdUp, setIsMdUp] = useState(false);
-    useEffect(() => {
-      const mql = window.matchMedia("(min-width: 768px)");
-      const update = () => setIsMdUp(mql.matches);
-      update();
-      mql.addEventListener?.("change", update);
-      return () => mql.removeEventListener?.("change", update);
-    }, []);
-    return isMdUp;
-  }
+  // function useIsMdUp() {
+  //   const [isMdUp, setIsMdUp] = useState(false);
+  //   useEffect(() => {
+  //     const mql = window.matchMedia("(min-width: 768px)");
+  //     const update = () => setIsMdUp(mql.matches);
+  //     update();
+  //     mql.addEventListener?.("change", update);
+  //     return () => mql.removeEventListener?.("change", update);
+  //   }, []);
+  //   return isMdUp;
+  // }
 
   // const isMdUp = useIsMdUp();
 

@@ -83,7 +83,7 @@ export default async function Page({ searchParams }) {
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
-      <aside className="bg-gray-50 py-4 md:bg-primary-700 lg:sticky lg:top-0 lg:w-16 lg:py-8">
+      <aside className="bg-gray-50 py-4 md:bg-primary-700 lg:sticky lg:top-0 lg:w-16 lg:py-8 md:shadow-none">
         <ul className="flex gap-5 px-6 lg:flex-col lg:items-center">
           <NavLinks searchParams={searchParams} />
           <MobileWeatherCard />
@@ -91,7 +91,7 @@ export default async function Page({ searchParams }) {
       </aside>
       {/* <div className=""></div> */}
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-4 md:grid-cols-2 md:items-end md:p-6 lg:gap-8">
+      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-6 md:grid-cols-2 md:items-end md:p-6 lg:gap-8">
         <div className="col-span-2 md:hidden">
           <BirthdayCard profiles={profiles} />
         </div>

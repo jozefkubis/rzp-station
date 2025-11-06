@@ -50,7 +50,7 @@ export function getDaysUntilNextMedCheck(medCheckDateStr) {
 export function getWeatherIcon(code) {
   const iconClass = "text-white h-7 w-7"; // jednotný štýl
 
-  if (code === 0) return <Sun className={iconClass} />; // jasno
+  if (code === 0) return <Sun className="text-yellow-500" />; // jasno
   if (code === 1 || code === 2) return <CloudSun className={iconClass} />; // polooblačno
   if (code === 3) return <Cloud className={iconClass} />; // zamračené
 
