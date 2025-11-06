@@ -13,7 +13,7 @@ import { Calendar as BigCalendar, Views } from "react-big-calendar";
 import WarningNotice from "../WarningNotice";
 import Modal from "/app/_components/Modal";
 
-export default function Calendar({ admin }) {
+export default function Calendar({ admin, shiftsAndRequests }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState(Views.MONTH);
@@ -40,6 +40,16 @@ export default function Calendar({ admin }) {
       note: task.note,
     }));
 
+    const shiftEvents = shiftsAndRequests.map((shift) => ({
+      id: "shift-" + shift.id,
+      // title: `${shift.shift} ${shift.request}`,
+      title: shift.shift,
+      start: new Date(shift.date),
+      end: new Date(shift.date),
+      allDay: true,
+      isShift: true,
+    }));
+
     const holidayEvents = skHolidays2025.map((h) => ({
       id: "hol-" + h.date,
       title: h.localName,
@@ -49,7 +59,7 @@ export default function Calendar({ admin }) {
       isHoliday: true,
     }));
 
-    setEvents([...holidayEvents, ...userEvents]);
+    setEvents([...holidayEvents, ...shiftEvents, ...userEvents]);
     setLoading(false);
   }, []);
 
@@ -88,6 +98,50 @@ export default function Calendar({ admin }) {
 
   const eventPropGetter = useCallback(
     (event) => {
+      if (event.isShift) {
+        // 1️⃣ Ak chýba title
+        if (!event.title) {
+          return {
+            style: {
+              backgroundColor: "transparent",
+              border: "none",
+            },
+          };
+        }
+
+        // 2️⃣ Denná
+        if (event.title.includes("D")) {
+          return {
+            style: {
+              backgroundColor: "#f1c40f",
+              border: "none",
+              color: "white",
+            },
+          };
+        }
+
+        // 3️⃣ Nočná
+        if (event.title.includes("N")) {
+          return {
+            style: {
+              backgroundColor: "#2c3e50",
+              border: "none",
+              color: "white",
+            },
+          };
+        }
+
+        // 4️⃣ Iné typy (napr. RD, PN, OČR)
+        return {
+          style: {
+            backgroundColor: "#FFD01C",
+            border: "none",
+            color: "white",
+          },
+        };
+      }
+
+
       // urgentné
       if (event.title.includes("!")) {
         return {

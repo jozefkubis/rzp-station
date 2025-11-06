@@ -1,6 +1,6 @@
 import Calendar from "../_components/calendar/Calendar";
 import Header from "../_components/Header";
-import { getAdmin, getUser } from "../_lib/data-service";
+import { getAdmin, getShiftsForProfileForYear, getUser } from "../_lib/data-service";
 
 export const metadata = {
   title: "Kalendár",
@@ -9,12 +9,20 @@ export const metadata = {
 export default async function page() {
   const user = await getUser();
   const admin = await getAdmin(user.email);
+  const shifts = await getShiftsForProfileForYear(user.id);
+
+  const shiftsAndRequests = shifts.map((shift) => ({
+    shift: shift.shift_type === null ? "" : shift.shift_type,
+    // request: shift.request_type === null ? "" : shift.request_type,
+    date: shift.date,
+  }));
+
 
   return (
     <div className="h-screen">
       <Header />
       <main className="w-full h-[90%] md:px-10 md:py-7">
-        <Calendar admin={admin} />
+        <Calendar admin={admin} shiftsAndRequests={shiftsAndRequests} />
       </main>
     </div>
   );
