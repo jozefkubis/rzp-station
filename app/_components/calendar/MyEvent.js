@@ -10,7 +10,7 @@ export default function MyEvent({ event }) {
       <div data-cy="calendar-event">
         <div
           style={{ backgroundColor: bg }}
-          className="flex h-[1.5rem] w-[1.5rem] items-center justify-center rounded-full text-[0.6rem] font-semibold text-white md:h-[2rem] md:w-[2rem] md:px-2 md:py-2 md:text-[0.9rem]"
+          className="flex h-[1.3rem] w-[1.3rem] items-center justify-center rounded-full text-[0.6rem] font-semibold text-white md:h-[2rem] md:w-[2rem] md:px-2 md:py-2 md:text-[0.9rem]"
         >
           <strong>{event.title}</strong>
         </div>
