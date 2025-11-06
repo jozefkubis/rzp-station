@@ -1,10 +1,29 @@
 export default function MyEvent({ event }) {
+  if (event.isShift) {
+    const bg = event.title?.includes("D")
+      ? "#f1c40f"
+      : event.title?.includes("N")
+        ? "#2c3e50"
+        : "transparent";
+
     return (
-        <div data-cy="calendar-event">
-            <strong>{event.title}</strong>
-            {event.note && (
-                <div className="text-xs truncate">{event.note}</div>
-            )}
+      <div data-cy="calendar-event">
+        <div
+          style={{ backgroundColor: bg }}
+          className="flex h-[1.5rem] w-[1.5rem] items-center justify-center rounded-full text-[0.6rem] font-semibold text-white md:h-[2rem] md:w-[2rem] md:px-2 md:py-2 md:text-[0.9rem]"
+        >
+          <strong>{event.title}</strong>
         </div>
+
+        {event.note && <div className="truncate text-xs">{event.note}</div>}
+      </div>
     );
+  }
+
+  return (
+    <div data-cy="calendar-event">
+      <strong>{event.title}</strong>
+      {event.note && <div className="truncate text-xs">{event.note}</div>}
+    </div>
+  );
 }

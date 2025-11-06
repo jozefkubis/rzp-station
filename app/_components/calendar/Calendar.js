@@ -59,7 +59,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       isHoliday: true,
     }));
 
-    setEvents([...holidayEvents, ...shiftEvents, ...userEvents]);
+    setEvents([...userEvents, ...holidayEvents, ...shiftEvents]);
     setLoading(false);
   }, []);
 
@@ -104,7 +104,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           return {
             style: {
               backgroundColor: "transparent",
-              border: "none",
+              // border: "none",
             },
           };
         }
@@ -113,9 +113,12 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         if (event.title.includes("D")) {
           return {
             style: {
-              backgroundColor: "#f1c40f",
+              backgroundColor: "transparent",
+              // backgroundColor: "#f1c40f",
               border: "none",
-              color: "white",
+              // color: "#2c3e50",
+              // color: "white",
+              borderRadius: "9999px",
             },
           };
         }
@@ -124,9 +127,11 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         if (event.title.includes("N")) {
           return {
             style: {
-              backgroundColor: "#2c3e50",
-              border: "none",
-              color: "white",
+              backgroundColor: "transparent",
+              // backgroundColor: "#2c3e50",
+              // border: "none",
+              // color: "white",
+              color: "#2c3e50",
             },
           };
         }
@@ -134,20 +139,21 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         // 4️⃣ Iné typy (napr. RD, PN, OČR)
         return {
           style: {
-            backgroundColor: "#FFD01C",
-            border: "none",
-            color: "white",
+            backgroundColor: "transparent",
+            // backgroundColor: "#FFD01C",
+            // border: "none",
+            // color: "white",
+            color: "#2c3e50",
           },
         };
       }
-
 
       // urgentné
       if (event.title.includes("!")) {
         return {
           style: {
             backgroundColor: "#F21905",
-            border: "none",
+            // border: "none",
             color: "white",
           },
         };
