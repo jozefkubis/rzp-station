@@ -1,4 +1,5 @@
 import "@/app/_styles/globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Toaster } from "react-hot-toast";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <Toaster position="top-center" />
           {children}
           <SpeedInsights />
+          <Analytics />
         </main>
         {/* </div> */}
       </body>
