@@ -138,12 +138,14 @@ export function shiftTableStats(normHours, contract) {
       key: "totalHours",
       label: "SH",
       calc: (shifts) => {
-        const raw = shifts.reduce(
+        const regular = shifts.reduce(
 
 
           (sum, s) => sum + (HOURS_CONTRACT[s.shift_type] || 0),
           0,
         );
+        const extra = shifts.reduce((sum, s) => sum + reqHours(s), 0);
+        const raw = regular + extra
         return clampNearZero(round1(raw));
       },
     },
