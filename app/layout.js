@@ -1,4 +1,5 @@
 import "@/app/_styles/globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Toaster } from "react-hot-toast";
 // import Header from "./_components/Header"
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         <main className="mx-auto w-full">
           <Toaster position="top-center" />
           {children}
+          <SpeedInsights />
         </main>
         {/* </div> */}
       </body>
