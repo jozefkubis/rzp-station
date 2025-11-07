@@ -19,6 +19,8 @@ npm install --save-dev eslint-plugin-cypress
 npm i @dnd-kit/core @dnd-kit/sortable @dnd-kit/modifiers
 npm i -d tailwindcss-motion
 npm i lucide-react
+npm install @vercel/analytics @vercel/speed-insights
+npm i -g vercel
 
 
 settings.json v vscode:
