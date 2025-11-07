@@ -25,6 +25,16 @@ export default function Calendar({ admin, shiftsAndRequests }) {
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
+    const shiftEvents = shiftsAndRequests.map((shift) => ({
+      id: "shift-" + shift.id,
+      // title: `${shift.shift} ${shift.request}`,
+      title: shift.shift,
+      start: new Date(shift.date),
+      end: new Date(shift.date),
+      allDay: true,
+      isShift: true,
+    }));
+
     const data = await fetch("/api/tasks").then((res) => res.json());
     const userEvents = data.map((task) => ({
       id: task.id,
@@ -40,16 +50,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       note: task.note,
     }));
 
-    const shiftEvents = shiftsAndRequests.map((shift) => ({
-      id: "shift-" + shift.id,
-      // title: `${shift.shift} ${shift.request}`,
-      title: shift.shift,
-      start: new Date(shift.date),
-      end: new Date(shift.date),
-      allDay: true,
-      isShift: true,
-    }));
-
     const holidayEvents = skHolidays2025.map((h) => ({
       id: "hol-" + h.date,
       title: h.localName,
@@ -59,7 +59,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       isHoliday: true,
     }));
 
-    setEvents([...userEvents, ...holidayEvents, ...shiftEvents]);
+    setEvents([...shiftEvents, ...userEvents, ...holidayEvents,]);
     setLoading(false);
   }, []);
 
