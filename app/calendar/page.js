@@ -11,11 +11,13 @@ export default async function page() {
   const admin = await getAdmin(user.email);
   const shifts = await getShiftsForProfileForYear(user.id);
 
-  const shiftsAndRequests = shifts.map((shift) => ({
-    shift: shift.shift_type === null ? "" : shift.shift_type,
-    // request: shift.request_type === null ? "" : shift.request_type,
-    date: shift.date,
-  }));
+  const shiftsAndRequests = shifts
+    .filter((shift) => shift.shift_type) // vynechá prázdne riadky
+    .map((shift) => ({
+      shift: shift.shift_type,
+      date: shift.date,
+    }));
+
 
 
   return (

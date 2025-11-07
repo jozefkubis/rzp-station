@@ -154,6 +154,10 @@ th.rbc-header {
   text-overflow: ellipsis !important;
 }
 
+/* .rbc-row-segment {
+  height: auto !important;
+} */
+
 /* Week/Day – scroll v ráme */
 .rbc-time-content {
   overflow: auto !important;

@@ -1,10 +1,15 @@
 export default function MyEvent({ event }) {
   if (event.isShift) {
-    const bg = event.title?.includes("D")
-      ? "#f1c40f"
-      : event.title?.includes("N")
-        ? "#2c3e50"
-        : "transparent";
+    const bg = event.title?.includes("RD")
+      ? "#27ae60" // RD - zelená
+      : event.title?.includes("PN")
+        ? "#c0392b" // R - cervená
+        : event.title?.includes("N")
+          ? "#2c3e50" // N - tmavá
+          : event.title?.includes("D")
+            ? "#f1c40f" // D - žltá
+            : "transparent";
+
 
     return (
       <div data-cy="calendar-event">

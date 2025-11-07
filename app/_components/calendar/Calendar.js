@@ -99,51 +99,57 @@ export default function Calendar({ admin, shiftsAndRequests }) {
   const eventPropGetter = useCallback(
     (event) => {
       if (event.isShift) {
-        // 1️⃣ Ak chýba title
         if (!event.title) {
           return {
             style: {
               backgroundColor: "transparent",
-              // border: "none",
             },
           };
         }
 
-        // 2️⃣ Denná
-        if (event.title.includes("D")) {
+        if (event.title.includes("RD")) {
           return {
             style: {
               backgroundColor: "transparent",
-              // backgroundColor: "#f1c40f",
-              border: "none",
-              // color: "#2c3e50",
-              // color: "white",
               borderRadius: "9999px",
             },
           };
         }
 
-        // 3️⃣ Nočná
-        if (event.title.includes("N")) {
+        if (event.title.includes("D")) {
           return {
             style: {
               backgroundColor: "transparent",
-              // backgroundColor: "#2c3e50",
-              // border: "none",
-              // color: "white",
-              color: "#2c3e50",
+              border: "none",
+              borderRadius: "9999px",
             },
           };
         }
 
-        // 4️⃣ Iné typy (napr. RD, PN, OČR)
+        if (event.title.includes("PN")) {
+          return {
+            style: {
+              backgroundColor: "transparent",
+              borderRadius: "9999px",
+            },
+          };
+        }
+
+        if (event.title.includes("N")) {
+          return {
+            style: {
+              backgroundColor: "transparent",
+              borderRadius: "9999px",
+
+            },
+          };
+        }
+
         return {
           style: {
             backgroundColor: "transparent",
-            // backgroundColor: "#FFD01C",
-            // border: "none",
-            // color: "white",
-            color: "#2c3e50",
+            borderRadius: "9999px",
+
           },
         };
       }
