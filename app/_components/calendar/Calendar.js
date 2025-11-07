@@ -59,7 +59,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       isHoliday: true,
     }));
 
-    setEvents([...shiftEvents, ...userEvents, ...holidayEvents,]);
+    setEvents([...shiftEvents, ...userEvents, ...holidayEvents]);
     setLoading(false);
   }, []);
 
@@ -140,7 +140,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
             style: {
               backgroundColor: "transparent",
               borderRadius: "9999px",
-
             },
           };
         }
@@ -149,7 +148,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           style: {
             backgroundColor: "transparent",
             borderRadius: "9999px",
-
           },
         };
       }
@@ -171,8 +169,8 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           backgroundColor: "#FFF144",
           border: "none",
           color: "#525759",
-          fontSize: "0.75rem",
-          fontWeight: 500,
+          // fontSize: "0.75rem",
+          // fontWeight: 500,
           display: showHoliday ? "none" : "",
         };
 

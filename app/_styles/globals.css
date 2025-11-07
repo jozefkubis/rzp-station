@@ -136,6 +136,18 @@ th.rbc-header {
   border-radius: 8px !important;
 }
 
+.rbc-agenda-date-cell {
+  background-color: white !important;
+  color: theme("colors.primary.700") !important;
+  font-weight: 500 !important;
+}
+
+.rbc-agenda-time-cell {
+  background-color: white !important;
+  color: theme("colors.primary.700") !important;
+  font-weight: 500 !important;
+}
+
 /* Mesačný grid – výška riadkov (desktop) */
 .rbc-calendar .rbc-month-view .rbc-month-row {
   min-height: 64px !important;
@@ -196,6 +208,22 @@ th.rbc-header {
 
 /* ===== Mobil (≤ 640px) ========================================== */
 @media (max-width: 640px) {
+  .rbc-agenda-date-cell {
+    background-color: white !important;
+    color: theme("colors.primary.700") !important;
+    font-size: 0.75rem !important;
+  }
+
+  .rbc-agenda-time-cell {
+    background-color: white !important;
+    color: theme("colors.primary.700") !important;
+    font-size: 0.75rem !important;
+  }
+
+  .rbc-agenda-event-cell {
+    font-size: 0.75rem !important;
+  }
+
   /* Toolbar – stĺpcovo, label center */
   .rbc-toolbar {
     gap: 6px !important;
