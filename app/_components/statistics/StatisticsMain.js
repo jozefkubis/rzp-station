@@ -96,7 +96,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
 
   return (
     <div className="max-h-screeen-md h-[100dvh] md:h-screen">
-      <div className="flex h-full flex-col overflow-auto px-3 md:overflow-hidden md:px-[8rem] md:py-[4rem] md:pb-24">
+      <div className="flex h-full flex-col overflow-auto px-3 md:overflow-auto md:px-[8rem] md:py-[4rem] md:pb-24">
         {/* Sticky header pre mobile, pôvodné farby od md */}
         <YearHeadStatistics className="sticky top-0 z-20 -mx-3 bg-primary-900 px-3 py-2 text-white md:static md:-mx-0 md:bg-transparent md:px-0 md:text-primary-700">
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
