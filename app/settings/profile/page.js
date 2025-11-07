@@ -2,32 +2,40 @@ import Header from "@/app/_components/Header";
 import InsertUpdateProfilesDataForm from "@/app/_components/profiles/InsertUpdateProfilesDataForm";
 import SideBar from "@/app/_components/SideBar";
 import { getProfilesData, getUser } from "@/app/_lib/data-service";
-import { HiOutlineInformationCircle, HiOutlineLockClosed } from "react-icons/hi";
-
+import {
+  HiOutlineInformationCircle,
+  HiOutlineLockClosed,
+} from "react-icons/hi";
 
 export const metadata = {
-    title: "Profilové nastavenia",
+  title: "Profilové nastavenia",
 };
 
 export default async function page() {
+  const navLinks = [
+    {
+      name: "Informácie",
+      href: "/settings/profile",
+      icon: <HiOutlineInformationCircle />,
+    },
+    { name: "Heslo", href: "/settings/user", icon: <HiOutlineLockClosed /> },
+  ];
 
-    const navLinks = [
-        { name: "Informácie", href: "/settings/profile", icon: <HiOutlineInformationCircle /> },
-        { name: "Heslo", href: "/settings/user", icon: <HiOutlineLockClosed /> },
-    ];
+  const user = await getUser();
+  const profiles = await getProfilesData(user?.email);
 
-    const user = await getUser();
-    const profiles = await getProfilesData(user?.email);
-
-    return (
-        <div>
-            <Header />
-            <div data-cy="settings-profile-page" className="max-h-screen-md flex flex-col">
-                <SideBar navLinks={navLinks} />
-                <div className="md:pl-[13rem] flex justify-center md:h-screen max-h-screen-md overflow-auto">
-                    <InsertUpdateProfilesDataForm profiles={profiles} />
-                </div>
-            </div>
+  return (
+    <div>
+      <Header />
+      <div
+        data-cy="settings-profile-page"
+        className="max-h-screen-md flex flex-col"
+      >
+        <SideBar navLinks={navLinks} />
+        <div className="max-h-screen-md flex justify-center overflow-auto md:h-2/3 md:pl-[13rem]">
+          <InsertUpdateProfilesDataForm profiles={profiles} />
         </div>
-    );
+      </div>
+    </div>
+  );
 }
