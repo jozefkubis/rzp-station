@@ -10,7 +10,7 @@ export default function ArrowForwDashboard({ offset, goTo, disabled }) {
       disabled={disabled}
       className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95 disabled:opacity-40"
     >
-      <HiArrowNarrowRight className="text-2xl text-primary-300" />
+      <HiArrowNarrowRight className="text-primary-300 lg:text-lg xl:text-2xl" />
     </button>
   );
 }

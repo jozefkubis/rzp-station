@@ -10,7 +10,7 @@ export default function ArrowBackDashboard({ offset, goTo, disabled }) {
       disabled={disabled}
       className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95 disabled:opacity-40"
     >
-      <HiArrowNarrowLeft className="text-2xl text-primary-300" />
+      <HiArrowNarrowLeft className="text-primary-300 lg:text-lg xl:text-2xl" />
     </button>
   );
 }

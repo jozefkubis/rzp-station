@@ -43,12 +43,13 @@ const hoursForShifts = (count, perShift = 12) => count * perShift;
 const formatDaysLeft = (v) => {
   if (v == null) return <span>—</span>;
   if (v < 0)
-    return <span className="text-red-600 font-semibold">- {Math.abs(v)} dní</span>;
+    return (
+      <span className="font-semibold text-red-600">- {Math.abs(v)} dní</span>
+    );
   if (v <= 30)
-    return <span className="text-amber-600 font-semibold">{v} dní</span>;
+    return <span className="font-semibold text-amber-600">{v} dní</span>;
   return <span className="text-green-600">{v} dní</span>;
 };
-
 
 /* -------------------------------------------------------------------------- */
 /*                                KOMPONENT                                   */
@@ -155,10 +156,10 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   return (
     <div>
       {/* navigácia medzi mesiacmi */}
-      <div className="hidden w-full items-center justify-end gap-6 px-8 py-4 font-semibold text-primary-700 md:flex">
-        <div className="flex min-w-60 justify-between">
+      <div className="hidden w-full items-center justify-end px-8 py-4 font-semibold text-primary-700 md:flex lg:gap-4 xl:gap-6">
+        <div className="flex justify-between lg:min-w-52 xl:min-w-60">
           <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
-          <h3 className="text-lg">{monthLabel}</h3>
+          <h3 className="lg:text-base xl:text-lg">{monthLabel}</h3>
           <ArrowForwDashboard offset={offset} goTo={goTo} disabled={disabled} />
         </div>
       </div>
