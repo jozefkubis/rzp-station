@@ -7,7 +7,7 @@ import {
   HiArrowRightOnRectangle,
   HiOutlineCalendarDays,
   HiOutlineUserPlus,
-  HiOutlineUsers
+  HiOutlineUsers,
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
 
@@ -28,32 +28,44 @@ export default async function NavLinks({ searchParams }) {
     {
       href: `/shifts?m=${shiftsOffset}`,
       label: "Služby",
-      icon: <PiAmbulance size={28} />,
+      icon: (
+        <PiAmbulance className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
     {
       href: "/calendar",
       label: "Kalendár",
-      icon: <HiOutlineCalendarDays size={28} />,
+      icon: (
+        <HiOutlineCalendarDays className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
     {
       href: "/profiles",
       label: "Záchranári",
-      icon: <HiOutlineUsers size={28} />,
+      icon: (
+        <HiOutlineUsers className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
     {
       href: "/register",
       label: "Registrácia",
-      icon: <HiOutlineUserPlus size={28} />,
+      icon: (
+        <HiOutlineUserPlus className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
     {
       href: `/statistics?y=${statsOffset}`,
       label: "Štatistiky",
-      icon: <HiOutlineChartSquareBar size={28} />,
+      icon: (
+        <HiOutlineChartSquareBar className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
     {
       href: "/login",
       label: "Logout",
-      icon: <HiArrowRightOnRectangle size={28} />,
+      icon: (
+        <HiArrowRightOnRectangle className="md:h-4 md:w-4 lg:h-5 lg:w-5 xl:h-7 xl:w-7" />
+      ),
     },
   ];
 
@@ -64,7 +76,7 @@ export default async function NavLinks({ searchParams }) {
       <nav className="hidden gap-4 md:flex md:px-6 lg:flex-col">
         {/* Avatar */}
         <Link href="/settings/profile" aria-label="Profil">
-          <div className="relative size-14 overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
+          <div className="relative overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300 lg:size-12 xl:size-14">
             <Image
               src={avatarUrl || BLANK_AVATAR}
               alt="Avatar"
@@ -81,7 +93,7 @@ export default async function NavLinks({ searchParams }) {
               href={href}
               aria-label={label}
               data-tip={label}
-              className="relative grid size-12 place-items-center rounded-xl text-primary-200 transition before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-1 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-r-full before:bg-primary-700 before:px-4 before:py-2 before:text-lg before:text-primary-50 before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-600/40 hover:text-primary-50 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95"
+              className="lx:before:text-lg relative grid place-items-center rounded-xl text-primary-200 transition before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-1 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-r-full before:bg-primary-700 before:px-4 before:py-2 before:text-primary-50 before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-600/40 hover:text-primary-50 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95 lg:size-10 lg:before:text-sm xl:size-12"
             >
               {icon}
             </Link>

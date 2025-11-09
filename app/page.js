@@ -83,7 +83,7 @@ export default async function Page({ searchParams }) {
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
-      <aside className="bg-gray-50 py-4 md:bg-primary-700 lg:sticky lg:top-0 lg:w-16 lg:py-8 md:shadow-none">
+      <aside className="bg-gray-50 py-4 md:bg-primary-700 md:shadow-none lg:sticky lg:top-0 lg:w-14 lg:py-8 xl:w-16">
         <ul className="flex gap-5 px-6 lg:flex-col lg:items-center">
           <NavLinks searchParams={searchParams} />
           <MobileWeatherCard />
@@ -97,7 +97,7 @@ export default async function Page({ searchParams }) {
         </div>
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
-          <div className="col-span-2 flex justify-between w-full">
+          <div className="col-span-2 flex w-full justify-between">
             {/* <div className="flex justify-between"> */}
             <div className="w-ful flex items-end justify-start">
               <BirthdayCard profiles={profiles} />
