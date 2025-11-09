@@ -18,7 +18,7 @@ export default function Stat({ icon, title, value, color = "blue" }) {
       <div
         className={`${bg} row-span-2 flex aspect-square items-center justify-center rounded-full`}
       >
-        <span className={`${text} md:text-lg lg:text-xl xl:text-3xl`}>
+        <span className={`${text} md:text-lg lg:p-1 lg:text-xl xl:text-3xl`}>
           {icon}
         </span>
       </div>
