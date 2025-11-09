@@ -93,7 +93,7 @@ export default async function NavLinks({ searchParams }) {
               href={href}
               aria-label={label}
               data-tip={label}
-              className="lx:before:text-lg relative grid place-items-center rounded-xl text-primary-200 transition before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-1 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-r-full before:bg-primary-700 before:px-4 before:py-2 before:text-primary-50 before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-600/40 hover:text-primary-50 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95 lg:size-10 lg:before:text-sm xl:size-12"
+              className="lx:before:text-lg relative grid place-items-center rounded-xl text-primary-200 transition before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-1 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-r-full before:bg-primary-700 before:px-4 before:py-2 before:text-primary-50 before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-600/40 hover:text-primary-50 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 active:scale-95 lg:size-10 lg:before:text-sm xl:before:size-12"
             >
               {icon}
             </Link>
