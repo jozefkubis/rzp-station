@@ -91,7 +91,7 @@ export default async function Page({ searchParams }) {
       </aside>
       {/* <div className=""></div> */}
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-6 md:grid-cols-2 md:items-end md:p-6 lg:gap-4 xl:gap-8">
+      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-6 md:grid-cols-2 md:items-end md:p-6 lg:gap-2 xl:gap-8">
         <div className="col-span-2 md:hidden">
           <BirthdayCard profiles={profiles} />
         </div>
@@ -119,7 +119,7 @@ export default async function Page({ searchParams }) {
         </div>
 
         {/* Kalendáre: len od md a nech sú v dvoch stĺpcoch, kontajner span-2 */}
-        <section className="col-span-2 hidden md:grid md:grid-cols-2 md:gap-6">
+        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4 xl:gap-6">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}

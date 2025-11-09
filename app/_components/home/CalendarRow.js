@@ -7,7 +7,7 @@ export function CalendarMainRow({ children }) {
 }
 
 export function CalendarDivRow({ children }) {
-  return <div className="flex flex-col gap-5">{children}</div>;
+  return <div className="flex flex-col lg:gap-1 xl:gap-5">{children}</div>;
 }
 
 export function CalendarHeaderRow({ children }) {
@@ -20,10 +20,8 @@ export function CalendarHeaderRow({ children }) {
 
 export function CalendarPRow({ children }) {
   return (
-    <div className="mx-auto w-[80%] rounded-xl bg-slate-50 p-4 text-sm font-medium ring-1 ring-slate-300 md:text-base 2xl:text-xl">
-      <ul>
-        {children}
-      </ul>
+    <div className="mx-auto w-[80%] rounded-xl bg-slate-50 p-4 text-sm font-medium ring-1 ring-slate-300 md:text-[0.9rem] 2xl:text-xl">
+      <ul>{children}</ul>
     </div>
   );
 }
