@@ -70,11 +70,11 @@ export default function WeatherCard() {
   }
 
   return (
-    <div className="hidden items-center justify-end gap-2 rounded-2xl md:flex md:px-8 w-full">
+    <div className="hidden w-full items-center justify-end gap-2 rounded-2xl md:flex lg:px-4 xl:px-8">
       <button onClick={handleClick} className="">
-        <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-4">
-          <div className="text-2xl md:text-4xl">{icon}</div>
-          <div className="text-md font-medium md:text-lg">
+        <div className="lg-px-2 flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md xl:p-4">
+          <div className="md:text-base lg:text-lg xl:text-4xl">{icon}</div>
+          <div className="font-medium md:text-base lg:text-base">
             {todayTempMax} °C / {todayTempMin} °C
           </div>
         </div>
