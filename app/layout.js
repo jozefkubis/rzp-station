@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
           <Toaster position="top-center" />
 
           {/* Hlavný obsah – centrovaný kontajner */}
-          <div className="mx-auto w-full max-w-6xl px-2 sm:px-4 lg:px-6 xl:px-8">
+          <div className="mx-auto w-full max-w-6xl lg:px-6 xl:px-8">
             {children}
           </div>
 

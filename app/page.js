@@ -84,7 +84,7 @@ export default async function Page({ searchParams }) {
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
       <aside className="border-b border-primary-100/60 bg-gradient-to-b from-primary-50 via-slate-50 to-primary-100 md:border-b-0 md:border-r md:border-primary-100/60 lg:sticky lg:top-0 lg:w-14 lg:py-8 xl:w-16">
-        <div className="flex h-full flex-col items-center gap-6 py-4">
+        <div className="flex h-full lg:flex-col lg:items-center px-4 gap-6 py-4">
           <NavLinks searchParams={searchParams} />
           <MobileWeatherCard />
         </div>
