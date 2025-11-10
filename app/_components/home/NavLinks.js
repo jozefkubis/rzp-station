@@ -61,10 +61,10 @@ export default async function NavLinks({ searchParams }) {
   return (
     <>
       {/* DESKTOP NAV */}
-      <nav className="hidden flex-col items-center gap-4 md:flex">
+      <nav className="hidden items-center gap-4 md:flex lg:flex-col">
         {/* Avatar */}
         <Link href="/settings/profile" aria-label="Profil">
-          <div className="relative overflow-hidden rounded-full border border-primary-100 bg-white shadow-sm transition hover:scale-[1.05] hover:shadow-md lg:size-12">
+          <div className="relative overflow-hidden rounded-full border border-primary-100 bg-white shadow-sm transition hover:scale-[1.05] hover:shadow-md md:size-8 lg:size-12">
             <Image
               src={avatarUrl || BLANK_AVATAR}
               alt="Avatar"
@@ -75,7 +75,7 @@ export default async function NavLinks({ searchParams }) {
         </Link>
 
         {/* Linky */}
-        <ul className="lg:tems-center mt-4 flex gap-3 lg:flex-col">
+        <ul className="mt-4 flex items-center gap-3 lg:flex-col">
           {links.map(({ href, label, icon }) => (
             <li key={href}>
               <Link
