@@ -30,44 +30,45 @@ export default function MobileNav({ shiftsOffset, statsOffset }) {
     };
   }, [open]);
 
-  const links = useMemo(() => [
-    {
-      href: "/settings/profile",
-      label: "Môj profil",
-      icon: <HiOutlineUserCircle size={28} />,
-    },
-    {
-      href: `/shifts?m=${shiftsOffset}`,
-      label: "Služby",
-      icon: <PiAmbulance size={28} />,
-    },
-    {
-      href: "/calendar",
-      label: "Kalendár",
-      icon: <HiOutlineCalendarDays size={28} />,
-    },
-    {
-      href: "/profiles",
-      label: "Záchranári",
-      icon: <HiOutlineUsers size={28} />,
-    },
-    {
-      href: "/register",
-      label: "Registrácia",
-      icon: <HiOutlineUserPlus size={28} />,
-    },
-    {
-      href: `/statistics?y=${statsOffset}`,
-      label: "Štatistiky",
-      icon: <HiOutlineChartSquareBar size={28} />,
-    },
-    {
-      href: "/login",
-      label: "Logout",
-      icon: <HiArrowRightOnRectangle size={28} />,
-    },
-  ],
-    [shiftsOffset, statsOffset]
+  const links = useMemo(
+    () => [
+      {
+        href: "/settings/profile",
+        label: "Môj profil",
+        icon: <HiOutlineUserCircle size={28} />,
+      },
+      {
+        href: `/shifts?m=${shiftsOffset}`,
+        label: "Služby",
+        icon: <PiAmbulance size={28} />,
+      },
+      {
+        href: "/calendar",
+        label: "Kalendár",
+        icon: <HiOutlineCalendarDays size={28} />,
+      },
+      {
+        href: "/profiles",
+        label: "Záchranári",
+        icon: <HiOutlineUsers size={28} />,
+      },
+      {
+        href: "/register",
+        label: "Registrácia",
+        icon: <HiOutlineUserPlus size={28} />,
+      },
+      {
+        href: `/statistics?y=${statsOffset}`,
+        label: "Štatistiky",
+        icon: <HiOutlineChartSquareBar size={28} />,
+      },
+      {
+        href: "/login",
+        label: "Logout",
+        icon: <HiArrowRightOnRectangle size={28} />,
+      },
+    ],
+    [shiftsOffset, statsOffset],
   );
 
   return (
@@ -87,8 +88,9 @@ export default function MobileNav({ shiftsOffset, statsOffset }) {
       <div
         onClick={() => setOpen(false)}
         aria-hidden={!open}
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-200 ease-out ${open ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] transition-opacity duration-200 ease-out ${
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
       />
 
       {/* PANEL */}
@@ -96,8 +98,9 @@ export default function MobileNav({ shiftsOffset, statsOffset }) {
         id="mobile-menu"
         role="dialog"
         aria-modal="true"
-        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ease-out ${open ? "translate-x-0" : "-translate-x-full"
-          } md:hidden`}
+        className={`fixed left-0 top-0 z-50 h-full max-h-[100dvh] w-60 transform overflow-y-auto bg-primary-700 p-6 shadow-xl transition-transform duration-200 ease-out ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:hidden`}
       >
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">

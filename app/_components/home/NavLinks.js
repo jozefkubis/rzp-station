@@ -75,7 +75,7 @@ export default async function NavLinks({ searchParams }) {
         </Link>
 
         {/* Linky */}
-        <ul className="mt-4 flex flex-col items-center gap-3">
+        <ul className="lg:tems-center mt-4 flex gap-3 lg:flex-col">
           {links.map(({ href, label, icon }) => (
             <li key={href}>
               <Link
