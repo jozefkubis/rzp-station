@@ -156,13 +156,16 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
   return (
     <div>
       {/* navigácia medzi mesiacmi */}
-      <div className="hidden w-full items-center justify-end py-4 font-semibold text-primary-700 md:flex lg:gap-4 lg:px-4 xl:gap-6 xl:px-8">
-        <div className="flex justify-between lg:min-w-52 xl:min-w-60">
+      <div className="hidden w-full items-center justify-end py-3 font-semibold text-primary-700 md:flex lg:gap-4 lg:px-4 xl:gap-6 xl:px-8">
+        <div className="flex items-center justify-between gap-3 md:min-w-[11rem] lg:min-w-[13rem] xl:min-w-[15rem]">
           <ArrowBackDashboard offset={offset} goTo={goTo} disabled={disabled} />
-          <h3 className="lg:text-base xl:text-lg">{monthLabel}</h3>
+          <h3 className="text-sm md:text-base lg:text-base xl:text-lg 2xl:text-xl">
+            {monthLabel}
+          </h3>
           <ArrowForwDashboard offset={offset} goTo={goTo} disabled={disabled} />
         </div>
       </div>
+
       {/* kachličky so štatistikou */}
       <section className="hidden w-full rounded-2xl bg-white shadow-sm md:grid md:grid-cols-4 md:gap-2 md:p-4 lg:grid-cols-8 lg:gap-2 lg:p-4 xl:grid-cols-8 xl:gap-4 xl:p-6 2xl:grid-cols-8">
         <Stat

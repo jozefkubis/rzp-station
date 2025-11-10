@@ -73,7 +73,7 @@ export default async function NavLinks({ searchParams }) {
   return (
     <>
       {/* DESKTOP NAV */}
-      <nav className="hidden flex-col items-center gap-4 md:flex md:px-2">
+      <nav className="hidden flex-col items-center gap-4 md:flex">
         {/* Avatar */}
         <Link href="/settings/profile" aria-label="Profil">
           <div className="relative overflow-hidden rounded-full border border-primary-100 bg-white shadow-sm transition hover:scale-[1.05] hover:shadow-md lg:size-12 xl:size-14">
@@ -94,7 +94,7 @@ export default async function NavLinks({ searchParams }) {
                 href={href}
                 aria-label={label}
                 data-tip={label}
-                className="relative grid place-items-center rounded-xl p-2.5 text-primary-600 transition-all before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-2 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-md before:bg-gray-900 before:px-3 before:py-1 before:text-xs before:text-white before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-50 hover:text-primary-700 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 active:scale-95 lg:size-10 xl:size-12"
+                className="relative grid place-items-center rounded-xl p-2.5 text-primary-600 transition-all before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-2 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-md before:bg-primary-700 before:px-3 before:py-1 before:text-xs before:text-white before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-50 hover:text-primary-700 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 active:scale-95 lg:size-10 xl:size-12"
               >
                 <span className="text-xl xl:text-2xl">{icon}</span>
               </Link>
