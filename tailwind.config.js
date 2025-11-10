@@ -94,14 +94,15 @@ const config = {
         "login-mobile-bg": "url('/bg-login-mobile.png')",
       },
       screens: {
-        xs: "480px", // malé mobily
-        sm: "640px", // mobily
-        md: "768px", // tablety
-        lg: "1024px", // malé notebooky (≈ 13–14")
-        xl: "1280px", // väčšie notebooky (≈ 15–16")
-        "2xl": "1536px", // veľké notebooky (≈ 17")
-        "3xl": "1920px", // veľké monitory / FHD (≈ 21")
+        xs: "480px",    // malé mobily
+        sm: "640px",    // mobily
+        md: "768px",    // tablety
+        lg: "1024px",   // malé notebooky (13–14")
+        xl: "1280px",   // väčšie notebooky (15–16")
+        "desktop": "1440px", // bežné desktopy / FHD monitory
+        "2xl": "1536px", // veľké notebooky a nad 17"
       },
+
       // animation: {
       //   "pulse-gradient": "pulse-gradient 6s ease-in-out infinite",
       // },

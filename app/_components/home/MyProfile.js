@@ -164,14 +164,13 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
         </div>
       </div>
       {/* kachličky so štatistikou */}
-      <section className="/* od tabletov hore */ /* väčšie displeje – stále 8 stĺpcov, len väčšie medzery/padding */ hidden w-full rounded-2xl bg-white shadow-sm md:grid md:grid-cols-4 md:gap-2 md:p-4 lg:grid-cols-8 lg:gap-2 lg:p-4 xl:grid-cols-8 xl:gap-4 xl:p-6 2xl:grid-cols-8">
+      <section className="hidden w-full rounded-2xl bg-white shadow-sm md:grid md:grid-cols-4 md:gap-2 md:p-4 lg:grid-cols-8 lg:gap-2 lg:p-4 xl:grid-cols-8 xl:gap-4 xl:p-6 2xl:grid-cols-8">
         <Stat
           title="Služby mesiac"
           color="green"
           icon={<TbCalendarStats />}
-          value={`${calculated.totalShiftCount} / ${
-            calculated.totalHours > 0 ? calculated.totalHours.toFixed(1) : 0
-          } h.`}
+          value={`${calculated.totalShiftCount} / ${calculated.totalHours > 0 ? calculated.totalHours.toFixed(1) : 0
+            } h.`}
         />
         <Stat
           title="Denné služby"
@@ -193,17 +192,15 @@ export default function MyProfile({ profile, shifts, offset, goTo, disabled }) {
           title="Dovolenka"
           color="orange"
           icon={<TbPlaneDeparture />}
-          value={`${calculated.holidayShiftCount} / ${
-            calculated.holidayHours > 0 ? calculated.holidayHours.toFixed(1) : 0
-          } h.`}
+          value={`${calculated.holidayShiftCount} / ${calculated.holidayHours > 0 ? calculated.holidayHours.toFixed(1) : 0
+            } h.`}
         />
         <Stat
           title="PN"
           color="purple"
           icon={<TbBed />}
-          value={`${calculated.sickShiftCount} / ${
-            calculated.sickHours > 0 ? calculated.sickHours.toFixed(1) : 0
-          } h.`}
+          value={`${calculated.sickShiftCount} / ${calculated.sickHours > 0 ? calculated.sickHours.toFixed(1) : 0
+            } h.`}
         />
         <Stat
           title="Nadčas"

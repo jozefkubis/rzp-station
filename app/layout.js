@@ -25,16 +25,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body /*className={`${josefin.className}`}*/>
-        {/* <Header /> */}
-        {/* <div className=""> */}
-        <main className="mx-auto w-full">
+      <body className="min-h-screen bg-slate-50">
+        <main className="w-full">
           <Toaster position="top-center" />
-          {children}
+
+          {/* Hlavný obsah – centrovaný kontajner */}
+          <div className="mx-auto w-full max-w-6xl px-2 sm:px-4 lg:px-6 xl:px-8">
+            {children}
+          </div>
+
           <SpeedInsights />
           <Analytics />
         </main>
-        {/* </div> */}
       </body>
     </html>
   );
