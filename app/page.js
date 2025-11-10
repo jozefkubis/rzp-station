@@ -83,15 +83,15 @@ export default async function Page({ searchParams }) {
   return (
     <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
       {/* NAVBAR / ASIDE */}
-      <aside className="border-b border-primary-100/60 md:bg-gradient-to-t from-primary-500 via-primary-600 to-primary-700 md:border-b-0 md:border-r md:border-primary-100/60 lg:sticky lg:top-0 lg:w-14 lg:py-8 xl:w-16">
-        <div className="flex h-full md:flex-col items-center px-4 gap-6 py-4">
+      <aside className="border-b border-primary-100/60 from-primary-500 via-primary-600 to-primary-700 md:border-b-0 md:border-r md:border-primary-100/60 md:bg-gradient-to-t lg:sticky lg:top-0 lg:w-14 lg:py-8">
+        <div className="flex h-full items-center gap-6 px-4 py-4 md:flex-col">
           <NavLinks searchParams={searchParams} />
           <MobileWeatherCard />
         </div>
       </aside>
       {/* <div className=""></div> */}
       {/* DASHBOARD GRID */}
-      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-6 md:grid-cols-2 md:items-end md:p-6 lg:gap-3 xl:gap-6">
+      <main className="grid grid-cols-[9rem_9rem] items-center justify-center gap-2 overflow-y-auto px-8 pb-8 pt-6 md:grid-cols-2 md:items-end md:p-6 lg:gap-3">
         <div className="col-span-2 md:hidden">
           <BirthdayCard profiles={profiles} />
         </div>
@@ -119,7 +119,7 @@ export default async function Page({ searchParams }) {
         </div>
 
         {/* Kalendáre: len od md a nech sú v dvoch stĺpcoch, kontajner span-2 */}
-        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4 xl:gap-6">
+        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}

@@ -98,7 +98,7 @@ const config = {
         sm: "640px", // mobily
         md: "768px", // tablety
         lg: "1024px", // malé notebooky (≈ 13–14")
-        xl: "1280px", // väčšie notebooky (≈ 15–16")
+        // xl: "1280px", // väčšie notebooky (≈ 15–16")
         "2xl": "1536px", // veľké notebooky (≈ 17")
         "3xl": "1920px", // veľké monitory / FHD (≈ 21")
       },
