@@ -64,7 +64,7 @@ export default function BirthdayCard({ profiles = [] }) {
     >
       <div className="flex w-full flex-col gap-2 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-100 to-pink-50 px-3 py-3 text-pink-700 shadow-lg ring-1 ring-pink-200/70 xs:px-4 xs:py-3 sm:px-5 sm:py-4 md:flex-row md:items-center md:gap-4 md:px-6 md:py-5 lg:px-3">
         {/* Ikona – mierne rastie, ale nie prehnane na 14" */}
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
           <span
             className="3xl:text-4xl text-lg motion-safe:animate-bounce xs:text-xl sm:text-2xl 2xl:text-2xl"
             role="img"
@@ -72,14 +72,14 @@ export default function BirthdayCard({ profiles = [] }) {
           >
             🎉
           </span>
-        </div>
+        </div> */}
 
         {/* Texty */}
         <div className="flex-1">
           {/* Dnes */}
           {todayList.length > 0 && (
             <>
-              <p className="3xl:text-xl marker:font-semibold text-md md:text-base 2xl:text-lg">
+              <p className="3xl:text-xl marker:font-semibold text-md md:text-base 2xl:text-lg animate-pulse-gradient">
                 Dnes {verbToday} narodeniny{" "}
                 <span className="font-bold text-pink-800">
                   {todayList.map((t) => t.name).join(", ")}

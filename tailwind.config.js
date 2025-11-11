@@ -102,15 +102,15 @@ const config = {
         "2xl": "1536px", // veľké notebooky (≈ 17")
         "3xl": "1920px", // veľké monitory / FHD (≈ 21")
       },
-      // animation: {
-      //   "pulse-gradient": "pulse-gradient 6s ease-in-out infinite",
-      // },
-      // keyframes: {
-      //   'pulse-gradient': {
-      //     '0%, 100%': { opacity: '0.6' },
-      //     '50%': { opacity: '1' },
-      //   },
-      // },
+      animation: {
+        "pulse-gradient": "pulse-gradient 2s ease-in-out infinite",
+      },
+      keyframes: {
+        'pulse-gradient': {
+          '0%, 100%': { opacity: '0.5' },
+          '50%': { opacity: '1' },
+        },
+      },
     },
   },
   plugins: [require("tailwindcss-motion")],
