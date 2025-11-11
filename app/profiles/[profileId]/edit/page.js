@@ -26,7 +26,7 @@ export default async function Page({ params }) {
   }
 
   return (
-    <div className="w-full overflow-auto md:flex md:h-screen md:items-center">
+    <div className="w-full overflow-auto flex h-screen items-center">
       <AdminUpdateProfilesDataForm profile={profile} userId={userId} />
     </div>
   );

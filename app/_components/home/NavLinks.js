@@ -28,32 +28,32 @@ export default async function NavLinks({ searchParams }) {
     {
       href: `/shifts?m=${shiftsOffset}`,
       label: "Služby",
-      icon: <PiAmbulance className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <PiAmbulance className="md:h-6 md:w-6" />,
     },
     {
       href: "/calendar",
       label: "Kalendár",
-      icon: <HiOutlineCalendarDays className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <HiOutlineCalendarDays className="md:h-6 md:w-6" />,
     },
     {
       href: "/profiles",
       label: "Záchranári",
-      icon: <HiOutlineUsers className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <HiOutlineUsers className="md:h-6 md:w-6" />,
     },
     {
       href: "/register",
       label: "Registrácia",
-      icon: <HiOutlineUserPlus className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <HiOutlineUserPlus className="md:h-6 md:w-6" />,
     },
     {
       href: `/statistics?y=${statsOffset}`,
       label: "Štatistiky",
-      icon: <HiOutlineChartSquareBar className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <HiOutlineChartSquareBar className="md:h-6 md:w-6" />,
     },
     {
       href: "/login",
       label: "Logout",
-      icon: <HiArrowRightOnRectangle className="md:h-4 md:w-4 lg:h-6 lg:w-6" />,
+      icon: <HiArrowRightOnRectangle className="md:h-6 md:w-6" />,
     },
   ];
 
@@ -75,7 +75,7 @@ export default async function NavLinks({ searchParams }) {
         </Link>
 
         {/* Linky */}
-        <ul className="mt-4 flex items-center gap-3 lg:flex-col">
+        <ul className="lg:mt-4 flex items-center gap-3 lg:flex-col">
           {links.map(({ href, label, icon }) => (
             <li key={href}>
               <Link

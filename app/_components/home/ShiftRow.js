@@ -37,7 +37,7 @@ export function ShiftsTable({ children }) {
 
 export function ShiftsDayNightTable({ children }) {
   return (
-    <div className="mx-auto flex w-[80%] flex-col gap-3 lg:pb-4 lg:pt-1">
+    <div className="mx-auto flex md:w-[100%] lg:w-[80%] flex-col gap-3 md:pb-4 lg:pt-1">
       {children}
     </div>
   );
@@ -45,7 +45,7 @@ export function ShiftsDayNightTable({ children }) {
 
 export function ShiftsSection({ children }) {
   return (
-    <div className="flex w-full flex-col divide-y divide-slate-200 rounded-2xl bg-white text-primary-700 shadow-sm lg:p-3">
+    <div className="flex w-full flex-col divide-y divide-slate-200 rounded-2xl bg-white text-primary-700 shadow-sm md:p-3">
       {children}
     </div>
   );

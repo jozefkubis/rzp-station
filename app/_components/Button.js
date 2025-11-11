@@ -4,7 +4,7 @@
 const buttonSizes = {
   small: "text-[0.7rem] md:text-xs px-3 py-1 uppercase font-semibold",
   medium: "text-[0.7rem] md:text-sm px-2 md:px-4 py-1 md:py-2 font-medium",
-  large: "text-sm md:text-base px-3 md:px-6 py-2 md:py-3 font-medium",
+  large: "text-sm 2xl:text-base px-3 md:px-6 py-2 md:py-3 font-medium",
 };
 
 const buttonVariants = {

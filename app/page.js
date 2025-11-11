@@ -81,7 +81,7 @@ export default async function Page({ searchParams }) {
 
   // MARK: RENDER .......................................................................................
   return (
-    <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr]">
+    <div className="min-h-screen bg-gray-50 lg:grid lg:grid-cols-[4rem_1fr] 4xl:border-r-2 border-primary-400">
       {/* NAVBAR / ASIDE */}
       <aside className="from-primary-500 via-primary-600 to-primary-700 md:border-b-0 md:border-r md:border-primary-100/60 md:bg-gradient-to-t lg:sticky lg:top-0 lg:w-14 lg:py-8">
         <div className="flex h-full items-center gap-6 px-4 py-4 lg:flex-col">
@@ -99,7 +99,7 @@ export default async function Page({ searchParams }) {
         <RenderOnMdUp>
           <div className="col-span-2 grid grid-cols-2">
             {/* <div className="flex justify-between"> */}
-            <div className="max-w-[80%] flex items-end justify-start">
+            <div className="md:max-w-full lg:max-w-[80%] flex items-end justify-start">
               <BirthdayCard profiles={profiles} />
             </div>
             <div className="flex w-full items-end justify-end">
@@ -119,7 +119,7 @@ export default async function Page({ searchParams }) {
         </div>
 
         {/* Kalendáre: len od md a nech sú v dvoch stĺpcoch, kontajner span-2 */}
-        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4 h-full">
+        <section className="col-span-2 hidden md:grid md:grid-cols-2 md:gap-2 lg:gap-4 h-full">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}
@@ -140,7 +140,6 @@ export default async function Page({ searchParams }) {
         </section>
 
         {/* Mobilné tlačidlá: nech sú čisté 2-stĺpcové kartičky */}
-        {/* Hlavné úlohy: na šírku */}
         <div className="aspect-7/4 col-span-1 auto-rows-[1fr]">
           <MobileMainTaskButton
             dayData={dayToday}

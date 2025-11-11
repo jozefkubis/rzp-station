@@ -62,7 +62,7 @@ export default function Navigation() {
   ];
 
   return (
-    <nav data-cy="navigation">
+    <nav data-cy="navigation" className="md:text-sm lg:text-base 2xl:text-lg">
       <ul className="flex gap-1 px-10 py-1">
         {navLinks.map(({ name, href, icon }) => {
           const isActive = pathname === href.split("?")[0];

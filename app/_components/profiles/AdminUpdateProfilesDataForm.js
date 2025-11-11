@@ -38,189 +38,191 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
   const isUser = userId === profile?.id;
 
   return (
-    <form
-      data-cy="admin-update-profiles-data-form"
-      onSubmit={handleSubmit}
-      className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 md:w-1/2 md:px-4"
-    >
-      <div className="">
-        <FormInput
-          label="Meno a priezvisko"
-          id="full_name"
-          type="text"
-          placeholder="Meno a priezvisko"
-          name="full_name"
-          onChange={(e) => setFull_name(e.target.value)}
-          value={full_name || profile?.full_name || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="">
-        <FormInput
-          label="Číslo komory"
-          id="bodyNumber"
-          type="text"
-          placeholder="Číslo komory"
-          name="body_number"
-          onChange={(e) => setBodyNumber(e.target.value)}
-          value={bodyNumber || profile?.body_number || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="">
-        <FormInput
-          label="Úväzok"
-          id="contract"
-          type="text"
-          placeholder="Úväzok"
-          name="contract"
-          onChange={(e) => setContract(e.target.value)}
-          value={contract || profile?.contract || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      {!isUser && (
-        <div>
-          <FormSelect
-            label="Administrátor"
-            id="admin"
-            name="admin"
-            options={["ÁNO", "NIE"]} // žiadne "-" medzi options
-            placeholder={profile?.admin || "— Povoľ administrátora—"}
-            // placeholder="— Povoľ administrátora —"
-            value={admin ?? profile?.admin ?? ""}
-            onChange={setAdmin}
+    <div className="h-screen w-full py-4">
+      <form
+        data-cy="admin-update-profiles-data-form"
+        onSubmit={handleSubmit}
+        className="max-h-screen-2xl mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 md:w-1/2 md:px-4"
+      >
+        <div className="">
+          <FormInput
+            label="Meno a priezvisko"
+            id="full_name"
+            type="text"
+            placeholder="Meno a priezvisko"
+            name="full_name"
+            onChange={(e) => setFull_name(e.target.value)}
+            value={full_name || profile?.full_name || ""}
             {...(!profile && { required: true })}
           />
         </div>
-      )}
 
-      <div>
-        <FormSelect
-          label="Pozícia"
-          id="position"
-          name="position"
-          options={["ZZ", "VZ", "V"]}
-          placeholder={profile?.position || "— Vyber pozíciu —"}
-          value={position ?? profile?.position ?? ""}
-          onChange={setPosition}
-          {...(!profile && { required: true })}
-        />
-      </div>
+        <div className="">
+          <FormInput
+            label="Číslo komory"
+            id="bodyNumber"
+            type="text"
+            placeholder="Číslo komory"
+            name="body_number"
+            onChange={(e) => setBodyNumber(e.target.value)}
+            value={bodyNumber || profile?.body_number || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
 
-      <div className="">
-        <FormInput
-          label="Adresa"
-          id="address"
-          type="text"
-          placeholder="Adresa"
-          name="address"
-          onChange={(e) => setAddress(e.target.value)}
-          value={address || profile?.address || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
+        <div className="">
+          <FormInput
+            label="Úväzok"
+            id="contract"
+            type="text"
+            placeholder="Úväzok"
+            name="contract"
+            onChange={(e) => setContract(e.target.value)}
+            value={contract || profile?.contract || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
 
-      <div className="">
-        <FormInput
-          label="Dátum narodenia"
-          id="dateOfBirth"
-          type="date"
-          placeholder="Dátum narodenia"
-          name="dateOfBirth"
-          onChange={(e) => setDateOfBirth(e.target.value)}
-          value={dateOfBirth || profile?.dateOfBirth || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="">
-        <FormInput
-          label="Dátum lekárskej prehliadky"
-          id="medCheckDate"
-          type="date"
-          placeholder="Dátum prehliadky"
-          name="medCheckDate"
-          onChange={(e) => setMedCheckDate(e.target.value)}
-          value={medCheckDate || profile?.medCheckDate || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="flex flex-col">
-        <FormInput
-          label="Dátum psychotesty"
-          id="psychoCheckDate"
-          type="date"
-          placeholder="Dátum psychotesty"
-          name="psycho_check"
-          onChange={(e) => setPsychoCheckDate(e.target.value)}
-          value={psychoCheckDate || profile?.psycho_check || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="flex flex-col">
-        <FormInput
-          label="Dátum spôsobilosť"
-          id="medEligibility"
-          type="date"
-          placeholder="Dátum spôsobilosť"
-          name="medEligibility"
-          onChange={(e) => setEligibility(e.target.value)}
-          value={eligibility || profile?.medEligibility || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <div className="">
-        <FormInput
-          label="Telefón"
-          id="phone"
-          type="tel"
-          placeholder="+421 123 456 789"
-          pattern="[+][0-9]{1,3}[0-9]{9,14}"
-          name="phone"
-          onChange={(e) => setPhone(e.target.value)}
-          value={phone || profile?.phone || ""}
-          {...(!profile && { required: true })}
-        />
-      </div>
-
-      <FormInput id="id" type="hidden" name="id" value={profile?.id || ""} />
-
-      <div className="flex flex-col items-end justify-center gap-8">
-        <Button
-          data-cy="admin-update-profile-button"
-          size="large"
-          disabled={isPending}
-        >
-          {isPending ? (
-            <div className="inline-flex items-center gap-2">
-              Aktualizujem
-              <span>
-                <SpinnerMini />
-              </span>
-            </div>
-          ) : (
-            "Aktualizovať profil"
-          )}
-        </Button>
+        {!isUser && (
+          <div>
+            <FormSelect
+              label="Administrátor"
+              id="admin"
+              name="admin"
+              options={["ÁNO", "NIE"]} // žiadne "-" medzi options
+              placeholder={profile?.admin || "— Povoľ administrátora—"}
+              // placeholder="— Povoľ administrátora —"
+              value={admin ?? profile?.admin ?? ""}
+              onChange={setAdmin}
+              {...(!profile && { required: true })}
+            />
+          </div>
+        )}
 
         <div>
-          <Link
-            data-cy="admin-back-to-profile-button"
-            href={`/profiles/${profile.id}`}
-            className="text-sm font-semibold text-primary-700 hover:underline"
-          >
-            ← Späť na profil
-          </Link>
+          <FormSelect
+            label="Pozícia"
+            id="position"
+            name="position"
+            options={["ZZ", "VZ", "V"]}
+            placeholder={profile?.position || "— Vyber pozíciu —"}
+            value={position ?? profile?.position ?? ""}
+            onChange={setPosition}
+            {...(!profile && { required: true })}
+          />
         </div>
-      </div>
-    </form>
+
+        <div className="">
+          <FormInput
+            label="Adresa"
+            id="address"
+            type="text"
+            placeholder="Adresa"
+            name="address"
+            onChange={(e) => setAddress(e.target.value)}
+            value={address || profile?.address || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <div className="">
+          <FormInput
+            label="Dátum narodenia"
+            id="dateOfBirth"
+            type="date"
+            placeholder="Dátum narodenia"
+            name="dateOfBirth"
+            onChange={(e) => setDateOfBirth(e.target.value)}
+            value={dateOfBirth || profile?.dateOfBirth || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <div className="">
+          <FormInput
+            label="Dátum lekárskej prehliadky"
+            id="medCheckDate"
+            type="date"
+            placeholder="Dátum prehliadky"
+            name="medCheckDate"
+            onChange={(e) => setMedCheckDate(e.target.value)}
+            value={medCheckDate || profile?.medCheckDate || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <FormInput
+            label="Dátum psychotesty"
+            id="psychoCheckDate"
+            type="date"
+            placeholder="Dátum psychotesty"
+            name="psycho_check"
+            onChange={(e) => setPsychoCheckDate(e.target.value)}
+            value={psychoCheckDate || profile?.psycho_check || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <FormInput
+            label="Dátum spôsobilosť"
+            id="medEligibility"
+            type="date"
+            placeholder="Dátum spôsobilosť"
+            name="medEligibility"
+            onChange={(e) => setEligibility(e.target.value)}
+            value={eligibility || profile?.medEligibility || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <div className="">
+          <FormInput
+            label="Telefón"
+            id="phone"
+            type="tel"
+            placeholder="+421 123 456 789"
+            pattern="[+][0-9]{1,3}[0-9]{9,14}"
+            name="phone"
+            onChange={(e) => setPhone(e.target.value)}
+            value={phone || profile?.phone || ""}
+            {...(!profile && { required: true })}
+          />
+        </div>
+
+        <FormInput id="id" type="hidden" name="id" value={profile?.id || ""} />
+
+        <div className="flex flex-col items-end justify-center gap-8">
+          <Button
+            data-cy="admin-update-profile-button"
+            size="large"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <div className="inline-flex items-center gap-2">
+                Aktualizujem
+                <span>
+                  <SpinnerMini />
+                </span>
+              </div>
+            ) : (
+              "Aktualizovať profil"
+            )}
+          </Button>
+
+          <div>
+            <Link
+              data-cy="admin-back-to-profile-button"
+              href={`/profiles/${profile.id}`}
+              className="text-sm font-semibold text-primary-700 hover:underline"
+            >
+              ← Späť na profil
+            </Link>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
 

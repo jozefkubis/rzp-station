@@ -101,6 +101,7 @@ const config = {
         // xl: "1280px", // väčšie notebooky (≈ 15–16")
         "2xl": "1536px", // veľké notebooky (≈ 17")
         "3xl": "1920px", // veľké monitory / FHD (≈ 21")
+        "4xl": "2560px", // veľké monitory / UHD (≈ 32")
       },
       animation: {
         "pulse-gradient": "pulse-gradient 2s ease-in-out infinite",
