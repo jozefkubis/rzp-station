@@ -60,13 +60,13 @@ export default function BirthdayCard({ profiles = [] }) {
   return (
     <section
       aria-live="polite"
-      className="flex w-full justify-center px-2 pb-2 xs:px-3 sm:px-4 md:px-6 md:pb-0"
+      className="flex w-full justify-center px-2 pb-2 xs:px-3 sm:px-4 md:px-0 md:pb-0"
     >
-      <div className="3xl:max-w-5xl flex w-full max-w-md flex-col gap-2 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-100 to-pink-50 px-3 py-3 text-pink-700 shadow-lg ring-1 ring-pink-200/70 xs:max-w-lg xs:px-4 xs:py-3 sm:max-w-xl sm:px-5 sm:py-4 md:max-w-2xl md:flex-row md:items-center md:gap-4 md:px-6 md:py-5 lg:max-w-3xl lg:px-3 2xl:max-w-4xl">
+      <div className="flex w-full flex-col gap-2 rounded-2xl bg-gradient-to-r from-pink-50 via-rose-100 to-pink-50 px-3 py-3 text-pink-700 shadow-lg ring-1 ring-pink-200/70 xs:px-4 xs:py-3 sm:px-5 sm:py-4 md:flex-row md:items-center md:gap-4 md:px-6 md:py-5 lg:px-3">
         {/* Ikona – mierne rastie, ale nie prehnane na 14" */}
         <div className="flex items-center justify-center">
           <span
-            className="/* väčší nárast až od väčších notebookov */ 3xl:text-5xl text-lg motion-safe:animate-bounce xs:text-xl sm:text-2xl xl:text-3xl 2xl:text-4xl"
+            className="3xl:text-4xl text-lg motion-safe:animate-bounce xs:text-xl sm:text-2xl 2xl:text-2xl"
             role="img"
             aria-label="party"
           >
@@ -79,7 +79,7 @@ export default function BirthdayCard({ profiles = [] }) {
           {/* Dnes */}
           {todayList.length > 0 && (
             <>
-              <p className="3xl:text-2xl text-xs font-semibold xs:text-sm sm:text-sm md:text-base xl:text-lg 2xl:text-xl">
+              <p className="3xl:text-xl marker:font-semibold text-md md:text-base 2xl:text-lg">
                 Dnes {verbToday} narodeniny{" "}
                 <span className="font-bold text-pink-800">
                   {todayList.map((t) => t.name).join(", ")}
@@ -91,7 +91,7 @@ export default function BirthdayCard({ profiles = [] }) {
                 {todayList.map((t) => (
                   <span
                     key={t.id}
-                    className="/* jemne menší chip na mobile */ inline-flex items-center rounded-full bg-white/70 px-2 py-1 text-[0.68rem] text-pink-700 shadow ring-1 ring-pink-200 xs:text-xs sm:text-xs md:text-sm xl:text-sm"
+                    className="inline-flex items-center rounded-full bg-white/70 px-2 py-1 text-[0.68rem] text-pink-700 shadow ring-1 ring-pink-200 xs:text-xs sm:text-xs md:text-sm"
                   >
                     🎂 {t.name}
                   </span>
@@ -102,7 +102,7 @@ export default function BirthdayCard({ profiles = [] }) {
 
           {/* Tento mesiac (stručne) */}
           {monthList.length > 0 && (
-            <div className="mt-2 text-[0.68rem] xs:text-xs sm:text-xs md:text-sm lg:text-xs xl:text-base 2xl:text-lg">
+            <div className="mt-2 text-[0.68rem] xs:text-xs md:text-xs 2xl:text-base">
               <span className="font-semibold">
                 Tento mesiac {verbMonth} narodeniny:{" "}
               </span>
@@ -124,14 +124,14 @@ export default function BirthdayCard({ profiles = [] }) {
         {/* Dekor – len desktop / väčšie displeje */}
         <div className="hidden items-center gap-2 lg:flex">
           <span
-            className="text-base xl:text-lg 2xl:text-xl"
+            className="text-base 2xl:text-xl"
             role="img"
             aria-label="balloon"
           >
             🎈
           </span>
           <span
-            className="text-base xl:text-lg 2xl:text-xl"
+            className="text-base 2xl:text-xl"
             role="img"
             aria-label="gift"
           >

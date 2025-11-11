@@ -97,9 +97,9 @@ export default async function Page({ searchParams }) {
         </div>
         {/* Počasie: renderuj až od md a nech vždy span-2 */}
         <RenderOnMdUp>
-          <div className="col-span-2 flex w-full justify-between">
+          <div className="col-span-2 grid grid-cols-2">
             {/* <div className="flex justify-between"> */}
-            <div className="w-ful flex items-end justify-start">
+            <div className="max-w-[80%] flex items-end justify-start">
               <BirthdayCard profiles={profiles} />
             </div>
             <div className="flex w-full items-end justify-end">
@@ -119,7 +119,7 @@ export default async function Page({ searchParams }) {
         </div>
 
         {/* Kalendáre: len od md a nech sú v dvoch stĺpcoch, kontajner span-2 */}
-        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4">
+        <section className="col-span-2 hidden md:grid md:grid-cols-2 lg:gap-4 h-full">
           <ShiftCalendar
             label="Dnes"
             dateString={formatDate(dateStr)}

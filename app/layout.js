@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
       <body /*className={`${josefin.className}`}*/>
         {/* <Header /> */}
         {/* <div className=""> */}
-        <main className="mx-auto w-full">
+        <main className="mx-auto max-w-[1920px]">
           <Toaster position="top-center" />
           {children}
           <SpeedInsights />

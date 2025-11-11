@@ -73,36 +73,48 @@ export default function WeatherCard() {
     <div className="hidden w-full items-center justify-end gap-2 rounded-2xl md:flex lg:px-4">
       <button
         onClick={handleClick}
-        className="rounded-full transition-transform duration-150 hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 active:scale-[0.97]"
+        className="rounded-full transition-transform duration-200 ease-out hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
       >
-        <div className="/* base */ flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 p-2 px-3 text-white shadow-md md:p-2.5 md:px-4 lg:p-3 lg:px-4">
+        <div className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-tr from-blue-300 to-blue-600 text-white shadow-md
+        px-3 py-2
+        sm:px-4 sm:py-2.5
+        md:px-4 md:py-3
+        lg:px-5 lg:py-3.5
+        2xl:px-6 2xl:py-4"
+        >
           {/* Ikona */}
-          <div className="text-xl lg:text-2xl">{icon}</div>
+          <div className="text-xl sm:text-2xl lg:text-3xl 2xl:text-4xl">{icon}</div>
 
           {/* Teploty */}
-          <div className="whitespace-nowrap text-sm font-medium md:text-base lg:text-base">
+          <div className="whitespace-nowrap text-sm font-medium
+          sm:text-base
+          md:text-lg
+          2xl:text-xl
+          3xl:text-2xl"
+          >
             {todayTempMax} °C / {todayTempMin} °C
           </div>
         </div>
       </button>
 
-      {/* Týždeň – ak budeš chcieť niekedy zapnúť */}
+      {/* Týždeň (voliteľné) */}
       {/*
-  <div className="hidden space-y-2 p-3 text-xs sm:text-sm text-gray-600">
-    {week.map((d) => (
-      <div key={d.date} className="flex justify-between">
-        <span>
-          {new Date(d.date).toLocaleDateString("sk-SK", {
-            weekday: "short",
-          })}
-        </span>
-        <span>
-          {d.max} / {d.min} °C
-        </span>
-      </div>
-    ))}
-  </div>
-  */}
+    <div className="hidden space-y-2 p-3 text-xs sm:text-sm text-gray-600">
+      {week.map((d) => (
+        <div key={d.date} className="flex justify-between">
+          <span>
+            {new Date(d.date).toLocaleDateString("sk-SK", {
+              weekday: "short",
+            })}
+          </span>
+          <span>
+            {d.max} / {d.min} °C
+          </span>
+        </div>
+      ))}
+    </div>
+    */}
     </div>
   );
+
 }

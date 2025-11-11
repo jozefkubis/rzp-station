@@ -22,7 +22,7 @@ export default function Stat({ icon, title, value, color = "blue" }) {
       </div>
 
       {/* nadpis + hodnota */}
-      <h5 className="self-end font-semibold uppercase tracking-wide text-primary-700 lg:text-[0.5rem] xl:text-[0.6rem] 2xl:text-[0.8rem]">
+      <h5 className="self-end font-semibold uppercase tracking-wide text-primary-700 lg:text-[0.5rem] 2xl:text-[0.8rem]">
         {title}
       </h5>
       <p className="text-sm font-medium leading-none text-primary-700 lg:text-[0.8rem] 2xl:text-[1.2rem]">
