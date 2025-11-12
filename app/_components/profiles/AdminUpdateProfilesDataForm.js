@@ -42,7 +42,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
       <form
         data-cy="admin-update-profiles-data-form"
         onSubmit={handleSubmit}
-        className="max-h-screen-2xl mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 md:w-1/2 md:px-4"
+        className="max-h-screen-2xl mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 md:w-4/5 lg:w-1/2 md:px-4"
       >
         <div className="">
           <FormInput
