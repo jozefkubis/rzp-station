@@ -32,7 +32,7 @@ export default async function page() {
         className="max-h-screen-md flex flex-col"
       >
         <SideBar navLinks={navLinks} />
-        <div className="max-h-screen-md flex justify-center overflow-auto itmes-center md:pl-[13rem]">
+        <div className="max-h-screen-md flex justify-center overflow-auto itmes-center md:pl-[11rem] lg:pl-[13rem]">
           <InsertUpdateProfilesDataForm profiles={profiles} />
         </div>
       </div>

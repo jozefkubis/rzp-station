@@ -63,7 +63,7 @@ export default function Navigation() {
 
   return (
     <nav data-cy="navigation" className="lg:text-sm 2xl:text-lg">
-      <ul className="flex gap-1 px-10 py-1">
+      <ul className="flex lg:gap-1 md:gap-8 px-10 py-1">
         {navLinks.map(({ name, href, icon }) => {
           const isActive = pathname === href.split("?")[0];
           return (
@@ -83,7 +83,7 @@ export default function Navigation() {
                 )}
               >
                 {icon}
-                {name}
+                <span className="md:hidden lg:flex">{name}</span>
               </Link>
             </li>
           );

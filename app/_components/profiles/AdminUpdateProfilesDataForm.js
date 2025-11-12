@@ -193,7 +193,7 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
 
         <FormInput id="id" type="hidden" name="id" value={profile?.id || ""} />
 
-        <div className="flex flex-col items-end justify-center gap-8">
+        <div className="flex flex-col items-end justify-center gap-8 p-5">
           <Button
             data-cy="admin-update-profile-button"
             size="large"

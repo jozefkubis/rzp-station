@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import clsx from "clsx";
 import Link from "next/link";
@@ -10,17 +10,10 @@ export default function SideBar({ navLinks }) {
   return (
     <div
       data-cy="sidebar"
-      className="
-        flex justify-center
-        md:fixed md:left-0 md:top-0 md:h-screen md:w-[13rem]
-        md:border-r md:border-primary-200 py-2 md:pt-[10rem]
-        text-primary-600
-        md:bg-transparent md:text-primary-700
-        transition-colors duration-300
-      "
+      className="flex justify-center py-2 text-primary-600 transition-colors duration-300 md:fixed md:left-0 md:top-0 md:h-screen md:w-[11rem] 2xl:w-[13rem] md:border-r md:border-primary-200 md:bg-transparent md:pt-[10rem] md:text-primary-700"
     >
-      <div className="w-full md:px-2 px-6">
-        <ul className="text-md font-semibold space-y-2">
+      <div className="w-full px-6 md:px-2">
+        <ul className="lg:text-sm 2xl:text-lg space-y-2 font-semibold">
           {navLinks.map(({ href, name, icon }) => {
             const isActive = pathname === href;
 
@@ -35,8 +28,9 @@ export default function SideBar({ navLinks }) {
                   "border border-primary-100/70",
                   "shadow-lg md:shadow-sm",
                   {
-                    "bg-primary-800 text-white md:bg-primary-50 md:text-primary-700 border md:border-none border-primary-800/70 md:shadow-sm shadow-lg": isActive,
-                  }
+                    "border border-primary-800/70 bg-primary-800 text-white shadow-lg md:border-none md:bg-primary-50 md:text-primary-700 md:shadow-sm":
+                      isActive,
+                  },
                 )}
               >
                 <Link
