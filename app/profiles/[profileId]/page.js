@@ -83,7 +83,7 @@ export default async function Page({ params }) {
 
   return (
     <main className="flex min-h-screen bg-white px-4 md:p-10">
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 md:px-14 text-sm 2xl:text-lg sm:grid-cols-2">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 md:px-14 text-sm 2xl:text-lg md:grid-cols-2">
         {/* Ľavý stĺpec – avatar + kontakty */}
         <div className="hidden lg:flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
           <ProfileImage profile={profile} blankAvatar={blankAvatar} />
