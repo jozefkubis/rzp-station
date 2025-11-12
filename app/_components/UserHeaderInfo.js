@@ -22,7 +22,7 @@ export default async function UserHeaderInfo() {
     <div className="hidden items-center gap-3 md:flex">
       {/* Avatar Link */}
       <Link href="/settings/profile">
-        <div className="relative h-[55px] w-[55px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
+        <div className="relative lg:h-[48px] lg:w-[48px] 2xl:h-[55px] 2xl:w-[55px] overflow-hidden rounded-full transition hover:ring-2 hover:ring-primary-300">
           <Image
             src={avatarUrl || blankAvatar}
             fill
@@ -35,7 +35,7 @@ export default async function UserHeaderInfo() {
       {/* Email Link */}
       <div>
         <Link href="/settings/profile">
-          <div className="flex items-center gap-2 rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95">
+          <div className="flex items-center gap-2 rounded-md px-4 py-4 font-semibold text-primary-700 transition-transform duration-300 ease-in-out hover:bg-primary-50 active:scale-95 lg:text-sm 2xl:text-lg">
             <HiOutlineUser size={20} />
             {username || email}
           </div>
