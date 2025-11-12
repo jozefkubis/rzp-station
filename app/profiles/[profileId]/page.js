@@ -48,12 +48,12 @@ export default async function Page({ params }) {
     {
       label: "Telefón:",
       value: profile.phone || "-",
-      icon: <HiOutlinePhone className="text-primary-700" />,
+      icon: <HiOutlinePhone className="text-quaternary-800" />,
     },
     {
       label: "Email:",
       value: profile.email || "-",
-      icon: <HiOutlineAtSymbol className="text-primary-700" />,
+      icon: <HiOutlineAtSymbol className="text-quaternary-700" />,
     },
   ];
 
@@ -85,13 +85,17 @@ export default async function Page({ params }) {
     <main className="flex min-h-screen bg-white px-4 md:p-10">
       <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 md:px-14 text-sm 2xl:text-lg sm:grid-cols-2">
         {/* Ľavý stĺpec – avatar + kontakty */}
-        <div className="hidden md:flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
+        <div className="hidden lg:flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
           <ProfileImage profile={profile} blankAvatar={blankAvatar} />
           <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
         </div>
 
         {/* Pravý stĺpec – adresa a dátumy + akcie */}
-        <div className="md:ml-6 flex flex-col justify-center text-primary-700">
+        <div className="lg:ml-6 flex flex-col justify-center text-primary-700 md:col-span-2 lg:col-span-1 py-6">
+          <div className="lg:hidden flex flex-col items-center mb-6">
+            <ProfileImage profile={profile} blankAvatar={blankAvatar} />
+            <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
+          </div>
           <ProfileIdInfo profileInfo={profileInfo} />
           {profileActions(profile)}
         </div>
