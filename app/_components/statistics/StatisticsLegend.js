@@ -1,6 +1,6 @@
 export function StatisticsLegend() {
   return (
-    <div className="mt-4 pb-2 text-sm text-primary-600 md:text-gray-600">
+    <div className="mt-4 pb-2 text-xs 2xl:text-base text-primary-600 md:text-gray-600">
       <h3 className="mb-2 font-semibold">Legenda skratiek:</h3>
       <ul className="list-inside list-disc space-y-1">
         <li>
