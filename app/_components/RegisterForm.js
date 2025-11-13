@@ -31,7 +31,7 @@ export default function RegisterForm({ admin }) {
       <form
         data-cy="register-form"
         onSubmit={handleSubmit}
-        className="mx-auto flex max-h-screen-md overflow-auto w-full md:w-[40%] flex-col justify-center rounded-lg px-6 md:px-4 py-8"
+        className="mx-auto flex max-h-screen-md overflow-auto w-full md:w-2/3 lg:w-[40%] flex-col justify-center rounded-lg px-6 md:px-4 py-8"
       >
         {/* <div className="flex items-center justify-center">
           <Image src={logo} height={150} width={150} alt="RZP Logo" />

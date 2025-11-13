@@ -2,7 +2,7 @@ function ProfileContactInfo({ profile, contactInfo }) {
     return (
         <>
             {/* Meno */}
-            <h1 className="text-base lg:text-2xl 2xl:text-3xl font-semibold text-primary-700 mt-4 mb:mt-6">
+            <h1 className="text-base lg:text-2xl 2xl:text-3xl font-semibold text-primary-700 mt-4 mb-2 mb:mt-6 mb:mb-6">
                 {profile.full_name || "Meno neznáme"}
             </h1>
 

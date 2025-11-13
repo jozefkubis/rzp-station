@@ -175,7 +175,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                 <table className="w-full 2xl:min-w-[56rem] table-fixed border-collapse text-center">
                   <thead className="bg-gray-100">
                     <tr className="text-xs 2xl:text-base">
-                      <th className="md:w-[11rem] 2xl:w-[13rem] border px-3 md:py-2 2xl:py-3 text-left">
+                      <th className="md:w-[11rem] 2xl:w-[14rem] border px-3 md:py-2 2xl:py-3 text-left">
                         Meno
                       </th>
                       <th className="border px-4 md:py-2 2xl:py-3">D</th>
