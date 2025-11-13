@@ -60,7 +60,7 @@ export default function AllParamedics({
       >
         <button
           type="button"
-          className="sticky left-0 z-20 flex cursor-pointer items-center justify-between hover:scale-105"
+          className="sticky left-0 z-20 flex cursor-pointer text-left items-center justify-start hover:scale-105"
           onClick={handleClick}
         >
           {currentIdx + 1}. {children}
