@@ -1,8 +1,8 @@
 export function ShiftsTableLegend() {
   return (
-    <div className="md:text-sm text-xs text-gray-600">
+    <div className="text-[0.6rem] text-gray-600 2xl:text-sm">
       <h3 className="mb-2 font-semibold">Legenda skratiek:</h3>
-      <div className="flex justify-between md:gap-8 ">
+      <div className="flex justify-between 2xl:gap-8">
         <ul className="list-inside list-disc space-y-1">
           <li>
             <strong>ÚV</strong> – úväzok
@@ -32,15 +32,16 @@ export function ShiftsTableLegend() {
 
         <ul className="list-inside list-disc space-y-1">
           <li className="flex gap-2">
-            <div className="h-[1.3rem] w-[1.3rem] bg-primary-100"></div> –
-            dnešný deň
+            <div className="h-[1rem] w-[1rem] bg-primary-100 2xl:h-[1.3rem] 2xl:w-[1.3rem]"></div>{" "}
+            – dnešný deň
           </li>
           <li className="flex gap-2">
-            <div className="h-[1.3rem] w-[1.3rem] bg-holiday"></div> – štátny
-            sviatok
+            <div className="h-[1rem] w-[1rem] bg-holiday 2xl:h-[1.3rem] 2xl:w-[1.3rem]"></div>{" "}
+            – štátny sviatok
           </li>
           <li className="flex gap-2">
-            <div className="h-[1.3rem] w-[1.3rem] bg-amber-100"></div> – weekend
+            <div className="h-[1rem] w-[1rem] bg-amber-100 2xl:h-[1.3rem] 2xl:w-[1.3rem]"></div>{" "}
+            – weekend
           </li>
         </ul>
       </div>

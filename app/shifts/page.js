@@ -46,7 +46,7 @@ export default async function page({ searchParams }) {
       ) : (
         /* RosterSection zobraz aj pri prázdnych shifts */
         <>
-          <div className="hidden md:flex justify-center md:px-8">
+          <div className="hidden justify-center md:px-8 lg:flex">
             <RosterSection
               initialShifts={shifts}
               diffProfiles={diffProfiles}
@@ -55,7 +55,7 @@ export default async function page({ searchParams }) {
               user={user}
             />
           </div>
-          <div className="md:hidden flex justify-center md:px-8">
+          <div className="flex justify-center md:px-8 lg:hidden">
             <MobileRosterSection
               initialShifts={shifts}
               diffProfiles={diffProfiles}

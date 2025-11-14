@@ -35,7 +35,7 @@ export default async function Page({ params }) {
         <Link
           data-cy="admin-back-to-profiles-button"
           href="/profiles"
-          className="font-semibold text-primary-700 hover:underline text-sm"
+          className="text-sm font-semibold text-primary-700 hover:underline"
         >
           ← Späť na zoznam
         </Link>
@@ -83,16 +83,16 @@ export default async function Page({ params }) {
 
   return (
     <main className="flex min-h-screen bg-white px-4 md:p-10">
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 md:px-14 text-sm 2xl:text-lg md:grid-cols-2">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 items-center px-6 text-sm sm:w-2/3 md:grid-cols-2 md:px-14 lg:w-full 2xl:text-lg">
         {/* Ľavý stĺpec – avatar + kontakty */}
-        <div className="hidden lg:flex h-screen flex-col items-center justify-center gap-2 border-r border-gray-200">
+        <div className="hidden h-screen flex-col items-center justify-center gap-2 border-r border-gray-200 lg:flex">
           <ProfileImage profile={profile} blankAvatar={blankAvatar} />
           <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
         </div>
 
         {/* Pravý stĺpec – adresa a dátumy + akcie */}
-        <div className="lg:ml-6 flex flex-col justify-center text-primary-700 md:col-span-2 lg:col-span-1 py-6">
-          <div className="lg:hidden flex flex-col items-center mb-6">
+        <div className="flex flex-col justify-center py-6 text-primary-700 md:col-span-2 lg:col-span-1 lg:ml-6">
+          <div className="mb-6 flex flex-col items-center lg:hidden">
             <ProfileImage profile={profile} blankAvatar={blankAvatar} />
             <ProfileIdContactInfo profile={profile} contactInfo={contactInfo} />
           </div>

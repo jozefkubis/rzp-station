@@ -16,7 +16,6 @@ const ShiftsTable = dynamic(() => import("./ShiftsTable"), {
   loading: () => <ShiftLoader />,
 });
 
-
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
  * Props:
@@ -115,7 +114,7 @@ export default function RosterSection({
   // MARK: RETURNT .......................................................................................
   return (
     // ===== DESKTOP (tvoj pôvodný layout bezzmeny) =====
-    <div className="hidden md:flex w-full flex-col">
+    <div className="hidden w-full flex-col lg:flex">
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
         <div className="flex flex-col">
@@ -157,6 +156,5 @@ export default function RosterSection({
         </div>
       </div>
     </div>
-
   );
 }

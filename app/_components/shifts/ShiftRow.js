@@ -70,7 +70,7 @@ export default function ShiftRow({
     <div
       ref={setNodeRef}
       style={{ ...dragStyle, ...{ gridTemplateColumns: colTemplate } }}
-      className={`grid text-xs md:text-sm ${rowBg} h-10 border-r border-slate-200 hover:bg-blue-100 md:h-14`}
+      className={`grid text-xs 2xl:text-sm ${rowBg} h-10 border-r border-slate-200 hover:bg-blue-100 2xl:h-14`}
     >
       {/* ❶ Ľavý stĺpec – pridali sme "úchytku" (⋮⋮) s attributes/listeners */}
       <AllParamedics

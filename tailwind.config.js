@@ -97,7 +97,7 @@ const config = {
         xs: "480px", // malé mobily
         sm: "640px", // mobily
         md: "768px", // tablety
-        lg: "1281px", // malé notebooky (≈ 13–14")
+        lg: "1272px", // malé notebooky (≈ 13–14")
         // xl: "1280px", // väčšie notebooky (≈ 15–16")
         "2xl": "1536px", // veľké notebooky (≈ 17")
         "3xl": "1920px", // veľké monitory / FHD (≈ 21")
@@ -107,9 +107,9 @@ const config = {
         "pulse-gradient": "pulse-gradient 2s ease-in-out infinite",
       },
       keyframes: {
-        'pulse-gradient': {
-          '0%, 100%': { opacity: '0.5' },
-          '50%': { opacity: '1' },
+        "pulse-gradient": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
         },
       },
     },

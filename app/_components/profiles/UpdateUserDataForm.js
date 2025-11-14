@@ -24,7 +24,7 @@ function UpdateUserDataForm({ user }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto flex max-h-screen-md overflow-auto w-full md:w-1/2 flex-col justify-center rounded-lg px-6 md:px-4 py-4 md:py-8"
+      className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-4 sm:w-2/3 md:px-4 md:py-8 lg:w-1/2"
     >
       <div className="flex flex-col">
         <FormInput
@@ -60,7 +60,7 @@ function UpdateUserDataForm({ user }) {
         />
       </div>
 
-      <div className="flex w-full justify-end py-10 px-5">
+      <div className="flex w-full justify-end px-5 py-10">
         <Button variant="primary" size="large" disabled={isPending}>
           {isPending ? (
             <div className="inline-flex items-center gap-2">

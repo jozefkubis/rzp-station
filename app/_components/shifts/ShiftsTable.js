@@ -87,7 +87,7 @@ export default function ShiftsTable({
       return `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
     } else if (isMd) {
       // stredný layout
-      return `10rem 1.9rem repeat(${days.length}, 1.7rem) repeat(7, 2.4rem)`;
+      return `9rem 1.8rem repeat(${days.length}, 1.6rem) repeat(7, 2.2rem)`;
     }
     // mobil
     return `10.3rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
@@ -164,10 +164,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }

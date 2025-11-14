@@ -35,8 +35,8 @@ export default function ShiftCalendar({
       {/* Služby */}
       <ShiftsTable>
         <ShiftDay>
-          <span className="row-span-2 flex aspect-square items-center justify-center rounded-full bg-gradient-to-tr from-yellow-200 to-red-300 text-yellow-700 lg:w-8 xl:w-10">
-            <PiAmbulance className="text-xl lg:text-2xl xl:text-3xl" />
+          <span className="row-span-2 flex aspect-square items-center justify-center rounded-full bg-gradient-to-tr from-yellow-200 to-red-300 text-yellow-700 xl:w-10 lg:h-9 lg:w-9">
+            <PiAmbulance className="text-xl xl:text-3xl lg:text-3xl" />
           </span>{" "}
           Služba
         </ShiftDay>
@@ -51,8 +51,8 @@ export default function ShiftCalendar({
       <ShiftsTable>
         <CalendarDivRow>
           <ShiftDay>
-            <span className="row-span-2 flex aspect-square items-center justify-center rounded-full bg-green-100 text-green-700 lg:w-8 xl:w-10">
-              <IoCalendarOutline className="text-xl lg:text-2xl xl:text-3xl" />
+            <span className="row-span-2 flex aspect-square items-center justify-center rounded-full bg-green-100 text-green-700 xl:w-10 lg:h-9 lg:w-9">
+              <IoCalendarOutline className="text-xl xl:text-3xl lg:text-3xl" />
             </span>{" "}
             Kalendár
           </ShiftDay>

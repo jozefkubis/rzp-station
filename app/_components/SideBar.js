@@ -10,10 +10,10 @@ export default function SideBar({ navLinks }) {
   return (
     <div
       data-cy="sidebar"
-      className="flex justify-center py-2 text-primary-600 transition-colors duration-300 md:fixed md:left-0 md:top-0 md:h-screen md:w-[11rem] 2xl:w-[13rem] md:border-r md:border-primary-200 md:bg-transparent md:pt-[10rem] md:text-primary-700"
+      className="flex justify-center py-2 text-primary-600 transition-colors duration-300 md:fixed md:left-0 md:top-0 md:h-screen md:w-[11rem] md:border-r md:border-primary-200 md:bg-transparent md:pt-[10rem] md:text-primary-700 2xl:w-[13rem]"
     >
-      <div className="w-full px-6 md:px-2">
-        <ul className="lg:text-sm 2xl:text-lg space-y-2 font-semibold">
+      <div className="w-full px-6 sm:w-2/3 md:w-full md:px-2">
+        <ul className="space-y-2 font-semibold lg:text-sm 2xl:text-lg">
           {navLinks.map(({ href, name, icon }) => {
             const isActive = pathname === href;
 

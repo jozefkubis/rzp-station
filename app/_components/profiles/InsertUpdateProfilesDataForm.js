@@ -40,7 +40,7 @@ function InsertUpdateProfilesDataForm({ profiles }) {
     <form
       data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
-      className="mx-auto flex max-h-screen-md overflow-auto w-full md:w-full lg:w-1/2 flex-col justify-center rounded-lg px-6 md:px-4 py-4 md:py-8"
+      className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-4 sm:w-2/3 md:px-4 md:py-8 lg:w-1/2"
     >
       <div className="">
         <FormInput

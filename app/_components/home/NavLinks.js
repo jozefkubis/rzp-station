@@ -75,14 +75,14 @@ export default async function NavLinks({ searchParams }) {
         </Link>
 
         {/* Linky */}
-        <ul className="lg:mt-4 flex items-center gap-3 lg:flex-col">
+        <ul className="flex items-center gap-3 lg:mt-4 lg:flex-col">
           {links.map(({ href, label, icon }) => (
             <li key={href}>
               <Link
                 href={href}
                 aria-label={label}
                 data-tip={label}
-                className="relative grid place-items-center rounded-xl p-2.5 text-primary-50 transition-all before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-2 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-md before:bg-primary-600 before:px-3 before:py-1 before:text-white before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-50 hover:text-primary-700 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 active:scale-95 md:before:text-base lg:size-10 lg:before:text-lg"
+                className="relative grid place-items-center rounded-xl p-2.5 text-primary-50 transition-all before:pointer-events-none before:absolute before:left-full before:top-1/2 before:ml-2 before:-translate-y-1/2 before:whitespace-nowrap before:rounded-md before:bg-primary-600 before:px-3 before:py-1 before:text-white before:opacity-0 before:transition-opacity before:duration-150 before:content-[attr(data-tip)] hover:bg-primary-50 hover:text-primary-700 hover:before:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 active:scale-95 md:before:text-base md:before:content-none lg:size-10 lg:before:text-lg"
               >
                 <span className="text-xl xl:text-2xl">{icon}</span>
               </Link>
