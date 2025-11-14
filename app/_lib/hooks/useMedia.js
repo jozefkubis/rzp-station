@@ -11,3 +11,15 @@ export default function useMedia() {
     }, []);
     return isMd;
 }
+
+export function useMediaLarge() {
+    const [isMdLarge, setIsMdLargeUp] = useState(false);
+    useEffect(() => {
+        const mql = window.matchMedia("(min-width: 1536px)");
+        const update = () => setIsMdLargeUp(mql.matches);
+        update();
+        mql.addEventListener?.("change", update);
+        return () => mql.removeEventListener?.("change", update);
+    }, []);
+    return isMdLarge;
+}

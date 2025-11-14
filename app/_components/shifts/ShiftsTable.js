@@ -30,7 +30,7 @@ import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
 
 import { updateMonthOrderIndex } from "@/app/_lib/actions";
-import useMedia from "@/app/_lib/hooks/useMedia";
+import useMedia, { useMediaLarge } from "@/app/_lib/hooks/useMedia";
 import {
   closestCenter,
   DndContext,
@@ -77,17 +77,21 @@ export default function ShiftsTable({
 
   /* ---------- CSS grid template ---------- */
   const isMd = useMedia();
+  const isMdLarge = useMediaLarge();
   // const colTemplate = `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
   // const colTemplate = `12rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
 
   const colTemplate = useMemo(() => {
-    if (isMd) {
-      // desktop: pôvodné rozloženie
+    if (isMdLarge) {
+      // najväčší layout
       return `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+    } else if (isMd) {
+      // stredný layout
+      return `10rem 1.9rem repeat(${days.length}, 1.7rem) repeat(7, 2.4rem)`;
     }
-    // mobil: len Meno + dni (menšie bunky)
+    // mobil
     return `10.3rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
-  }, [isMd, days.length]);
+  }, [isMd, isMdLarge, days.length]);
 
   // MARK: OPTIMISTIC – hlavný reducer pre shifts
   const [optimisticShifts, applyOptimistic] = useOptimistic(

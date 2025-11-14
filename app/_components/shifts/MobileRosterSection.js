@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
@@ -8,9 +9,14 @@ import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
 import MobileMonthYearHead from "./MobileMonthYearHead";
 import ShiftLoader from "./ShiftLoader";
-import ShiftsTable from "./ShiftsTable";
+// import ShiftsTable from "./ShiftsTable";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
+
+const ShiftsTable = dynamic(() => import("./ShiftsTable"), {
+    ssr: false,
+    loading: () => <ShiftLoader />,
+});
 
 /**
  * RosterSection drží optimistický stav pre celú tabuľku.
