@@ -1,6 +1,5 @@
 "use client";
 
-import useMedia from "@/app/_lib/hooks/useMedia";
 import { useRouter } from "next/navigation";
 import { useOptimistic, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
@@ -30,7 +29,7 @@ export default function MobileRosterSection({
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    const isMd = useMedia();
+    // const isMd = useMedia();
 
     /* 🟡 1) useOptimistic nad SHIFTAMI (tabuľka) */
     const [optimShifts, applyShifts] = useOptimistic(
