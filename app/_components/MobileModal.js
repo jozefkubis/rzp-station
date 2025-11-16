@@ -30,7 +30,7 @@ export default function MobileModal({ children, onClose }) {
       {/* Modal Container */}
       <div
         role="dialog"
-        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 max-h-[100dvh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform overflow-y-auto rounded-2xl bg-white/30 px-5 py-5 opacity-100 transition-opacity duration-300 sm:w-1/2" // ⬅️ jediné potrebné utility pre scroll
+        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 max-h-[98dvh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform overflow-y-auto rounded-2xl bg-white/30 px-5 py-5 opacity-100 transition-opacity duration-300 sm:w-1/2" // ⬅️ jediné potrebné utility pre scroll
       >
         <button
           className="roundedr-full absolute right-0 top-0 p-1 font-bold text-white opacity-60 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
