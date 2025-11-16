@@ -30,7 +30,7 @@ export default function Modal({ children, onClose }) {
       {/* Modal Container */}
       <div
         role="dialog"
-        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 max-h-[100dvh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform overflow-y-auto rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 sm:w-2/3 md:p-10 lg:w-[90%]" // ⬅️ jediné potrebné utility pre scroll
+        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 max-h-[98dvh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform overflow-y-auto rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 sm:w-2/3 md:p-10 lg:w-[90%]" // ⬅️ jediné potrebné utility pre scroll
       >
         {/* Close Button */}
         <button
