@@ -3,7 +3,7 @@ export function ShiftsTableLegend() {
     <div className="text-[0.6rem] text-gray-600 2xl:text-sm">
       <h3 className="mb-2 font-semibold">Legenda skratiek:</h3>
       <div className="flex justify-between 2xl:gap-8">
-        <ul className="list-inside list-disc space-y-1">
+        <ul className="grid list-inside list-disc space-y-1 sm:grid-cols-4 sm:items-center sm:gap-x-3 sm:gap-y-1 sm:space-y-0 lg:grid-cols-1">
           <li>
             <strong>ÚV</strong> – úväzok
           </li>

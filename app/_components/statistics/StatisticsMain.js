@@ -96,7 +96,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
 
   return (
     <div className="max-h-screeen-md h-[100dvh] overflow-auto md:h-full">
-      <div className="flex h-full flex-col overflow-auto px-3 md:overflow-hidden md:px-[8rem] md:py-[4rem] md:pb-24">
+      <div className="flex h-full flex-col overflow-auto px-3 md:overflow-hidden md:px-[8rem] md:py-[3rem] md:pb-24">
         {/* Sticky header pre mobile, pôvodné farby od md */}
         <YearHeadStatistics className="sticky top-0 z-20 -mx-3 bg-primary-900 px-3 py-2 text-white md:static md:-mx-0 md:bg-transparent md:px-0 md:text-primary-700">
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
@@ -112,46 +112,48 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
           <>
             {/* --- MOBIL: karty --- */}
             {admin === "ÁNO" ? (
-              <div className="my-3 space-y-3 md:hidden">
-                {stats.map((r) => (
-                  <div
-                    key={r.name}
-                    className="rounded-xl border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="truncate font-semibold">{r.name}</div>
-                      {/* Spolu v badge vpravo */}
-                      <span className="rounded-md bg-white/10 px-2 py-1 text-xs font-semibold">
-                        Spolu: {r.Spolu}
-                      </span>
-                    </div>
+              <div className="my-3 space-y-2 md:hidden">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {stats.map((r) => (
+                    <div
+                      key={r.name}
+                      className="rounded-xl border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="truncate font-semibold">{r.name}</div>
+                        {/* Spolu v badge vpravo */}
+                        <span className="rounded-md bg-white/10 px-2 py-1 text-xs font-semibold">
+                          Spolu: {r.Spolu}
+                        </span>
+                      </div>
 
-                    {/* Riadok štítkov s číslami */}
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        D: <b>{r.D}</b>
-                      </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        N: <b>{r.N}</b>
-                      </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        RD: <b>{r.RD}</b>
-                      </span>
-                    </div>
+                      {/* Riadok štítkov s číslami */}
+                      <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          D: <b>{r.D}</b>
+                        </span>
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          N: <b>{r.N}</b>
+                        </span>
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          RD: <b>{r.RD}</b>
+                        </span>
+                      </div>
 
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        PN: <b>{r.PN}</b>
-                      </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        X: <b>{r.X}</b>
-                      </span>
-                      <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                        ŠS: <b>{r.ŠS}</b>
-                      </span>
+                      <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          PN: <b>{r.PN}</b>
+                        </span>
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          X: <b>{r.X}</b>
+                        </span>
+                        <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
+                          ŠS: <b>{r.ŠS}</b>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
 
                 {/* Legenda ako collapsible na mobile */}
                 <details className="rounded-lg border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg">
@@ -172,10 +174,10 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
             {/* --- DESKTOP/MD+: tabuľka + legenda --- */}
             <div className="hidden md:block">
               <div className="overflow-x-auto rounded-lg border border-gray-200">
-                <table className="w-full 2xl:min-w-[56rem] table-fixed border-collapse text-center">
+                <table className="w-full table-fixed border-collapse text-center 2xl:min-w-[56rem]">
                   <thead className="bg-gray-100">
                     <tr className="text-xs 2xl:text-base">
-                      <th className="md:w-[11rem] 2xl:w-[14rem] border px-3 md:py-2 2xl:py-3 text-left">
+                      <th className="border px-3 text-left md:w-[11rem] md:py-2 2xl:w-[14rem] 2xl:py-3">
                         Meno
                       </th>
                       <th className="border px-4 md:py-2 2xl:py-3">D</th>
@@ -190,17 +192,34 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                   <tbody>
                     {admin === "ÁNO" ? (
                       stats.map((r) => (
-                        <tr key={r.name} className="hover:bg-gray-50 text-xs 2xl:text-base">
-                          <td className="border px-3 md:py-2 2xl:py-3 text-left font-semibold text-primary-700">
+                        <tr
+                          key={r.name}
+                          className="text-xs hover:bg-gray-50 2xl:text-base"
+                        >
+                          <td className="border px-3 text-left font-semibold text-primary-700 md:py-2 2xl:py-3">
                             {r.name}
                           </td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.D}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.N}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.Spolu}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.RD}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.PN}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.X}</td>
-                          <td className="border px-4 md:py-2 2xl:py-3">{r.ŠS}</td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.D}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.N}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.Spolu}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.RD}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.PN}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.X}
+                          </td>
+                          <td className="border px-4 md:py-2 2xl:py-3">
+                            {r.ŠS}
+                          </td>
                         </tr>
                       ))
                     ) : (

@@ -2,7 +2,7 @@ export function StatisticsLegend() {
   return (
     <div className="mt-4 pb-2 text-[0.6rem] text-primary-600 md:text-gray-600 2xl:text-base">
       <h3 className="mb-2 font-semibold">Legenda skratiek:</h3>
-      <ul className="list-inside list-disc space-y-1">
+      <ul className="grid list-inside list-disc space-y-1 sm:grid-cols-4 sm:gap-2 sm:space-y-0 lg:grid-cols-1">
         <li>
           <strong>D</strong> – denná smena
         </li>
