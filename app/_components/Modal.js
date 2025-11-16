@@ -30,12 +30,11 @@ export default function Modal({ children, onClose }) {
       {/* Modal Container */}
       <div
         role="dialog"
-        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 md:p-10
-        max-h-[100dvh] overflow-y-auto"  // ⬅️ jediné potrebné utility pre scroll
+        className="animate-in fade-in zoom-in fixed left-1/2 top-1/2 z-50 max-h-[100dvh] w-[90%] max-w-2xl -translate-x-1/2 -translate-y-1/2 scale-100 transform overflow-y-auto rounded-2xl bg-white p-6 opacity-100 shadow-xl transition-all duration-300 sm:w-2/3 md:p-10 lg:w-[90%]" // ⬅️ jediné potrebné utility pre scroll
       >
         {/* Close Button */}
         <button
-          className="hidden md:absolute right-3 top-3 rounded-full p-2 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600"
+          className="right-3 top-3 hidden rounded-full p-2 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600 md:absolute"
           onClick={onClose}
           aria-label="Zatvoriť modal"
         >
@@ -45,6 +44,6 @@ export default function Modal({ children, onClose }) {
         <div>{children}</div>
       </div>
     </>,
-    document.body
+    document.body,
   );
 }
