@@ -24,7 +24,7 @@ import {
 function countShiftsByType(shifts) {
   return shifts.reduce(
     (acc, shift) => {
-      if (shift.shift_type === "DN" || shift.shift_type === "ND") {
+      if (shift.shift_type === "DN") {
         acc.D += 1;
         acc.N += 1;
       } else {

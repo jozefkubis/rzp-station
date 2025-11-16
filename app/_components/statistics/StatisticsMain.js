@@ -44,7 +44,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
 
       const isDay = ["D", "VD", "ZD"].includes(type);
       const isNight = ["N", "VN", "ZN"].includes(type);
-      const isBoth = ["DN", "ND"].includes(type);
+      const isBoth = ["DN"].includes(type);
 
       if (isDay) acc[name].D++;
       if (isNight) acc[name].N++;

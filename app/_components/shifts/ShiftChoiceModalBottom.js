@@ -7,9 +7,10 @@ export default function ShiftChoiceModalBottom({
   disabled,
 }) {
   const options = [
+    // { t: "RD", h: 7.5 },
+    { t: "X", h: null },
     { t: "xD", h: null },
     { t: "xN", h: null },
-    { t: "X", h: null },
     { t: "ZA3", h: null },
     { t: "ZA4", h: null },
     { t: "BY", h: null },

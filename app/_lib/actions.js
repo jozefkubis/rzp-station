@@ -515,7 +515,7 @@ export async function clearOnlyShifts(year, month) {
     .update({ shift_type: null })
     .gte("date", from)
     .lt("date", toExclusive)
-    .in("shift_type", ["D", "N", "DN", "ND", "vD", "vN", "zD", "zN"]); // ← filter na D/N
+    .in("shift_type", ["D", "N", "DN", "vD", "vN", "zD", "zN"]); // ← filter na D/N
 
   if (error) throw error;
 

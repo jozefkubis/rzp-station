@@ -69,8 +69,6 @@ function toNumber(value) {
    KONŠTANTY PRE ŠTATISTIKU
    ────────────────────────────────────────────────────────── */
 
-
-
 // Trvanie smien v hodinách
 export const HOURS = {
   D: 12,
@@ -86,8 +84,8 @@ export const HOURS = {
 };
 
 // Zoskupenia typov
-const DAY_SET = new Set(["D", "vD", "zD", "DN", "ND"]);
-const NIGHT_SET = new Set(["N", "vN", "zN", "DN", "ND"]);
+const DAY_SET = new Set(["D", "vD", "zD", "DN"]);
+const NIGHT_SET = new Set(["N", "vN", "zN", "DN"]);
 const HOLIDAY = "RD";
 const SICKDAY = "PN";
 
@@ -100,7 +98,6 @@ const UNITS = {
   vN: 1,
   zN: 1,
   DN: 2,
-  ND: 2,
   RD: 0,
   PN: 0,
 };
@@ -124,13 +121,10 @@ function reqHours(s) {
    Definícia stĺpcov tabuľky (štatistika)
    ────────────────────────────────────────────────────────── */
 export function shiftTableStats(normHours, contract) {
-
   const HOURS_CONTRACT = Object.fromEntries(
     Object.entries(HOURS).map(([key, value]) =>
-      (key === "RD" || key === "PN")
-        ? [key, value * contract]
-        : [key, value]
-    )
+      key === "RD" || key === "PN" ? [key, value * contract] : [key, value],
+    ),
   );
 
   return [
@@ -139,13 +133,11 @@ export function shiftTableStats(normHours, contract) {
       label: "SH",
       calc: (shifts) => {
         const regular = shifts.reduce(
-
-
           (sum, s) => sum + (HOURS_CONTRACT[s.shift_type] || 0),
           0,
         );
         const extra = shifts.reduce((sum, s) => sum + reqHours(s), 0);
-        const raw = regular + extra
+        const raw = regular + extra;
         return clampNearZero(round1(raw));
       },
     },

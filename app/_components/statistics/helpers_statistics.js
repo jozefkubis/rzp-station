@@ -12,8 +12,7 @@
 //     case "VN":
 //     case "ZN":
 //       return ["N"];
-//     case "DN":
-//     case "ND":
+//     case "DN"://
 //       return ["D", "N"];
 //     case "X": // ak by sa X objavilo priamo v shift_type
 //     case "XD":
