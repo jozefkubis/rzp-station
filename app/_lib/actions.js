@@ -815,7 +815,7 @@ export async function generateShiftsAuto(m) {
   function countWorkdays(y, m1to12) {
     let c = 0;
     const daysInMonth = new Date(y, m1to12, 0).getDate();
-    for (let d = 1;d <= daysInMonth;d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
       const dow = new Date(y, m1to12 - 1, d).getDay(); // 0=Ne..6=So
       if (dow >= 1 && dow <= 5) c++;
     }
@@ -924,7 +924,7 @@ export async function generateShiftsAuto(m) {
     let assigned = raw.reduce((s, r) => s + r.floor, 0);
     let left = total - assigned;
     raw.sort((a, b) => b.frac - a.frac);
-    for (let i = 0;i < left;i++) raw[i].floor++;
+    for (let i = 0; i < left; i++) raw[i].floor++;
 
     return new Map(raw.map((r) => [r.id, r.floor]));
   }
@@ -1007,8 +1007,10 @@ export async function generateShiftsAuto(m) {
       const m = existType.get(d);
       return norm(m ? m.get(uid) : null);
     };
-    const t1 = getOn(y1);
-    if (t1 === "N") return true;
+    const t1 = getOn(y1); // včerajší typ: "D", "N", "DN", "RD", ...
+
+    // 🔴 Deň po nočnej alebo 24h službe = voľno
+    if (t1 === "N" || t1 === "DN") return true;
 
     const s = dayState.get(uid) || {
       lastDate: null,
@@ -1018,8 +1020,13 @@ export async function generateShiftsAuto(m) {
     if (!s.lastDate) return false;
 
     const wasYesterday = s.lastDate === prevDateStr(dateStr);
+
+    // (toto už vlastne netreba, ale nevadí, keď tam ostane)
     if (wasYesterday && s.lastType === "N" && type === "D") return true;
+
+    // max 2 rovnaké smeny za sebou (D-D-D alebo N-N-N)
     if (wasYesterday && s.lastType === type && s.consecSame >= 2) return true;
+
     return false;
   }
 
@@ -1038,7 +1045,7 @@ export async function generateShiftsAuto(m) {
   }
   function shuffle(arr, rnd) {
     const a = arr.slice();
-    for (let i = a.length - 1;i > 0;i--) {
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(rnd() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -1193,7 +1200,7 @@ export async function generateShiftsAuto(m) {
   const toInsert = [];
   const toUpdate = [];
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rnd = lcg(year * 10000 + month * 100 + day);
     const dayProfiles = shuffle(profiles, rnd);
@@ -1217,6 +1224,27 @@ export async function generateShiftsAuto(m) {
         pushDayState(uid, st, dateStr);
         incCount(uid, st);
         incHours(uid, st);
+      }
+      // 🆕 24h služba v jednom dni: DN alebo ND
+      else if (st === "DN") {
+        // zoberie 1 slot D aj 1 slot N
+        if (remaining["D"] > 0) remaining["D"] -= 1;
+        if (remaining["N"] > 0) remaining["N"] -= 1;
+
+        assignedToday.add(uid);
+        assignedByType["D"].add(uid);
+        assignedByType["N"].add(uid);
+
+        // posledný typ bude noc – pre pravidlá „po N voľno“
+        pushDayState(uid, "N", dateStr);
+
+        // rátať ako jednu D a jednu N
+        incCount(uid, "D");
+        incCount(uid, "N");
+
+        // a hodiny – 2×12h = 24h
+        incHours(uid, "D");
+        incHours(uid, "N");
       } else if (st === "RD" || st === "PN" || st === "X" || blockedByRequest) {
         assignedToday.add(uid); // blokuje deň
         if (st) incHours(uid, st);
@@ -1226,7 +1254,7 @@ export async function generateShiftsAuto(m) {
     // doplň zvyšné sloty cez výber kandidátov (rešpektuje páry)
     for (const type of ["D", "N"]) {
       const need = remaining[type];
-      for (let k = 0;k < need;k++) {
+      for (let k = 0; k < need; k++) {
         const uid =
           pickCandidate(
             type,
@@ -1343,7 +1371,8 @@ export async function validateShifts(m = 0) {
   const lastDay = new Date(year, month, 0).getDate();
   const to = `${year}-${pad(month)}-${pad(lastDay)}`;
 
-  const labelSK = (t) => (t === "D" ? "Denná" : t === "N" ? "Nočná" : t);
+  const labelSK = (t) =>
+    t === "D" || t === "DN" ? "Denná" : t === "N" || t === "DN" ? "Nočná" : t;
 
   // ==== požadované pokrytie na deň ====
   const coverage = { D: 2, N: 2 };
@@ -1364,12 +1393,14 @@ export async function validateShifts(m = 0) {
   // ---- normalizácie ----
   const EXCLUDE_REQ = new Set(["BY", "STR", "TER", "ZA3", "ZA4"]);
 
-  const normShift = (t) => {
-    if (t == null) return null;
+  const classifyShift = (t) => {
+    if (t == null) return { isD: false, isN: false };
     const s = String(t).trim().toUpperCase();
-    if (s === "D" || s === "ZD" || s === "VD") return "D";
-    if (s === "N" || s === "ZN" || s === "VN") return "N";
-    return null; // ostatné typy sa do pokrytia nepočítajú
+
+    const isD = s === "D" || s === "ZD" || s === "VD" || s === "DN";
+    const isN = s === "N" || s === "ZN" || s === "VN" || s === "DN";
+
+    return { isD, isN };
   };
 
   const normReq = (r) => {
@@ -1382,7 +1413,7 @@ export async function validateShifts(m = 0) {
   const byDate = new Map(); // date -> { D:Set<uid>, N:Set<uid>, ANY:Set<uid> }
   const existType = new Map(); // date -> Map(uid -> "D"|"N"|null) – ak budeš chcieť iné pravidlá
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const d = `${year}-${pad(month)}-${pad(day)}`;
     byDate.set(d, { D: new Set(), N: new Set(), ANY: new Set() });
     existType.set(d, new Map());
@@ -1392,19 +1423,23 @@ export async function validateShifts(m = 0) {
     const d = row.date;
     if (!byDate.has(d)) continue;
 
-    const shift = normShift(row.shift_type);
+    const { isD, isN } = classifyShift(row.shift_type);
     const req = normReq(row.request_type);
     const uid = row.user_id;
 
-    // eviduj, že človek má v daný deň D/N (užitočné pre ďalšie pravidlá)
-    existType.get(d).set(uid, shift || null);
+    // môžeš si tu uložiť napr. posledný typ, ak budeš chcieť ďalšie pravidlá,
+    // napr. preferenčne ako N, keď je DN/ND:
+    const storedType = isN ? "N" : isD ? "D" : null; // DN/ND sa tu budú javiť ako "N" (nočná)
+    existType.get(d).set(uid, storedType);
 
-    // >>> HLAVNÁ ZMENA <<<
-    // Do pokrytia (2×D, 2×N) započítaj D/N len vtedy, ak NIE je
-    // prítomná požiadavka z EXCLUDE_REQ (BY, STR, TER, ZA3, ZA4).
-    if ((shift === "D" || shift === "N") && !req) {
-      byDate.get(d)[shift].add(uid);
-      byDate.get(d).ANY.add(uid);
+    // Do pokrytia (2×D, 2×N) započítaj podľa príznakov, ale len ak nie je excl. request
+    if (!req) {
+      const rec = byDate.get(d);
+
+      if (isD) rec.D.add(uid); // D, ZD, VD, DN, ND
+      if (isN) rec.N.add(uid); // N, ZN, VN, DN, ND
+
+      if (isD || isN) rec.ANY.add(uid);
     }
   }
 
@@ -1412,7 +1447,7 @@ export async function validateShifts(m = 0) {
   const days = [];
   let totalIssues = 0;
 
-  for (let day = 1;day <= lastDay;day++) {
+  for (let day = 1; day <= lastDay; day++) {
     const dateStr = `${year}-${pad(month)}-${pad(day)}`;
     const rec = byDate.get(dateStr);
     const countD = rec.D.size;
