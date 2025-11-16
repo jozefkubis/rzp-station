@@ -43,9 +43,11 @@ const hoursForShifts = (count, perShift = 12) => count * perShift;
 const formatDaysLeft = (v) => {
   if (v == null) return <span>—</span>;
   if (v < 0)
-    return <span className="text-red-600 font-semibold">- {Math.abs(v)} dní</span>;
+    return (
+      <span className="font-semibold text-red-600">- {Math.abs(v)} dní</span>
+    );
   if (v <= 30)
-    return <span className="text-amber-600 font-semibold">{v} dní</span>;
+    return <span className="font-semibold text-amber-600">{v} dní</span>;
   return <span className="text-green-600">{v} dní</span>;
 };
 
