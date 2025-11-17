@@ -4,6 +4,7 @@ const buttonSizes = {
   small: "text-[0.7rem] md:text-xs px-3 py-1 uppercase font-semibold",
   medium: "text-[0.7rem] md:text-sm px-2 md:px-4 py-1 md:py-2 font-medium",
   large: "text-xs 2xl:text-base px-3 2xl:px-6 py-2 2xl:py-3 font-medium",
+  printOrSave: "text-xs 2xl:text-base p-1 font-medium",
 };
 
 const buttonVariants = {
@@ -19,6 +20,8 @@ const buttonVariants = {
     "text-gray-600 bg-[#FFF144] border border-gray-300 hover:bg-[#FFD01C] active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
   danger:
     "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
+  printOrSave:
+    "text-primary-400 border  border-none hover:text-primary-600 hover:bg-gray-100 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
 };
 
 export default function Button({

@@ -7,6 +7,8 @@ import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
+import Print from "./Print";
+import Save from "./Save";
 import ShiftLoader from "./ShiftLoader";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
@@ -118,7 +120,11 @@ export default function RosterSection({
       {/* 1️⃣ centrovaná tabuľka s maximálnou šírkou kontajnera */}
       <div className="flex justify-center px-8">
         <div className="flex flex-col">
-          <div className="max-w-full overflow-x-auto">
+          <div className="max-w-full overflow-x-auto relative">
+            <div className="absolute top-10 right-4 flex gap-1">
+              <Save />
+              <Print />
+            </div>
             <ShiftsTable
               shifts={optimShifts}
               goTo={goTo}
