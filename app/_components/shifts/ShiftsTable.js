@@ -44,6 +44,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
+import Save from "./Save";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -164,10 +165,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                  ...s,
-                  request_type: action.reqType,
-                  request_hours: action.hours ?? null,
-                }
+                ...s,
+                request_type: action.reqType,
+                request_hours: action.hours ?? null,
+              }
               : s,
           );
         }
@@ -358,6 +359,97 @@ export default function ShiftsTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthKey, membershipKey]);
 
+  //......................................
+  // MARK: EXPORT – roster do CSV (Excel)
+  function handleExportRosterCsv() {
+    if (!rows || rows.length === 0) {
+      toast.error("Nie je čo exportovať");
+      return;
+    }
+
+    // 1) Dni v mesiaci
+    const dayLabels = days.map((d) => d.day);    // 1, 2, 3...
+    const dayKeys = days.map((d) => d.dateStr);  // "YYYY-MM-DD"
+
+    // 2) Hlavička – pridáme stĺpec "Riadok" (Smena/Požiadavka)
+    const header = ["Meno", "ÚV", ...dayLabels];
+
+    const dataRows = [];
+
+    // 3) Pre každého záchranára spravíme DVA riadky
+    rows.forEach((row) => {
+      const contract = Number(row.contract ?? 1);
+
+      const shiftsByDate = new Map();
+      row.shifts?.forEach((s) => {
+        shiftsByDate.set(s.date, s);
+      });
+
+      // --- horný riadok: SMENA ---
+      const topCells = dayKeys.map((dateStr) => {
+        const s = shiftsByDate.get(dateStr);
+        return s?.shift_type ?? "";
+      });
+
+      dataRows.push([
+        row.full_name ?? "",
+        String(contract).replace(".", ","),   // 1 → "1", 0.5 → "0,5"
+        ...topCells,
+      ]);
+
+
+      // --- dolný riadok: POŽIADAVKA ---
+      const bottomCells = dayKeys.map((dateStr) => {
+        const s = shiftsByDate.get(dateStr);
+        if (!s || !s.request_type) return "";
+
+        // napr. "PN" alebo "PN 4h"
+        if (s.request_hours != null) {
+          return `${s.request_hours}h`;
+        }
+        return s.request_type;
+      });
+
+      dataRows.push([
+        "",          // meno necháme prázdne, bude to vyzerať ako spodný riadok
+        "",          // úväzok tiež prázdny
+        // "Požiadavka",
+        ...bottomCells,
+      ]);
+    });
+
+    // 4) Escapovanie buniek
+    const escapeCell = (value) => {
+      const str = String(value ?? "");
+      if (/[;"\n]/.test(str)) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    // 5) CSV text
+    const csvRows = [header, ...dataRows]
+      .map((row) => row.map(escapeCell).join(";"))
+      .join("\n");
+
+    // 6) Blob s BOM kvôli diakritike v Exceli
+    const blob = new Blob(["\uFEFF" + csvRows], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const fileName = `roster-${monthKey}.csv`;
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  //......................................
+
   const itemIds = rows.map((u) => `${monthKey}:${u.user_id}`);
 
   async function handleDragEnd(event) {
@@ -445,6 +537,10 @@ export default function ShiftsTable({
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
+        <div className="absolute top-10 right-4 flex gap-1">
+          <Save onExport={handleExportRosterCsv} />
+          {/* <Print /> */}
+        </div>
         <MonthYearHead>
           <ArrowBack
             goTo={goTo}

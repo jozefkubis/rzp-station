@@ -21,7 +21,7 @@ const buttonVariants = {
   danger:
     "text-white bg-red-600 hover:bg-red-700 active:scale-95 w-xl disabled:bg-gray-400 disabled:cursor-not-allowed",
   printOrSave:
-    "text-primary-400 border  border-none hover:text-primary-600 hover:bg-gray-100 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed",
+    "text-primary-400 border border-none hover:text-primary-600 hover:bg-gray-100 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed hover:cursor-pointer",
 };
 
 export default function Button({
