@@ -44,6 +44,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
+import Print from "./Print";
 import Save from "./Save";
 import SaveXLSX from "./SaveXLSX";
 
@@ -759,10 +760,10 @@ export default function ShiftsTable({
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
-        <div className="absolute top-10 right-4 flex gap-1">
+        <div className="absolute top-10 right-4 flex gap-1 no-print">
           <Save onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
-          {/* <Print /> */}
+          <Print />
         </div>
         <MonthYearHead>
           <ArrowBack

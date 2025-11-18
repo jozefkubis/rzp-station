@@ -7,7 +7,7 @@ export default function ArrowBack({ goTo, shiftsOffset, disabled }) {
             onClick={() => goTo(Number(shiftsOffset) - 1)}
             disabled={disabled}
             aria-label="Previous month"
-            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95 disabled:opacity-40"
+            className="cursor-pointer rounded-lg bg-primary-50 px-2 hover:bg-white hover:ring-1 active:scale-95 disabled:opacity-40 no-print"
         >
             <HiArrowNarrowLeft className="md:text-2xl text-xl text-primary-300" />
         </button>

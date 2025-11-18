@@ -317,3 +317,36 @@ th.rbc-header {
 *::after {
   box-sizing: border-box;
 }
+
+/* ---- TLAČ ROSTRA ---- */
+@media print {
+  /* 1) východzí stav: všetko schovať */
+  body * {
+    visibility: hidden;
+  }
+
+  /* 2) zobraziť len roster a jeho deti */
+  .print-roster,
+  .print-roster * {
+    visibility: visible;
+  }
+
+  /* 3) umiestniť roster na začiatok stránky */
+  /* .print-roster {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0.5cm; 
+  } */
+
+  /* 4) skryť prvky s .no-print úplne (aby nezaberal miesto) */
+  .no-print {
+    display: none !important;
+  }
+
+  /* 5) nastavenie stránky (voliteľné) */
+  @page {
+    size: A4 landscape; /* skúšaj portrait/landscape podľa potreby */
+    margin: 10mm;
+  }
+}

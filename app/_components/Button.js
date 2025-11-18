@@ -36,7 +36,7 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
+      className={`no-print rounded-md transition-colors duration-200 ${buttonSizes[size]} ${buttonVariants[variant]}`}
       {...props}
     >
       {children}
