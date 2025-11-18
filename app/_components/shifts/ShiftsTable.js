@@ -45,6 +45,7 @@ import {
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
 import Save from "./Save";
+import SaveXLSX from "./SaveXLSX";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -360,6 +361,128 @@ export default function ShiftsTable({
   }, [monthKey, membershipKey]);
 
   //......................................
+
+  // MARK: EXPORT – roster do XLSX
+  async function handleExportRosterXlsx() {
+    // 0) Kontrola – či máme dáta
+    if (!rows || rows.length === 0) {
+      toast.error("Nie je čo exportovať");
+      return;
+    }
+
+    // 1) Príprava dní (rovnako ako pri CSV)
+    const dayLabels = days.map((d) => d.day);      // 1,2,3,...
+    const dayKeys = days.map((d) => d.dateStr);    // "YYYY-MM-DD"
+    const header = ["Meno", "ÚV", ...dayLabels, "SH", "D", "N", "RD", "PN", "NČ", "PS"];
+
+    const dataRows = [];
+    // 2) Pre každého záchranára pripravíme DVA riadky (smeny + požiadavky)
+    rows.forEach((row) => {
+      const contract = Number(row.contract ?? 1);
+      const perUserNorm = Math.round(normHours * contract * 10) / 10;
+      const statsDefs = shiftTableStats(perUserNorm, contract);
+
+      // pole čísel v poradí [SH, D, N, RD, PN, NČ, PS]
+      const statsValues = statsDefs.map((def) =>
+        def.calc(row.shifts ?? []),
+      );
+
+      // Map dátum -> smena
+      const shiftsByDate = new Map();
+      row.shifts?.forEach((s) => {
+        shiftsByDate.set(s.date, s);
+      });
+
+      // --- horný riadok: SMENA ---
+      const topCells = dayKeys.map((dateStr) => {
+        const s = shiftsByDate.get(dateStr);
+        return s?.shift_type ?? "";
+      });
+
+      dataRows.push([
+        row.full_name ?? "",
+        contract, // necháme ako číslo, Excel si ho vie pekne zobraziť
+        ...topCells,
+        ...statsValues,
+      ]);
+
+      // --- dolný riadok: POŽIADAVKA ---
+      const bottomCells = dayKeys.map((dateStr) => {
+        const s = shiftsByDate.get(dateStr);
+        if (!s || !s.request_type) return "";
+
+        if (s.request_hours != null) {
+          return `${s.request_hours}h`;
+        }
+        return s.request_type;
+      });
+
+      dataRows.push([
+        "", // meno prázdne → vizuálne spojené s riadkom nad
+        "", // úväzok prázdny
+        ...bottomCells,
+        ...new Array(statsDefs.length).fill(""), // toľko prázdnych, koľko je statov
+      ]);
+    });
+
+    // 3) Dynamicky si natiahneme exceljs (funguje dobre v Next.js na cliente)
+    const ExcelJS = await import("exceljs");
+
+    // 4) Vytvoríme workbook + sheet
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet(`Rozpis ${monthKey}`);
+
+    // 5) Hlavička
+    sheet.addRow(header);
+
+    // 6) Dáta – každý riadok z dataRows ako nový riadok v Exceli
+    dataRows.forEach((row) => {
+      sheet.addRow(row);
+    });
+
+    // 7) Štýl hlavičky – nech to vyzerá ako „tabuľka“
+    const headerRow = sheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.alignment = { vertical: "middle", horizontal: "center" };
+    headerRow.height = 20;
+
+    // 8) Šírky stĺpcov – Meno širšie, ÚV menší, dni úzke
+    sheet.getColumn(1).width = 25; // Meno
+    sheet.getColumn(2).width = 5;  // ÚV
+    for (let col = 3;col <= header.length;col++) {
+      sheet.getColumn(col).width = 3.5; // dni
+    }
+
+    // (voliteľné) 9) Zarovnanie – všetko centrované okrem mena
+    for (let rowIndex = 2;rowIndex <= sheet.rowCount;rowIndex++) {
+      const row = sheet.getRow(rowIndex);
+      row.alignment = { vertical: "middle", horizontal: "center" };
+      row.getCell(1).alignment = {
+        vertical: "middle",
+        horizontal: "left",
+      };
+    }
+
+    // 10) Vygenerujeme binárne dáta .xlsx
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    // 11) Stiahneme súbor tak ako pri CSV
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `roster-${monthKey}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  //......................................
+
   // MARK: EXPORT – roster do CSV (Excel)
   function handleExportRosterCsv() {
     if (!rows || rows.length === 0) {
@@ -384,6 +507,7 @@ export default function ShiftsTable({
       row.shifts?.forEach((s) => {
         shiftsByDate.set(s.date, s);
       });
+
 
       // --- horný riadok: SMENA ---
       const topCells = dayKeys.map((dateStr) => {
@@ -539,6 +663,7 @@ export default function ShiftsTable({
       <MainShiftsTable colTemplate={colTemplate}>
         <div className="absolute top-10 right-4 flex gap-1">
           <Save onExport={handleExportRosterCsv} />
+          <SaveXLSX onXlsx={handleExportRosterXlsx} />
           {/* <Print /> */}
         </div>
         <MonthYearHead>
