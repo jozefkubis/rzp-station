@@ -131,7 +131,7 @@ export default function RosterSection({
             {isPending && <ShiftLoader />}
           </div>
 
-          <div className="flex w-full justify-between gap-2 px-3 pb-6 pt-8">
+          <div className="flex w-full justify-between gap-2 px-3 pb-6 pt-4">
             <div>
               <ShiftsTableLegend />
             </div>

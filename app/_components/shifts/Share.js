@@ -1,18 +1,18 @@
-import { LuPrinter } from "react-icons/lu";
+import { FiShare2 } from "react-icons/fi";
 import Button from "../Button";
 
-function Print() {
+function Share() {
     function printDocument() {
-        window.print();
+        console.log("share")
     }
 
     return (
         <div className="hidden md:flex">
             <Button variant="printOrSave" size="printOrSave" onClick={printDocument}>
-                <LuPrinter className="md:h-5 md:w-5" />
+                <FiShare2 className="md:h-5 md:w-5" />
             </Button>
         </div>
     )
 }
 
-export default Print
+export default Share

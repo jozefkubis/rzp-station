@@ -45,8 +45,9 @@ import {
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
 import Print from "./Print";
-import Save from "./Save";
+import SaveCSV from "./SaveCSV";
 import SaveXLSX from "./SaveXLSX";
+import Share from "./Share";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -760,11 +761,12 @@ export default function ShiftsTable({
   return (
     <>
       <MainShiftsTable colTemplate={colTemplate}>
-        <div className="absolute top-10 right-4 flex gap-1 no-print">
-          <Save onExport={handleExportRosterCsv} />
+        {/* <div className="bottom-0 right-4 flex gap-1 no-print">
+          <Share />
+          <SaveCSV onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
           <Print />
-        </div>
+        </div> */}
         <MonthYearHead>
           <ArrowBack
             goTo={goTo}
@@ -861,6 +863,12 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
+        <div className="pt-4 sticky flex gap-1 justify-end">
+          <Share />
+          <SaveCSV onExport={handleExportRosterCsv} />
+          <SaveXLSX onXlsx={handleExportRosterXlsx} />
+          <Print />
+        </div>
       </MainShiftsTable>
 
       {/* modals */}
