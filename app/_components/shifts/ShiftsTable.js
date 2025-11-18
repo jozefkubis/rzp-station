@@ -370,30 +370,33 @@ export default function ShiftsTable({
       return;
     }
 
-    // 1) Príprava dní (rovnako ako pri CSV)
-    const dayLabels = days.map((d) => d.day);      // 1,2,3,...
+    // 1) Príprava dní a hlavičky
+    // --------------------------------
+    const dayLabels = days.map((d) => d.day);       // 1, 2, 3, ...
     const dayKeys = days.map((d) => d.dateStr);    // "YYYY-MM-DD"
     const header = ["Meno", "ÚV", ...dayLabels, "SH", "D", "N", "RD", "PN", "NČ", "PS"];
 
     const dataRows = [];
-    // 2) Pre každého záchranára pripravíme DVA riadky (smeny + požiadavky)
+
+    // 2) Príprava dát – pre každého záchranára dva riadky (SMENY + POŽIADAVKY)
+    // --------------------------------
     rows.forEach((row) => {
       const contract = Number(row.contract ?? 1);
       const perUserNorm = Math.round(normHours * contract * 10) / 10;
+
+      // Štatistiky: dostaneme definície (key, label, calc)
       const statsDefs = shiftTableStats(perUserNorm, contract);
 
-      // pole čísel v poradí [SH, D, N, RD, PN, NČ, PS]
-      const statsValues = statsDefs.map((def) =>
-        def.calc(row.shifts ?? []),
-      );
+      // Čísla pre jednotlivé stĺpce štatistík [SH, D, N, RD, PN, NČ, PS]
+      const statsValues = statsDefs.map((def) => def.calc(row.shifts ?? []));
 
-      // Map dátum -> smena
+      // Map dátum -> smena (pre rýchle lookup-y)
       const shiftsByDate = new Map();
       row.shifts?.forEach((s) => {
         shiftsByDate.set(s.date, s);
       });
 
-      // --- horný riadok: SMENA ---
+      // --- Horný riadok: SMENA ---
       const topCells = dayKeys.map((dateStr) => {
         const s = shiftsByDate.get(dateStr);
         return s?.shift_type ?? "";
@@ -401,72 +404,167 @@ export default function ShiftsTable({
 
       dataRows.push([
         row.full_name ?? "",
-        contract, // necháme ako číslo, Excel si ho vie pekne zobraziť
-        ...topCells,
-        ...statsValues,
+        contract,           // číslo – Excel s tým vie počítať
+        ...topCells,        // smeny po dňoch
+        ...statsValues,     // SH, D, N, RD, PN, NČ, PS
       ]);
 
-      // --- dolný riadok: POŽIADAVKA ---
+      // --- Dolný riadok: POŽIADAVKA ---
       const bottomCells = dayKeys.map((dateStr) => {
         const s = shiftsByDate.get(dateStr);
         if (!s || !s.request_type) return "";
 
         if (s.request_hours != null) {
-          return `${s.request_hours}h`;
+          return `${s.request_hours}h`; // napr. "4h"
         }
-        return s.request_type;
+        return s.request_type; // napr. "PN"
       });
 
       dataRows.push([
-        "", // meno prázdne → vizuálne spojené s riadkom nad
+        "", // meno prázdne → vizuálne patrí k riadku nad tým
         "", // úväzok prázdny
         ...bottomCells,
-        ...new Array(statsDefs.length).fill(""), // toľko prázdnych, koľko je statov
+        ...new Array(statsDefs.length).fill(""), // prázdne bunky pre štatistiky
       ]);
     });
 
-    // 3) Dynamicky si natiahneme exceljs (funguje dobre v Next.js na cliente)
+    // 3) ExcelJS – workbook a sheet
+    // --------------------------------
     const ExcelJS = await import("exceljs");
-
-    // 4) Vytvoríme workbook + sheet
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet(`Rozpis ${monthKey}`);
 
-    // 5) Hlavička
+    // 4) Zápis hlavičky a dát
+    // --------------------------------
     sheet.addRow(header);
-
-    // 6) Dáta – každý riadok z dataRows ako nový riadok v Exceli
     dataRows.forEach((row) => {
       sheet.addRow(row);
     });
 
-    // 7) Štýl hlavičky – nech to vyzerá ako „tabuľka“
+    // 5) Štýl hlavičky
+    // --------------------------------
     const headerRow = sheet.getRow(1);
-    headerRow.font = { bold: true };
+    headerRow.font = { bold: true, size: 11 };
     headerRow.alignment = { vertical: "middle", horizontal: "center" };
-    headerRow.height = 20;
+    headerRow.height = 22;
 
-    // 8) Šírky stĺpcov – Meno širšie, ÚV menší, dni úzke
-    sheet.getColumn(1).width = 25; // Meno
-    sheet.getColumn(2).width = 5;  // ÚV
+    // 6) Šírky stĺpcov + základný font pre stĺpec Meno
+    // --------------------------------
+    sheet.getColumn(1).width = 27; // Meno
+    sheet.getColumn(2).width = 6;  // ÚV
+
     for (let col = 3;col <= header.length;col++) {
-      sheet.getColumn(col).width = 3.5; // dni
+      sheet.getColumn(col).width = 5; // dni + štatistiky
     }
 
-    // (voliteľné) 9) Zarovnanie – všetko centrované okrem mena
+    // Stĺpec Meno – väčšie a tučné písmo
+    sheet.getColumn(1).eachCell((cell, rowNumber) => {
+      // pre istotu neprepisujeme hlavičku zvlášť, tam je font už nastavený
+      if (rowNumber === 1) return;
+      cell.font = { size: 12, bold: true };
+    });
+
+    // 7) Zvýraznenie víkendov v HLAVIČKE
+    // --------------------------------
+    days.forEach((d, idx) => {
+      const col = idx + 3; // 1=Meno, 2=ÚV, 3=prvý deň
+      const cell = headerRow.getCell(col);
+
+      if (d.isWeekend) {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFEF3C7" }, // jemná „amber“ farba
+        };
+      }
+    });
+
+    // 8) Základné zarovnanie riadkov + farby podľa typu smeny
+    // --------------------------------
+    const colorMap = {
+      RD: "FF22C55E", // zelená (Tailwind green-500 s pridaným FF na začiatok)
+    };
+
     for (let rowIndex = 2;rowIndex <= sheet.rowCount;rowIndex++) {
       const row = sheet.getRow(rowIndex);
+
+      // Zarovnanie celého riadku – center, okrem mena
       row.alignment = { vertical: "middle", horizontal: "center" };
       row.getCell(1).alignment = {
         vertical: "middle",
         horizontal: "left",
       };
+      row.height = 22;
+
+      // Farbičky podľa typu smeny (D/N/RD/PN...)
+      days.forEach((d, dayIdx) => {
+        const col = dayIdx + 3;
+        const cell = row.getCell(col);
+        const value = cell.value; // D/N/RD/...
+
+        if (colorMap[value]) {
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: colorMap[value] },
+          };
+        }
+      });
     }
 
-    // 10) Vygenerujeme binárne dáta .xlsx
+    // 9) Zvýraznenie víkendov v DÁTACH (podfarbenie celého stĺpca víkendových dní)
+    // --------------------------------
+    days.forEach((d, dayIdx) => {
+      if (!d.isWeekend) return;
+
+      const col = dayIdx + 3;
+      for (let r = 2;r <= sheet.rowCount;r++) {
+        const cell = sheet.getRow(r).getCell(col);
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFEF3C7" }, // rovnaká farba ako v hlavičke
+        };
+      }
+    });
+
+    // 10) Spojenie buniek – Meno + štatistiky cez horný/dolný riadok
+    // --------------------------------
+    const statsStartCol = 3 + dayLabels.length; // prvý stĺpec štatistiky (SH)
+    const statsEndCol = header.length;          // posledný stĺpec (PS)
+
+    // dvojice riadkov: 2–3, 4–5, 6–7, ...
+    for (let topRowIndex = 2;topRowIndex <= sheet.rowCount;topRowIndex += 2) {
+      const bottomRowIndex = topRowIndex + 1;
+      if (bottomRowIndex > sheet.rowCount) break; // pre istotu
+
+      // Spojiť MENO (stĺpec 1)
+      sheet.mergeCells(topRowIndex, 1, bottomRowIndex, 1);
+
+      // Spojiť všetky štatistické stĺpce
+      for (let col = statsStartCol;col <= statsEndCol;col++) {
+        sheet.mergeCells(topRowIndex, col, bottomRowIndex, col);
+      }
+
+      // Zarovnanie spojených buniek
+      const topRow = sheet.getRow(topRowIndex);
+      topRow.getCell(1).alignment = {
+        vertical: "middle",
+        horizontal: "left",
+      };
+
+      for (let col = statsStartCol;col <= statsEndCol;col++) {
+        topRow.getCell(col).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+      }
+    }
+
+    // 11) Vygenerovanie .xlsx do bufferu a stiahnutie
+    // --------------------------------
     const buffer = await workbook.xlsx.writeBuffer();
 
-    // 11) Stiahneme súbor tak ako pri CSV
     const blob = new Blob([buffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
