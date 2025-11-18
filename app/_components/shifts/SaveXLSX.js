@@ -3,7 +3,7 @@ import Button from "../Button";
 
 function SaveXLSX({ onXlsx }) {
     return (
-        <div>
+        <div className="hidden md:flex">
             <Button variant="printOrSave" size="printOrSave" onClick={onXlsx}>
                 <BsFiletypeXlsx className="md:h-6 md:w-6" />
             </Button>
