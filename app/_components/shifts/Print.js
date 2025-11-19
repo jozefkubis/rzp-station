@@ -1,4 +1,4 @@
-import { LuPrinter } from "react-icons/lu";
+import { Printer } from "lucide-react";
 import Button from "../Button";
 
 function Print() {
@@ -9,7 +9,7 @@ function Print() {
     return (
         <div className="hidden md:flex">
             <Button variant="printOrSave" size="printOrSave" onClick={printDocument}>
-                <LuPrinter className="md:h-5 md:w-5" />
+                <Printer className="md:h-5 md:w-5" />
             </Button>
         </div>
     )

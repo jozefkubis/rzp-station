@@ -47,7 +47,7 @@ import { toast } from "react-hot-toast";
 import Print from "./Print";
 import SaveCSV from "./SaveCSV";
 import SaveXLSX from "./SaveXLSX";
-import Share from "./Share";
+import ShareButton from "./ShareButton";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -863,7 +863,7 @@ export default function ShiftsTable({
     <>
       <MainShiftsTable colTemplate={colTemplate}>
         {/* <div className="bottom-0 right-4 flex gap-1 no-print">
-          <Share />
+          <ShareButton />
           <SaveCSV onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
           <Print />
@@ -965,7 +965,7 @@ export default function ShiftsTable({
           </DndContext>
         )}
         <div className="pt-4 sticky flex gap-1 justify-end">
-          <Share />
+          <ShareButton />
           <SaveCSV onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
           <Print />
