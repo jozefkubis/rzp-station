@@ -438,33 +438,49 @@ export default function ShiftsTable({
 
     // 4) Zápis hlavičky a dát
     // --------------------------------
+    // 4) Titulok + zápis hlavičky a dát
+    // --------------------------------
+
+    // 4A) Titulný riadok – mesiac hore nad tabuľkou
+    // tu predpokladám, že vo funkcii máš k dispozícii `monthLabel` (napr. "November 2025")
+    // ak nie, môžeš dočasne použiť monthKey
+    const titleText = `Rozpis služieb - ${monthLabel ?? monthKey} ${year}`;
+
+    // riadok 1: titulok
+    const titleRow = sheet.addRow([titleText]);
+    // spojíme bunky od 1 po posledný stĺpec hlavičky
+    sheet.mergeCells(1, 1, 1, header.length);
+
+    // štýl titulku
+    titleRow.font = { bold: true, size: 14 };
+    titleRow.alignment = { vertical: "middle", horizontal: "center" };
+    titleRow.height = 26;
+
+    // 4B) riadok 2: hlavička tabuľky
     sheet.addRow(header);
+
+    // 4C) dátové riadky začínajú od riadku 3
     dataRows.forEach((row) => {
       sheet.addRow(row);
     });
 
+
     // 5) Štýl hlavičky
     // --------------------------------
-    const headerRow = sheet.getRow(1);
-    headerRow.font = { bold: true, size: 11 };
+    const headerRow = sheet.getRow(2);
+    headerRow.font = { size: 11 };
     headerRow.alignment = { vertical: "middle", horizontal: "center" };
     headerRow.height = 22;
 
     // 6) Šírky stĺpcov + základný font pre stĺpec Meno
     // --------------------------------
     sheet.getColumn(1).width = 27; // Meno
+    sheet.getCell(2, 1).font = { size: 11, bold: true };
     sheet.getColumn(2).width = 6;  // ÚV
 
     for (let col = 3;col <= header.length;col++) {
       sheet.getColumn(col).width = 5; // dni + štatistiky
     }
-
-    // Stĺpec Meno – väčšie a tučné písmo
-    sheet.getColumn(1).eachCell((cell, rowNumber) => {
-      // pre istotu neprepisujeme hlavičku zvlášť, tam je font už nastavený
-      if (rowNumber === 1) return;
-      cell.font = { size: 12, bold: true };
-    });
 
     // 7) Zvýraznenie víkendov v HLAVIČKE
     // --------------------------------
@@ -487,7 +503,7 @@ export default function ShiftsTable({
       RD: "FF22C55E", // zelená (Tailwind green-500 s pridaným FF na začiatok)
     };
 
-    for (let rowIndex = 2;rowIndex <= sheet.rowCount;rowIndex++) {
+    for (let rowIndex = 3;rowIndex <= sheet.rowCount;rowIndex++) {
       const row = sheet.getRow(rowIndex);
 
       // Zarovnanie celého riadku – center, okrem mena
@@ -520,7 +536,7 @@ export default function ShiftsTable({
       if (!d.isWeekend) return;
 
       const col = dayIdx + 3;
-      for (let r = 2;r <= sheet.rowCount;r++) {
+      for (let r = 3;r <= sheet.rowCount;r++) {
         const cell = sheet.getRow(r).getCell(col);
         cell.fill = {
           type: "pattern",
@@ -535,26 +551,38 @@ export default function ShiftsTable({
     const statsStartCol = 3 + dayLabels.length; // prvý stĺpec štatistiky (SH)
     const statsEndCol = header.length;          // posledný stĺpec (PS)
 
-    // dvojice riadkov: 2–3, 4–5, 6–7, ...
-    for (let topRowIndex = 2;topRowIndex <= sheet.rowCount;topRowIndex += 2) {
+    // dvojice riadkov: 3–4, 5–6, 7–8...
+    for (let topRowIndex = 3;topRowIndex <= sheet.rowCount;topRowIndex += 2) {
       const bottomRowIndex = topRowIndex + 1;
-      if (bottomRowIndex > sheet.rowCount) break; // pre istotu
+      if (bottomRowIndex > sheet.rowCount) break;
 
-      // Spojiť MENO (stĺpec 1)
+      // 1) Spojiť MENO (stĺpec 1)
       sheet.mergeCells(topRowIndex, 1, bottomRowIndex, 1);
 
-      // Spojiť všetky štatistické stĺpce
+      // 2) Spojiť ÚV (stĺpec 2)
+      sheet.mergeCells(topRowIndex, 2, bottomRowIndex, 2);
+
+      // 3) Spojiť všetky štatistiky (každý stĺpec zvlášť)
       for (let col = statsStartCol;col <= statsEndCol;col++) {
         sheet.mergeCells(topRowIndex, col, bottomRowIndex, col);
       }
 
-      // Zarovnanie spojených buniek
+      // 4) Zarovnanie spojených buniek v hornom riadku
       const topRow = sheet.getRow(topRowIndex);
+
+      // Meno – vľavo
       topRow.getCell(1).alignment = {
         vertical: "middle",
         horizontal: "left",
       };
 
+      // ÚV – v strede
+      topRow.getCell(2).alignment = {
+        vertical: "middle",
+        horizontal: "center",
+      };
+
+      // Štatistiky – v strede
       for (let col = statsStartCol;col <= statsEndCol;col++) {
         topRow.getCell(col).alignment = {
           vertical: "middle",
@@ -563,7 +591,80 @@ export default function ShiftsTable({
       }
     }
 
-    // 11) Vygenerovanie .xlsx do bufferu a stiahnutie
+    // 11) Bordery – mriežka + vonkajší rám
+    // --------------------------------
+    const lastRow = sheet.rowCount;
+    const lastCol = header.length;
+
+    // Tenká mriežka pre celú tabuľku (okrem titulku v riadku 1)
+    for (let r = 2;r <= lastRow;r++) {
+      const row = sheet.getRow(r);
+      for (let c = 1;c <= lastCol;c++) {
+        const cell = row.getCell(c);
+        cell.border = {
+          top: { style: "thin", color: { argb: "FFE5E7EB" } }, // svetlá sivá
+          left: { style: "thin", color: { argb: "FFE5E7EB" } },
+          bottom: { style: "thin", color: { argb: "FFE5E7EB" } },
+          right: { style: "thin", color: { argb: "FFE5E7EB" } },
+        };
+      }
+    }
+
+    // Hrubší rám okolo celej tabuľky (hlavička + dáta, bez titulku)
+    const tableTop = 2;            // hlavička
+    const tableBottom = lastRow;   // posledný riadok
+    const tableLeft = 1;           // "Meno"
+    const tableRight = lastCol;    // posledný stĺpec (PS)
+
+    // Horná hrana rámu
+    const topRow = sheet.getRow(tableTop);
+    for (let c = tableLeft;c <= tableRight;c++) {
+      const cell = topRow.getCell(c);
+      cell.border = {
+        ...cell.border,
+        top: { style: "medium", color: { argb: "FF9CA3AF" } }, // trochu výraznejšia sivá
+      };
+    }
+
+    // Dolná hrana rámu
+    const bottomRow = sheet.getRow(tableBottom);
+    for (let c = tableLeft;c <= tableRight;c++) {
+      const cell = bottomRow.getCell(c);
+      cell.border = {
+        ...cell.border,
+        bottom: { style: "medium", color: { argb: "FF9CA3AF" } },
+      };
+    }
+
+    // Ľavá hrana rámu
+    for (let r = tableTop;r <= tableBottom;r++) {
+      const cell = sheet.getRow(r).getCell(tableLeft);
+      cell.border = {
+        ...cell.border,
+        left: { style: "medium", color: { argb: "FF9CA3AF" } },
+      };
+    }
+
+    // Pravá hrana rámu
+    for (let r = tableTop;r <= tableBottom;r++) {
+      const cell = sheet.getRow(r).getCell(tableRight);
+      cell.border = {
+        ...cell.border,
+        right: { style: "medium", color: { argb: "FF9CA3AF" } },
+      };
+    }
+
+    // (voliteľné) zvislý hrubší oddelovač pred štatistikami
+    const statsStartColSepar = 3 + dayLabels.length; // už ho aj tak počítaš nižšie
+    for (let r = tableTop;r <= tableBottom;r++) {
+      const cell = sheet.getRow(r).getCell(statsStartColSepar);
+      cell.border = {
+        ...cell.border,
+        left: { style: "medium", color: { argb: "FF9CA3AF" } },
+      };
+    }
+
+    // 12) Vygenerovanie .xlsx do bufferu a stiahnutie
     // --------------------------------
     const buffer = await workbook.xlsx.writeBuffer();
 
