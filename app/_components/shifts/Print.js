@@ -7,9 +7,9 @@ function Print() {
     }
 
     return (
-        <div className="hidden md:flex">
+        <div className="flex">
             <Button variant="printOrSave" size="printOrSave" onClick={printDocument}>
-                <Printer className="md:h-5 md:w-5" />
+                <Printer className="h-5 w-5" />
             </Button>
         </div>
     )

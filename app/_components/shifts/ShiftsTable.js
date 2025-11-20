@@ -964,8 +964,13 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
-        <div className="pt-4 sticky flex gap-1 justify-end">
-          <ShareButton />
+        <div className="md:pt-4 pt-3 gap-1 md:justify-end justify-start flex no-print">
+          <ShareButton
+            monthLabel={monthLabel}
+            year={year}
+            stationName="RZP Rajec" // alebo z configu
+            title="Rozpis služieb"
+          />
           <SaveCSV onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
           <Print />

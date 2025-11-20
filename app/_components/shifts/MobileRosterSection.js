@@ -105,14 +105,14 @@ export default function MobileRosterSection({
   return (
     <div className="flex w-full flex-col lg:hidden">
       {/* rezerva pre bottom toolbar */}
-      <div className="mx-auto w-full pb-24">
+      <div className="mx-auto w-full pb-10">
         <div className="px-4">
           <MobileMonthYearHead
             shiftsOffset={shiftsOptimOffset}
             goTo={goTo}
             disabled={isPending}
           />
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             {/* full-bleed horizontálny scroll s jemným náznakom */}
             <div className="relative -mx-4">
               <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-white to-transparent" />
