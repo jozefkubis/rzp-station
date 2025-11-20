@@ -44,7 +44,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
-import Print from "./Print";
+import PrintButton from "./PrintButton";
 import SaveCSV from "./SaveCSV";
 import SaveXLSX from "./SaveXLSX";
 import ShareButton from "./ShareButton";
@@ -168,10 +168,10 @@ export default function ShiftsTable({
           return current.map((s) =>
             s.user_id === action.userId && s.date === action.date
               ? {
-                ...s,
-                request_type: action.reqType,
-                request_hours: action.hours ?? null,
-              }
+                  ...s,
+                  request_type: action.reqType,
+                  request_hours: action.hours ?? null,
+                }
               : s,
           );
         }
@@ -374,9 +374,20 @@ export default function ShiftsTable({
 
     // 1) Príprava dní a hlavičky
     // --------------------------------
-    const dayLabels = days.map((d) => d.day);       // 1, 2, 3, ...
-    const dayKeys = days.map((d) => d.dateStr);    // "YYYY-MM-DD"
-    const header = ["Meno", "ÚV", ...dayLabels, "SH", "D", "N", "RD", "PN", "NČ", "PS"];
+    const dayLabels = days.map((d) => d.day); // 1, 2, 3, ...
+    const dayKeys = days.map((d) => d.dateStr); // "YYYY-MM-DD"
+    const header = [
+      "Meno",
+      "ÚV",
+      ...dayLabels,
+      "SH",
+      "D",
+      "N",
+      "RD",
+      "PN",
+      "NČ",
+      "PS",
+    ];
 
     const dataRows = [];
 
@@ -406,9 +417,9 @@ export default function ShiftsTable({
 
       dataRows.push([
         row.full_name ?? "",
-        contract,           // číslo – Excel s tým vie počítať
-        ...topCells,        // smeny po dňoch
-        ...statsValues,     // SH, D, N, RD, PN, NČ, PS
+        contract, // číslo – Excel s tým vie počítať
+        ...topCells, // smeny po dňoch
+        ...statsValues, // SH, D, N, RD, PN, NČ, PS
       ]);
 
       // --- Dolný riadok: POŽIADAVKA ---
@@ -464,7 +475,6 @@ export default function ShiftsTable({
       sheet.addRow(row);
     });
 
-
     // 5) Štýl hlavičky
     // --------------------------------
     const headerRow = sheet.getRow(2);
@@ -476,9 +486,9 @@ export default function ShiftsTable({
     // --------------------------------
     sheet.getColumn(1).width = 27; // Meno
     sheet.getCell(2, 1).font = { size: 11, bold: true };
-    sheet.getColumn(2).width = 6;  // ÚV
+    sheet.getColumn(2).width = 6; // ÚV
 
-    for (let col = 3;col <= header.length;col++) {
+    for (let col = 3; col <= header.length; col++) {
       sheet.getColumn(col).width = 5; // dni + štatistiky
     }
 
@@ -503,7 +513,7 @@ export default function ShiftsTable({
       RD: "FF22C55E", // zelená (Tailwind green-500 s pridaným FF na začiatok)
     };
 
-    for (let rowIndex = 3;rowIndex <= sheet.rowCount;rowIndex++) {
+    for (let rowIndex = 3; rowIndex <= sheet.rowCount; rowIndex++) {
       const row = sheet.getRow(rowIndex);
 
       // Zarovnanie celého riadku – center, okrem mena
@@ -536,7 +546,7 @@ export default function ShiftsTable({
       if (!d.isWeekend) return;
 
       const col = dayIdx + 3;
-      for (let r = 3;r <= sheet.rowCount;r++) {
+      for (let r = 3; r <= sheet.rowCount; r++) {
         const cell = sheet.getRow(r).getCell(col);
         cell.fill = {
           type: "pattern",
@@ -549,10 +559,10 @@ export default function ShiftsTable({
     // 10) Spojenie buniek – Meno + štatistiky cez horný/dolný riadok
     // --------------------------------
     const statsStartCol = 3 + dayLabels.length; // prvý stĺpec štatistiky (SH)
-    const statsEndCol = header.length;          // posledný stĺpec (PS)
+    const statsEndCol = header.length; // posledný stĺpec (PS)
 
     // dvojice riadkov: 3–4, 5–6, 7–8...
-    for (let topRowIndex = 3;topRowIndex <= sheet.rowCount;topRowIndex += 2) {
+    for (let topRowIndex = 3; topRowIndex <= sheet.rowCount; topRowIndex += 2) {
       const bottomRowIndex = topRowIndex + 1;
       if (bottomRowIndex > sheet.rowCount) break;
 
@@ -563,7 +573,7 @@ export default function ShiftsTable({
       sheet.mergeCells(topRowIndex, 2, bottomRowIndex, 2);
 
       // 3) Spojiť všetky štatistiky (každý stĺpec zvlášť)
-      for (let col = statsStartCol;col <= statsEndCol;col++) {
+      for (let col = statsStartCol; col <= statsEndCol; col++) {
         sheet.mergeCells(topRowIndex, col, bottomRowIndex, col);
       }
 
@@ -583,7 +593,7 @@ export default function ShiftsTable({
       };
 
       // Štatistiky – v strede
-      for (let col = statsStartCol;col <= statsEndCol;col++) {
+      for (let col = statsStartCol; col <= statsEndCol; col++) {
         topRow.getCell(col).alignment = {
           vertical: "middle",
           horizontal: "center",
@@ -597,9 +607,9 @@ export default function ShiftsTable({
     const lastCol = header.length;
 
     // Tenká mriežka pre celú tabuľku (okrem titulku v riadku 1)
-    for (let r = 2;r <= lastRow;r++) {
+    for (let r = 2; r <= lastRow; r++) {
       const row = sheet.getRow(r);
-      for (let c = 1;c <= lastCol;c++) {
+      for (let c = 1; c <= lastCol; c++) {
         const cell = row.getCell(c);
         cell.border = {
           top: { style: "thin", color: { argb: "FFE5E7EB" } }, // svetlá sivá
@@ -611,14 +621,14 @@ export default function ShiftsTable({
     }
 
     // Hrubší rám okolo celej tabuľky (hlavička + dáta, bez titulku)
-    const tableTop = 2;            // hlavička
-    const tableBottom = lastRow;   // posledný riadok
-    const tableLeft = 1;           // "Meno"
-    const tableRight = lastCol;    // posledný stĺpec (PS)
+    const tableTop = 2; // hlavička
+    const tableBottom = lastRow; // posledný riadok
+    const tableLeft = 1; // "Meno"
+    const tableRight = lastCol; // posledný stĺpec (PS)
 
     // Horná hrana rámu
     const topRow = sheet.getRow(tableTop);
-    for (let c = tableLeft;c <= tableRight;c++) {
+    for (let c = tableLeft; c <= tableRight; c++) {
       const cell = topRow.getCell(c);
       cell.border = {
         ...cell.border,
@@ -628,7 +638,7 @@ export default function ShiftsTable({
 
     // Dolná hrana rámu
     const bottomRow = sheet.getRow(tableBottom);
-    for (let c = tableLeft;c <= tableRight;c++) {
+    for (let c = tableLeft; c <= tableRight; c++) {
       const cell = bottomRow.getCell(c);
       cell.border = {
         ...cell.border,
@@ -637,7 +647,7 @@ export default function ShiftsTable({
     }
 
     // Ľavá hrana rámu
-    for (let r = tableTop;r <= tableBottom;r++) {
+    for (let r = tableTop; r <= tableBottom; r++) {
       const cell = sheet.getRow(r).getCell(tableLeft);
       cell.border = {
         ...cell.border,
@@ -646,7 +656,7 @@ export default function ShiftsTable({
     }
 
     // Pravá hrana rámu
-    for (let r = tableTop;r <= tableBottom;r++) {
+    for (let r = tableTop; r <= tableBottom; r++) {
       const cell = sheet.getRow(r).getCell(tableRight);
       cell.border = {
         ...cell.border,
@@ -656,7 +666,7 @@ export default function ShiftsTable({
 
     // (voliteľné) zvislý hrubší oddelovač pred štatistikami
     const statsStartColSepar = 3 + dayLabels.length; // už ho aj tak počítaš nižšie
-    for (let r = tableTop;r <= tableBottom;r++) {
+    for (let r = tableTop; r <= tableBottom; r++) {
       const cell = sheet.getRow(r).getCell(statsStartColSepar);
       cell.border = {
         ...cell.border,
@@ -692,8 +702,8 @@ export default function ShiftsTable({
     }
 
     // 1) Dni v mesiaci
-    const dayLabels = days.map((d) => d.day);    // 1, 2, 3...
-    const dayKeys = days.map((d) => d.dateStr);  // "YYYY-MM-DD"
+    const dayLabels = days.map((d) => d.day); // 1, 2, 3...
+    const dayKeys = days.map((d) => d.dateStr); // "YYYY-MM-DD"
 
     // 2) Hlavička – pridáme stĺpec "Riadok" (Smena/Požiadavka)
     const header = ["Meno", "ÚV", ...dayLabels];
@@ -709,7 +719,6 @@ export default function ShiftsTable({
         shiftsByDate.set(s.date, s);
       });
 
-
       // --- horný riadok: SMENA ---
       const topCells = dayKeys.map((dateStr) => {
         const s = shiftsByDate.get(dateStr);
@@ -718,10 +727,9 @@ export default function ShiftsTable({
 
       dataRows.push([
         row.full_name ?? "",
-        String(contract).replace(".", ","),   // 1 → "1", 0.5 → "0,5"
+        String(contract).replace(".", ","), // 1 → "1", 0.5 → "0,5"
         ...topCells,
       ]);
-
 
       // --- dolný riadok: POŽIADAVKA ---
       const bottomCells = dayKeys.map((dateStr) => {
@@ -736,8 +744,8 @@ export default function ShiftsTable({
       });
 
       dataRows.push([
-        "",          // meno necháme prázdne, bude to vyzerať ako spodný riadok
-        "",          // úväzok tiež prázdny
+        "", // meno necháme prázdne, bude to vyzerať ako spodný riadok
+        "", // úväzok tiež prázdny
         // "Požiadavka",
         ...bottomCells,
       ]);
@@ -964,7 +972,7 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
-        <div className="md:pt-4 pt-3 gap-1 md:justify-end justify-start flex no-print">
+        <div className="no-print flex justify-start gap-1 pt-3 md:pt-4 lg:justify-end">
           <ShareButton
             monthLabel={monthLabel}
             year={year}
@@ -973,7 +981,7 @@ export default function ShiftsTable({
           />
           <SaveCSV onExport={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
-          <Print />
+          <PrintButton />
         </div>
       </MainShiftsTable>
 
