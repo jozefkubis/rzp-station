@@ -979,7 +979,7 @@ export default function ShiftsTable({
             stationName="RZP Rajec" // alebo z configu
             title="Rozpis služieb"
           />
-          <SaveCSV onExport={handleExportRosterCsv} />
+          <SaveCSV onCsv={handleExportRosterCsv} />
           <SaveXLSX onXlsx={handleExportRosterXlsx} />
           <PrintButton />
         </div>
