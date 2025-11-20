@@ -21,6 +21,7 @@ npm i -d tailwindcss-motion
 npm i lucide-react
 npm install @vercel/analytics @vercel/speed-insights
 npm i -g vercel
+npm install exceljs
 
 
 settings.json v vscode:
