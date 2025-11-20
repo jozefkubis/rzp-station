@@ -486,10 +486,10 @@ export default function ShiftsTable({
     // --------------------------------
     sheet.getColumn(1).width = 27; // Meno
     sheet.getCell(2, 1).font = { size: 11, bold: true };
-    sheet.getColumn(2).width = 6; // ÚV
+    sheet.getColumn(2).width = 5; // ÚV
 
     for (let col = 3; col <= header.length; col++) {
-      sheet.getColumn(col).width = 5; // dni + štatistiky
+      sheet.getColumn(col).width = 4; // dni + štatistiky
     }
 
     // 7) Zvýraznenie víkendov v HLAVIČKE
@@ -575,6 +575,7 @@ export default function ShiftsTable({
       // 3) Spojiť všetky štatistiky (každý stĺpec zvlášť)
       for (let col = statsStartCol; col <= statsEndCol; col++) {
         sheet.mergeCells(topRowIndex, col, bottomRowIndex, col);
+        sheet.getColumn(col).width = 6;
       }
 
       // 4) Zarovnanie spojených buniek v hornom riadku
