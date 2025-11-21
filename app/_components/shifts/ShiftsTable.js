@@ -828,59 +828,59 @@ export default function ShiftsTable({
   }
 
   // MARK: optimistic ADD handler
-  async function handleInsertEmptyShift(newUser) {
-    const nextIndex = (rows?.length ?? 0) + 1;
+  // async function handleInsertEmptyShift(newUser) {
+  //   const nextIndex = (rows?.length ?? 0) + 1;
 
-    // optimistic add
-    applyOptimistic({
-      type: "ADD_USER",
-      user: {
-        user_id: newUser.id,
-        full_name: newUser.full_name,
-        email: newUser.email,
-        avatar_url: newUser.avatar_url,
-        contract: newUser.contract,
-        position: newUser.position,
-      },
-      firstDay: firstDayStr,
-      orderIndex: nextIndex,
-    });
+  //   // optimistic add
+  //   applyOptimistic({
+  //     type: "ADD_USER",
+  //     user: {
+  //       user_id: newUser.id,
+  //       full_name: newUser.full_name,
+  //       email: newUser.email,
+  //       avatar_url: newUser.avatar_url,
+  //       contract: newUser.contract,
+  //       position: newUser.position,
+  //     },
+  //     firstDay: firstDayStr,
+  //     orderIndex: nextIndex,
+  //   });
 
-    setRows((prev) => [
-      ...prev,
-      {
-        user_id: newUser.id,
-        full_name: newUser.full_name ?? "(bez mena)",
-        email: newUser.email ?? "",
-        avatar: newUser.avatar_url ?? null,
-        contract: Number(newUser.contract ?? 1),
-        position: newUser.position ?? "",
-        order_index: nextIndex,
-        __pending: true,
-        shifts: [
-          {
-            date: firstDayStr,
-            shift_type: null,
-            request_type: null,
-            request_hours: null,
-          },
-        ],
-      },
-    ]);
+  //   setRows((prev) => [
+  //     ...prev,
+  //     {
+  //       user_id: newUser.id,
+  //       full_name: newUser.full_name ?? "(bez mena)",
+  //       email: newUser.email ?? "",
+  //       avatar: newUser.avatar_url ?? null,
+  //       contract: Number(newUser.contract ?? 1),
+  //       position: newUser.position ?? "",
+  //       order_index: nextIndex,
+  //       __pending: true,
+  //       shifts: [
+  //         {
+  //           date: firstDayStr,
+  //           shift_type: null,
+  //           request_type: null,
+  //           request_hours: null,
+  //         },
+  //       ],
+  //     },
+  //   ]);
 
-    try {
-      await onInsertEmptyShift(newUser);
-    } catch (e) {
-      console.error(e);
-      // rollback
-      setRows((prev) => prev.filter((r) => r.user_id !== newUser.id));
-      applyOptimistic({
-        type: "REMOVE_SEED",
-        user_id: newUser.id,
-        date: firstDayStr,
-      });
-    }
-  }
+  //   try {
+  //     await onInsertEmptyShift(newUser);
+  //   } catch (e) {
+  //     console.error(e);
+  //     // rollback
+  //     setRows((prev) => prev.filter((r) => r.user_id !== newUser.id));
+  //     applyOptimistic({
+  //       type: "REMOVE_SEED",
+  //       user_id: newUser.id,
+  //       date: firstDayStr,
+  //     });
+  //   }
+  // }
 
   // MARK: RENDER
   return (
