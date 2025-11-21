@@ -58,6 +58,7 @@ export default function ShiftsTable({
   onInsertEmptyShift,
   admin,
   user,
+  onExportHandlersChange,
 }) {
   /* ---------- lokálne UI stavy ---------- */
   const [selected, setSelected] = useState(null); // { userId, dateStr }
@@ -363,6 +364,20 @@ export default function ShiftsTable({
   }, [monthKey, membershipKey]);
 
   //......................................
+
+  useEffect(() => {
+    if (!onExportHandlersChange) return;
+
+    onExportHandlersChange({
+      csv: handleExportRosterCsv,
+      xlsx: handleExportRosterXlsx,
+      meta: {
+        monthLabel,
+        year,
+        monthKey,
+      },
+    });
+  }, [onExportHandlersChange, monthLabel, year, monthKey]);
 
   // MARK: EXPORT – roster do XLSX
   async function handleExportRosterXlsx() {
@@ -973,7 +988,7 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
-        <div className="no-print flex justify-start gap-1 pt-3 md:pt-4 lg:justify-end">
+        <div className="no-print hidden justify-end gap-1 pt-4 lg:flex">
           <ShareButton
             monthLabel={monthLabel}
             year={year}

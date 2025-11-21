@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useOptimistic, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
@@ -10,6 +10,10 @@ import InsertShiftButton from "./InsertShiftButton";
 import MobileMonthYearHead from "./MobileMonthYearHead";
 import ShiftLoader from "./ShiftLoader";
 // import ShiftsTable from "./ShiftsTable";
+import PrintButton from "./PrintButton";
+import SaveCSV from "./SaveCSV";
+import SaveXLSX from "./SaveXLSX";
+import ShareButton from "./ShareButton";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
 
@@ -34,6 +38,7 @@ export default function MobileRosterSection({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [exportHandlers, setExportHandlers] = useState(null);
 
   // const isMd = useMedia();
 
@@ -112,7 +117,7 @@ export default function MobileRosterSection({
             goTo={goTo}
             disabled={isPending}
           />
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             {/* full-bleed horizontálny scroll s jemným náznakom */}
             <div className="relative -mx-4">
               <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-white to-transparent" />
@@ -128,6 +133,7 @@ export default function MobileRosterSection({
                     onInsertEmptyShift={handleInsertEmptyShift}
                     admin={admin}
                     user={user}
+                    onExportHandlersChange={setExportHandlers}
                   />
                 </div>
               </div>
@@ -135,9 +141,24 @@ export default function MobileRosterSection({
               {isPending && <ShiftLoader />}
             </div>
 
+            {/* toolbar pre export + share – používa handler-y z ShiftsTable */}
+            {exportHandlers && (
+              <div className="no-print flex justify-end gap-1 pt-2">
+                <ShareButton
+                  monthLabel={exportHandlers.meta?.monthLabel}
+                  year={exportHandlers.meta?.year}
+                  stationName="RZP Rajec"
+                  title="Rozpis služieb"
+                />
+                <SaveCSV onCsv={exportHandlers.csv} />
+                <SaveXLSX onXlsx={exportHandlers.xlsx} />
+                <PrintButton />
+              </div>
+            )}
+
             {/* Legenda v collapsible, aby nezaberala miesto */}
             <div className="w-full">
-              <details className="bg-white p-3">
+              <details className="bg-white px-3 pb-3">
                 <summary className="cursor-pointer select-none text-sm font-semibold text-primary-700">
                   Legenda
                 </summary>
