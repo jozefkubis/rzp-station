@@ -133,7 +133,7 @@ export default function MobileRosterSection({
                     onInsertEmptyShift={handleInsertEmptyShift}
                     admin={admin}
                     user={user}
-                    onExportHandlersChange={setExportHandlers}
+                    setExportHandlers={setExportHandlers}
                   />
                 </div>
               </div>
