@@ -389,7 +389,7 @@ export default function RosterExportToolbar({
   }
 
   return (
-    <div className="no-print flex justify-start gap-1 pt-3 md:pt-4 lg:justify-end">
+    <div className="no-print flex justify-end gap-1 pt-3 md:pt-4">
       <ShareButton
         monthLabel={monthLabel}
         year={year}
