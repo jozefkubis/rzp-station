@@ -7,13 +7,8 @@ import DeleteAllShifts from "./DeleteAllShifts";
 import DeleteOnlyShifts from "./DeleteOnlyShifts";
 import GenerateShifts from "./GenerateShifts";
 import InsertShiftButton from "./InsertShiftButton";
-import MobileMonthYearHead from "./MobileMonthYearHead";
 import ShiftLoader from "./ShiftLoader";
 // import ShiftsTable from "./ShiftsTable";
-import PrintButton from "./PrintButton";
-import SaveCSV from "./SaveCSV";
-import SaveXLSX from "./SaveXLSX";
-import ShareButton from "./ShareButton";
 import { ShiftsTableLegend } from "./ShiftsTableLegend";
 import ValidateButton from "./ValidateButton";
 
@@ -112,19 +107,14 @@ export default function MobileRosterSection({
       {/* rezerva pre bottom toolbar */}
       <div className="mx-auto w-full pb-10">
         <div className="px-4">
-          <MobileMonthYearHead
-            shiftsOffset={shiftsOptimOffset}
-            goTo={goTo}
-            disabled={isPending}
-          />
           <div className="flex flex-col gap-1">
             {/* full-bleed horizontálny scroll s jemným náznakom */}
             <div className="relative -mx-4">
               <div className="pointer-events-none absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-white to-transparent" />
               <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-white to-transparent" />
 
-              <div className="max-w-full snap-x snap-mandatory overflow-x-auto">
-                <div className="min-w-max snap-start">
+              <div className="max-w-full snap-x snap-mandatory">
+                <div className="snap-start">
                   <ShiftsTable
                     shifts={optimShifts}
                     goTo={goTo}
@@ -133,28 +123,12 @@ export default function MobileRosterSection({
                     onInsertEmptyShift={handleInsertEmptyShift}
                     admin={admin}
                     user={user}
-                    setExportHandlers={setExportHandlers}
                   />
                 </div>
               </div>
 
               {isPending && <ShiftLoader />}
             </div>
-
-            {/* toolbar pre export + share – používa handler-y z ShiftsTable */}
-            {exportHandlers && (
-              <div className="no-print flex justify-end gap-1 pt-2">
-                <ShareButton
-                  monthLabel={exportHandlers.meta?.monthLabel}
-                  year={exportHandlers.meta?.year}
-                  stationName="RZP Rajec"
-                  title="Rozpis služieb"
-                />
-                <SaveCSV onCsv={exportHandlers.csv} />
-                <SaveXLSX onXlsx={exportHandlers.xlsx} />
-                <PrintButton />
-              </div>
-            )}
 
             {/* Legenda v collapsible, aby nezaberala miesto */}
             <div className="w-full">
