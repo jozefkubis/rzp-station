@@ -55,7 +55,7 @@ export default function ShiftsTable({
   goTo,
   shiftsOffset,
   disabled,
-  onInsertEmptyShift,
+  // onInsertEmptyShift,
   admin,
   user,
   setExportHandlers,
