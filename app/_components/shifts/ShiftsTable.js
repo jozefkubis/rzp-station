@@ -25,6 +25,7 @@ import MainShiftsTable from "./MainShiftsTable";
 import MonthYearHead from "./MonthYearHead";
 import NoShifts from "./NoShifts";
 import ParamedName from "./ParamedName";
+import RosterExportToolbar from "./RosterExportToolbar";
 import ShiftChoiceModal from "./ShiftChoiceModal";
 import ShiftChoiceModalBottom from "./ShiftChoiceModalBottom";
 import ShiftRow from "./ShiftRow";
@@ -44,10 +45,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { toast } from "react-hot-toast";
-import PrintButton from "./PrintButton";
-import SaveCSV from "./SaveCSV";
-import SaveXLSX from "./SaveXLSX";
-import ShareButton from "./ShareButton";
 
 /* ─────────────────────────────────────────────────────────────── */
 export default function ShiftsTable({
@@ -988,17 +985,14 @@ export default function ShiftsTable({
             </SortableContext>
           </DndContext>
         )}
-        <div className="no-print hidden justify-end gap-1 pt-4 lg:flex">
-          <ShareButton
-            monthLabel={monthLabel}
-            year={year}
-            stationName="RZP Rajec" // alebo z configu
-            title="Rozpis služieb"
-          />
-          <SaveCSV onCsv={handleExportRosterCsv} />
-          <SaveXLSX onXlsx={handleExportRosterXlsx} />
-          <PrintButton />
-        </div>
+        <RosterExportToolbar
+          rows={rows}
+          days={days}
+          monthKey={monthKey}
+          monthLabel={monthLabel}
+          year={year}
+          normHours={normHours}
+        />
       </MainShiftsTable>
 
       {/* modals */}
