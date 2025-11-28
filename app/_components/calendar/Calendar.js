@@ -7,11 +7,17 @@ import UpdateTaskForm from "@/app/_components/calendar/UpdateTaskForm";
 import Spinner from "@/app/_components/Spinner";
 import { localizer } from "@/app/_lib/calendarLocalizer";
 import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
-import moment from "moment";
+// import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { Calendar as BigCalendar, Views } from "react-big-calendar";
 import WarningNotice from "../WarningNotice";
 import Modal from "/app/_components/Modal";
+
+function getTodayAtHour(hour) {
+  const date = new Date();
+  date.setHours(hour, 0, 0, 0); // hour:00:00.000
+  return date;
+}
 
 export default function Calendar({ admin, shiftsAndRequests }) {
   const [events, setEvents] = useState([]);
@@ -253,9 +259,9 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           components={{
             event: MyEvent,
           }}
-          min={moment().startOf("day").hour(6).toDate()}
-          max={moment().startOf("day").hour(23).toDate()}
-          scrollToTime={moment().startOf("day").hour(6).toDate()}
+          min={getTodayAtHour(6)}
+          max={getTodayAtHour(23)}
+          scrollToTime={getTodayAtHour(6)}
           step={30}
           timeslots={2}
         />
