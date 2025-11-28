@@ -22,6 +22,8 @@ npm i lucide-react
 npm install @vercel/analytics @vercel/speed-insights
 npm i -g vercel
 npm install exceljs
+npm uninstall moment
+
 
 
 settings.json v vscode:
