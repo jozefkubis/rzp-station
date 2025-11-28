@@ -22,7 +22,7 @@ import {
   getUser,
 } from "./_lib/data-service";
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function Page({ searchParams }) {
   const { m } = await searchParams;
