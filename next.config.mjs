@@ -55,7 +55,7 @@ const nextConfig = {
     return [{ source: "/(.*)", headers: securityHeaders(isDev) }];
   },
   images: {
-    unoptimized: false,
+    unoptimized: true,
     remotePatterns: [
       // Supabase Storage – PUBLIC objekty
       {
