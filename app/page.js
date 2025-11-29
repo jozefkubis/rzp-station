@@ -17,8 +17,7 @@ import {
   getShiftForToday,
   getShiftForTomorrow,
   getShiftsForProfileForYear,
-  getTasksForToday,
-  getTasksForTomorrow,
+  getTasksForTodayAndTomorrow,
   getUser,
 } from "./_lib/data-service";
 
@@ -73,10 +72,10 @@ export default async function Page({ searchParams }) {
   //......................................................................................................
 
   //MARK: CALENDAR.......................................................................................
-  const tasksForToday = await getTasksForToday();
+  const { tasksForToday, tasksForTmrw } = await getTasksForTodayAndTomorrow();
+
   const taskTitleForToday = tasksForToday.map((task) => task.title);
-  const taskForTmrw = await getTasksForTomorrow();
-  const taskTitleForTmrw = taskForTmrw.map((task) => task.title);
+  const taskTitleForTmrw = tasksForTmrw.map((task) => task.title);
   //......................................................................................................
 
   // MARK: RENDER .......................................................................................

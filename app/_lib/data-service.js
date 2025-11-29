@@ -344,42 +344,38 @@ export async function getShiftForTomorrow() {
   return shifts;
 }
 
-// MARK: GET TASK FOR TODAY
-export async function getTasksForToday() {
+// MARK: GET TASKS FOR TODAY + TOMORROW
+export async function getTasksForTodayAndTomorrow() {
   const supabase = await createClient();
 
+  // 1) pripravíme si today a tomorrow ako ISO dátumy (YYYY-MM-DD)
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
+  const todayIso = today.toISOString().slice(0, 10);
+  const tomorrowIso = tomorrow.toISOString().slice(0, 10);
+
+  // 2) jeden dotaz na tasks v rozsahu today..tomorrow
   const { data: tasks, error } = await supabase
     .from("tasks")
+    // ak chceš, môžeš zúžiť výber len na potrebné stĺpce:
+    // .select("id, title, dateFrom, dateTo, startTime, endTime, note")
     .select("*")
-    .eq("dateFrom", new Date().toISOString().slice(0, 10));
+    .gte("dateFrom", todayIso)
+    .lte("dateFrom", tomorrowIso);
 
   if (error) {
-    console.error("Supabase error – tasks:", error);
+    console.error("Supabase error – tasks today+tomorrow:", error);
     throw error;
   }
 
-  return tasks;
-}
+  // 3) roztriedime v JS na "dnes" a "zajtra"
+  const tasksForToday = tasks.filter((t) => t.dateFrom === todayIso);
+  const tasksForTmrw = tasks.filter((t) => t.dateFrom === tomorrowIso);
 
-// MARK: GET TASK FOR TOMORROW
-export async function getTasksForTomorrow() {
-  const supabase = await createClient();
-
-  const tomortow = new Date();
-  tomortow.setDate(tomortow.getDate() + 1);
-  const tomorrowIso = tomortow.toISOString().slice(0, 10);
-
-  const { data: tasks, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("dateFrom", tomorrowIso);
-
-  if (error) {
-    console.error("Supabase error – tasks:", error);
-    throw error;
-  }
-
-  return tasks;
+  // 4) vrátime obe polia naraz
+  return { tasksForToday, tasksForTmrw };
 }
 
 // MARK: GET ALL SHIFTS FOR PROFILE
