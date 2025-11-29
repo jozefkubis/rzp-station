@@ -1,7 +1,6 @@
 import "@/app/_styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Toaster } from "react-hot-toast";
 // import Header from "./_components/Header"
 // import { Josefin_Sans } from "next/font/google"
