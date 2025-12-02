@@ -19,7 +19,6 @@ export default function MyButtons({
     setSelectedEvent(null); // vynuluj vybratú udalosť
     setDraftSlot(null); // vynuluj "draft" slot
     setIsOpenModal(true); // otvor modal v režime PRIDAŤ
-    console.log("ADD"); // len na debug – môžeš zmazať
   }
 
   // MARK: RENDER.............................................................................

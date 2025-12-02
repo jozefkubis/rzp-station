@@ -13,7 +13,6 @@ export default async function page({ searchParams }) {
   // MARK: NACITANIE PARAMETROV URL .....................................................................
   const { m } = await searchParams;
   const shiftsOffset = Number(m ?? 0);
-  // console.log(m);
 
   // MARK: NACITANIE DÁT ...................................................................................
   const user = await getUser();

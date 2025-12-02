@@ -1,78 +1,65 @@
-// app/_lib/tasks-data.js
-import { createClient } from "@/utils/supabase/server";
+
+import { getSupabaseServerClient, handleDbResult } from "./db";
+
 
 // ✅ Čisto server – len práca s DB, žiadne toastovanie.
 
 // MARK: GET ALL TASKS
 export async function getTasks() {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: tasks, error } = await supabase.from("tasks").select("*");
+    const { data, error } = await supabase.from("tasks").select("*");
 
-    if (error) {
-        console.error("Chyba pri načítaní všetkých zadaní:", error);
-        return [];
-    }
-
-    return tasks;
+    return handleDbResult({ data, error, fallback: [] });
 }
+
 
 // MARK: GET TASK BY ID
 export async function getTask(id) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: task, error } = await supabase
+    const { data, error } = await supabase
         .from("tasks")
         .select("*")
         .eq("id", id)
         .single();
 
-    if (error) {
-        console.error("Chyba pri načítaní úlohy:", error);
-        return null;
-    }
-
-    return task;
+    return handleDbResult({ data, error, fallback: null });
 }
+
 
 // MARK: CREATE TASK
 export async function createTask(task) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: newTask, error } = await supabase.from("tasks").insert(task);
+    const { data, error } = await supabase
+        .from("tasks")
+        .insert(task)
+        .select("*")
+        .single();
 
-    if (error) {
-        console.error("Chyba pri vytvorení novej úlohy:", error);
-        return null;
-    }
-
-    return newTask;
+    return handleDbResult({ data, error, fallback: null });
 }
+
 
 // MARK: UPDATE TASK
 export async function updateTask(task) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: updatedTask, error } = await supabase
+    const { data, error } = await supabase
         .from("tasks")
         .update(task)
         .eq("id", task.id)
         .select("*")
         .single();
 
-    if (error) {
-        console.error("Chyba pri aktualizácii úlohy:", error);
-        return null;
-    }
-
-    return updatedTask;
+    return handleDbResult({ data, error, fallback: null });
 }
 
 // MARK: GET TASKS FOR TODAY + TOMORROW
 export async function getTasksForTodayAndTomorrow() {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    // 1) today / tomorrow ako YYYY-MM-DD
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
@@ -80,21 +67,17 @@ export async function getTasksForTodayAndTomorrow() {
     const todayIso = today.toISOString().slice(0, 10);
     const tomorrowIso = tomorrow.toISOString().slice(0, 10);
 
-    // 2) jeden dotaz v rozsahu today..tomorrow
-    const { data: tasks, error } = await supabase
+    const { data, error } = await supabase
         .from("tasks")
         .select("*")
         .gte("dateFrom", todayIso)
         .lte("dateFrom", tomorrowIso);
 
-    if (error) {
-        console.error("Supabase error – tasks today+tomorrow:", error);
-        throw error;
-    }
+    const tasks = handleDbResult({ data, error, fallback: [] });
 
-    // 3) roztriedenie
     const tasksForToday = tasks.filter((t) => t.dateFrom === todayIso);
     const tasksForTmrw = tasks.filter((t) => t.dateFrom === tomorrowIso);
 
     return { tasksForToday, tasksForTmrw };
 }
+
