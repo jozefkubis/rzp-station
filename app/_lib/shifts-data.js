@@ -1,11 +1,8 @@
-// app/_lib/shifts-data.js
-import { createClient } from "@/utils/supabase/server";
-
-// ✅ Shifts – všetko okolo služieb.
+import { getSupabaseServerClient, handleDbResult } from "./db";
 
 // MARK: GET ALL SHIFTS (s možným filtrom podľa roka/mesiaca)
 export default async function getAllShifts({ year, month } = {}) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
     const q = supabase
         .from("shifts")
@@ -19,7 +16,7 @@ export default async function getAllShifts({ year, month } = {}) {
       request_type,
       request_hours,
       profiles:profiles!shifts_user_id_fkey ( id, full_name, avatar_url )
-    `
+    `,
         )
         .order("order_index", { ascending: true })
         .order("inserted_at", { ascending: true })
@@ -34,16 +31,17 @@ export default async function getAllShifts({ year, month } = {}) {
     }
 
     const { data, error } = await q;
-    if (error) {
-        console.error("Supabase error – shifts:", error);
-        throw error;
-    }
-    return data ?? [];
+
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
 
 // MARK: GET ALL SHIFTS FOR MONTH (podľa offsetu m)
 export async function getAllShiftsForMonth(m = 0) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
     const now = new Date();
     const totalM = now.getMonth() + Number(m || 0);
@@ -69,7 +67,7 @@ export async function getAllShiftsForMonth(m = 0) {
       request_type,
       request_hours,
       profiles:profiles!shifts_user_id_fkey ( id, full_name, position, avatar_url, contract )
-    `
+    `,
         )
         .order("order_index", { ascending: true })
         .order("inserted_at", { ascending: true })
@@ -78,76 +76,76 @@ export async function getAllShiftsForMonth(m = 0) {
         .lte("date", to);
 
     const { data, error } = await q;
-    if (error) {
-        console.error("Supabase error – shifts:", error);
-        throw error;
-    }
-    return data ?? [];
+
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
 
 // MARK: ADD SHIFT
-// ⚠️ Toto je pravdepodobne bug – používa user.id, ale user tu nie je definovaný.
-// V tejto session to necháme tak, len presunuté 1:1, a neskôr sa k tomu vrátime.
+// ⚠️ POZOR: stále platí, že tu je bug – používa user.id, ale user tu nie je definovaný.
+// Zatiaľ len prehodené na nový klient 1:1, neskôr to spolu opravíme.
 export async function addShift() {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: newShift, error } = await supabase
+    const { data, error } = await supabase
         .from("shifts")
         .select("*")
         .eq("id", user.id)
         .single();
 
-    if (error) {
-        console.error("Chyba pri vytvorení novej služby:", error);
-        throw error;
-    }
-
-    return newShift;
+    return handleDbResult({
+        data,
+        error,
+        fallback: null,
+    });
 }
 
 // MARK: GET SHIFT FOR TODAY
 export async function getShiftForToday() {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: shifts, error } = await supabase
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    const { data, error } = await supabase
         .from("shifts")
         .select("*, profiles!shifts_user_id_fkey(*)")
-        .eq("date", new Date().toISOString().slice(0, 10));
+        .eq("date", todayIso);
 
-    if (error) {
-        console.error("Supabase error – shifts:", error);
-        throw error;
-    }
-
-    return shifts;
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
 
 // MARK: GET SHIFT FOR TOMORROW
 export async function getShiftForTomorrow() {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const tomortow = new Date();
-    tomortow.setDate(tomortow.getDate() + 1);
-    const tomorrowIso = tomortow.toISOString().slice(0, 10);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowIso = tomorrow.toISOString().slice(0, 10);
 
-    const { data: shifts, error } = await supabase
+    const { data, error } = await supabase
         .from("shifts")
         .select("*, profiles!shifts_user_id_fkey(*)")
         .eq("date", tomorrowIso);
 
-    if (error) {
-        console.error("Supabase error – shifts:", error);
-        throw error;
-    }
-
-    return shifts;
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
 
 // MARK: GET ALL SHIFTS FOR PROFILE
 export async function getAllShiftsForProfile(profileId) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
-    const { data: shifts, error } = await supabase
+    const { data, error } = await supabase
         .from("shifts")
         .select(
             `
@@ -162,29 +160,28 @@ export async function getAllShiftsForProfile(profileId) {
         full_name,
         avatar_url
       )
-    `
+    `,
         )
         .eq("user_id", profileId);
 
-    if (error) {
-        console.error("Supabase error – shifts:", error);
-        throw error;
-    }
-
-    return shifts;
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
 
 // MARK: GET SHIFTS FOR PROFILE FOR YEAR
 export async function getShiftsForProfileForYear(
     profileId,
-    year = new Date().getFullYear()
+    year = new Date().getFullYear(),
 ) {
-    const supabase = await createClient();
+    const supabase = await getSupabaseServerClient();
 
     const from = `${year}-01-01`;
     const to = `${year}-12-31`;
 
-    const { data: shifts, error } = await supabase
+    const { data, error } = await supabase
         .from("shifts")
         .select(
             `
@@ -199,20 +196,15 @@ export async function getShiftsForProfileForYear(
         full_name,
         avatar_url
       )
-    `
+    `,
         )
         .eq("user_id", profileId)
         .gte("date", from)
         .lte("date", to);
 
-    if (error) {
-        console.error("Supabase error – shifts:", {
-            code: error.code,
-            message: error.message,
-            details: error.details,
-        });
-        throw error;
-    }
-
-    return shifts ?? [];
+    return handleDbResult({
+        data: data ?? [],
+        error,
+        fallback: [],
+    });
 }
