@@ -4,7 +4,7 @@ import UserCard from "@/app/_components/profiles/UserCard";
 
 export default function UserProfiles({ profiles, admin }) {
   return (
-    <main >
+    <main className="w-full px-6 pb-20 md:px-20">
       <h1
         className="pb-3 text-center text-lg font-bold text-primary-700 md:p-10 md:text-2xl"
       >
