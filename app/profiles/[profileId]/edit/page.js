@@ -1,5 +1,5 @@
 import AdminUpdateProfilesDataForm from "@/app/_components/profiles/AdminUpdateProfilesDataForm";
-import { getProfile, getUser } from "@/app/_lib/data-service";
+import { getProfile, getUser } from "@/app/_lib/profiles-data";
 
 export const dynamic = "force-dynamic"; // Ak treba
 

@@ -1,6 +1,7 @@
 import Calendar from "../_components/calendar/Calendar";
 import Header from "../_components/Header";
-import { getAdmin, getShiftsForProfileForYear, getUser } from "../_lib/data-service";
+import { getAdmin, getUser } from "../_lib/profiles-data";
+import { getShiftsForProfileForYear } from "../_lib/shifts-data";
 
 export const metadata = {
   title: "Kalendár",

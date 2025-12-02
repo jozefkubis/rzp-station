@@ -38,7 +38,6 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
   return (
     <form
-      data-cy="admin-update-profiles-data-form"
       onSubmit={handleSubmit}
       className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-4 sm:w-2/3 md:px-4 md:py-8 lg:w-1/2"
     >
@@ -192,7 +191,6 @@ function InsertUpdateProfilesDataForm({ profiles }) {
 
       <div className="flex justify-end p-5">
         <Button
-          data-cy="admin-update-profile-button"
           variant="primary"
           size="large"
           disabled={isPending}

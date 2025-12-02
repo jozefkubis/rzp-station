@@ -205,7 +205,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
 
   return (
     <div
-      data-cy="calendar-page"
       className="grid h-full w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2"
     >
       <MyButtons
@@ -216,10 +215,9 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         showHoliday={showHoliday}
       />
 
-      <div data-cy="calendar-wrapper">
+      <div>
         {loading && (
           <div
-            data-cy="calendar-spinner"
             className="absolute inset-0 z-10 grid place-items-center bg-white/70"
           >
             <Spinner />
@@ -267,42 +265,44 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         />
       </div>
 
-      {isOpenModal && (
-        <div data-cy="calendar-modal">
-          <Modal
-            onClose={() => {
-              setIsOpenModal(false);
-              setSelectedEvent(null);
-            }}
-          >
-            {admin === "ÁNO" ? (
-              selectedEvent ? (
-                <UpdateTaskForm
-                  task={selectedEvent}
-                  onClose={() => {
-                    setIsOpenModal(false);
-                    setSelectedEvent(null);
-                    setDraftSlot(null);
-                  }}
-                  refresh={fetchEvents}
-                />
+      {
+        isOpenModal && (
+          <div >
+            <Modal
+              onClose={() => {
+                setIsOpenModal(false);
+                setSelectedEvent(null);
+              }}
+            >
+              {admin === "ÁNO" ? (
+                selectedEvent ? (
+                  <UpdateTaskForm
+                    task={selectedEvent}
+                    onClose={() => {
+                      setIsOpenModal(false);
+                      setSelectedEvent(null);
+                      setDraftSlot(null);
+                    }}
+                    refresh={fetchEvents}
+                  />
+                ) : (
+                  <NewTaskForm
+                    slot={draftSlot}
+                    onClose={() => {
+                      setIsOpenModal(false);
+                      setSelectedEvent(null);
+                      setDraftSlot(null);
+                    }}
+                    refresh={fetchEvents}
+                  />
+                )
               ) : (
-                <NewTaskForm
-                  slot={draftSlot}
-                  onClose={() => {
-                    setIsOpenModal(false);
-                    setSelectedEvent(null);
-                    setDraftSlot(null);
-                  }}
-                  refresh={fetchEvents}
-                />
-              )
-            ) : (
-              <WarningNotice />
-            )}
-          </Modal>
-        </div>
-      )}
-    </div>
+                <WarningNotice />
+              )}
+            </Modal>
+          </div>
+        )
+      }
+    </div >
   );
 }

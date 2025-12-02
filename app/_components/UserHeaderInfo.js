@@ -1,11 +1,11 @@
-import { getAvatarUrl, getUser, getUsername } from "@/app/_lib/data-service";
-import { createClient } from "@/utils/supabase/server";
+// import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import Link from "next/link";
 import { HiOutlineUser } from "react-icons/hi";
+import { getAvatarUrl, getUser, getUsername } from "../_lib/profiles-data";
 
 export default async function UserHeaderInfo() {
-  const supabase = await createClient();
+  // const supabase = await createClient();
 
   const blankAvatar =
     "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";

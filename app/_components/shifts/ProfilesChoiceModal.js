@@ -23,13 +23,13 @@ export default function ProfilesChoiceModal({
         : current,
   );
 
-  async function handleClick(id, full_name, position) {
+  async function handleClick(id, full_name, position, contract) {
+    setIsProfilesModalOpen(false);
+
     startTransition(() => {
       applyRemove({ type: "REMOVE", id });
-      onInsertEmptyShift({ userId: id, full_name, position });
+      onInsertEmptyShift({ userId: id, full_name, position, contract });
     });
-
-    setIsProfilesModalOpen(false);
 
     try {
       // 👇 teraz už posielame správny mesiac
@@ -45,12 +45,12 @@ export default function ProfilesChoiceModal({
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-2">
       {optimisticProfiles.length ? (
-        optimisticProfiles.map(({ id, full_name, position }) => (
+        optimisticProfiles.map(({ id, full_name, position, contract }) => (
           <Button
             key={id}
             variant="secondary"
             size="small"
-            onClick={() => handleClick(id, full_name)}
+            onClick={() => handleClick(id, full_name, position, contract)}
           >
             {full_name ? `${full_name} - ${position}` : "Neznámy záchranár"}
           </Button>

@@ -1,4 +1,4 @@
-import { createTask, getTasks } from "@/app/_lib/data-service";
+import { createTask, getTasks } from "@/app/_lib/tasks-data";
 import { NextResponse } from "next/server";
 // uprav import podľa toho, kde máš svoje helpery na DB
 

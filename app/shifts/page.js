@@ -1,12 +1,9 @@
 import Header from "../_components/Header";
 import MobileRosterSection from "../_components/shifts/MobileRosterSection";
 import RosterSection from "../_components/shifts/RosterSection";
-import {
-  getAdmin,
-  getAllProfiles,
-  getAllShiftsForMonth,
-  getUser,
-} from "../_lib/data-service";
+import { getAdmin, getAllProfiles, getUser } from "../_lib/profiles-data";
+import { getAllShiftsForMonth } from "../_lib/shifts-data";
+
 
 export const metadata = {
   title: "Služby",
@@ -32,7 +29,7 @@ export default async function page({ searchParams }) {
   // 2. Filter pre profily bez služby a map pre vytvorenie pola
   const diffProfiles = profiles
     .filter((p) => !shiftUserIdSet.has(p.id))
-    .map(({ id, full_name, position }) => ({ id, full_name, position }));
+    .map(({ id, full_name, position, contract }) => ({ id, full_name, position, contract }));
 
   return (
     <div className="pb-10">

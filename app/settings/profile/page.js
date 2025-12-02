@@ -1,7 +1,7 @@
 import Header from "@/app/_components/Header";
 import InsertUpdateProfilesDataForm from "@/app/_components/profiles/InsertUpdateProfilesDataForm";
 import SideBar from "@/app/_components/SideBar";
-import { getProfilesData, getUser } from "@/app/_lib/data-service";
+import { getProfilesData, getUser } from "@/app/_lib/profiles-data";
 import {
   HiOutlineInformationCircle,
   HiOutlineLockClosed,
@@ -28,7 +28,6 @@ export default async function page() {
     <div>
       <Header />
       <div
-        data-cy="settings-profile-page"
         className="max-h-screen-md flex flex-col"
       >
         <SideBar navLinks={navLinks} />

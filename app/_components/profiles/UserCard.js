@@ -36,7 +36,6 @@ export default function UserCard({ profile, admin }) {
   return (
     <>
       <li
-        data-cy="user-card"
         role="button"
         tabIndex={0}
         aria-label={`Profil: ${profile?.full_name || "záchranár"}`}
@@ -71,7 +70,6 @@ export default function UserCard({ profile, admin }) {
             fill
             loading="lazy"
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-105"
-            data-cy="user-card-avatar"
             sizes="(max-width: 768px) 80px, 160px"
           />
         </div>
@@ -79,7 +77,6 @@ export default function UserCard({ profile, admin }) {
         {/* Info */}
         <div className="flex min-w-0 flex-1 flex-col items-end gap-1 text-right md:items-center md:text-center">
           <h1
-            data-cy="user-card-name"
             className="truncate text-base font-semibold tracking-tight text-primary-800 2xl:text-2xl"
             title={profile?.full_name || ""}
           >
@@ -87,7 +84,6 @@ export default function UserCard({ profile, admin }) {
           </h1>
 
           <p
-            data-cy="user-card-email"
             className="truncate text-xs text-gray-500 md:max-w-[28ch] 2xl:text-sm"
             title={profile?.email || ""}
           >
@@ -95,7 +91,6 @@ export default function UserCard({ profile, admin }) {
           </p>
 
           <p
-            data-cy="user-card-phone"
             className="text-xs text-gray-500 2xl:text-sm"
             title={profile?.phone || ""}
           >

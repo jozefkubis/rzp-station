@@ -11,7 +11,7 @@ function ToggleSwitch({ checked, onChange, name, value }) {
             />
 
             {/* slider */}
-            <span data-cy="toggle-all-day" className="absolute inset-0 cursor-pointer rounded-full bg-gray-300 transition-colors duration-300 before:absolute before:bottom-1 before:left-2 before:h-[18px] before:w-[18px] before:rounded-full before:bg-white before:transition-transform before:duration-300 before:content-[''] peer-checked:bg-blue-600 peer-checked:before:translate-x-[20px]" />
+            <span className="absolute inset-0 cursor-pointer rounded-full bg-gray-300 transition-colors duration-300 before:absolute before:bottom-1 before:left-2 before:h-[18px] before:w-[18px] before:rounded-full before:bg-white before:transition-transform before:duration-300 before:content-[''] peer-checked:bg-blue-600 peer-checked:before:translate-x-[20px]" />
         </label>
     );
 }

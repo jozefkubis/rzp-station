@@ -7,7 +7,6 @@ function Header() {
   return (
     <>
       <header
-        data-cy="header"
         className="sticky top-0 z-50 hidden border-b border-primary-200 bg-gray-50 px-8 2xl:py-1 text-primary-50 md:block"
       >
         <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between">

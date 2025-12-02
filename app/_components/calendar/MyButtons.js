@@ -32,7 +32,6 @@ export default function MyButtons({
               className="rounded bg-primary-700 px-2 py-1 text-gray-50"
               onClick={handleAdd}
               aria-label="Pridať udalosť"
-              data-cy="calendar-add-event-button"
             >
               <FaRegCalendarPlus />
             </button>
@@ -50,7 +49,6 @@ export default function MyButtons({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              data-cy="calendar-toggle-holidays-button"
               className="rounded bg-primary-700 px-2 py-1 text-gray-50"
               onClick={() => setShowHoliday(!showHoliday)}
               aria-label={!showHoliday ? "Skryť sviatky" : "Zobraziť sviatky"}

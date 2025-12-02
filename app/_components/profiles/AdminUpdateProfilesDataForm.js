@@ -40,7 +40,6 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
   return (
     <div className="h-screen w-full">
       <form
-        data-cy="admin-update-profiles-data-form"
         onSubmit={handleSubmit}
         className="max-h-screen-2xl mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-6 sm:w-2/3 md:px-4 md:py-10 lg:w-1/2"
       >
@@ -195,7 +194,6 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
 
         <div className="flex flex-col items-end justify-center gap-8 p-5">
           <Button
-            data-cy="admin-update-profile-button"
             size="large"
             disabled={isPending}
           >
@@ -213,7 +211,6 @@ function AdminUpdateProfilesDataForm({ profile, userId }) {
 
           <div>
             <Link
-              data-cy="admin-back-to-profile-button"
               href={`/profiles/${profile.id}`}
               className="text-sm font-semibold text-primary-700 hover:underline"
             >

@@ -11,7 +11,7 @@ export default function MyEvent({ event }) {
             : "transparent";
 
     return (
-      <div data-cy="calendar-event">
+      <div>
         <div
           style={{ backgroundColor: bg }}
           className="flex h-[1.3rem] w-[1.3rem] items-center justify-center rounded-full text-[0.6rem] font-semibold text-white md:h-[2rem] md:w-[2rem] md:px-2 md:py-2 md:text-[0.9rem]"
@@ -23,7 +23,7 @@ export default function MyEvent({ event }) {
   }
 
   return (
-    <div data-cy="calendar-event">
+    <div >
       <strong className="">{event.title}</strong>
       {event.note && (
         <div className="truncate text-xs font-semibold">{event.note}</div>

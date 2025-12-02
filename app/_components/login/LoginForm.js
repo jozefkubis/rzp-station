@@ -30,7 +30,6 @@ export default function LoginForm() {
     <form
       onSubmit={handleSubmit}
       className="mx-auto w-full max-w-[400px] space-y-6 rounded-lg p-8 md:bg-primary-100 md:bg-opacity-10"
-      data-cy="login-form"
     >
       <div className="flex items-center justify-center rounded-full">
         <Image src={logoSrc} height={250} width={250} alt="RZP Logo" />

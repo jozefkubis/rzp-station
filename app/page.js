@@ -11,15 +11,10 @@ import NavLinks from "./_components/home/NavLinks";
 import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
 import RenderOnMdUp from "./_components/RenderOnMdUp";
-import {
-  getAllProfiles,
-  getProfile,
-  getShiftForToday,
-  getShiftForTomorrow,
-  getShiftsForProfileForYear,
-  getTasksForTodayAndTomorrow,
-  getUser,
-} from "./_lib/data-service";
+import { getAllProfiles, getProfile, getUser } from "./_lib/profiles-data";
+import { getShiftForToday, getShiftForTomorrow, getShiftsForProfileForYear } from "./_lib/shifts-data";
+import { getTasksForTodayAndTomorrow } from "./_lib/tasks-data";
+
 
 export const revalidate = 300;
 

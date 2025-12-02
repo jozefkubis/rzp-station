@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 
+import { getAvatarUrl, getUser } from "@/app/_lib/profiles-data";
 import { HiOutlineChartSquareBar } from "react-icons/hi";
 import {
   HiArrowRightOnRectangle,
@@ -11,7 +12,6 @@ import {
 } from "react-icons/hi2";
 import { PiAmbulance } from "react-icons/pi";
 
-import { getAvatarUrl, getUser } from "@/app/_lib/data-service";
 
 const BLANK_AVATAR =
   "https://kjfjavkvgocatxssthrv.supabase.co/storage/v1/object/public/avatars//1744906899450-avatar.png";

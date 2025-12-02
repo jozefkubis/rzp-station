@@ -3,8 +3,8 @@ import ProfileIdButton from "@/app/_components/profiles/ProfileIdButton";
 import ProfileIdContactInfo from "@/app/_components/profiles/ProfileIdContactInfo";
 import ProfileIdInfo from "@/app/_components/profiles/ProfileIdInfo";
 import ProfileImage from "@/app/_components/profiles/ProfileImage";
-import { getProfile } from "@/app/_lib/data-service";
 import { formatDate } from "@/app/_lib/helpers/functions";
+import { getProfile } from "@/app/_lib/profiles-data";
 import Link from "next/link";
 import { HiOutlineAtSymbol, HiOutlinePhone } from "react-icons/hi";
 
@@ -33,7 +33,6 @@ export default async function Page({ params }) {
           <DeleteProfileButton profileId={profile.id} />
         </div>
         <Link
-          data-cy="admin-back-to-profiles-button"
           href="/profiles"
           className="text-sm font-semibold text-primary-700 hover:underline"
         >

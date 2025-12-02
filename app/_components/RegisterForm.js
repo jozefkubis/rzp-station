@@ -29,7 +29,6 @@ export default function RegisterForm({ admin }) {
   return (
     <>
       <form
-        data-cy="register-form"
         onSubmit={handleSubmit}
         className="max-h-screen-md mx-auto flex w-full flex-col justify-center overflow-auto rounded-lg px-6 py-8 sm:w-2/3 md:w-1/2 md:px-4 2xl:w-[40%]"
       >
@@ -75,7 +74,6 @@ export default function RegisterForm({ admin }) {
 
         <div className="flex justify-end p-5">
           <Button
-            data-cy="register-button"
             variant="primary"
             size="large"
             disabled={isPending}

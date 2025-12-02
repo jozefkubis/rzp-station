@@ -3,8 +3,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getTask } from "./data-service";
 import { monthBounds } from "./helpers/functions";
+import { getTask } from "./tasks-data";
 
 // MARK: LOGIN
 export async function login(formData) {
@@ -570,7 +570,7 @@ export async function insertProfileInToRoster(userId, m = 0) {
   if (error) throw error;
 
   // refresh tabuľky
-  revalidatePath("/", "shifts");
+  revalidatePath("/shifts");
 }
 
 // MARK: DELETE PROFILE FROM ROSTER

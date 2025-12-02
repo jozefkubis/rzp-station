@@ -57,7 +57,7 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
     }
 
     return (
-        <form data-cy="new-task-form" onSubmit={handleSubmit} className="md:space-y-5 space-y-2">
+        <form onSubmit={handleSubmit} className="md:space-y-5 space-y-2">
             {/* Názov udalosti */}
             <FormTaskInput
                 label="Názov udalosti"
@@ -72,7 +72,6 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
             <div className="flex items-center justify-between border-b border-t border-primary-50 px-4 py-2">
                 <span className="font-semibold text-primary-700">Celý deň</span>
                 <ToggleSwitch
-                    // data-cy="toggle-all-day"
                     checked={isAllDay}
                     onChange={(e) => setIsAllDay(e.target.checked)}
                     name="isAllDay"
@@ -145,7 +144,6 @@ export default function NewTaskForm({ onClose, refresh, slot }) {
             {/* Tlačidlo */}
             <div className="flex justify-end">
                 <Button
-                    data-cy="new-task-submit"
                     variant="primary"
                     size="large"
                     type="submit"
