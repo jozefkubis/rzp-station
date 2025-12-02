@@ -208,3 +208,42 @@ export async function getShiftsForProfileForYear(
         fallback: [],
     });
 }
+
+// MARK: GET SHIFTS FOR TODAY + TOMORROW (pre home dashboard)
+export async function getTodayAndTomorrowShifts() {
+    const supabase = await getSupabaseServerClient();
+
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    const todayIso = today.toISOString().slice(0, 10);
+    const tomorrowIso = tomorrow.toISOString().slice(0, 10);
+
+    const { data, error } = await supabase
+        .from("shifts")
+        .select(
+            `
+      id,
+      user_id,
+      date,
+      shift_type,
+      request_type,
+      request_hours,
+      profiles:profiles!shifts_user_id_fkey (
+        id,
+        full_name,
+        avatar_url
+      )
+    `,
+        )
+        .in("date", [todayIso, tomorrowIso]);
+
+    const shifts = handleDbResult({ data, error, fallback: [] });
+
+    const todayShifts = shifts.filter((s) => s.date === todayIso);
+    const tomorrowShifts = shifts.filter((s) => s.date === tomorrowIso);
+
+    return { todayShifts, tomorrowShifts };
+}
+

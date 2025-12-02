@@ -1,4 +1,4 @@
-import { dateStr, formatDate, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import { dateStr, formatDate, namesByShiftType, shiftLine, tmrwDateStr } from "@/app/_lib/helpers/functions";
 import BirthdayCard from "./_components/home/BirthdayCard";
 import MobileMainTaskButton from "./_components/home/MobileMainTaskButton";
 import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButton";
@@ -12,7 +12,7 @@ import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
 import RenderOnMdUp from "./_components/RenderOnMdUp";
 import { getAllProfiles, getProfile, getUser } from "./_lib/profiles-data";
-import { getShiftForToday, getShiftForTomorrow, getShiftsForProfileForYear } from "./_lib/shifts-data";
+import { getShiftsForProfileForYear, getTodayAndTomorrowShifts } from "./_lib/shifts-data";
 import { getTasksForTodayAndTomorrow } from "./_lib/tasks-data";
 
 
@@ -24,46 +24,24 @@ export default async function Page({ searchParams }) {
 
   // MARK: NACITANIE DÁT ...................................................................................
   const user = await getUser();
-  // Načítanie dát paralelne
-  const [profile, shifts, profiles] = await Promise.all([
-    getProfile(user.id),
-    getShiftsForProfileForYear(user.id),
-    getAllProfiles(),
-  ]);
 
-  // MARK: SHIFTS...........................................................................................
-  /* 1. Načítanie dát paralelne */
-  const [todayShifts, tomorrowShifts] = await Promise.all([
-    getShiftForToday(),
-    getShiftForTomorrow(),
-  ]);
+  const [profile, shifts, profiles, shiftsTodayTomorrow, tasksTodayTomorrow] =
+    await Promise.all([
+      getProfile(user.id),
+      getShiftsForProfileForYear(user.id),
+      getAllProfiles(),
+      getTodayAndTomorrowShifts(),
+      getTasksForTodayAndTomorrow(),
+    ]);
+
+  const { todayShifts, tomorrowShifts } = shiftsTodayTomorrow;
 
   /* 2. Helper – podľa typu vracia pole mien */
-  function namesByType(arr, baseType) {
-    const list = arr ?? [];
+  const dayToday = namesByShiftType(todayShifts, "D");
+  const nightToday = namesByShiftType(todayShifts, "N");
+  const dayTomorrow = namesByShiftType(tomorrowShifts, "D");
+  const nightTomorrow = namesByShiftType(tomorrowShifts, "N");
 
-    const ALIASES = {
-      D: new Set(["D", "zD", "vD"]),
-      N: new Set(["N", "zN", "vN"]),
-    };
-
-    return (
-      list
-        .filter((s) => ALIASES[baseType].has(s.shift_type))
-        // predtým: .map((s) => s.profiles.full_name)
-        .map((s) => s?.profiles?.full_name ?? "—")
-    );
-  }
-
-  const dayToday = namesByType(todayShifts, "D");
-  const nightToday = namesByType(todayShifts, "N");
-  const dayTomorrow = namesByType(tomorrowShifts, "D");
-  const nightTomorrow = namesByType(tomorrowShifts, "N");
-
-  /* 3. Helper – formát výstupu alebo pomlčka */
-  function line(list, label) {
-    return list.length ? list.join(", ") + " - " + label : "—";
-  }
   //......................................................................................................
 
   //MARK: CALENDAR.......................................................................................
@@ -119,7 +97,7 @@ export default async function Page({ searchParams }) {
             dateString={formatDate(dateStr)}
             dayData={dayToday}
             nightData={nightToday}
-            line={line}
+            line={shiftLine}
             tasks={taskTitleForToday}
           />
 
@@ -128,7 +106,7 @@ export default async function Page({ searchParams }) {
             dateString={formatDate(tmrwDateStr)}
             dayData={dayTomorrow}
             nightData={nightTomorrow}
-            line={line}
+            line={shiftLine}
             tasks={taskTitleForTmrw}
           />
         </section>

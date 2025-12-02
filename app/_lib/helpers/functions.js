@@ -114,3 +114,24 @@ export function monthBounds(m = 0) {
 
   return { year, month, from, to, prevFrom, prevTo };
 }
+
+// MARK: SHIFTS HELPERS
+
+// vráti mená podľa typu služby (D alebo N)
+export function namesByShiftType(arr, baseType) {
+  const list = arr ?? [];
+
+  const ALIASES = {
+    D: new Set(["D", "zD", "vD"]),
+    N: new Set(["N", "zN", "vN"]),
+  };
+
+  return list
+    .filter((s) => ALIASES[baseType].has(s.shift_type))
+    .map((s) => s?.profiles?.full_name ?? "—");
+}
+
+// vytvorí textový riadok z mien alebo pomlčku
+export function shiftLine(list, label) {
+  return list.length ? `${list.join(", ")} - ${label}` : "—";
+}
