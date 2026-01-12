@@ -1,4 +1,99 @@
+import { toast } from "react-hot-toast";
 import { shiftTableStats } from "../_components/shifts/helpers_shifts";
+
+// MARK: EXPORT – roster do svojho kalendára
+// YYYYMMDD pre all-day event
+function yyyymmdd(dateStr) {
+  return String(dateStr).slice(0, 10).replaceAll("-", "");
+}
+
+function icsEscape(s) {
+  return String(s ?? "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll("\n", "\\n")
+    .replaceAll(",", "\\,")
+    .replaceAll(";", "\\;");
+}
+
+function uid(prefix = "rzp") {
+  return `${prefix}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+}
+
+/**
+ * myShifts: [{ date: "YYYY-MM-DD", shift_type: "D" | "N" | "RD" | ... }]
+ */
+export function exportMyShiftsToIcsSimple({
+  myShifts,
+  monthKey,
+  stationName = "RZP",
+}) {
+  if (!Array.isArray(myShifts) || myShifts.length === 0) {
+    toast.error("Nie je čo exportovať");
+    return;
+  }
+
+  const monthPrefix = `${monthKey}-`;
+  const shifts = myShifts
+    .filter((s) => String(s.date).startsWith(monthPrefix))
+    .filter((s) => s.shift_type);
+
+  if (!shifts.length) {
+    toast.error("V tomto mesiaci nemáš žiadne služby");
+    return;
+  }
+
+  const lines = [];
+  lines.push("BEGIN:VCALENDAR");
+  lines.push("VERSION:2.0");
+  lines.push("PRODID:-//RZP Station//My Shifts//SK");
+  lines.push("CALSCALE:GREGORIAN");
+  lines.push("METHOD:PUBLISH");
+
+  for (const s of shifts) {
+    const dateStr = String(s.date).slice(0, 10);
+    const dtStart = yyyymmdd(dateStr);
+
+    // dtEnd = ďalší deň (all-day event končí exkluzívne)
+    const d = new Date(dateStr + "T00:00:00");
+    d.setDate(d.getDate() + 1);
+    const endStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+      2,
+      "0",
+    )}-${String(d.getDate()).padStart(2, "0")}`;
+    const dtEnd = yyyymmdd(endStr);
+
+    lines.push("BEGIN:VEVENT");
+    lines.push(`UID:${uid("shift")}`);
+    lines.push(
+      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
+    );
+    lines.push(`SUMMARY:${icsEscape(s.shift_type)}`);
+    lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
+    lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
+    lines.push(
+      `DESCRIPTION:${icsEscape(`Služba: ${s.shift_type} (${stationName})`)}`,
+    );
+    lines.push("END:VEVENT");
+  }
+
+  lines.push("END:VCALENDAR");
+
+  const blob = new Blob([lines.join("\r\n")], {
+    type: "text/calendar;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+
+  const fileName = `my-shifts-${monthKey}.ics`;
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", fileName);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  toast.success("Kalendár (.ics) exportovaný");
+}
 
 // MARK: EXPORT – roster do CSV (Excel)
 export function exportRosterToCsv({ rows, days, monthKey }) {

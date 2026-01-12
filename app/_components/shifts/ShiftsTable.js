@@ -443,6 +443,8 @@ export default function ShiftsTable({
   //   }
   // }
 
+  const userId = user.id;
+
   // MARK: RENDER
   return (
     <>
@@ -554,6 +556,7 @@ export default function ShiftsTable({
           monthLabel={monthLabel}
           year={year}
           normHours={normHours}
+          userId={userId}
         />
       </MainShiftsTable>
 
