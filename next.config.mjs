@@ -2,6 +2,20 @@
 
 // CSP podľa prostredia
 function makeCSP(isDev) {
+  // -------- CONNECT-SRC (iba raz!) --------
+  const connectSrc = [
+    "'self'",
+    "https://*.supabase.co",
+    "wss://*.supabase.co",
+    "https://vitals.vercel-insights.com",
+    "https://api.open-meteo.com",
+  ];
+
+  if (isDev) {
+    connectSrc.push("http://localhost:3000", "ws://localhost:3000");
+  }
+
+  // -------- ZÁKLAD CSP --------
   const base = [
     "default-src 'self'",
     "base-uri 'self'",
@@ -10,25 +24,27 @@ function makeCSP(isDev) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' https: data: blob:",
     "font-src 'self' data:",
-    // sieťové volania (Supabase + Vercel web vitals + Open-Meteo)
-    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.open-meteo.com",
-    // workers (RSC/refresh)
+    `connect-src ${connectSrc.join(" ")}`,
     "worker-src 'self' blob:",
   ];
 
+  // -------- SCRIPT-SRC --------
   if (isDev) {
     base.push(
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:",
-      "connect-src 'self' http://localhost:3000 ws://localhost:3000 https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://api.open-meteo.com",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://va.vercel-scripts.com",
     );
   } else {
-    // >>> TU JE ZMENA – povolené 'unsafe-inline' pre produkciu
-    base.push("script-src 'self' 'unsafe-inline'");
+    base.push(
+      "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+    );
   }
 
   return base.join("; ");
 }
 
+const isDev = process.env.NODE_ENV !== "production";
+
+// -------- SECURITY HEADERS --------
 const securityHeaders = (isDev) => [
   {
     key: "Strict-Transport-Security",
@@ -45,32 +61,37 @@ const securityHeaders = (isDev) => [
   { key: "Content-Security-Policy", value: makeCSP(isDev) },
 ];
 
-const isDev = process.env.NODE_ENV !== "production";
-
+// -------- NEXT CONFIG --------
 const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "10mb" },
   },
+
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders(isDev) }];
+    return [
+      {
+        source: "/(.*)",
+        headers: securityHeaders(isDev),
+      },
+    ];
   },
+
   images: {
     unoptimized: true,
     remotePatterns: [
-      // Supabase Storage – PUBLIC objekty
+      // Supabase Storage – PUBLIC
       {
         protocol: "https",
         hostname: "kjfjavkvgocatxssthrv.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
-      // Supabase Storage – SIGNED (privátne objekty)
+      // Supabase Storage – SIGNED
       {
         protocol: "https",
         hostname: "kjfjavkvgocatxssthrv.supabase.co",
         pathname: "/storage/v1/object/sign/**",
       },
-
-      // tvoje ďalšie zdroje
+      // ďalšie zdroje
       {
         protocol: "https",
         hostname: "randomuser.me",
@@ -81,7 +102,6 @@ const nextConfig = {
         hostname: "picsum.photos",
         pathname: "/**",
       },
-
       {
         protocol: "https",
         hostname: "upload.wikimedia.org",

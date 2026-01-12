@@ -7,7 +7,6 @@ import UpdateTaskForm from "@/app/_components/calendar/UpdateTaskForm";
 import Spinner from "@/app/_components/Spinner";
 import { localizer } from "@/app/_lib/calendarLocalizer";
 import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
-// import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { Calendar as BigCalendar, Views } from "react-big-calendar";
 import WarningNotice from "../WarningNotice";
@@ -19,8 +18,34 @@ function getTodayAtHour(hour) {
   return date;
 }
 
+// ✅ malý badge pre službu v hlavičke dňa (Month view)
+function ShiftDot({ title }) {
+  if (!title) return null;
+
+  const bg = title.includes("RD")
+    ? "#27ae60"
+    : title.includes("PN")
+      ? "#c0392b"
+      : title.includes("N")
+        ? "#2c3e50"
+        : title.includes("D")
+          ? "#f1c40f"
+          : "#64748b";
+
+  return (
+    <div
+      title={title}
+      style={{ backgroundColor: bg }}
+      className="ml-1 inline-flex h-[1.1rem] w-[1.1rem] items-center justify-center rounded-full text-[0.55rem] font-semibold text-white"
+    >
+      {title}
+    </div>
+  );
+}
+
 export default function Calendar({ admin, shiftsAndRequests }) {
   const [events, setEvents] = useState([]);
+  const [shiftByDay, setShiftByDay] = useState({}); // ✅ služby mapované podľa dňa
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
@@ -31,16 +56,16 @@ export default function Calendar({ admin, shiftsAndRequests }) {
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
-    const shiftEvents = shiftsAndRequests.map((shift) => ({
-      id: "shift-" + shift.id,
-      // title: `${shift.shift} ${shift.request}`,
-      title: shift.shift,
-      start: new Date(shift.date),
-      end: new Date(shift.date),
-      allDay: true,
-      isShift: true,
-    }));
 
+    // ✅ 1) SLUŽBY: sprav mapu "YYYY-MM-DD" -> title (nepôjdu do events)
+    const map = {};
+    for (const shift of shiftsAndRequests) {
+      const key = String(shift.date).slice(0, 10); // napr. "2026-01-12"
+      map[key] = shift.shift;
+    }
+    setShiftByDay(map);
+
+    // ✅ 2) ÚLOHY
     const data = await fetch("/api/tasks").then((res) => res.json());
     const userEvents = data.map((task) => ({
       id: task.id,
@@ -56,6 +81,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       note: task.note,
     }));
 
+    // ✅ 3) SVIATKY
     const holidayEvents = skHolidays2025.map((h) => ({
       id: "hol-" + h.date,
       title: h.localName,
@@ -65,9 +91,10 @@ export default function Calendar({ admin, shiftsAndRequests }) {
       isHoliday: true,
     }));
 
-    setEvents([...shiftEvents, ...userEvents, ...holidayEvents]);
+    // ✅ do kalendára idú len úlohy + sviatky
+    setEvents([...userEvents, ...holidayEvents]);
     setLoading(false);
-  }, []);
+  }, [shiftsAndRequests]);
 
   useEffect(() => {
     fetchEvents();
@@ -98,72 +125,16 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     dateTo: "Dátum do",
     time: "Čas",
     event: "Udalosť",
-
     showMore: (total) => `+ ďalších ${total}`,
   };
 
   const eventPropGetter = useCallback(
     (event) => {
-      if (event.isShift) {
-        if (!event.title) {
-          return {
-            style: {
-              backgroundColor: "transparent",
-            },
-          };
-        }
-
-        if (event.title.includes("RD")) {
-          return {
-            style: {
-              backgroundColor: "transparent",
-              borderRadius: "9999px",
-            },
-          };
-        }
-
-        if (event.title.includes("D")) {
-          return {
-            style: {
-              backgroundColor: "transparent",
-              border: "none",
-              borderRadius: "9999px",
-            },
-          };
-        }
-
-        if (event.title.includes("PN")) {
-          return {
-            style: {
-              backgroundColor: "transparent",
-              borderRadius: "9999px",
-            },
-          };
-        }
-
-        if (event.title.includes("N")) {
-          return {
-            style: {
-              backgroundColor: "transparent",
-              borderRadius: "9999px",
-            },
-          };
-        }
-
-        return {
-          style: {
-            backgroundColor: "transparent",
-            borderRadius: "9999px",
-          },
-        };
-      }
-
       // urgentné
-      if (event.title.includes("!")) {
+      if (event.title?.includes("!")) {
         return {
           style: {
             backgroundColor: "#F21905",
-            // border: "none",
             color: "white",
           },
         };
@@ -175,8 +146,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           backgroundColor: "#FFF144",
           border: "none",
           color: "#525759",
-          // fontSize: "0.75rem",
-          // fontWeight: 500,
           display: showHoliday ? "none" : "",
         };
 
@@ -201,12 +170,26 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     };
   }
 
+  // ✅ Month view: vlastná hlavička dňa (tam nacvakneme službu)
+  const MonthDateHeader = useCallback(
+    ({ date, label }) => {
+      const key = date.toISOString().slice(0, 10);
+      const shiftTitle = shiftByDay[key];
+
+      return (
+        <div className="flex items-center justify-between">
+          <span>{label}</span>
+          <ShiftDot title={shiftTitle} />
+        </div>
+      );
+    },
+    [shiftByDay],
+  );
+
   // MARK: RENDER....................................................
 
   return (
-    <div
-      className="grid h-full w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2"
-    >
+    <div className="grid h-full w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2">
       <MyButtons
         setSelectedEvent={setSelectedEvent}
         setDraftSlot={setDraftSlot}
@@ -217,12 +200,11 @@ export default function Calendar({ admin, shiftsAndRequests }) {
 
       <div>
         {loading && (
-          <div
-            className="absolute inset-0 z-10 grid place-items-center bg-white/70"
-          >
+          <div className="absolute inset-0 z-10 grid place-items-center bg-white/70">
             <Spinner />
           </div>
         )}
+
         <BigCalendar
           culture="sk"
           view={view}
@@ -235,13 +217,10 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           localizer={localizer}
           messages={messages}
           formats={{
-            // úplné názvy dní v týždni v hlavičke
             weekdayFormat: (date, culture, localizer) =>
               localizer.format(date, "EEEE", culture),
-            // názov mesiaca s rokom
             monthHeaderFormat: (date, culture, localizer) =>
               localizer.format(date, "LLLL yyyy", culture),
-            // formát hlavičky pri prepnutí na day view
             dayHeaderFormat: (date, culture, localizer) =>
               localizer.format(date, "EEEE, dd.MM.yyyy", culture),
           }}
@@ -256,6 +235,9 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           style={{ height: "100%" }}
           components={{
             event: MyEvent,
+            month: {
+              dateHeader: MonthDateHeader, // ✅ tu je pointa
+            },
           }}
           min={getTodayAtHour(6)}
           max={getTodayAtHour(23)}
@@ -265,44 +247,42 @@ export default function Calendar({ admin, shiftsAndRequests }) {
         />
       </div>
 
-      {
-        isOpenModal && (
-          <div >
-            <Modal
-              onClose={() => {
-                setIsOpenModal(false);
-                setSelectedEvent(null);
-              }}
-            >
-              {admin === "ÁNO" ? (
-                selectedEvent ? (
-                  <UpdateTaskForm
-                    task={selectedEvent}
-                    onClose={() => {
-                      setIsOpenModal(false);
-                      setSelectedEvent(null);
-                      setDraftSlot(null);
-                    }}
-                    refresh={fetchEvents}
-                  />
-                ) : (
-                  <NewTaskForm
-                    slot={draftSlot}
-                    onClose={() => {
-                      setIsOpenModal(false);
-                      setSelectedEvent(null);
-                      setDraftSlot(null);
-                    }}
-                    refresh={fetchEvents}
-                  />
-                )
+      {isOpenModal && (
+        <div>
+          <Modal
+            onClose={() => {
+              setIsOpenModal(false);
+              setSelectedEvent(null);
+            }}
+          >
+            {admin === "ÁNO" ? (
+              selectedEvent ? (
+                <UpdateTaskForm
+                  task={selectedEvent}
+                  onClose={() => {
+                    setIsOpenModal(false);
+                    setSelectedEvent(null);
+                    setDraftSlot(null);
+                  }}
+                  refresh={fetchEvents}
+                />
               ) : (
-                <WarningNotice />
-              )}
-            </Modal>
-          </div>
-        )
-      }
-    </div >
+                <NewTaskForm
+                  slot={draftSlot}
+                  onClose={() => {
+                    setIsOpenModal(false);
+                    setSelectedEvent(null);
+                    setDraftSlot(null);
+                  }}
+                  refresh={fetchEvents}
+                />
+              )
+            ) : (
+              <WarningNotice />
+            )}
+          </Modal>
+        </div>
+      )}
+    </div>
   );
 }
