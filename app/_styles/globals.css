@@ -136,6 +136,12 @@ th.rbc-header {
   border-radius: 8px !important;
 }
 
+.rbc-date-cell {
+  font-size: 0.75rem !important;
+  padding: 4px !important;
+  font-size: semibold !important;
+}
+
 .rbc-agenda-date-cell {
   background-color: white !important;
   color: theme("colors.primary.700") !important;
