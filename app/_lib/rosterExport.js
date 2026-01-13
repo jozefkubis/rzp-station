@@ -19,6 +19,13 @@ function uid(prefix = "rzp") {
   return `${prefix}-${Math.random().toString(36).slice(2)}-${Date.now()}`;
 }
 
+function clean(v) {
+  const x = String(v ?? "").trim();
+  if (!x) return "";
+  if (x === "null" || x === "undefined") return "";
+  return x;
+}
+
 /**
  * myShifts: [{ date: "YYYY-MM-DD", shift_type: "D" | "N" | "RD" | ... }]
  */
@@ -54,7 +61,10 @@ export function exportMyShiftsToIcsSimple({
   for (const s of shifts) {
     const dateStr = String(s.date).slice(0, 10);
     const dtStart = yyyymmdd(dateStr);
-    const requestType = s.request_type ? `(${s.request_type})` : "";
+    const shiftType = clean(s.shift_type);
+    const requestType = clean(s.request_type);
+
+    const summary = [shiftType, requestType].filter(Boolean).join(" – ");
 
     // dtEnd = ďalší deň (all-day event končí exkluzívne)
     const d = new Date(dateStr + "T00:00:00");
@@ -70,12 +80,12 @@ export function exportMyShiftsToIcsSimple({
     lines.push(
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
     );
-    lines.push(`SUMMARY:${icsEscape(`${s.shift_type} ${requestType}`)}`);
+    lines.push(`SUMMARY:${icsEscape(summary)}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
     lines.push(
       `DESCRIPTION:${icsEscape(
-        `Služba: ${s.shift_type}\nTyp: ${requestType}\nStanica: ${stationName}`,
+        `Služba: ${shiftType}${requestType ? `\nTyp: ${requestType}` : ""}\nStanica: ${stationName}`,
       )}`,
     );
     lines.push("END:VEVENT");
