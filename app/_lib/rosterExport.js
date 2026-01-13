@@ -28,7 +28,7 @@ function clean(v) {
   if (r === "null" || r === "undefined") return "";
   if (r.includes("x")) return "";
 
-  return r;
+  return r.toUpperCase();
 }
 
 /**
