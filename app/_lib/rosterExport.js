@@ -54,6 +54,7 @@ export function exportMyShiftsToIcsSimple({
   for (const s of shifts) {
     const dateStr = String(s.date).slice(0, 10);
     const dtStart = yyyymmdd(dateStr);
+    const requestType = s.request_type ? `(${s.request_type})` : "";
 
     // dtEnd = ďalší deň (all-day event končí exkluzívne)
     const d = new Date(dateStr + "T00:00:00");
@@ -69,7 +70,7 @@ export function exportMyShiftsToIcsSimple({
     lines.push(
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
     );
-    lines.push(`SUMMARY:${icsEscape(`${s.shift_type} – ${s.request_type}`)}`);
+    lines.push(`SUMMARY:${icsEscape(`${s.shift_type} ${requestType}`)}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
     lines.push(
