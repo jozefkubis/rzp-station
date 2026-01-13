@@ -56,7 +56,7 @@ export default function AllParamedics({
   return (
     <>
       <div
-        className={`flex items-center justify-between border-b border-l border-slate-200 px-2 py-1 text-[0.6rem] hover:bg-blue-100 2xl:text-[0.9rem] ${rowBg}`}
+        className={`flex items-center justify-between border-b border-l border-slate-200 px-2 py-1 text-[0.6rem] hover:bg-blue-100 2xl:text-[0.85rem] ${rowBg}`}
       >
         <button
           type="button"
