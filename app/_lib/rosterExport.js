@@ -44,8 +44,6 @@ export function exportMyShiftsToIcsSimple({
     .filter((s) => String(s.date).startsWith(monthPrefix))
     .filter((s) => s.shift_type || s.request_type);
 
-  console.log("ICS export count:", shifts.length, shifts);
-
   if (!shifts.length) {
     toast.error("V tomto mesiaci nemáš žiadne služby");
     return;
