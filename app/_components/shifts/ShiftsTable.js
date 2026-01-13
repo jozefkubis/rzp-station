@@ -85,10 +85,10 @@ export default function ShiftsTable({
   const colTemplate = useMemo(() => {
     if (isMdLarge) {
       // najväčší layout
-      return `13.5rem 2.8rem repeat(${days.length}, 2.2rem) repeat(7, 3.3rem)`;
+      return `15.5rem 2.6rem repeat(${days.length}, 2rem) repeat(7, 3.1rem)`;
     } else if (isMd) {
       // stredný layout
-      return `9rem 1.8rem repeat(${days.length}, 1.6rem) repeat(7, 2.2rem)`;
+      return `11rem 1.6rem repeat(${days.length}, 1.4rem) repeat(7, 2rem)`;
     }
     // mobil
     return `10.3rem 2rem repeat(${days.length}, 1.8rem) repeat(7, 2.5rem)`;
