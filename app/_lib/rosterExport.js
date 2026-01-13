@@ -35,7 +35,7 @@ export function exportMyShiftsToIcsSimple({
   const monthPrefix = `${monthKey}-`;
   const shifts = myShifts
     .filter((s) => String(s.date).startsWith(monthPrefix))
-    .filter((s) => s.shift_type);
+    .filter((s) => s.shift_type && s.request_type);
 
   if (!shifts.length) {
     toast.error("V tomto mesiaci nemáš žiadne služby");
@@ -67,11 +67,13 @@ export function exportMyShiftsToIcsSimple({
     lines.push(
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
     );
-    lines.push(`SUMMARY:${icsEscape(s.shift_type)}`);
+    lines.push(`SUMMARY:${icsEscape(`${s.shift_type} – ${s.request_type}`)}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
     lines.push(
-      `DESCRIPTION:${icsEscape(`Služba: ${s.shift_type} (${stationName})`)}`,
+      `DESCRIPTION:${icsEscape(
+        `Služba: ${s.shift_type}\nTyp: ${s.request_type}\nStanica: ${stationName}`,
+      )}`,
     );
     lines.push("END:VEVENT");
   }
