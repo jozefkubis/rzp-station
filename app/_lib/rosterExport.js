@@ -21,16 +21,14 @@ function uid(prefix = "rzp") {
 
 function clean(v) {
   const r = String(v ?? "").trim();
-
   if (!r) return "";
 
   const low = r.toLowerCase();
 
-  // stringové "null" / "undefined"
   if (low === "null" || low === "undefined") return "";
 
-  // placeholder X / x / XX / xx
-  if (low === "x" || low === "xx") return "";
+  // ❌ všetko čo začína na x (x, xx, xD, xN, XN...)
+  if (low.startsWith("x")) return "";
 
   return r;
 }
