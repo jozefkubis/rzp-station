@@ -467,7 +467,7 @@ export default function ShiftsTable({
 
         <div className="overflow-x-auto">
           <div
-            className="sticky top-0 z-30 grid border-r border-t border-slate-200"
+            className="sticky top-0 z-30 grid border-r border-slate-200"
             style={{ gridTemplateColumns: colTemplate }}
           >
             <ParamedName>Záchranári</ParamedName>
