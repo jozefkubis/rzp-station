@@ -65,7 +65,7 @@ export default function AllParamedics({
         >
           {currentIdx + 1}. {children}
         </button>
-        <span className="text-xs 2xl:text-sm">{position}</span>
+        <span className="text-[0.6rem] 2xl:text-[0.85rem]">{position}</span>
       </div>
 
       {isOpenDeleteModal && (
