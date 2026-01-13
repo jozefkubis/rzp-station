@@ -75,7 +75,7 @@ export function exportMyShiftsToIcsSimple({
     lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
     lines.push(
       `DESCRIPTION:${icsEscape(
-        `Služba: ${s.shift_type}\nTyp: ${s.request_type}\nStanica: ${stationName}`,
+        `Služba: ${s.shift_type}\nTyp: ${requestType}\nStanica: ${stationName}`,
       )}`,
     );
     lines.push("END:VEVENT");
