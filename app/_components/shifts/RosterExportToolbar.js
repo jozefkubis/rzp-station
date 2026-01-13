@@ -39,6 +39,7 @@ export default function RosterExportToolbar({
     });
   }
 
+  // MARK: EXPORT – do tvojho kalendára
   // ✅ už bez parametrov – berie priamo z props (najmenej chýb)
   function handleExportRosterToYourCalendar() {
     if (!userId) return;
@@ -57,6 +58,7 @@ export default function RosterExportToolbar({
     const myShifts = (myRow.shifts ?? []).map((s) => ({
       date: s.date,
       shift_type: s.shift_type,
+      request_type: s.request_type,
     }));
 
     exportMyShiftsToIcsSimple({ myShifts, monthKey, stationName });
