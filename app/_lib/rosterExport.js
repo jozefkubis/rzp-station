@@ -21,13 +21,22 @@ function uid(prefix = "rzp") {
 
 function clean(v) {
   const r = String(v ?? "").trim();
+
   if (!r) return "";
-  if (r === "null" || r === "undefined") return "";
+
+  const low = r.toLowerCase();
+
+  // stringové "null" / "undefined"
+  if (low === "null" || low === "undefined") return "";
+
+  // placeholder X / x / XX / xx
+  if (low === "x" || low === "xx") return "";
+
   return r;
 }
 
 /**
- * myShifts: [{ date: "YYYY-MM-DD", shift_type: "D" | "N" | "RD" | ... }]
+ * myShifts: [{ date: "YYYY-MM-DD", shift_type: "D" | "N" | "RD" | ... , request_type?: string }]
  */
 export function exportMyShiftsToIcsSimple({
   myShifts,
@@ -40,9 +49,16 @@ export function exportMyShiftsToIcsSimple({
   }
 
   const monthPrefix = `${monthKey}-`;
-  const shifts = myShifts
-    .filter((s) => String(s.date).startsWith(monthPrefix))
-    .filter((s) => s.shift_type || s.request_type);
+
+  // najprv iba mesiac (kvôli výkonu a prehľadnosti)
+  const inMonth = myShifts.filter((s) =>
+    String(s.date).startsWith(monthPrefix),
+  );
+
+  // necháme len tie, čo majú aspoň niečo zmysluplné (po clean)
+  const shifts = inMonth.filter(
+    (s) => clean(s.shift_type) || clean(s.request_type),
+  );
 
   if (!shifts.length) {
     toast.error("V tomto mesiaci nemáš žiadne služby");
@@ -59,8 +75,12 @@ export function exportMyShiftsToIcsSimple({
   for (const s of shifts) {
     const dateStr = String(s.date).slice(0, 10);
     const dtStart = yyyymmdd(dateStr);
+
     const shiftType = clean(s.shift_type);
     const requestType = clean(s.request_type);
+
+    // ✅ kľúč: ak po clean nemám nič, EVENT vôbec nevytvorím
+    if (!shiftType && !requestType) continue;
 
     const summary = [shiftType, requestType].filter(Boolean).join(" – ");
 
@@ -74,24 +94,33 @@ export function exportMyShiftsToIcsSimple({
     const dtEnd = yyyymmdd(endStr);
 
     lines.push("BEGIN:VEVENT");
-    lines.push(`UID:${uid("shift")}`);
+
+    // ✅ stabilnejšie UID (neprepisuje eventy a kalendáre ho majú rady)
+    lines.push(`UID:shift-${dtStart}@rzp-station`);
+
     lines.push(
       `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
     );
+
     lines.push(`SUMMARY:${icsEscape(summary)}`);
     lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
     lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
+
+    // ✅ "Typ:" riadok len keď reálne existuje
     lines.push(
       `DESCRIPTION:${icsEscape(
-        `Služba: ${shiftType}${requestType ? `\nTyp: ${requestType}` : ""}\nStanica: ${stationName}`,
+        `Služba: ${shiftType || "—"}${
+          requestType ? `\nTyp: ${requestType}` : ""
+        }\nStanica: ${stationName}`,
       )}`,
     );
+
     lines.push("END:VEVENT");
   }
 
   lines.push("END:VCALENDAR");
 
-  const blob = new Blob([lines.join("\r\n")], {
+  const blob = new Blob([lines.join("\r\n") + "\r\n"], {
     type: "text/calendar;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
