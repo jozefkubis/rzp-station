@@ -20,10 +20,15 @@ function uid(prefix = "rzp") {
 }
 
 function clean(v) {
-  const x = String(v ?? "").trim();
-  if (!x) return "";
-  if (x === "null" || x === "undefined") return "";
-  return x;
+  const r = String(v ?? "")
+    .trim()
+    .toLowerCase();
+
+  if (!r) return "";
+  if (r === "null" || r === "undefined") return "";
+  if (r.includes("x")) return "";
+
+  return r;
 }
 
 /**
