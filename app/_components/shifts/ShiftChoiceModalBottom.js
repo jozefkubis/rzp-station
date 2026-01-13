@@ -16,6 +16,7 @@ export default function ShiftChoiceModalBottom({
     { t: "BY", h: null },
     { t: "STR", h: null },
     { t: "TER", h: null },
+    { t: "TUR", h: null },
     { t: "MAK", h: null },
     { t: "0.5", h: 1 },
     { t: "1", h: 1 },
