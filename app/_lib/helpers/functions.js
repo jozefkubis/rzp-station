@@ -12,9 +12,8 @@ import {
   CloudSun,
   CloudSunRain,
   Snowflake,
-  Sun
+  Sun,
 } from "lucide-react";
-
 
 export function formatDate(dateString) {
   if (!dateString) return "?";
@@ -55,19 +54,21 @@ export function getWeatherIcon(code) {
   if (code === 3) return <Cloud className={iconClass} />; // zamračené
 
   if (code === 45 || code === 48) return <CloudFog className={iconClass} />; // hmla
-  if (code === 51 || code === 53 || code === 55) return <CloudDrizzle className={iconClass} />; // mrholenie
+  if (code === 51 || code === 53 || code === 55)
+    return <CloudDrizzle className={iconClass} />; // mrholenie
   if (code === 61 || code === 63) return <CloudRain className={iconClass} />; // dážď
-  if (code === 65 || code === 82) return <CloudRainWind className={iconClass} />; // lejak
+  if (code === 65 || code === 82)
+    return <CloudRainWind className={iconClass} />; // lejak
   if (code === 66 || code === 67) return <CloudHail className={iconClass} />; // mrznúci dážď
   if (code === 71 || code === 73) return <Snowflake className={iconClass} />; // sneženie
   if (code === 75 || code === 77) return <CloudSnow className={iconClass} />; // silné sneženie
   if (code === 80 || code === 81) return <CloudSunRain className={iconClass} />; // prehánky
   if (code === 95) return <CloudLightning className={iconClass} />; // búrka
-  if (code === 96 || code === 99) return <CloudLightning className={iconClass} />; // búrka s krúpami
+  if (code === 96 || code === 99)
+    return <CloudLightning className={iconClass} />; // búrka s krúpami
 
   return <CloudOff className={iconClass} />; // fallback
 }
-
 
 export function getYearMonthFromOffset(offset) {
   const intM = Number(offset || 0);
@@ -96,8 +97,8 @@ export function monthBounds(m = 0) {
   const now = new Date();
   const totalM = now.getMonth() + Number(m || 0);
   const year = now.getFullYear() + Math.floor(totalM / 12);
-  const month0 = ((totalM % 12) + 12) % 12;       // 0..11
-  const month = month0 + 1;                       // 1..12
+  const month0 = ((totalM % 12) + 12) % 12; // 0..11
+  const month = month0 + 1; // 1..12
   const pad = (n) => String(n).padStart(2, "0");
   const from = `${year}-${pad(month)}-01`;
   const lastDay = new Date(year, month, 0).getDate();
@@ -106,7 +107,7 @@ export function monthBounds(m = 0) {
   // prev month
   const prevDate = new Date(year, month0 - 1, 1);
   const pY = prevDate.getFullYear();
-  const pM0 = prevDate.getMonth();                // 0..11
+  const pM0 = prevDate.getMonth(); // 0..11
   const pM = pM0 + 1;
   const prevFrom = `${pY}-${pad(pM)}-01`;
   const prevLast = new Date(pY, pM, 0).getDate();
@@ -133,5 +134,5 @@ export function namesByShiftType(arr, baseType) {
 
 // vytvorí textový riadok z mien alebo pomlčku
 export function shiftLine(list, label) {
-  return list.length ? `${list.join(", ")} - ${label}` : "—";
+  return list.length ? `${list.join(" • ")} - ${label}` : "—";
 }

@@ -1,4 +1,10 @@
-import { dateStr, formatDate, namesByShiftType, shiftLine, tmrwDateStr } from "@/app/_lib/helpers/functions";
+import {
+  dateStr,
+  formatDate,
+  namesByShiftType,
+  shiftLine,
+  tmrwDateStr,
+} from "@/app/_lib/helpers/functions";
 import BirthdayCard from "./_components/home/BirthdayCard";
 import MobileMainTaskButton from "./_components/home/MobileMainTaskButton";
 import MobileTmrwDayShiftButton from "./_components/home/MobileTmrwDayShiftButton";
@@ -12,9 +18,11 @@ import ShiftCalendar from "./_components/home/ShiftCalendar";
 import WeatherCard from "./_components/home/WeatherCard";
 import RenderOnMdUp from "./_components/RenderOnMdUp";
 import { getAllProfiles, getProfile, getUser } from "./_lib/profiles-data";
-import { getShiftsForProfileForYear, getTodayAndTomorrowShifts } from "./_lib/shifts-data";
+import {
+  getShiftsForProfileForYear,
+  getTodayAndTomorrowShifts,
+} from "./_lib/shifts-data";
 import { getTasksForTodayAndTomorrow } from "./_lib/tasks-data";
-
 
 export const revalidate = 300;
 
@@ -36,11 +44,37 @@ export default async function Page({ searchParams }) {
 
   const { todayShifts, tomorrowShifts } = shiftsTodayTomorrow;
 
+  const otherStations = ["TUR", "TER", "STR", "ZA3", "ZA4", "MAK", "BY"];
+
+  // 1. Funkcia na pridanie stanice do mena
+  function addStationToName(shift) {
+    const hasOtherStation = otherStations.includes(shift.request_type);
+    
+    if (hasOtherStation) {
+      const originalName = shift.profiles?.full_name ?? "";
+      const station = shift.request_type;
+      
+      return {
+        ...shift,
+        profiles: {
+          ...shift.profiles,
+          full_name: `${originalName} (${station})`,
+        },
+      };
+    }
+    
+    return shift;
+  }
+
+  // 2. Použitie funkcie na dnešné a zajtrajšie smeny
+  const todayShiftsWithRequests = todayShifts.map(addStationToName);
+  const tomorrowShiftsWithRequests = tomorrowShifts.map(addStationToName);
+
   /* 2. Helper – podľa typu vracia pole mien */
-  const dayToday = namesByShiftType(todayShifts, "D");
-  const nightToday = namesByShiftType(todayShifts, "N");
-  const dayTomorrow = namesByShiftType(tomorrowShifts, "D");
-  const nightTomorrow = namesByShiftType(tomorrowShifts, "N");
+  const dayToday = namesByShiftType(todayShiftsWithRequests, "D");
+  const nightToday = namesByShiftType(todayShiftsWithRequests, "N");
+  const dayTomorrow = namesByShiftType(tomorrowShiftsWithRequests, "D");
+  const nightTomorrow = namesByShiftType(tomorrowShiftsWithRequests, "N");
 
   //......................................................................................................
 
