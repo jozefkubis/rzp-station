@@ -1,22 +1,33 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
+import { Calendar as BigCalendar, Views } from "react-big-calendar";
+
 import MyButtons from "@/app/_components/calendar/MyButtons";
 import MyEvent from "@/app/_components/calendar/MyEvent";
 import NewTaskForm from "@/app/_components/calendar/NewTaskForm";
 import UpdateTaskForm from "@/app/_components/calendar/UpdateTaskForm";
 import Spinner from "@/app/_components/Spinner";
-import { localizer } from "@/app/_lib/calendarLocalizer";
-import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
-import { useCallback, useEffect, useState } from "react";
-import { Calendar as BigCalendar, Views } from "react-big-calendar";
 import WarningNotice from "../WarningNotice";
 import Modal from "/app/_components/Modal";
 
+import { localizer } from "@/app/_lib/calendarLocalizer";
+import { getLocalDateKey } from "@/app/_lib/helpers/functions";
+import skHolidays2025 from "@/app/data/sk-holidays-2025.json";
+
+// --------------------------------------------------
+// HELPERS
+// --------------------------------------------------
+
 function getTodayAtHour(hour) {
   const date = new Date();
-  date.setHours(hour, 0, 0, 0); // hour:00:00.000
+  date.setHours(hour, 0, 0, 0);
   return date;
 }
+
+// --------------------------------------------------
+// UI COMPONENTS
+// --------------------------------------------------
 
 // ✅ malý badge pre službu v hlavičke dňa (Month view)
 function ShiftDot({ title }) {
@@ -43,30 +54,47 @@ function ShiftDot({ title }) {
   );
 }
 
+// --------------------------------------------------
+// MAIN COMPONENT
+// --------------------------------------------------
+
 export default function Calendar({ admin, shiftsAndRequests }) {
   const [events, setEvents] = useState([]);
-  const [shiftByDay, setShiftByDay] = useState({}); // ✅ služby mapované podľa dňa
+  const [shiftByDay, setShiftByDay] = useState({});
   const [loading, setLoading] = useState(true);
+
   const [view, setView] = useState(Views.MONTH);
   const [date, setDate] = useState(new Date());
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [draftSlot, setDraftSlot] = useState(null);
   const [showHoliday, setShowHoliday] = useState(false);
 
+  // --------------------------------------------------
+  // DATA FETCH
+  // --------------------------------------------------
+
   const fetchEvents = useCallback(async () => {
     setLoading(true);
 
-    // ✅ 1) SLUŽBY: sprav mapu "YYYY-MM-DD" -> title (nepôjdu do events)
+    // ✅ 1) SLUŽBY → mapované podľa LOKÁLNEHO dňa
     const map = {};
+
     for (const shift of shiftsAndRequests) {
-      const key = String(shift.date).slice(0, 10); // napr. "2026-01-12"
+      const raw = shift.date;
+
+      const key =
+        raw instanceof Date ? getLocalDateKey(raw) : String(raw).slice(0, 10); // "YYYY-MM-DD..."
+
       map[key] = shift.shift;
     }
+
     setShiftByDay(map);
 
     // ✅ 2) ÚLOHY
     const data = await fetch("/api/tasks").then((res) => res.json());
+
     const userEvents = data.map((task) => ({
       id: task.id,
       title: task.title,
@@ -85,13 +113,12 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     const holidayEvents = skHolidays2025.map((h) => ({
       id: "hol-" + h.date,
       title: h.localName,
-      start: new Date(h.date + "T00:00:00"),
-      end: new Date(h.date + "T00:00:00"),
+      start: new Date(`${h.date}T00:00:00`),
+      end: new Date(`${h.date}T00:00:00`),
       allDay: true,
       isHoliday: true,
     }));
 
-    // ✅ do kalendára idú len úlohy + sviatky
     setEvents([...userEvents, ...holidayEvents]);
     setLoading(false);
   }, [shiftsAndRequests]);
@@ -100,8 +127,12 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     fetchEvents();
   }, [fetchEvents]);
 
-  function handleSelectEvent(e) {
-    setSelectedEvent(e);
+  // --------------------------------------------------
+  // HANDLERS
+  // --------------------------------------------------
+
+  function handleSelectEvent(event) {
+    setSelectedEvent(event);
     setIsOpenModal(true);
   }
 
@@ -110,6 +141,10 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     setDraftSlot({ start, end });
     setIsOpenModal(true);
   }
+
+  // --------------------------------------------------
+  // CALENDAR CONFIG
+  // --------------------------------------------------
 
   const messages = {
     previous: "Späť",
@@ -131,7 +166,7 @@ export default function Calendar({ admin, shiftsAndRequests }) {
   const eventPropGetter = useCallback(
     (event) => {
       // urgentné
-      if (event.title?.includes("!")) {
+      if (event.title && event.title.includes("!")) {
         return {
           style: {
             backgroundColor: "#F21905",
@@ -149,7 +184,6 @@ export default function Calendar({ admin, shiftsAndRequests }) {
           display: showHoliday ? "none" : "",
         };
 
-        // ⚠️ len mimo Agenda pridaj ľavý pruh + margin
         if (view !== Views.AGENDA) {
           base.margin = "1px";
           base.borderLeft = "12px solid #FFD01C";
@@ -170,10 +204,10 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     };
   }
 
-  // ✅ Month view: vlastná hlavička dňa (tam nacvakneme službu)
+  // ✅ HLAVIČKA DŇA – opravený LOKÁLNY dátum
   const MonthDateHeader = useCallback(
     ({ date, label }) => {
-      const key = date.toISOString().slice(0, 10);
+      const key = getLocalDateKey(date);
       const shiftTitle = shiftByDay[key];
 
       return (
@@ -186,7 +220,9 @@ export default function Calendar({ admin, shiftsAndRequests }) {
     [shiftByDay],
   );
 
-  // MARK: RENDER....................................................
+  // --------------------------------------------------
+  // RENDER
+  // --------------------------------------------------
 
   return (
     <div className="grid h-full w-full grid-cols-1 md:relative md:h-[85dvh] md:grid-cols-[auto_1fr] md:gap-2">
@@ -207,81 +243,71 @@ export default function Calendar({ admin, shiftsAndRequests }) {
 
         <BigCalendar
           culture="sk"
+          localizer={localizer}
+          events={events}
           view={view}
           date={date}
           onView={setView}
           onNavigate={setDate}
+          selectable
           onSelectEvent={handleSelectEvent}
           onSelectSlot={handleSelectSlot}
-          selectable
-          localizer={localizer}
           messages={messages}
-          formats={{
-            weekdayFormat: (date, culture, localizer) =>
-              localizer.format(date, "EEEE", culture),
-            monthHeaderFormat: (date, culture, localizer) =>
-              localizer.format(date, "LLLL yyyy", culture),
-            dayHeaderFormat: (date, culture, localizer) =>
-              localizer.format(date, "EEEE, dd.MM.yyyy", culture),
-          }}
-          events={events}
           eventPropGetter={eventPropGetter}
           dayPropGetter={dayPropGetter}
-          defaultView={Views.MONTH}
-          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
           startAccessor="start"
           endAccessor="end"
           tooltipAccessor="note"
-          style={{ height: "100%" }}
-          components={{
-            event: MyEvent,
-            month: {
-              dateHeader: MonthDateHeader, // ✅ tu je pointa
-            },
-          }}
+          defaultView={Views.MONTH}
+          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
           min={getTodayAtHour(6)}
           max={getTodayAtHour(23)}
           scrollToTime={getTodayAtHour(6)}
           step={30}
           timeslots={2}
+          style={{ height: "100%" }}
+          components={{
+            event: MyEvent,
+            month: {
+              dateHeader: MonthDateHeader,
+            },
+          }}
         />
       </div>
 
       {isOpenModal && (
-        <div>
-          <Modal
-            onClose={() => {
-              setIsOpenModal(false);
-              setSelectedEvent(null);
-            }}
-          >
-            {admin === "ÁNO" ? (
-              selectedEvent ? (
-                <UpdateTaskForm
-                  task={selectedEvent}
-                  onClose={() => {
-                    setIsOpenModal(false);
-                    setSelectedEvent(null);
-                    setDraftSlot(null);
-                  }}
-                  refresh={fetchEvents}
-                />
-              ) : (
-                <NewTaskForm
-                  slot={draftSlot}
-                  onClose={() => {
-                    setIsOpenModal(false);
-                    setSelectedEvent(null);
-                    setDraftSlot(null);
-                  }}
-                  refresh={fetchEvents}
-                />
-              )
+        <Modal
+          onClose={() => {
+            setIsOpenModal(false);
+            setSelectedEvent(null);
+          }}
+        >
+          {admin === "ÁNO" ? (
+            selectedEvent ? (
+              <UpdateTaskForm
+                task={selectedEvent}
+                onClose={() => {
+                  setIsOpenModal(false);
+                  setSelectedEvent(null);
+                  setDraftSlot(null);
+                }}
+                refresh={fetchEvents}
+              />
             ) : (
-              <WarningNotice />
-            )}
-          </Modal>
-        </div>
+              <NewTaskForm
+                slot={draftSlot}
+                onClose={() => {
+                  setIsOpenModal(false);
+                  setSelectedEvent(null);
+                  setDraftSlot(null);
+                }}
+                refresh={fetchEvents}
+              />
+            )
+          ) : (
+            <WarningNotice />
+          )}
+        </Modal>
       )}
     </div>
   );
