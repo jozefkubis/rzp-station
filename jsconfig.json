@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".", // ← koreň projektu
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"] // ← alias "@/…" → koreň
     }
