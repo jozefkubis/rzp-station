@@ -1,41 +1,48 @@
-// const BUCKETS = ["D", "N", "RD", "PN", "X"];
+const SHIFT_BUCKETS = {
+  D: ["D"],
+  VD: ["D"],
+  ZD: ["D"],
+  N: ["N"],
+  VN: ["N"],
+  ZN: ["N"],
+  DN: ["D", "N"],
+  ND: ["D", "N"],
+  RD: ["RD"],
+  PN: ["PN"],
+  X: ["X"],
+  XD: ["X"],
+  XN: ["X"],
+};
 
-// // z shift_type
-// export function mapTypeToBuckets(t) {
-//   const s = String(t || "").toUpperCase();
-//   switch (s) {
-//     case "D":
-//     case "VD":
-//     case "ZD":
-//       return ["D"];
-//     case "N":
-//     case "VN":
-//     case "ZN":
-//       return ["N"];
-//     case "DN"://
-//       return ["D", "N"];
-//     case "X": // ak by sa X objavilo priamo v shift_type
-//     case "XD":
-//     case "XN":
-//       return ["X"];
-//     default:
-//       return [];
-//   }
-// }
+const REQUEST_BUCKETS = {
+  RD: ["RD"],
+  PN: ["PN"],
+  X: ["X"],
+  XD: ["X"],
+  XN: ["X"],
+};
 
-// // z request_type
-// export function mapRequestToBuckets(r) {
-//   const s = String(r || "").toUpperCase();
-//   switch (s) {
-//     case "RD":
-//       return ["RD"];
-//     case "PN":
-//       return ["PN"];
-//     case "X":
-//     case "XD":
-//     case "XN":
-//       return ["X"];
-//     default:
-//       return [];
-//   }
-// }
+function normalizeType(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase();
+}
+
+function mapToBuckets(value, dictionary) {
+  return dictionary[normalizeType(value)] ?? [];
+}
+
+export function getShiftBuckets(shiftType) {
+  return mapToBuckets(shiftType, SHIFT_BUCKETS);
+}
+
+export function getRequestBuckets(requestType) {
+  return mapToBuckets(requestType, REQUEST_BUCKETS);
+}
+
+export function getRowBuckets({ shiftType, requestType }) {
+  return new Set([
+    ...getShiftBuckets(shiftType),
+    ...getRequestBuckets(requestType),
+  ]);
+}

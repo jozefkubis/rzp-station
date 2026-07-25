@@ -10,22 +10,22 @@ export const metadata = {
 export default async function page({ searchParams }) {
   const { y } = await searchParams;
   const statsOffset = Number(y ?? 0);
+  const statsYear = new Date().getFullYear() + statsOffset;
 
   // const shifts = await getAllShifts();
   // const user = await getUser();
 
-  const [shifts, user] = await Promise.all([getAllShifts(), getUser()]);
+  const [shifts, user] = await Promise.all([
+    getAllShifts({ year: statsYear }),
+    getUser(),
+  ]);
 
   const admin = await getAdmin(user.email);
 
   return (
     <div>
       <Header />
-      <StatisticsMain
-        shifts={shifts}
-        statsOffset={statsOffset}
-        admin={admin}
-      />
+      <StatisticsMain shifts={shifts} statsOffset={statsOffset} admin={admin} />
     </div>
   );
 }

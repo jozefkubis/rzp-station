@@ -6,88 +6,74 @@ import { useMemo, useState } from "react";
 import WarningNotice from "../WarningNotice";
 import ArrowBackStatistics from "./ArrowBackStatistics";
 import ArrowForwardStatistics from "./ArrowForwordStatistics";
+import { getRowBuckets } from "./helpers_statistics";
 import { StatisticsLegend } from "./StatisticsLegend";
 import YearHeadStatistics from "./YearHeadStatistics";
 
 export default function StatisticsMain({ shifts, statsOffset, admin }) {
   const router = useRouter();
 
-  // 1) Výber roka podľa offsetu
   const [y, setY] = useState(statsOffset || 0);
   const thisYear = new Date().getFullYear() + y;
 
-  // 2) Sviatky
   const holidays = useMemo(() => {
     return new Set(getSlovakHolidaysForYear(thisYear));
   }, [thisYear]);
 
-  // 3) Normalizácia vstupu
   const rows = useMemo(() => {
     return shifts.map((s) => ({
-      name: s.profiles.full_name,
-      type: (s.shift_type || "").toUpperCase(),
-      request: (s.request_type || "").toUpperCase(),
+      userId: s.user_id,
+      name: s.profiles?.full_name ?? "(bez mena)",
+      type: s.shift_type,
+      request: s.request_type,
       dateFull: s.date.slice(0, 10),
       year: s.date.slice(0, 4),
     }));
   }, [shifts]);
 
-  // 4) Len tento rok
   const thisYearRows = rows.filter((r) => r.year === String(thisYear));
 
-  // 5) Redukcia na štatistiky
-  const statsObj = thisYearRows.reduce(
-    (acc, { name, type, request, dateFull }) => {
-      if (!acc[name]) {
-        acc[name] = { D: 0, N: 0, RD: 0, PN: 0, X: 0, ŠS_D: 0, ŠS_N: 0 };
-      }
+  const statsObj = thisYearRows.reduce((acc, row) => {
+    const { userId, name, type, request, dateFull } = row;
+    const key = userId || name;
 
-      const isDay = ["D", "VD", "ZD"].includes(type);
-      const isNight = ["N", "VN", "ZN"].includes(type);
-      const isBoth = ["DN"].includes(type);
+    if (!acc[key]) {
+      acc[key] = { name, D: 0, N: 0, RD: 0, PN: 0, X: 0, SS_D: 0, SS_N: 0 };
+    }
 
-      if (isDay) acc[name].D++;
-      if (isNight) acc[name].N++;
-      if (isBoth) {
-        acc[name].D++;
-        acc[name].N++;
-      }
+    const buckets = getRowBuckets({ shiftType: type, requestType: request });
+    const isDay = buckets.has("D");
+    const isNight = buckets.has("N");
 
-      if (type.startsWith("RD")) acc[name].RD++;
-      if (type.startsWith("PN")) acc[name].PN++;
-      if (["X", "XD", "XN"].includes(request)) acc[name].X++;
+    if (isDay) acc[key].D++;
+    if (isNight) acc[key].N++;
+    if (buckets.has("RD")) acc[key].RD++;
+    if (buckets.has("PN")) acc[key].PN++;
+    if (buckets.has("X")) acc[key].X++;
 
-      const workedHolidays = isDay || isNight || isBoth;
-      if (workedHolidays && holidays.has(dateFull)) {
-        if (isDay) acc[name].ŠS_D++;
-        if (isNight) acc[name].ŠS_N++;
-        if (isBoth) {
-          acc[name].ŠS_D++;
-          acc[name].ŠS_N++;
-        }
-      }
+    if ((isDay || isNight) && holidays.has(dateFull)) {
+      if (isDay) acc[key].SS_D++;
+      if (isNight) acc[key].SS_N++;
+    }
 
-      return acc;
-    },
-    {},
-  );
+    return acc;
+  }, {});
 
-  // 6) Pole štatistík
   const stats = Object.entries(statsObj)
-    .map(([name, counts]) => ({
-      name,
+    .map(([userId, counts]) => ({
+      userId,
       ...counts,
-      ŠS: counts.ŠS_D + counts.ŠS_N,
+      SS: counts.SS_D + counts.SS_N,
       Spolu: counts.D + counts.N,
     }))
     .sort((a, b) => a.name.localeCompare(b.name, "sk"));
 
-  // 7) Navigácia
   function goToNextYear() {
     const next = y + 1;
     setY(next);
     router.push(`/statistics?y=${next}`);
   }
+
   function goToPrevYear() {
     const prev = y - 1;
     setY(prev);
@@ -97,7 +83,6 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
   return (
     <div className="max-h-screeen-md h-[100dvh] overflow-auto md:h-full">
       <div className="flex h-full flex-col overflow-auto px-3 md:overflow-hidden md:px-[8rem] md:py-[3rem] md:pb-24">
-        {/* Sticky header pre mobile, pôvodné farby od md */}
         <YearHeadStatistics className="sticky top-0 z-20 -mx-3 bg-primary-900 px-3 py-2 text-white md:static md:-mx-0 md:bg-transparent md:px-0 md:text-primary-700">
           <ArrowBackStatistics goToPrevYear={goToPrevYear} />
           Štatistiky {thisYear}
@@ -110,24 +95,21 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
           </div>
         ) : (
           <>
-            {/* --- MOBIL: karty --- */}
             {admin === "ÁNO" ? (
               <div className="my-3 space-y-2 md:hidden">
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {stats.map((r) => (
                     <div
-                      key={r.name}
+                      key={r.userId}
                       className="rounded-xl border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="truncate font-semibold">{r.name}</div>
-                        {/* Spolu v badge vpravo */}
                         <span className="rounded-md bg-white/10 px-2 py-1 text-xs font-semibold">
                           Spolu: {r.Spolu}
                         </span>
                       </div>
 
-                      {/* Riadok štítkov s číslami */}
                       <div className="mt-2 grid grid-cols-3 gap-2 text-center">
                         <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
                           D: <b>{r.D}</b>
@@ -148,14 +130,13 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                           X: <b>{r.X}</b>
                         </span>
                         <span className="rounded-md bg-gradient-to-br from-white to-primary-100 px-2 py-1 text-xs">
-                          ŠS: <b>{r.ŠS}</b>
+                          ŠS: <b>{r.SS}</b>
                         </span>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Legenda ako collapsible na mobile */}
                 <details className="rounded-lg border border-primary-100/60 bg-white p-3 text-primary-600 shadow-lg">
                   <summary className="cursor-pointer select-none font-semibold">
                     Legenda
@@ -171,7 +152,6 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
               </div>
             )}
 
-            {/* --- DESKTOP/MD+: tabuľka + legenda --- */}
             <div className="hidden md:block">
               <div className="overflow-x-auto rounded-lg border border-gray-200">
                 <table className="w-full table-fixed border-collapse text-center 2xl:min-w-[56rem]">
@@ -193,7 +173,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                     {admin === "ÁNO" ? (
                       stats.map((r) => (
                         <tr
-                          key={r.name}
+                          key={r.userId}
                           className="text-xs hover:bg-gray-50 2xl:text-base"
                         >
                           <td className="border px-3 text-left font-semibold text-primary-700 md:py-2 2xl:py-3">
@@ -218,7 +198,7 @@ export default function StatisticsMain({ shifts, statsOffset, admin }) {
                             {r.X}
                           </td>
                           <td className="border px-4 md:py-2 2xl:py-3">
-                            {r.ŠS}
+                            {r.SS}
                           </td>
                         </tr>
                       ))
