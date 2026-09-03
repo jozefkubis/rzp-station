@@ -25,6 +25,7 @@ npm install exceljs
 npm uninstall moment
 npm install --global @openai/codex
 codex mcp add supabase --url "https://mcp.supabase.com/mcp?project_ref=kjfjavkvgocatxssthrv"
+codex mcp login supabase --scopes "organizations:read,projects:read,database:read"
 codex mcp login supabase
 
 
